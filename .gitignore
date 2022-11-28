@@ -1,0 +1,16 @@
+.hg
+.hgignore
+local.properties
+.version
+trace
+*.class
+*.orig
+*~
+*.DS_Store
+
+*.dat
+
+*.csv
+*.txt
+
+build/
