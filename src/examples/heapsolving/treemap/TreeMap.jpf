@@ -5,11 +5,11 @@ sourcepath=${spf-lissa}/src/examples
 
 # ---------------   Arguments   ---------------
 
-target = heapsolving.treemap.put.TreeMapMain
+target = heapsolving.treemap.remove.TreeMapMain
 method = put
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
+symbolic.scope = 4
 symbolic.dp = z3
 
 heapsolving.strategy = LISSA
