@@ -6,7 +6,7 @@ sourcepath=${spf-lissa}/src/examples
 # ---------------   Arguments   ---------------
 
 target = heapsolving.treemap.remove.TreeMapMain
-method = put
+method = remove
 
 symbolic.debug = false
 symbolic.scope = 4
