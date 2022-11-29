@@ -1,4 +1,4 @@
-package gov.nasa.jpf.symbc;
+package lissa;
 
 import gov.nasa.jpf.annotation.MJI;
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
@@ -19,7 +19,6 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.HeapSolvingInstructionFactory;
 import lissa.heap.Helper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
