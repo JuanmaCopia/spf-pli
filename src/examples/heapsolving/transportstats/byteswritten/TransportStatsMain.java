@@ -7,7 +7,7 @@
 
 package heapsolving.transportstats.byteswritten;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.transportstats.TransportStats;
 import heapsolving.transportstats.TransportStatsHarness;

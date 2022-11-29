@@ -7,7 +7,7 @@
 
 package heapsolving.hashmap.remove;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;

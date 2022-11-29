@@ -7,7 +7,7 @@
 
 package heapsolving.template.addparameter;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import heapsolving.template.Parameter;
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;

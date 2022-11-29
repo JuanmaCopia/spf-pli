@@ -1,6 +1,6 @@
 package heapsolving.treeset;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
 public class TreeSetHarness {

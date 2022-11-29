@@ -1,4 +1,4 @@
-package gov.nasa.jpf.symbc;
+package lissa;
 
 import gov.nasa.jpf.vm.Verify;
 

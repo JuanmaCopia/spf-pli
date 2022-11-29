@@ -16,8 +16,7 @@ heapsolving.strategy = LISSA
 heapsolving.symsolve.class = heapsolving.treemap.symsolve.TreeMap
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-listener = gov.nasa.jpf.symbc.HeapSolvingListener
+listener = lissa.HeapSolvingListener
 
 # ---------------------------------------------

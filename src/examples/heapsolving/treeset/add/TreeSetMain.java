@@ -7,7 +7,7 @@
 
 package heapsolving.treeset.add;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.treeset.TreeSet;
 import heapsolving.treeset.TreeSetHarness;

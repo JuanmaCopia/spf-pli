@@ -7,8 +7,7 @@
 
 package heapsolving.schedule.finishallprocesses;
 
-import gov.nasa.jpf.symbc.SymHeap;
-import gov.nasa.jpf.symbc.TestGen;
+import lissa.SymHeap;
 
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;

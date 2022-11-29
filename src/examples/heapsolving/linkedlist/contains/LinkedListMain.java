@@ -7,8 +7,7 @@
 
 package heapsolving.linkedlist.contains;
 
-import gov.nasa.jpf.symbc.SymHeap;
-import gov.nasa.jpf.symbc.TestGen;
+import lissa.SymHeap;
 
 import heapsolving.linkedlist.LinkedList;
 import heapsolving.linkedlist.LinkedListHarness;

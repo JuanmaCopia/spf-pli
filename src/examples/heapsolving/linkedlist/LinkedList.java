@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all

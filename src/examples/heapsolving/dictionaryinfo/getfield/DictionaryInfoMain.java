@@ -7,7 +7,7 @@
 
 package heapsolving.dictionaryinfo.getfield;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
 

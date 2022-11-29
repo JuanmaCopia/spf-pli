@@ -7,7 +7,7 @@
 
 package heapsolving.combatantstatistic.ensuretypexists;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.combatantstatistic.CombatantStatistic;
 import heapsolving.combatantstatistic.CombatantStatisticHarness;

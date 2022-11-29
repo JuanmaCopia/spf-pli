@@ -1,6 +1,6 @@
 package heapsolving.schedule;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
 public class ScheduleHarness {
@@ -26,7 +26,7 @@ public class ScheduleHarness {
         blockNonDeterministicAmountOfProcesses(structure, numAddedProcesses);
         return structure;
     }
-    
+
     private static int addNonDeterministicAmountOfProcesses(Schedule structure) {
         int numNodes = Verify.getInt(0, SymHeap.getMaxScope());
         for (int i = 1; i <= numNodes; i++) {
@@ -37,7 +37,7 @@ public class ScheduleHarness {
         }
         return numNodes;
     }
-    
+
     private static void blockNonDeterministicAmountOfProcesses(Schedule structure, int numAddedProcesses) {
         int numBlocks = Verify.getInt(0, numAddedProcesses);
         for (int i = 1; i <= numBlocks; i++) {

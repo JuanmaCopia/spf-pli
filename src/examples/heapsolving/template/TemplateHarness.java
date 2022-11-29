@@ -1,6 +1,6 @@
 package heapsolving.template;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
 
@@ -20,7 +20,7 @@ public class TemplateHarness {
 
         return structure;
     }
-    
+
     private static Template generateDriverStructure() {
     	int maxScope = SymHeap.getMaxScope();
 		Template t = new Template(SymHeap.makeSymbolicString("t"));

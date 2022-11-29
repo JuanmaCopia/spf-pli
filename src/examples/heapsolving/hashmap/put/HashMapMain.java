@@ -7,7 +7,7 @@
 
 package heapsolving.hashmap.put;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;

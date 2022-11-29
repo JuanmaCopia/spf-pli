@@ -7,7 +7,7 @@
 
 package heapsolving.treemap.containsvalue;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 
 import heapsolving.treemap.TreeMap;
 import heapsolving.treemap.TreeMapHarness;

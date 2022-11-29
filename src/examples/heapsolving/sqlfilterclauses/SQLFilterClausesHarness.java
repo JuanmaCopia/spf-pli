@@ -1,6 +1,6 @@
 package heapsolving.sqlfilterclauses;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
 public class SQLFilterClausesHarness {
@@ -24,7 +24,7 @@ public class SQLFilterClausesHarness {
     	int maxScope = SymHeap.getMaxScope();
 		SQLFilterClauses h = new SQLFilterClauses();
 		int numNodes = Verify.getInt(0, maxScope);
-		
+
 		for (int i = 1; i <= numNodes; i++) {
 			String clauseName = SymHeap.makeSymbolicString("N" + i);
 			String tableName = SymHeap.makeSymbolicString("N2" + i);

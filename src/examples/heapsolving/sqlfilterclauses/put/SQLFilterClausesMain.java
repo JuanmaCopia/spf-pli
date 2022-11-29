@@ -7,7 +7,7 @@
 
 package heapsolving.sqlfilterclauses.put;
 
-import gov.nasa.jpf.symbc.SymHeap;
+import lissa.SymHeap;
 import heapsolving.sqlfilterclauses.SQLFilterClauses;
 import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
 

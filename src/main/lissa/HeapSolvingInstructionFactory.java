@@ -45,11 +45,16 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     public HeapSolvingInstructionFactory(Config conf) {
         super(conf);
-        doingHeapSolving = true;
+        System.out.println("Heap instruction fact initialized");
+        initializeSolvingStrategy(conf);
+    }
+    
+    public void initializeSolvingStrategy(Config conf) {
+    	doingHeapSolving = true;
         configParser = new ConfigParser(conf);
         solvingStrategy = SolvingStrategyFactory.makeSymbolicHeapSolvingTechnique(configParser);
     }
-
+    
     public static void setTargetMethod(String name, int numArgs) {
         targetMethod = new TargetMethod(configParser.symSolveSimpleClassName, name, numArgs);
     }
@@ -67,6 +72,8 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     }
 
     public static SolvingStrategy getSolvingStrategy() {
+    	if (solvingStrategy == null)
+    		System.out.println("Heap instruction fact NOT initialized");
         return solvingStrategy;
     }
 

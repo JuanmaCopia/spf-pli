@@ -30,7 +30,7 @@ import lissa.heap.solving.techniques.LISSA;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
-public class JPF_gov_nasa_jpf_symbc_SymHeap extends NativePeer {
+public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
     public static void makeSymbolicImplicitInputThis(MJIEnv env, int objRef, int stringRef, int objvRef) {
