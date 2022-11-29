@@ -1,21 +1,23 @@
-classpath=${jpf-symbc}/build/examples
-sourcepath=${jpf-symbc}/src/examples
+classpath=${spf-lissa}/build/examples
+sourcepath=${spf-lissa}/src/examples
+
+@using=spf-lissa
 
 # ---------------   Arguments   ---------------
 
-target = heapsolving.treemap.METHOD.TreeMapMain
-method = METHOD
+target = heapsolving.treemap.put.TreeMapMain
+method = put
 
 symbolic.debug = false
 symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.strategy = LISSA
 heapsolving.symsolve.class = heapsolving.treemap.symsolve.TreeMap
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=gov.nasa.jpf.symbc.heap.solving.HeapSolvingInstructionFactory
-vm.insn_factory.class=gov.nasa.jpf.symbc.heap.solving.HeapSolvingInstructionFactory
-listener = gov.nasa.jpf.symbc.heap.solving.HeapSolvingListener
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+listener = gov.nasa.jpf.symbc.HeapSolvingListener
 
 # ---------------------------------------------

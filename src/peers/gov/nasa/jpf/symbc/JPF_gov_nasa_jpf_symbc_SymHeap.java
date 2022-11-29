@@ -3,15 +3,6 @@ package gov.nasa.jpf.symbc;
 import gov.nasa.jpf.annotation.MJI;
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.Helper;
-import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
-import gov.nasa.jpf.symbc.heap.solving.config.ConfigParser;
-import gov.nasa.jpf.symbc.heap.solving.techniques.DRIVER;
-import gov.nasa.jpf.symbc.heap.solving.techniques.IFREPOK;
-import gov.nasa.jpf.symbc.heap.solving.techniques.LIHYBRID;
-import gov.nasa.jpf.symbc.heap.solving.techniques.LISSA;
-import gov.nasa.jpf.symbc.heap.solving.techniques.SolvingStrategy;
-import gov.nasa.jpf.symbc.heap.symbolicinput.SymbolicReferenceInput;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
@@ -28,6 +19,16 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.HeapSolvingInstructionFactory;
+import lissa.heap.Helper;
+import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.solving.config.ConfigParser;
+import lissa.heap.solving.techniques.DRIVER;
+import lissa.heap.solving.techniques.IFREPOK;
+import lissa.heap.solving.techniques.LIHYBRID;
+import lissa.heap.solving.techniques.LISSA;
+import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
 public class JPF_gov_nasa_jpf_symbc_SymHeap extends NativePeer {
 
@@ -60,14 +61,14 @@ public class JPF_gov_nasa_jpf_symbc_SymHeap extends NativePeer {
         }
 
         PathCondition pcHeap;
-        SymbolicInputHeap symInputHeap;
+        SymbolicInputHeapLISSA symInputHeap;
         if (prevHeapCG == null) {
 
             pcHeap = new PathCondition();
-            symInputHeap = new SymbolicInputHeap();
+            symInputHeap = new SymbolicInputHeapLISSA();
         } else {
             pcHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentPCheap();
-            symInputHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
         }
 
         // set all the fields to be symbolic

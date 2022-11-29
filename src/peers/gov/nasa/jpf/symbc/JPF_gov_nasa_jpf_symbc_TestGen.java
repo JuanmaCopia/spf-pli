@@ -1,13 +1,14 @@
 package gov.nasa.jpf.symbc;
 
 import gov.nasa.jpf.annotation.MJI;
-import gov.nasa.jpf.symbc.heap.symbolicinput.ConcreteArgument;
-import gov.nasa.jpf.symbc.heap.symbolicinput.SymbolicIntegerArgument;
-import gov.nasa.jpf.symbc.heap.symbolicinput.SymbolicStringArgument;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.NativePeer;
+import lissa.HeapSolvingInstructionFactory;
+import lissa.heap.symbolicinput.ConcreteArgument;
+import lissa.heap.symbolicinput.SymbolicIntegerArgument;
+import lissa.heap.symbolicinput.SymbolicStringArgument;
 
 
 public class JPF_gov_nasa_jpf_symbc_TestGen extends NativePeer {
