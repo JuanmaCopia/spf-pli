@@ -3,6 +3,7 @@ package lissa;
 import gov.nasa.jpf.annotation.MJI;
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
+import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
@@ -19,7 +20,7 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.heap.Helper;
+import lissa.heap.HelperLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
 import lissa.heap.solving.techniques.DRIVER;
@@ -82,7 +83,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);
         ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
-        Helper.initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
+        HelperLISSA.initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
         Helper.initializeStaticFields(staticFields, ci, ti);
 
         // create new HeapNode based on above info
