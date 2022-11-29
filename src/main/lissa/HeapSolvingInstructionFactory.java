@@ -25,8 +25,6 @@ import lissa.bytecode.GETFIELDHeapSolving;
 import lissa.heap.solving.config.ConfigParser;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.solving.techniques.SolvingStrategyFactory;
-import lissa.heap.symbolicinput.Argument;
-import lissa.heap.symbolicinput.TargetMethod;
 
 public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
@@ -39,47 +37,22 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     static SolvingStrategy solvingStrategy;
 
-    static TargetMethod targetMethod;
-
     public static boolean doingHeapSolving = false;
 
     public HeapSolvingInstructionFactory(Config conf) {
         super(conf);
-        System.out.println("Heap instruction fact initialized");
-        initializeSolvingStrategy(conf);
-    }
-    
-    public void initializeSolvingStrategy(Config conf) {
-    	doingHeapSolving = true;
+        doingHeapSolving = true;
         configParser = new ConfigParser(conf);
         solvingStrategy = SolvingStrategyFactory.makeSymbolicHeapSolvingTechnique(configParser);
     }
     
-    public static void setTargetMethod(String name, int numArgs) {
-        targetMethod = new TargetMethod(configParser.symSolveSimpleClassName, name, numArgs);
-    }
-
-    public static void setArgument(Argument arg, int index) {
-        targetMethod.setArgument(arg, index);
-    }
-
-    public static void setArgument(Argument arg) {
-        targetMethod.setArgument(arg);
-    }
-
-    public static TargetMethod getTargetMethod() {
-        return targetMethod;
-    }
-
     public static SolvingStrategy getSolvingStrategy() {
-    	if (solvingStrategy == null)
-    		System.out.println("Heap instruction fact NOT initialized");
+    	assert(solvingStrategy != null);
         return solvingStrategy;
     }
 
     public static ConfigParser getConfigParser() {
         return configParser;
     }
-
 
 }

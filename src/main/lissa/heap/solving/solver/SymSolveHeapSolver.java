@@ -22,13 +22,9 @@ public class SymSolveHeapSolver {
     }
 
     private SymSolve createSymSolveInstance() {
-    	System.out.println("\ncreating symsolve instance");
     	ConfigParser conf = HeapSolvingInstructionFactory.getConfigParser();
-    	System.out.println("1");
     	SolverConfig symSolveConfig = new SolverConfig(conf.symSolveClassName, conf.finitizationArgs, conf.symmetryBreakingStrategy, conf.predicateName);
-    	System.out.println("22");
     	SymSolve solver = new SymSolve(symSolveConfig);
-    	System.out.println("3");
         return solver;
     }
 

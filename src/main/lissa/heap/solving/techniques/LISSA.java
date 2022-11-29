@@ -17,13 +17,9 @@ public class LISSA extends SolvingStrategy {
 
 
     public LISSA(ConfigParser config) {
-    	System.out.println("\ncreating lissa");
     	this.config = config;
-    	System.out.println("1");
         heapSolver = new SymSolveHeapSolver();
-        System.out.println("2");
         canonicalizer = new Canonicalizer(heapSolver.getVectorFormat());
-        System.out.println("3");
     }
 
     @Override

@@ -10,4 +10,7 @@ CP="lib/symsolve.jar:build/main:build/examples:build/peers:build/tests:build/ann
 
 
 # Run JPF:
-java -Dfile.encoding=UTF-8 -Xms4096m -Xmx4096m -Xss100m -ea -cp $CP gov.nasa.jpf.tool.RunJPF -log $PATH_CONFIG_FILE
+java -Dfile.encoding=UTF-8 -Xms4096m -Xmx4096m -Xss100m -ea -cp $CP gov.nasa.jpf.tool.RunJPF $PATH_CONFIG_FILE
+
+# Run with -log and -show options:
+# java -Dfile.encoding=UTF-8 -Xms4096m -Xmx4096m -Xss100m -ea -cp $CP gov.nasa.jpf.tool.RunJPF -log -show $PATH_CONFIG_FILE
