@@ -222,14 +222,14 @@
   <target name="-jar-jpf" if="have_jpf_code">
 	  <jar jarfile="build/${ant.project.name}-classes.jar">
 		  <fileset dir="build/classes"/>
-		  <fileset dir="build/annotations"/>
+		  <fileset dir="build/annotations" erroronmissingdir="false"/>
 	  </jar>
   </target>
 
   <target name="-jar-annotations" if="have_annotations">
 	  <!-- optional jar that contains annotations to be used in non-JPF dependent apps -->
 	  <jar jarfile="build/${ant.project.name}-annotations.jar">
-		  <fileset dir="build/annotations"/>
+		  <fileset dir="build/annotations" erroronmissingdir="false"/>
 	  </jar>
   </target>
 
