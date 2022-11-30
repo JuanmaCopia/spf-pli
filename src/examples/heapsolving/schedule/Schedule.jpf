@@ -1,6 +1,8 @@
 classpath=${jpf-symbc}/build/examples
 sourcepath=${jpf-symbc}/src/examples
 
+@using=spf-lissa
+
 # ---------------   Arguments   ---------------
 
 target = heapsolving.schedule.METHOD.ScheduleMain
@@ -14,8 +16,8 @@ heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.symsolve.class = heapsolving.schedule.symsolve.Schedule
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=gov.nasa.jpf.symbc.heap.solving.HeapSolvingInstructionFactory
-vm.insn_factory.class=gov.nasa.jpf.symbc.heap.solving.HeapSolvingInstructionFactory
-listener = gov.nasa.jpf.symbc.heap.solving.HeapSolvingListener
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+listener = lissa.HeapSolvingListener
 
 # ---------------------------------------------
