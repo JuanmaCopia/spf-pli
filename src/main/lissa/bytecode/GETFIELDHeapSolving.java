@@ -56,12 +56,6 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         int numSymRefs = 0; // # of prev. initialized objects
         ChoiceGenerator<?> prevHeapCG = null;
 
-        // ================ Modification Begin ================ //
-        SolvingStrategy heapSolvingStrategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        if (!heapSolvingStrategy.isLazyInitializationBased())
-            return super.execute(ti);
-        // ================ Modification End ================ //
-
         StackFrame frame = ti.getModifiableTopFrame();
         int objRef = frame.peek(); // don't pop yet, we might re-enter
         lastThis = objRef;
@@ -85,6 +79,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         // if it is we need to do lazy initialization
 
         // ================ Modification Begin ================ //
+        SolvingStrategy heapSolvingStrategy = HeapSolvingInstructionFactory.getSolvingStrategy();
         if (fi.isReference() && attr == null) {
             if (heapSolvingStrategy.reachedGETFIELDLimit(objRef)) {
                 ti.getVM().getSystemState().setIgnored(true); // Backtrack
@@ -204,10 +199,6 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
             // ================ Modification Begin ================ //
             Integer bound = heapSolvingStrategy.getBoundForClass(fieldSimpleClassName);
-            // int scope = SymSolveListener.getScope();
-            // System.out.println("Class " + fieldSimpleClassName + " : " + bound + " ==? "
-            // + scope);
-            // Integer bound = SymSolveListener.getScope();
 
             // backtrack if the max bound of nodes has been reached
             if (numSymRefs == bound) {
