@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class TransportStats {
 
-	private static final int PRINT_INTERVAL = 60 * 1000;
+	//private static final int PRINT_INTERVAL = 60 * 1000;
 	private static final int GRANULARITY = 10; // bytes
 
 	public TreeMap read_sizes = new TreeMap();

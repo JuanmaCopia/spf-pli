@@ -54,7 +54,7 @@ package heapsolving.combatantstatistic;
 //}
 
 public class CombatantStatistic {
-	private final int numberOfRounds;
+	//private final int numberOfRounds;
 //	private final Map<CombatantStatType, DataSet> allData = new HashMap<CombatantStatType, DataSet>();
 	// Replaced enum CombatantStatType for an equivalent integer representation
 	// (between 0 and 14).
@@ -66,7 +66,7 @@ public class CombatantStatistic {
 	 * @param numberOfRounds
 	 */
 	public CombatantStatistic(final int numberOfRounds) {
-		this.numberOfRounds = numberOfRounds;
+		//this.numberOfRounds = numberOfRounds;
 	}
 
 	/**

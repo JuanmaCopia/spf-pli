@@ -10,7 +10,6 @@ package heapsolving.dictionaryinfo;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This

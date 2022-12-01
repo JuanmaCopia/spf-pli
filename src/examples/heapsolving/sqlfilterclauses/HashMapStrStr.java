@@ -604,7 +604,7 @@ public class HashMapStrStr {
 		return es;
 	}
 
-	private static final long serialVersionUID = 362498820763181265L;
+	//private static final long serialVersionUID = 362498820763181265L;
 
 	private boolean isLL(EntrySS e, HashSet<EntrySS> visited) {
 		EntrySS current = e;

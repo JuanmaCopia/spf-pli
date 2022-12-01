@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import lissa.SymHeap;
-
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
  * optional list operations, and permits all elements (including <tt>null</tt>).

@@ -19,6 +19,11 @@ package heapsolving.template;
  */
 public class NoSuchElementException extends RuntimeException {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8290727564289176210L;
+
+	/**
 	 * Constructs a <code>NoSuchElementException</code> with <tt>null</tt> as its
 	 * error message string.
 	 */

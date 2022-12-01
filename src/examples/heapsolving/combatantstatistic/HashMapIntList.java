@@ -602,7 +602,7 @@ public class HashMapIntList {
 		return es;
 	}
 
-	private static final long serialVersionUID = 362498820763181265L;
+	//private static final long serialVersionUID = 362498820763181265L;
 
 	private boolean isLL(EntryIL e, HashSet<EntryIL> visited) {
 		EntryIL current = e;
