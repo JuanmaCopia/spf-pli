@@ -92,10 +92,7 @@ public abstract class SolvingStrategy {
     public boolean isLazyInitializationBased() {
         return true;
     }
-
-    public boolean reachedGETFIELDLimit(int objRef) {
-        return false;
-    }
+    
     public long getSolvingTime() {
     	return 0;
     }

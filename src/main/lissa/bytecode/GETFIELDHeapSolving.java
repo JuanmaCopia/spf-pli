@@ -37,6 +37,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.HeapSolvingInstructionFactory;
 import lissa.heap.HelperLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
@@ -80,25 +81,13 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
         // ================ Modification Begin ================ //
         SolvingStrategy heapSolvingStrategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        if (fi.isReference() && attr == null) {
-            if (heapSolvingStrategy.reachedGETFIELDLimit(objRef)) {
-                ti.getVM().getSystemState().setIgnored(true); // Backtrack
-                return this;
-            }
+        if (heapSolvingStrategy instanceof LIHYBRID && ((LIHYBRID) heapSolvingStrategy).reachedGETFIELDLimit(objRef)) {
+            ti.getVM().getSystemState().setIgnored(true); // Backtrack
+            return this;
         }
 
         ClassInfo typeClassInfo = fi.getTypeClassInfo(); // use this instead of fullType
         String fieldSimpleClassName = typeClassInfo.getSimpleName();
-
-        // if (fi.isReference()) {
-        //     if (!heapSolvingStrategy.isClassInBounds(fieldSimpleClassName)) {
-        //         System.err.println("LOG: Class not found in bounds:" + fieldSimpleClassName);
-        //         System.err.println("LOG: Field Name: " + fi.getName());
-        //     }
-        //     else {
-        //         System.out.println("LOG: Class found: " + fieldSimpleClassName);
-        //     }
-        // }
 
         if (!fi.isReference() || attr == null || attr instanceof StringExpression
                 || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fieldSimpleClassName)
