@@ -20,7 +20,8 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.heap.HelperLISSA;
+import lissa.heap.HeapSolvingInstructionFactory;
+import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
 import lissa.heap.solving.techniques.DRIVER;
@@ -83,7 +84,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);
         ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
-        HelperLISSA.initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
+        SymHeapHelper.initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
         Helper.initializeStaticFields(staticFields, ci, ti);
 
         // create new HeapNode based on above info

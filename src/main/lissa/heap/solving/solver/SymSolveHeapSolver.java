@@ -3,7 +3,7 @@ package lissa.heap.solving.solver;
 import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
-import lissa.HeapSolvingInstructionFactory;
+import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.solving.config.ConfigParser;
 import symsolve.SymSolve;
 import symsolve.config.SolverConfig;

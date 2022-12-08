@@ -1,4 +1,4 @@
-package lissa.heap.solving.canonicalizer;
+package lissa.heap.canonicalizer;
 
 import korat.finitization.impl.CVElem;
 import lissa.heap.SymbolicInputHeapLISSA;

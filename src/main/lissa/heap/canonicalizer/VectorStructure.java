@@ -1,4 +1,4 @@
-package lissa.heap.solving.canonicalizer;
+package lissa.heap.canonicalizer;
 
 import java.util.HashMap;
 import java.util.HashSet;

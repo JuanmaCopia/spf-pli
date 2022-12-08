@@ -1,8 +1,9 @@
-package lissa;
+package lissa.listeners;
 
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.report.PublisherExtension;
 import gov.nasa.jpf.search.Search;
+import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 /**

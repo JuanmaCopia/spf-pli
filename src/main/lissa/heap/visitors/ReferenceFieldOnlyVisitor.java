@@ -6,8 +6,8 @@ import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.FieldInfo;
-import lissa.heap.solving.canonicalizer.VectorField;
-import lissa.heap.solving.canonicalizer.VectorStructure;
+import lissa.heap.canonicalizer.VectorField;
+import lissa.heap.canonicalizer.VectorStructure;
 
 public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
 

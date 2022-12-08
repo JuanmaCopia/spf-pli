@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.FieldInfo;
-import lissa.heap.solving.canonicalizer.VectorField;
-import lissa.heap.solving.canonicalizer.VectorStructure;
+import lissa.heap.canonicalizer.VectorField;
+import lissa.heap.canonicalizer.VectorStructure;
 
 public class OutputVisitor implements SymbolicOutputHeapVisitor {
 

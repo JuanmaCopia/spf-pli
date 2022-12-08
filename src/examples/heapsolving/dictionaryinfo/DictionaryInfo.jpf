@@ -20,8 +20,8 @@ heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.symsolve.class = heapsolving.dictionaryinfo.symsolve.DictionaryInfo
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-listener = lissa.HeapSolvingListener
+jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+listener=lissa.listeners.HeapSolvingListener
 
 # ---------------------------------------------

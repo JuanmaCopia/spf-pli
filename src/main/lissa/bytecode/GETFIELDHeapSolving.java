@@ -34,8 +34,8 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.HeapSolvingInstructionFactory;
-import lissa.heap.HelperLISSA;
+import lissa.heap.HeapSolvingInstructionFactory;
+import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.SolvingStrategy;
@@ -196,7 +196,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             }
             // ================ Modification End ================ //
 
-            daIndex = HelperLISSA.addNewHeapNode(typeClassInfo, ti, attr, pcHeap, symInputHeap, numSymRefs, prevSymRefs,
+            daIndex = SymHeapHelper.addNewHeapNode(typeClassInfo, ti, attr, pcHeap, symInputHeap, numSymRefs, prevSymRefs,
                     ei.isShared());
 
             // ================ Modification Begin ================ //

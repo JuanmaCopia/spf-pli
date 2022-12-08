@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.canonicalizer.Canonicalizer;
+import lissa.heap.canonicalizer.Canonicalizer;
 import lissa.heap.solving.config.ConfigParser;
 import lissa.heap.solving.solver.SymSolveHeapSolver;
 import symsolve.vector.SymSolveVector;

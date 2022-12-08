@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package lissa;
+package lissa.heap;
 
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
