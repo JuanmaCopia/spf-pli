@@ -14,18 +14,18 @@ import heapsolving.treemap.TreeMapHarness;
 
 public class TreeMapMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		TreeMap structure = TreeMapHarness.getStructure();
-		if (structure != null) {
-			try {
-				structure.get(key); // Call to method under analysis
-			} catch (Exception e) {
-			}
+        TreeMap structure = TreeMapHarness.getStructure();
+        if (structure != null) {
+            try {
+                structure.get(key); // Call to method under analysis
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

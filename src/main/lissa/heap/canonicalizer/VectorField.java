@@ -27,7 +27,7 @@ public class VectorField {
         this.value = DEFAULT_VALUE;
         this.indexInVector = indexInVector;
         this.domain = this.elem.getFieldDomain();
-        
+
         String fieldClassName = this.domain.getClassOfField().getSimpleName();
         this.signature = createFieldSignature(this.ownerClassName, this.name, fieldClassName);
     }

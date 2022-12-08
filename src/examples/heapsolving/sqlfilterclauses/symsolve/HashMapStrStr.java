@@ -5,31 +5,31 @@ import java.util.Set;
 
 public class HashMapStrStr {
 
-	EntrySS e0;
-	EntrySS e1;
-	EntrySS e2;
-	EntrySS e3;
-	EntrySS e4;
-	EntrySS e5;
-	EntrySS e6;
-	EntrySS e7;
+    EntrySS e0;
+    EntrySS e1;
+    EntrySS e2;
+    EntrySS e3;
+    EntrySS e4;
+    EntrySS e5;
+    EntrySS e6;
+    EntrySS e7;
 
-	/**
-	 * The number of key-value mappings contained in this identity hash map.
-	 */
-	int size;
+    /**
+     * The number of key-value mappings contained in this identity hash map.
+     */
+    int size;
 
-	/**
-	 * The next size value at which to resize (capacity * load factor).
-	 * 
-	 * @serial
-	 */
-	int threshold;
+    /**
+     * The next size value at which to resize (capacity * load factor).
+     * 
+     * @serial
+     */
+    int threshold;
 
-	/**
-	 * The default initial capacity - MUST be a power of two.
-	 */
-	static final int DEFAULT_INITIAL_CAPACITY = 8;
+    /**
+     * The default initial capacity - MUST be a power of two.
+     */
+    static final int DEFAULT_INITIAL_CAPACITY = 8;
 
 //	public static IFinitization finHashMapStrObj(int nodesNum) {
 //
@@ -59,73 +59,73 @@ public class HashMapStrStr {
 //		return f;
 //	}
 
-	EntrySS getTable(int index) {
-		switch (index) {
-		case 0:
-			return e0;
-		case 1:
-			return e1;
-		case 2:
-			return e2;
-		case 3:
-			return e3;
-		case 4:
-			return e4;
-		case 5:
-			return e5;
-		case 6:
-			return e6;
-		case 7:
-			return e7;
-		default:
-			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
-		}
-	}
+    EntrySS getTable(int index) {
+        switch (index) {
+        case 0:
+            return e0;
+        case 1:
+            return e1;
+        case 2:
+            return e2;
+        case 3:
+            return e3;
+        case 4:
+            return e4;
+        case 5:
+            return e5;
+        case 6:
+            return e6;
+        case 7:
+            return e7;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        }
+    }
 
-	private void addEntriesToEntrySSSet(Set<EntrySS> es, EntrySS e) {
-		EntrySS current = e;
-		while (current != null) {
-			es.add(current);
-			current = current.next;
-		}
-	}
+    private void addEntriesToEntrySSSet(Set<EntrySS> es, EntrySS e) {
+        EntrySS current = e;
+        while (current != null) {
+            es.add(current);
+            current = current.next;
+        }
+    }
 
-	public Set<EntrySS> entrySet() {
-		Set<EntrySS> es = new HashSet<EntrySS>();
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			addEntriesToEntrySSSet(es, getTable(i));
-		return es;
-	}
+    public Set<EntrySS> entrySet() {
+        Set<EntrySS> es = new HashSet<EntrySS>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            addEntriesToEntrySSSet(es, getTable(i));
+        return es;
+    }
 
-	private boolean isLL(EntrySS e, HashSet<EntrySS> visited) {
-		EntrySS current = e;
-		while (current != null) {
-			if (!visited.add(current))
-				return false;
-			current = current.next;
-		}
-		return true;
-	}
+    private boolean isLL(EntrySS e, HashSet<EntrySS> visited) {
+        EntrySS current = e;
+        while (current != null) {
+            if (!visited.add(current))
+                return false;
+            current = current.next;
+        }
+        return true;
+    }
 
-	public boolean repOK() {
-		HashSet<EntrySS> visited = new HashSet<EntrySS>();
+    public boolean repOK() {
+        HashSet<EntrySS> visited = new HashSet<EntrySS>();
 
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			if (!isLL(getTable(i), visited))
-				return false;
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            if (!isLL(getTable(i), visited))
+                return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	public static class EntrySS {
-		public int key;
-		public int value;
-		public int hash;
-		public EntrySS next;
+    public static class EntrySS {
+        public int key;
+        public int value;
+        public int hash;
+        public EntrySS next;
 
-		public int getValue() {
-			return value;
-		}
-	}
+        public int getValue() {
+            return value;
+        }
+    }
 
 }

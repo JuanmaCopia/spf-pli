@@ -14,20 +14,20 @@ import heapsolving.combatantstatistic.CombatantStatisticHarness;
 
 public class CombatantStatisticMain {
 
-	public static void main(String[] args) {
-		int type = SymHeap.makeSymbolicInteger("type");
+    public static void main(String[] args) {
+        int type = SymHeap.makeSymbolicInteger("type");
 
-		CombatantStatistic structure = CombatantStatisticHarness.getStructure();
-		if (structure != null) {
-			try {
-				SymHeap.assume(type >= 0 && type <= 14);
-				// Call to method under analysis
-				structure.ensureTypExists(type);
-			} catch (Exception e) {
-			}
+        CombatantStatistic structure = CombatantStatisticHarness.getStructure();
+        if (structure != null) {
+            try {
+                SymHeap.assume(type >= 0 && type <= 14);
+                // Call to method under analysis
+                structure.ensureTypExists(type);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

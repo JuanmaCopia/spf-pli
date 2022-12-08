@@ -11,7 +11,7 @@ public class SymHeap {
     }
 
     public static void assume(boolean c) {
-        if(!c)
+        if (!c)
             Verify.ignoreIf(true);
     }
 
@@ -21,7 +21,6 @@ public class SymHeap {
 
     native public static void countPath();
 
-
     native public static boolean usingDriverStrategy();
 
     native public static boolean usingIfRepOKStrategy();
@@ -29,7 +28,6 @@ public class SymHeap {
     native public static boolean usingLIHybridStrategy();
 
     native public static boolean usingSymSolveBasedStrategy();
-
 
     // Methods to create symbolic values:
 
@@ -51,12 +49,12 @@ public class SymHeap {
 
     // this method should be used instead of the native one in
     // the no-string-models branch of jpf-core
-    public static String makeSymbolicString(String name, int size){
-		char str[] = new char[size];
-    	for(int i = 0; i < size; i++) {
-    		str[i] = makeSymbolicChar(name + i);
-         }
-    	return new String(str);
+    public static String makeSymbolicString(String name, int size) {
+        char str[] = new char[size];
+        for (int i = 0; i < size; i++) {
+            str[i] = makeSymbolicChar(name + i);
+        }
+        return new String(str);
     }
 
 }

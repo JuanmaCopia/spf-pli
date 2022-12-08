@@ -14,19 +14,19 @@ import heapsolving.treeset.TreeSetHarness;
 
 public class TreeSetMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		TreeSet structure = TreeSetHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.contains(key);
-			} catch (Exception e) {
-			}
+        TreeSet structure = TreeSetHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.contains(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

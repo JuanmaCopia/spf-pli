@@ -37,84 +37,84 @@ package heapsolving.dictionaryinfo;
  */
 public class MessageInfo extends ComponentInfo {
 
-	private String messageType;
+    private String messageType;
 
-	private String section;
+    private String section;
 
-	private String overrideAbbreviation;
+    private String overrideAbbreviation;
 
-	private String volume;
+    private String volume;
 
-	/**
-	 * Returns the messageType
-	 * 
-	 * @return the messageType
-	 */
-	public String getMessageType() {
-		return messageType;
-	}
+    /**
+     * Returns the messageType
+     * 
+     * @return the messageType
+     */
+    public String getMessageType() {
+        return messageType;
+    }
 
-	/**
-	 * Modifies the messageType
-	 * 
-	 * @param messageType - the messageType to set
-	 */
-	public void setMessageType(String messageType) {
-		this.messageType = messageType;
-	}
+    /**
+     * Modifies the messageType
+     * 
+     * @param messageType - the messageType to set
+     */
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
 
-	/**
-	 * Returns the section
-	 * 
-	 * @return the section
-	 */
-	public String getSection() {
-		return section;
-	}
+    /**
+     * Returns the section
+     * 
+     * @return the section
+     */
+    public String getSection() {
+        return section;
+    }
 
-	/**
-	 * Modifies the section
-	 * 
-	 * @param section - the section to set
-	 */
-	public void setSection(String section) {
-		this.section = section;
-	}
+    /**
+     * Modifies the section
+     * 
+     * @param section - the section to set
+     */
+    public void setSection(String section) {
+        this.section = section;
+    }
 
-	/**
-	 * Returns the overrideAbbreviation
-	 * 
-	 * @return the overrideAbbreviation
-	 */
-	public String getOverrideAbbreviation() {
-		return overrideAbbreviation;
-	}
+    /**
+     * Returns the overrideAbbreviation
+     * 
+     * @return the overrideAbbreviation
+     */
+    public String getOverrideAbbreviation() {
+        return overrideAbbreviation;
+    }
 
-	/**
-	 * Modifies the overrideAbbreviation
-	 * 
-	 * @param overrideAbbreviation - the overrideAbbreviation to set
-	 */
-	public void setOverrideAbbreviation(String overrideAbbreviation) {
-		this.overrideAbbreviation = overrideAbbreviation;
-	}
+    /**
+     * Modifies the overrideAbbreviation
+     * 
+     * @param overrideAbbreviation - the overrideAbbreviation to set
+     */
+    public void setOverrideAbbreviation(String overrideAbbreviation) {
+        this.overrideAbbreviation = overrideAbbreviation;
+    }
 
-	/**
-	 * Returns the volume
-	 * 
-	 * @return the volume
-	 */
-	public String getVolume() {
-		return volume;
-	}
+    /**
+     * Returns the volume
+     * 
+     * @return the volume
+     */
+    public String getVolume() {
+        return volume;
+    }
 
-	/**
-	 * Modifies the volume
-	 * 
-	 * @param volume - the volume to set
-	 */
-	public void setVolume(String volume) {
-		this.volume = volume;
-	}
+    /**
+     * Modifies the volume
+     * 
+     * @param volume - the volume to set
+     */
+    public void setVolume(String volume) {
+        this.volume = volume;
+    }
 
 }

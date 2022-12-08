@@ -14,20 +14,20 @@ import heapsolving.treemap.TreeMapHarness;
 
 public class TreeMapMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
-		Object value = new Object();
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+        Object value = new Object();
 
-		TreeMap structure = TreeMapHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.put(key, value);
-			} catch (Exception e) {
-			}
+        TreeMap structure = TreeMapHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.put(key, value);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

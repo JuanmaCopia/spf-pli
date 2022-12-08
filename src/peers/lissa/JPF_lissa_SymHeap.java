@@ -126,7 +126,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
     public static boolean usingSymSolveBasedStrategy(MJIEnv env, int objRef) {
         SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
         if (strategy instanceof LIHYBRID)
-        	return false;
+            return false;
         return strategy instanceof LISSA;
     }
 

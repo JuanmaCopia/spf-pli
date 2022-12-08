@@ -103,7 +103,8 @@ public class SymbolicReferenceInput {
 
                 visitor.setCurrentField(fieldClass, field);
 
-                // System.out.println("BFS: class of current obj: " + ownerObjectClass.getSimpleName());
+                // System.out.println("BFS: class of current obj: " +
+                // ownerObjectClass.getSimpleName());
                 // System.out.println("BFS: current field: " + field.getName());
                 // System.out.println("BFS: current type: " + fieldClass.getSimpleName());
                 // System.out.println("\n");

@@ -14,19 +14,19 @@ import heapsolving.hashmap.HashMapHarness;
 
 public class HashMapMain {
 
-	public static void main(String[] args) {
-		Object value = new Object();
+    public static void main(String[] args) {
+        Object value = new Object();
 
-		HashMap structure = HashMapHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.containsValue(value);
-			} catch (Exception e) {
-			}
+        HashMap structure = HashMapHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.containsValue(value);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

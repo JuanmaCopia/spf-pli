@@ -54,71 +54,71 @@ package heapsolving.combatantstatistic;
 //}
 
 public class CombatantStatistic {
-	//private final int numberOfRounds;
+    // private final int numberOfRounds;
 //	private final Map<CombatantStatType, DataSet> allData = new HashMap<CombatantStatType, DataSet>();
-	// Replaced enum CombatantStatType for an equivalent integer representation
-	// (between 0 and 14).
-	private final HashMapIntDataSet allData = new HashMapIntDataSet();
+    // Replaced enum CombatantStatType for an equivalent integer representation
+    // (between 0 and 14).
+    private final HashMapIntDataSet allData = new HashMapIntDataSet();
 
-	/**
-	 * create statistics for the given number of rounds.
-	 * 
-	 * @param numberOfRounds
-	 */
-	public CombatantStatistic(final int numberOfRounds) {
-		//this.numberOfRounds = numberOfRounds;
-	}
+    /**
+     * create statistics for the given number of rounds.
+     * 
+     * @param numberOfRounds
+     */
+    public CombatantStatistic(final int numberOfRounds) {
+        // this.numberOfRounds = numberOfRounds;
+    }
 
-	/**
-	 * @param type  what kind of data is given as value?
-	 * @param side  at which the combatant of the value fights
-	 * @param value
-	 */
-	public void addData(int type, int side, int value) {
-		if (side < 0 || side > 1)
-			throw new IllegalArgumentException("wrong side!");
-		if (type < 0 || type > 14)
-			throw new IllegalArgumentException("wrong type!");
+    /**
+     * @param type  what kind of data is given as value?
+     * @param side  at which the combatant of the value fights
+     * @param value
+     */
+    public void addData(int type, int side, int value) {
+        if (side < 0 || side > 1)
+            throw new IllegalArgumentException("wrong side!");
+        if (type < 0 || type > 14)
+            throw new IllegalArgumentException("wrong type!");
 
-		ensureTypExists(type);
-		int storedValue;
-		// fix class, because in the data it starts at -1 but we start with 0
-		if (type == 14) {
-			storedValue = value + 1;
-		} else {
-			storedValue = value;
-		}
-		allData.get(type).addData(side, storedValue);
-	}
+        ensureTypExists(type);
+        int storedValue;
+        // fix class, because in the data it starts at -1 but we start with 0
+        if (type == 14) {
+            storedValue = value + 1;
+        } else {
+            storedValue = value;
+        }
+        allData.get(type).addData(side, storedValue);
+    }
 
-	/**
-	 * @param type
-	 */
-	public void ensureTypExists(int type) {
-		if (type < 0 || type > 14)
-			throw new IllegalArgumentException("wrong type!");
+    /**
+     * @param type
+     */
+    public void ensureTypExists(int type) {
+        if (type < 0 || type > 14)
+            throw new IllegalArgumentException("wrong type!");
 
-		if (!allData.containsKey(type)) {
-			allData.put(type, new DataSet());
-		}
-	}
+        if (!allData.containsKey(type)) {
+            allData.put(type, new DataSet());
+        }
+    }
 
-	public boolean repOK() {
-		if (allData == null)
-			return false;
+    public boolean repOK() {
+        if (allData == null)
+            return false;
 
-		if (!allData.repOK())
-			return false;
+        if (!allData.repOK())
+            return false;
 
-		DataSet h;
-		for (HashMapIntDataSet.EntryIDS e : allData.entrySet()) {
-			h = e.getValue();
-			if (h != null && !h.repOK())
-				return false;
-		}
+        DataSet h;
+        for (HashMapIntDataSet.EntryIDS e : allData.entrySet()) {
+            h = e.getValue();
+            if (h != null && !h.repOK())
+                return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 //	private double aggregate(final Integer stat, final Integer side, final DataAggregationType function) {
 //		if (stat < 0 || stat > 14)
@@ -190,9 +190,9 @@ public class CombatantStatistic {
 //		return aggregate(stat, side, DataAggregationType.POSITIVE_AMOUNT);
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#numberOfPlayers(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#numberOfPlayers(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public int numberOfPlayers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -211,9 +211,9 @@ public class CombatantStatistic {
 //		return (int) Math.round(getPositiveCount(7, side));
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#initialHealthPerPlayer(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#initialHealthPerPlayer(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public double initialHealthPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -241,9 +241,9 @@ public class CombatantStatistic {
 //		return (avgMinDamage + avgMaxDamage) / 2.0;
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#causedDamagePerPlayer(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#causedDamagePerPlayer(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public double causedDamagePerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -352,9 +352,9 @@ public class CombatantStatistic {
 //		return numberOfClass(CharacterClass.WORKER, side);
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#averageLevel(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#averageLevel(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public double averageLevel(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -462,9 +462,9 @@ public class CombatantStatistic {
 //		return (int) Math.round(getSum(3, side));
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#averageHitDamage(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#averageHitDamage(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public double averageHitDamage(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -479,9 +479,9 @@ public class CombatantStatistic {
 //		return totalCalculated;
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#dodgesPerPlayer(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#dodgesPerPlayer(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public double dodgesPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -530,9 +530,9 @@ public class CombatantStatistic {
 //		return result;
 //	}
 
-	/**
-	 * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#healthDistributionRelative(de.outstare.fortbattleplayer.model.Integer)
-	 */
+    /**
+     * @see de.outstare.fortbattleplayer.statistics.StaticStatistics#healthDistributionRelative(de.outstare.fortbattleplayer.model.Integer)
+     */
 //	public SortedMap<Number, Double> healthDistributionRelative(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -548,11 +548,11 @@ public class CombatantStatistic {
 //		return result;
 //	}
 
-	// /**
-	// * @param value
-	// * @param step
-	// * @return
-	// */
+    // /**
+    // * @param value
+    // * @param step
+    // * @return
+    // */
 //	private Number getUpperLimit(final int value, final int step) {
 //		int limit = 0;
 //		while (value > limit) {

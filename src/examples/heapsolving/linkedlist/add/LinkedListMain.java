@@ -14,19 +14,19 @@ import heapsolving.linkedlist.LinkedListHarness;
 
 public class LinkedListMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		LinkedList structure = LinkedListHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.add(key);
-			} catch (Exception e) {
-			}
+        LinkedList structure = LinkedListHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.add(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

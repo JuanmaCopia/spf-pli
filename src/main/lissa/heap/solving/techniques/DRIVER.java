@@ -4,9 +4,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
 
-
 public class DRIVER extends SolvingStrategy {
-	
 
     public DRIVER(ConfigParser config) {
         this.config = config;

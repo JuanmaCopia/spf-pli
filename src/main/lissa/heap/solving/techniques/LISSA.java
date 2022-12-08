@@ -11,13 +11,11 @@ import symsolve.vector.SymSolveVector;
 
 public class LISSA extends SolvingStrategy {
 
-	
     protected SymSolveHeapSolver heapSolver;
     protected Canonicalizer canonicalizer;
 
-
     public LISSA(ConfigParser config) {
-    	this.config = config;
+        this.config = config;
         heapSolver = new SymSolveHeapSolver();
         canonicalizer = new Canonicalizer(heapSolver.getVectorFormat());
     }
@@ -30,13 +28,13 @@ public class LISSA extends SolvingStrategy {
 
     @Override
     public Integer getBoundForClass(String simpleClassName) {
-    	HashMap<String, Integer> scopes = heapSolver.getDataScopes();
+        HashMap<String, Integer> scopes = heapSolver.getDataScopes();
         return scopes.get(simpleClassName);
     }
 
-	@Override
-	public long getSolvingTime() {
-		return heapSolver.getSolvingTime();
-	}
+    @Override
+    public long getSolvingTime() {
+        return heapSolver.getSolvingTime();
+    }
 
 }

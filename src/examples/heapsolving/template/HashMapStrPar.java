@@ -109,567 +109,567 @@ import gov.nasa.jpf.vm.Verify;
  * @since 1.2
  */
 public class HashMapStrPar {
-	/**
-	 * The default initial capacity - MUST be a power of two.
-	 */
-	static final int DEFAULT_INITIAL_CAPACITY = 16;
+    /**
+     * The default initial capacity - MUST be a power of two.
+     */
+    static final int DEFAULT_INITIAL_CAPACITY = 16;
 
-	/**
-	 * The maximum capacity, used if a higher value is implicitly specified by
-	 * either of the constructors with arguments. MUST be a power of two <= 1<<30.
-	 */
-	static final int MAXIMUM_CAPACITY = 1 << 30;
+    /**
+     * The maximum capacity, used if a higher value is implicitly specified by
+     * either of the constructors with arguments. MUST be a power of two <= 1<<30.
+     */
+    static final int MAXIMUM_CAPACITY = 1 << 30;
 
-	/**
-	 * The load factor used when none specified in constructor.
-	 **/
-	static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    /**
+     * The load factor used when none specified in constructor.
+     **/
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-	/**
-	 * The table, resized as necessary. Length MUST Always be a power of two.
-	 */
-	// transient EntrySP[] table;
+    /**
+     * The table, resized as necessary. Length MUST Always be a power of two.
+     */
+    // transient EntrySP[] table;
 
-	EntrySP e0;
-	EntrySP e1;
-	EntrySP e2;
-	EntrySP e3;
-	EntrySP e4;
-	EntrySP e5;
-	EntrySP e6;
-	EntrySP e7;
-	EntrySP e8;
-	EntrySP e9;
-	EntrySP e10;
-	EntrySP e11;
-	EntrySP e12;
-	EntrySP e13;
-	EntrySP e14;
-	EntrySP e15;
+    EntrySP e0;
+    EntrySP e1;
+    EntrySP e2;
+    EntrySP e3;
+    EntrySP e4;
+    EntrySP e5;
+    EntrySP e6;
+    EntrySP e7;
+    EntrySP e8;
+    EntrySP e9;
+    EntrySP e10;
+    EntrySP e11;
+    EntrySP e12;
+    EntrySP e13;
+    EntrySP e14;
+    EntrySP e15;
 
-	/**
-	 * The number of key-value mappings contained in this identity hash map.
-	 */
-	transient int size;
+    /**
+     * The number of key-value mappings contained in this identity hash map.
+     */
+    transient int size;
 
-	/**
-	 * The next size value at which to resize (capacity * load factor).
-	 * 
-	 * @serial
-	 */
-	int threshold;
+    /**
+     * The next size value at which to resize (capacity * load factor).
+     * 
+     * @serial
+     */
+    int threshold;
 
-	/**
-	 * The load factor for the hash table.
-	 *
-	 * @serial
-	 */
-	final float loadFactor;
+    /**
+     * The load factor for the hash table.
+     *
+     * @serial
+     */
+    final float loadFactor;
 
-	/**
-	 * The number of times this HashMap has been structurally modified Structural
-	 * modifications are those that change the number of mappings in the HashMap or
-	 * otherwise modify its internal structure (e.g., rehash). This field is used to
-	 * make iterators on Collection-views of the HashMap fail-fast. (See
-	 * ConcurrentModificationException).
-	 */
-	transient volatile int modCount;
+    /**
+     * The number of times this HashMap has been structurally modified Structural
+     * modifications are those that change the number of mappings in the HashMap or
+     * otherwise modify its internal structure (e.g., rehash). This field is used to
+     * make iterators on Collection-views of the HashMap fail-fast. (See
+     * ConcurrentModificationException).
+     */
+    transient volatile int modCount;
 
-	/**
-	 * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
-	 * and the default load factor (0.75).
-	 */
-	public HashMapStrPar() {
-		this.loadFactor = DEFAULT_LOAD_FACTOR;
-		threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+    /**
+     * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
+     * and the default load factor (0.75).
+     */
+    public HashMapStrPar() {
+        this.loadFactor = DEFAULT_LOAD_FACTOR;
+        threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
 //    table = new EntrySP[DEFAULT_INITIAL_CAPACITY];
-		init();
-	}
+        init();
+    }
 
-	// internal utilities
+    // internal utilities
 
-	/**
-	 * Initialization hook for subclasses. This method is called in all constructors
-	 * and pseudo-constructors (clone, readObject) after HashMap has been
-	 * initialized but before any entries have been inserted. (In the absence of
-	 * this method, readObject would require explicit knowledge of subclasses.)
-	 */
-	void init() {
-	}
+    /**
+     * Initialization hook for subclasses. This method is called in all constructors
+     * and pseudo-constructors (clone, readObject) after HashMap has been
+     * initialized but before any entries have been inserted. (In the absence of
+     * this method, readObject would require explicit knowledge of subclasses.)
+     */
+    void init() {
+    }
 
-	EntrySP getTable(int index) {
-		switch (index) {
-		case 0:
-			return e0;
-		case 1:
-			return e1;
-		case 2:
-			return e2;
-		case 3:
-			return e3;
-		case 4:
-			return e4;
-		case 5:
-			return e5;
-		case 6:
-			return e6;
-		case 7:
-			return e7;
-		case 8:
-			return e8;
-		case 9:
-			return e9;
-		case 10:
-			return e10;
-		case 11:
-			return e11;
-		case 12:
-			return e12;
-		case 13:
-			return e13;
-		case 14:
-			return e14;
-		case 15:
-			return e15;
-		default:
-			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
-		}
-	}
+    EntrySP getTable(int index) {
+        switch (index) {
+        case 0:
+            return e0;
+        case 1:
+            return e1;
+        case 2:
+            return e2;
+        case 3:
+            return e3;
+        case 4:
+            return e4;
+        case 5:
+            return e5;
+        case 6:
+            return e6;
+        case 7:
+            return e7;
+        case 8:
+            return e8;
+        case 9:
+            return e9;
+        case 10:
+            return e10;
+        case 11:
+            return e11;
+        case 12:
+            return e12;
+        case 13:
+            return e13;
+        case 14:
+            return e14;
+        case 15:
+            return e15;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        }
+    }
 
-	void setTable(int index, EntrySP entry) {
-		switch (index) {
-		case 0:
-			e0 = entry;
-			break;
-		case 1:
-			e1 = entry;
-			break;
-		case 2:
-			e2 = entry;
-			break;
-		case 3:
-			e3 = entry;
-			break;
-		case 4:
-			e4 = entry;
-			break;
-		case 5:
-			e5 = entry;
-			break;
-		case 6:
-			e6 = entry;
-			break;
-		case 7:
-			e7 = entry;
-			break;
-		case 8:
-			e8 = entry;
-			break;
-		case 9:
-			e9 = entry;
-			break;
-		case 10:
-			e10 = entry;
-			break;
-		case 11:
-			e11 = entry;
-			break;
-		case 12:
-			e12 = entry;
-			break;
-		case 13:
-			e13 = entry;
-			break;
-		case 14:
-			e14 = entry;
-			break;
-		case 15:
-			e15 = entry;
-			break;
-		default:
-			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
-		}
+    void setTable(int index, EntrySP entry) {
+        switch (index) {
+        case 0:
+            e0 = entry;
+            break;
+        case 1:
+            e1 = entry;
+            break;
+        case 2:
+            e2 = entry;
+            break;
+        case 3:
+            e3 = entry;
+            break;
+        case 4:
+            e4 = entry;
+            break;
+        case 5:
+            e5 = entry;
+            break;
+        case 6:
+            e6 = entry;
+            break;
+        case 7:
+            e7 = entry;
+            break;
+        case 8:
+            e8 = entry;
+            break;
+        case 9:
+            e9 = entry;
+            break;
+        case 10:
+            e10 = entry;
+            break;
+        case 11:
+            e11 = entry;
+            break;
+        case 12:
+            e12 = entry;
+            break;
+        case 13:
+            e13 = entry;
+            break;
+        case 14:
+            e14 = entry;
+            break;
+        case 15:
+            e15 = entry;
+            break;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        }
 
-	}
+    }
 
-	/**
-	 * Returns a hash value for the specified object. In addition to the object's
-	 * own hashCode, this method applies a "supplemental hash function," which
-	 * defends against poor quality hash functions. This is critical because HashMap
-	 * uses power-of two length hash tables.
-	 * <p>
-	 *
-	 * The shift distances in this function were chosen as the result of an
-	 * automated search over the entire four-dimensional search space.
-	 */
-	static int hash(String x) {
-		return Verify.getInt(0, DEFAULT_INITIAL_CAPACITY - 1);
-	}
+    /**
+     * Returns a hash value for the specified object. In addition to the object's
+     * own hashCode, this method applies a "supplemental hash function," which
+     * defends against poor quality hash functions. This is critical because HashMap
+     * uses power-of two length hash tables.
+     * <p>
+     *
+     * The shift distances in this function were chosen as the result of an
+     * automated search over the entire four-dimensional search space.
+     */
+    static int hash(String x) {
+        return Verify.getInt(0, DEFAULT_INITIAL_CAPACITY - 1);
+    }
 
-	/**
-	 * Check for equality of non-null reference x and possibly-null y.
-	 */
-	static boolean eq(String x, String y) {
-		return x == y || x.equals(y);
-	}
+    /**
+     * Check for equality of non-null reference x and possibly-null y.
+     */
+    static boolean eq(String x, String y) {
+        return x == y || x.equals(y);
+    }
 
-	/**
-	 * Returns index for hash code h.
-	 */
-	static int indexFor(int h, int length) {
-		return h & (length - 1);
-	}
+    /**
+     * Returns index for hash code h.
+     */
+    static int indexFor(int h, int length) {
+        return h & (length - 1);
+    }
 
-	/**
-	 * Returns the number of key-value mappings in this map.
-	 *
-	 * @return the number of key-value mappings in this map.
-	 */
-	public int size() {
-		return size;
-	}
+    /**
+     * Returns the number of key-value mappings in this map.
+     *
+     * @return the number of key-value mappings in this map.
+     */
+    public int size() {
+        return size;
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains no key-value mappings.
-	 *
-	 * @return <tt>true</tt> if this map contains no key-value mappings.
-	 */
-	public boolean isEmpty() {
-		return size == 0;
-	}
+    /**
+     * Returns <tt>true</tt> if this map contains no key-value mappings.
+     *
+     * @return <tt>true</tt> if this map contains no key-value mappings.
+     */
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-	/**
-	 * Returns the value to which the specified key is mapped in this identity hash
-	 * map, or <tt>null</tt> if the map contains no mapping for this key. A return
-	 * value of <tt>null</tt> does not <i>necessarily</i> indicate that the map
-	 * contains no mapping for the key; it is also possible that the map explicitly
-	 * maps the key to <tt>null</tt>. The <tt>containsKey</tt> method may be used to
-	 * distinguish these two cases.
-	 *
-	 * @param key the key whose associated value is to be returned.
-	 * @return the value to which this map maps the specified key, or <tt>null</tt>
-	 *         if the map contains no mapping for this key.
-	 * @see #put(Object, Object)
-	 */
-	public Parameter get(String key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+    /**
+     * Returns the value to which the specified key is mapped in this identity hash
+     * map, or <tt>null</tt> if the map contains no mapping for this key. A return
+     * value of <tt>null</tt> does not <i>necessarily</i> indicate that the map
+     * contains no mapping for the key; it is also possible that the map explicitly
+     * maps the key to <tt>null</tt>. The <tt>containsKey</tt> method may be used to
+     * distinguish these two cases.
+     *
+     * @param key the key whose associated value is to be returned.
+     * @return the value to which this map maps the specified key, or <tt>null</tt>
+     *         if the map contains no mapping for this key.
+     * @see #put(Object, Object)
+     */
+    public Parameter get(String key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 //    EntrySP e = table[i];
-		EntrySP e = getTable(i);
-		while (true) {
-			if (e == null)
-				return null;
-			if (e.hash == hash && eq(key, e.key))
-				return e.value;
-			e = e.next;
-		}
-	}
+        EntrySP e = getTable(i);
+        while (true) {
+            if (e == null)
+                return null;
+            if (e.hash == hash && eq(key, e.key))
+                return e.value;
+            e = e.next;
+        }
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified key.
-	 *
-	 * @param key The key whose presence in this map is to be tested
-	 * @return <tt>true</tt> if this map contains a mapping for the specified key.
-	 */
-	public boolean containsKey(String key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+    /**
+     * Returns <tt>true</tt> if this map contains a mapping for the specified key.
+     *
+     * @param key The key whose presence in this map is to be tested
+     * @return <tt>true</tt> if this map contains a mapping for the specified key.
+     */
+    public boolean containsKey(String key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 //    EntrySP e = table[i];
-		EntrySP e = getTable(i);
-		while (e != null) {
-			if (e.hash == hash && eq(key, e.key))
-				return true;
-			e = e.next;
-		}
-		return false;
-	}
+        EntrySP e = getTable(i);
+        while (e != null) {
+            if (e.hash == hash && eq(key, e.key))
+                return true;
+            e = e.next;
+        }
+        return false;
+    }
 
-	/**
-	 * Returns the EntrySP associated with the specified key in the HashMap. Returns
-	 * null if the HashMap contains no mapping for this key.
-	 */
-	EntrySP getEntrySP(String key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+    /**
+     * Returns the EntrySP associated with the specified key in the HashMap. Returns
+     * null if the HashMap contains no mapping for this key.
+     */
+    EntrySP getEntrySP(String key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 //    EntrySP e = table[i];
-		EntrySP e = getTable(i);
-		while (e != null && !(e.hash == hash && eq(key, e.key)))
-			e = e.next;
-		return e;
-	}
+        EntrySP e = getTable(i);
+        while (e != null && !(e.hash == hash && eq(key, e.key)))
+            e = e.next;
+        return e;
+    }
 
-	/**
-	 * Associates the specified value with the specified key in this map. If the map
-	 * previously contained a mapping for this key, the old value is replaced.
-	 *
-	 * @param key   key with which the specified value is to be associated.
-	 * @param value value to be associated with the specified key.
-	 * @return previous value associated with specified key, or <tt>null</tt> if
-	 *         there was no mapping for key. A <tt>null</tt> return can also
-	 *         indicate that the HashMap previously associated <tt>null</tt> with
-	 *         the specified key.
-	 */
-	public Parameter put(String key, Parameter value) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+    /**
+     * Associates the specified value with the specified key in this map. If the map
+     * previously contained a mapping for this key, the old value is replaced.
+     *
+     * @param key   key with which the specified value is to be associated.
+     * @param value value to be associated with the specified key.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key. A <tt>null</tt> return can also
+     *         indicate that the HashMap previously associated <tt>null</tt> with
+     *         the specified key.
+     */
+    public Parameter put(String key, Parameter value) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
-		for (EntrySP e = getTable(i); e != null; e = e.next) {
-			if (e.hash == hash && eq(key, e.key)) {
-				Parameter oldValue = e.value;
-				e.value = value;
-				e.recordAccess(this);
-				return oldValue;
-			}
-		}
+        for (EntrySP e = getTable(i); e != null; e = e.next) {
+            if (e.hash == hash && eq(key, e.key)) {
+                Parameter oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
 
-		modCount++;
-		addEntrySP(hash, key, value, i);
-		return null;
-	}
+        modCount++;
+        addEntrySP(hash, key, value, i);
+        return null;
+    }
 
-	/**
-	 * Removes the mapping for this key from this map if present.
-	 *
-	 * @param key key whose mapping is to be removed from the map.
-	 * @return previous value associated with specified key, or <tt>null</tt> if
-	 *         there was no mapping for key. A <tt>null</tt> return can also
-	 *         indicate that the map previously associated <tt>null</tt> with the
-	 *         specified key.
-	 */
-	public Parameter remove(String key) {
-		EntrySP e = removeEntrySPForKey(key);
-		return (e == null ? null : e.value);
-	}
+    /**
+     * Removes the mapping for this key from this map if present.
+     *
+     * @param key key whose mapping is to be removed from the map.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key. A <tt>null</tt> return can also
+     *         indicate that the map previously associated <tt>null</tt> with the
+     *         specified key.
+     */
+    public Parameter remove(String key) {
+        EntrySP e = removeEntrySPForKey(key);
+        return (e == null ? null : e.value);
+    }
 
-	/**
-	 * Removes and returns the EntrySP associated with the specified key in the
-	 * HashMap. Returns null if the HashMap contains no mapping for this key.
-	 */
-	EntrySP removeEntrySPForKey(String key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		EntrySP prev = getTable(i);
-		EntrySP e = prev;
+    /**
+     * Removes and returns the EntrySP associated with the specified key in the
+     * HashMap. Returns null if the HashMap contains no mapping for this key.
+     */
+    EntrySP removeEntrySPForKey(String key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        EntrySP prev = getTable(i);
+        EntrySP e = prev;
 
-		while (e != null) {
-			EntrySP next = e.next;
-			if (e.hash == hash && eq(key, e.key)) {
-				modCount++;
-				size--;
-				if (prev == e)
-					setTable(i, next);
-				else
-					prev.next = next;
-				e.recordRemoval(this);
-				return e;
-			}
-			prev = e;
-			e = next;
-		}
+        while (e != null) {
+            EntrySP next = e.next;
+            if (e.hash == hash && eq(key, e.key)) {
+                modCount++;
+                size--;
+                if (prev == e)
+                    setTable(i, next);
+                else
+                    prev.next = next;
+                e.recordRemoval(this);
+                return e;
+            }
+            prev = e;
+            e = next;
+        }
 
-		return e;
-	}
+        return e;
+    }
 
-	/**
-	 * Special version of remove for EntrySPSet.
-	 */
-	EntrySP removeMapping(Object o) {
-		if (!(o instanceof EntrySP)) {
-			return null;
-		}
+    /**
+     * Special version of remove for EntrySPSet.
+     */
+    EntrySP removeMapping(Object o) {
+        if (!(o instanceof EntrySP)) {
+            return null;
+        }
 
-		EntrySP EntrySP = (EntrySP) o;
-		String k = EntrySP.getKey();
-		int hash = hash(k);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		EntrySP prev = getTable(i);
-		EntrySP e = prev;
+        EntrySP EntrySP = (EntrySP) o;
+        String k = EntrySP.getKey();
+        int hash = hash(k);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        EntrySP prev = getTable(i);
+        EntrySP e = prev;
 
-		while (e != null) {
-			EntrySP next = e.next;
-			if (e.hash == hash && e.equals(EntrySP)) {
-				modCount++;
-				size--;
-				if (prev == e)
-					setTable(i, next);
-				else
-					prev.next = next;
-				e.recordRemoval(this);
-				return e;
-			}
-			prev = e;
-			e = next;
-		}
+        while (e != null) {
+            EntrySP next = e.next;
+            if (e.hash == hash && e.equals(EntrySP)) {
+                modCount++;
+                size--;
+                if (prev == e)
+                    setTable(i, next);
+                else
+                    prev.next = next;
+                e.recordRemoval(this);
+                return e;
+            }
+            prev = e;
+            e = next;
+        }
 
-		return e;
-	}
+        return e;
+    }
 
-	/**
-	 * Removes all mappings from this map.
-	 */
-	public void clear() {
-		modCount++;
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			setTable(i, null);
-		size = 0;
-	}
+    /**
+     * Removes all mappings from this map.
+     */
+    public void clear() {
+        modCount++;
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            setTable(i, null);
+        size = 0;
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map maps one or more keys to the specified
-	 * value.
-	 *
-	 * @param value value whose presence in this map is to be tested.
-	 * @return <tt>true</tt> if this map maps one or more keys to the specified
-	 *         value.
-	 */
-	public boolean containsValue(Parameter value) {
-		if (value == null) {
-			return containsNullValue();
-		}
+    /**
+     * Returns <tt>true</tt> if this map maps one or more keys to the specified
+     * value.
+     *
+     * @param value value whose presence in this map is to be tested.
+     * @return <tt>true</tt> if this map maps one or more keys to the specified
+     *         value.
+     */
+    public boolean containsValue(Parameter value) {
+        if (value == null) {
+            return containsNullValue();
+        }
 
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			for (EntrySP e = getTable(i); e != null; e = e.next)
-				if (value.equals(e.value))
-					return true;
-		return false;
-	}
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            for (EntrySP e = getTable(i); e != null; e = e.next)
+                if (value.equals(e.value))
+                    return true;
+        return false;
+    }
 
-	/**
-	 * Special-case code for containsValue with null argument
-	 **/
-	private boolean containsNullValue() {
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			for (EntrySP e = getTable(i); e != null; e = e.next)
-				if (e.value == null)
-					return true;
-		return false;
-	}
+    /**
+     * Special-case code for containsValue with null argument
+     **/
+    private boolean containsNullValue() {
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            for (EntrySP e = getTable(i); e != null; e = e.next)
+                if (e.value == null)
+                    return true;
+        return false;
+    }
 
-	public static class EntrySP {
-		String key;
-		Parameter value;
-		final int hash;
-		EntrySP next;
+    public static class EntrySP {
+        String key;
+        Parameter value;
+        final int hash;
+        EntrySP next;
 
-		/**
-		 * Create new EntrySP.
-		 */
-		EntrySP(int h, String k, Parameter v, EntrySP n) {
-			value = v;
-			next = n;
-			key = k;
-			hash = h;
-		}
+        /**
+         * Create new EntrySP.
+         */
+        EntrySP(int h, String k, Parameter v, EntrySP n) {
+            value = v;
+            next = n;
+            key = k;
+            hash = h;
+        }
 
-		public String getKey() {
-			return key;
-		}
+        public String getKey() {
+            return key;
+        }
 
-		public Parameter getValue() {
-			return value;
-		}
+        public Parameter getValue() {
+            return value;
+        }
 
-		public Parameter setValue(Parameter newValue) {
-			Parameter oldValue = value;
-			value = newValue;
-			return oldValue;
-		}
+        public Parameter setValue(Parameter newValue) {
+            Parameter oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
 
-		public boolean equals(Object o) {
-			if (!(o instanceof EntrySP))
-				return false;
-			EntrySP e = (EntrySP) o;
-			String k1 = getKey();
-			String k2 = e.getKey();
-			if (k1 == k2) {
-				Object v1 = getValue();
-				Object v2 = e.getValue();
-				if (v1 == v2 || (v1 != null && v1.equals(v2)))
-					return true;
-			}
-			return false;
-		}
+        public boolean equals(Object o) {
+            if (!(o instanceof EntrySP))
+                return false;
+            EntrySP e = (EntrySP) o;
+            String k1 = getKey();
+            String k2 = e.getKey();
+            if (k1 == k2) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2)))
+                    return true;
+            }
+            return false;
+        }
 
 //    public int hashCode() {
 //      return key ^ (value == null ? 0 : value.hashCode());
 //    }
 
-		public String toString() {
-			return getKey() + "=" + getValue();
-		}
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
 
-		/**
-		 * This method is invoked whenever the value in an EntrySP is overwritten by an
-		 * invocation of put(k,v) for a key k that's already in the HashMap.
-		 */
-		void recordAccess(HashMapStrPar m) {
-		}
+        /**
+         * This method is invoked whenever the value in an EntrySP is overwritten by an
+         * invocation of put(k,v) for a key k that's already in the HashMap.
+         */
+        void recordAccess(HashMapStrPar m) {
+        }
 
-		/**
-		 * This method is invoked whenever the EntrySP is removed from the table.
-		 */
-		void recordRemoval(HashMapStrPar m) {
-		}
-	}
+        /**
+         * This method is invoked whenever the EntrySP is removed from the table.
+         */
+        void recordRemoval(HashMapStrPar m) {
+        }
+    }
 
-	/**
-	 * Add a new EntrySP with the specified key, value and hash code to the
-	 * specified bucket. It is the responsibility of this method to resize the table
-	 * if appropriate.
-	 *
-	 * Subclass overrides this to alter the behavior of put method.
-	 */
-	void addEntrySP(int hash, String key, Parameter value, int bucketIndex) {
-		setTable(bucketIndex, new EntrySP(hash, key, value, getTable(bucketIndex)));
-		// if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
-	}
+    /**
+     * Add a new EntrySP with the specified key, value and hash code to the
+     * specified bucket. It is the responsibility of this method to resize the table
+     * if appropriate.
+     *
+     * Subclass overrides this to alter the behavior of put method.
+     */
+    void addEntrySP(int hash, String key, Parameter value, int bucketIndex) {
+        setTable(bucketIndex, new EntrySP(hash, key, value, getTable(bucketIndex)));
+        // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
+    }
 
-	/**
-	 * Like addEntrySP except that this version is used when creating entries as
-	 * part of Map construction or "pseudo-construction" (cloning, deserialization).
-	 * This version needn't worry about resizing the table.
-	 *
-	 * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
-	 * readObject.
-	 */
-	void createEntrySP(int hash, String key, Parameter value, int bucketIndex) {
-		setTable(bucketIndex, new EntrySP(hash, key, value, getTable(bucketIndex)));
-		size++;
-	}
+    /**
+     * Like addEntrySP except that this version is used when creating entries as
+     * part of Map construction or "pseudo-construction" (cloning, deserialization).
+     * This version needn't worry about resizing the table.
+     *
+     * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
+     * readObject.
+     */
+    void createEntrySP(int hash, String key, Parameter value, int bucketIndex) {
+        setTable(bucketIndex, new EntrySP(hash, key, value, getTable(bucketIndex)));
+        size++;
+    }
 
-	private void addEntriesToEntrySet(Set<EntrySP> es, EntrySP e) {
-		EntrySP current = e;
-		while (current != null) {
-			es.add(current);
-			current = current.next;
-		}
-	}
+    private void addEntriesToEntrySet(Set<EntrySP> es, EntrySP e) {
+        EntrySP current = e;
+        while (current != null) {
+            es.add(current);
+            current = current.next;
+        }
+    }
 
-	public Set<EntrySP> entrySet() {
-		Set<EntrySP> es = new HashSet<EntrySP>();
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			addEntriesToEntrySet(es, getTable(i));
-		return es;
-	}
+    public Set<EntrySP> entrySet() {
+        Set<EntrySP> es = new HashSet<EntrySP>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            addEntriesToEntrySet(es, getTable(i));
+        return es;
+    }
 
-	private boolean isLL(EntrySP e, HashSet<EntrySP> visited) {
-		EntrySP current = e;
-		while (current != null) {
-			if (!visited.add(current))
-				return false;
-			current = current.next;
-		}
-		return true;
-	}
+    private boolean isLL(EntrySP e, HashSet<EntrySP> visited) {
+        EntrySP current = e;
+        while (current != null) {
+            if (!visited.add(current))
+                return false;
+            current = current.next;
+        }
+        return true;
+    }
 
-	public boolean repOK() {
-		HashSet<EntrySP> visited = new HashSet<EntrySP>();
+    public boolean repOK() {
+        HashSet<EntrySP> visited = new HashSet<EntrySP>();
 
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			if (!isLL(getTable(i), visited))
-				return false;
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            if (!isLL(getTable(i), visited))
+                return false;
 
-		return true;
-	}
+        return true;
+    }
 
 }

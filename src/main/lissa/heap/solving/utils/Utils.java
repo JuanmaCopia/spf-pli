@@ -98,43 +98,44 @@ public class Utils {
     }
 
     public static String createisSatAssertTrue(int[] vector) {
-    	String strVector = createVectorString(vector);
-    	return String.format("assertTrue(symSolve.isSatisfiable(\"%s\"));", strVector);
+        String strVector = createVectorString(vector);
+        return String.format("assertTrue(symSolve.isSatisfiable(\"%s\"));", strVector);
     }
 
     public static String createisSatAssertFalse(int[] vector) {
-    	String strVector = createVectorString(vector);
-    	return String.format("assertFalse(symSolve.isSatisfiable(\"%s\"));", strVector);
+        String strVector = createVectorString(vector);
+        return String.format("assertFalse(symSolve.isSatisfiable(\"%s\"));", strVector);
     }
-    
+
     public static String createSearchAnotherSolutionTestCode(SymSolveVector vector, int[] solutionVector) {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append(String.format("concreteVector = %s;\n", createInitArrayString(vector.getConcreteVector())));
-    	sb.append(String.format("fixedInd = Arrays.asList(%s);\n", removeFirstAndLastChar(vector.getFixedIndices().toString())));
-    	sb.append("fixedIndices = new HashSet<>(fixedInd);\n");
-    	sb.append("queryVector = new SymSolveVector(concreteVector, fixedIndices);\n");
-    	sb.append(String.format("solutionVector = %s;\n", createInitArrayString(solutionVector)));
-    	sb.append("assertArrayEquals(solutionVector, symSolve.searchAnotherSolution(queryVector));\n\n");
-    	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("concreteVector = %s;\n", createInitArrayString(vector.getConcreteVector())));
+        sb.append(String.format("fixedInd = Arrays.asList(%s);\n",
+                removeFirstAndLastChar(vector.getFixedIndices().toString())));
+        sb.append("fixedIndices = new HashSet<>(fixedInd);\n");
+        sb.append("queryVector = new SymSolveVector(concreteVector, fixedIndices);\n");
+        sb.append(String.format("solutionVector = %s;\n", createInitArrayString(solutionVector)));
+        sb.append("assertArrayEquals(solutionVector, symSolve.searchAnotherSolution(queryVector));\n\n");
+        return sb.toString();
     }
 
     private static String createVectorString(int[] vector) {
-    	if (vector == null)
-    		return "null";
-    	String strVector = Arrays.toString(vector);
-    	return strVector.substring(1, strVector.length() - 1);
+        if (vector == null)
+            return "null";
+        String strVector = Arrays.toString(vector);
+        return strVector.substring(1, strVector.length() - 1);
     }
-    
+
     private static String removeFirstAndLastChar(String str) {
-    	return str.substring(1, str.length() - 1);
+        return str.substring(1, str.length() - 1);
     }
-    
+
     private static String createInitArrayString(int[] vector) {
-    	if (vector == null)
-    		return "null";
-    	String result = Arrays.toString(vector);
-    	result = "new int[] {" + result.substring(1, result.length() - 1) + "}";
-    	return result;
+        if (vector == null)
+            return "null";
+        String result = Arrays.toString(vector);
+        result = "new int[] {" + result.substring(1, result.length() - 1) + "}";
+        return result;
     }
 
 }

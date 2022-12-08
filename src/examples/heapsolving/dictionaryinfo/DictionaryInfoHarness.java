@@ -3,9 +3,7 @@ package heapsolving.dictionaryinfo;
 import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
-
 public class DictionaryInfoHarness {
-
 
     public static DictionaryInfo getStructure() {
         if (SymHeap.usingDriverStrategy())
@@ -23,17 +21,17 @@ public class DictionaryInfoHarness {
     }
 
     public static DictionaryInfo generateDriverStructure() {
-    	int maxScope = SymHeap.getMaxScope();
-		DictionaryInfo structure = new DictionaryInfo(SymHeap.makeSymbolicString("version"));
+        int maxScope = SymHeap.getMaxScope();
+        DictionaryInfo structure = new DictionaryInfo(SymHeap.makeSymbolicString("version"));
 
-		int numNodes = Verify.getInt(0, maxScope);
-		for (int i = 1; i <= numNodes; i++) {
-			FieldInfo fi = new FieldInfo();
-			fi.setTagNumber(SymHeap.makeSymbolicInteger("tagNum" + i));
-			fi.setName(SymHeap.makeSymbolicString("name" + i));
-			structure.addField(fi);
-		}
-		return structure;
-	}
+        int numNodes = Verify.getInt(0, maxScope);
+        for (int i = 1; i <= numNodes; i++) {
+            FieldInfo fi = new FieldInfo();
+            fi.setTagNumber(SymHeap.makeSymbolicInteger("tagNum" + i));
+            fi.setName(SymHeap.makeSymbolicString("name" + i));
+            structure.addField(fi);
+        }
+        return structure;
+    }
 
 }

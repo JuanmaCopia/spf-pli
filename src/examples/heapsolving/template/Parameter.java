@@ -17,40 +17,40 @@
 package heapsolving.template;
 
 public class Parameter {
-	private String name;
-	private int index;
-	private int row = -1;
-	private int column = -1;
+    private String name;
+    private int index;
+    private int row = -1;
+    private int column = -1;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getRow() {
-		return row;
-	}
+    public int getRow() {
+        return row;
+    }
 
-	public void setRow(int row) {
-		this.row = row;
-	}
+    public void setRow(int row) {
+        this.row = row;
+    }
 
-	public int getColumn() {
-		return column;
-	}
+    public int getColumn() {
+        return column;
+    }
 
-	public void setColumn(int column) {
-		this.column = column;
-	}
+    public void setColumn(int column) {
+        this.column = column;
+    }
 
-	public int getIndex() {
-		return index;
-	}
+    public int getIndex() {
+        return index;
+    }
 
-	public void setIndex(int index) {
-		this.index = index;
-	}
+    public void setIndex(int index) {
+        this.index = index;
+    }
 }

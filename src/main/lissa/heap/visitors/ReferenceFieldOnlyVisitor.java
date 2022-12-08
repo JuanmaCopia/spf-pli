@@ -15,7 +15,6 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     protected String currentFieldName;
     protected String currentFieldClassName;
     protected VectorStructure vector;
-    
 
     public ReferenceFieldOnlyVisitor(VectorStructure vector) {
         this.vector = vector;
@@ -34,7 +33,8 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
 
     @Override
     public boolean isIgnoredField() {
-        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName, this.currentFieldClassName);
+        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName,
+                this.currentFieldClassName);
         return !vector.isTrackedField(fieldSignature);
     }
 

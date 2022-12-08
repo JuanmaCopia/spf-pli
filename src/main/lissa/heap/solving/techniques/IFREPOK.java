@@ -4,7 +4,6 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
 
-
 public class IFREPOK extends LISSA {
 
     public IFREPOK(ConfigParser config) {
@@ -15,5 +14,5 @@ public class IFREPOK extends LISSA {
     public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
         return true;
     }
-    
+
 }

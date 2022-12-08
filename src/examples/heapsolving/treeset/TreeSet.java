@@ -80,98 +80,98 @@ package heapsolving.treeset;
  */
 public class TreeSet {
 
-	public transient TreeMap m; // The backing Map
+    public transient TreeMap m; // The backing Map
 
-	// Dummy value to associate with an Object in the backing Map
-	private static final Object PRESENT = new Object();
+    // Dummy value to associate with an Object in the backing Map
+    private static final Object PRESENT = new Object();
 
-	public TreeSet() {
-		this.m = new TreeMap();
-	}
+    public TreeSet() {
+        this.m = new TreeMap();
+    }
 
-	/**
-	 * Returns the number of elements in this set (its cardinality).
-	 *
-	 * @return the number of elements in this set (its cardinality).
-	 */
-	public int size() {
-		return m.size();
-	}
+    /**
+     * Returns the number of elements in this set (its cardinality).
+     *
+     * @return the number of elements in this set (its cardinality).
+     */
+    public int size() {
+        return m.size();
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this set contains the specified element.
-	 *
-	 * @param o the object to be checked for containment in this set.
-	 * @return <tt>true</tt> if this set contains the specified element.
-	 *
-	 * @throws ClassCastException if the specified object cannot be compared with
-	 *                            the elements currently in the set.
-	 */
-	public boolean contains(int o) {
-		return m.containsKey(o);
-	}
+    /**
+     * Returns <tt>true</tt> if this set contains the specified element.
+     *
+     * @param o the object to be checked for containment in this set.
+     * @return <tt>true</tt> if this set contains the specified element.
+     *
+     * @throws ClassCastException if the specified object cannot be compared with
+     *                            the elements currently in the set.
+     */
+    public boolean contains(int o) {
+        return m.containsKey(o);
+    }
 
-	/**
-	 * Adds the specified element to this set if it is not already present.
-	 *
-	 * @param o element to be added to this set.
-	 * @return <tt>true</tt> if the set did not already contain the specified
-	 *         element.
-	 *
-	 * @throws ClassCastException if the specified object cannot be compared with
-	 *                            the elements currently in the set.
-	 */
-	public boolean add(int o) {
-		return m.put(o, PRESENT) == null;
-	}
+    /**
+     * Adds the specified element to this set if it is not already present.
+     *
+     * @param o element to be added to this set.
+     * @return <tt>true</tt> if the set did not already contain the specified
+     *         element.
+     *
+     * @throws ClassCastException if the specified object cannot be compared with
+     *                            the elements currently in the set.
+     */
+    public boolean add(int o) {
+        return m.put(o, PRESENT) == null;
+    }
 
-	/**
-	 * Removes the specified element from this set if it is present.
-	 *
-	 * @param o object to be removed from this set, if present.
-	 * @return <tt>true</tt> if the set contained the specified element.
-	 *
-	 * @throws ClassCastException if the specified object cannot be compared with
-	 *                            the elements currently in the set.
-	 */
-	public boolean remove(int o) {
-		return m.remove(o) == PRESENT;
-	}
+    /**
+     * Removes the specified element from this set if it is present.
+     *
+     * @param o object to be removed from this set, if present.
+     * @return <tt>true</tt> if the set contained the specified element.
+     *
+     * @throws ClassCastException if the specified object cannot be compared with
+     *                            the elements currently in the set.
+     */
+    public boolean remove(int o) {
+        return m.remove(o) == PRESENT;
+    }
 
-	/**
-	 * Removes all of the elements from this set.
-	 */
-	public void clear() {
-		m.clear();
-	}
+    /**
+     * Removes all of the elements from this set.
+     */
+    public void clear() {
+        m.clear();
+    }
 
-	/**
-	 * Returns the first (lowest) element currently in this sorted set.
-	 *
-	 * @return the first (lowest) element currently in this sorted set.
-	 * @throws NoSuchElementException sorted set is empty.
-	 */
-	public Object first() {
-		return m.firstKey();
-	}
+    /**
+     * Returns the first (lowest) element currently in this sorted set.
+     *
+     * @return the first (lowest) element currently in this sorted set.
+     * @throws NoSuchElementException sorted set is empty.
+     */
+    public Object first() {
+        return m.firstKey();
+    }
 
-	/**
-	 * Returns the last (highest) element currently in this sorted set.
-	 *
-	 * @return the last (highest) element currently in this sorted set.
-	 * @throws NoSuchElementException sorted set is empty.
-	 */
-	public Object last() {
-		return m.lastKey();
-	}
+    /**
+     * Returns the last (highest) element currently in this sorted set.
+     *
+     * @return the last (highest) element currently in this sorted set.
+     * @throws NoSuchElementException sorted set is empty.
+     */
+    public Object last() {
+        return m.lastKey();
+    }
 
-	public boolean repOK() {
-		if (m == null)
-			return false;
-		return m.repOK();
-	}
-	
-	public boolean isBinTreeWithParentReferences() {
+    public boolean repOK() {
+        if (m == null)
+            return false;
+        return m.repOK();
+    }
+
+    public boolean isBinTreeWithParentReferences() {
         if (m == null)
             return false;
         return m.isBinTreeWithParentReferences();

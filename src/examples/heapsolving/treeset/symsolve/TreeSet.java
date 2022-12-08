@@ -28,7 +28,7 @@ public class TreeSet {
             return false;
         return m.repOK();
     }
-    
+
     public boolean isBinTreeWithParentReferences() {
         if (m == null)
             return false;

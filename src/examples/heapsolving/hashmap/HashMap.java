@@ -107,536 +107,536 @@ import java.util.Set;
  * @since 1.2
  */
 public class HashMap {
-	/**
-	 * The default initial capacity - MUST be a power of two.
-	 */
-	static final int DEFAULT_INITIAL_CAPACITY = 16;
+    /**
+     * The default initial capacity - MUST be a power of two.
+     */
+    static final int DEFAULT_INITIAL_CAPACITY = 16;
 
-	/**
-	 * The maximum capacity, used if a higher value is implicitly specified by
-	 * either of the constructors with arguments. MUST be a power of two <= 1<<30.
-	 */
-	static final int MAXIMUM_CAPACITY = 1 << 30;
+    /**
+     * The maximum capacity, used if a higher value is implicitly specified by
+     * either of the constructors with arguments. MUST be a power of two <= 1<<30.
+     */
+    static final int MAXIMUM_CAPACITY = 1 << 30;
 
-	/**
-	 * The table, resized as necessary. Length MUST Always be a power of two.
-	 */
-	// transient Entry[] table;
+    /**
+     * The table, resized as necessary. Length MUST Always be a power of two.
+     */
+    // transient Entry[] table;
 
-	/**
-	 * The number of key-value mappings contained in this identity hash map.
-	 */
-	public transient int size;
+    /**
+     * The number of key-value mappings contained in this identity hash map.
+     */
+    public transient int size;
 
-	public Entry e0;
-	public Entry e1;
-	public Entry e2;
-	public Entry e3;
-	public Entry e4;
-	public Entry e5;
-	public Entry e6;
-	public Entry e7;
-	public Entry e8;
-	public Entry e9;
-	public Entry e10;
-	public Entry e11;
-	public Entry e12;
-	public Entry e13;
-	public Entry e14;
-	public Entry e15;
+    public Entry e0;
+    public Entry e1;
+    public Entry e2;
+    public Entry e3;
+    public Entry e4;
+    public Entry e5;
+    public Entry e6;
+    public Entry e7;
+    public Entry e8;
+    public Entry e9;
+    public Entry e10;
+    public Entry e11;
+    public Entry e12;
+    public Entry e13;
+    public Entry e14;
+    public Entry e15;
 
-	/**
-	 * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
-	 * and the default load factor (0.75).
-	 */
-	public HashMap() {
-		// table = new Entry[DEFAULT_INITIAL_CAPACITY];
-		init();
-	}
+    /**
+     * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
+     * and the default load factor (0.75).
+     */
+    public HashMap() {
+        // table = new Entry[DEFAULT_INITIAL_CAPACITY];
+        init();
+    }
 
-	// internal utilities
+    // internal utilities
 
-	/**
-	 * Initialization hook for subclasses. This method is called in all constructors
-	 * and pseudo-constructors (clone, readObject) after HashMap has been
-	 * initialized but before any entries have been inserted. (In the absence of
-	 * this method, readObject would require explicit knowledge of subclasses.)
-	 */
-	void init() {
-	}
+    /**
+     * Initialization hook for subclasses. This method is called in all constructors
+     * and pseudo-constructors (clone, readObject) after HashMap has been
+     * initialized but before any entries have been inserted. (In the absence of
+     * this method, readObject would require explicit knowledge of subclasses.)
+     */
+    void init() {
+    }
 
-	Entry getTable(int index) {
-		switch (index) {
-		case 0:
-			return e0;
-		case 1:
-			return e1;
-		case 2:
-			return e2;
-		case 3:
-			return e3;
-		case 4:
-			return e4;
-		case 5:
-			return e5;
-		case 6:
-			return e6;
-		case 7:
-			return e7;
-		case 8:
-			return e8;
-		case 9:
-			return e9;
-		case 10:
-			return e10;
-		case 11:
-			return e11;
-		case 12:
-			return e12;
-		case 13:
-			return e13;
-		case 14:
-			return e14;
-		case 15:
-			return e15;
-		default:
-			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
-		}
-	}
+    Entry getTable(int index) {
+        switch (index) {
+        case 0:
+            return e0;
+        case 1:
+            return e1;
+        case 2:
+            return e2;
+        case 3:
+            return e3;
+        case 4:
+            return e4;
+        case 5:
+            return e5;
+        case 6:
+            return e6;
+        case 7:
+            return e7;
+        case 8:
+            return e8;
+        case 9:
+            return e9;
+        case 10:
+            return e10;
+        case 11:
+            return e11;
+        case 12:
+            return e12;
+        case 13:
+            return e13;
+        case 14:
+            return e14;
+        case 15:
+            return e15;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        }
+    }
 
-	void setTable(int index, Entry entry) {
-		switch (index) {
-		case 0:
-			e0 = entry;
-			break;
-		case 1:
-			e1 = entry;
-			break;
-		case 2:
-			e2 = entry;
-			break;
-		case 3:
-			e3 = entry;
-			break;
-		case 4:
-			e4 = entry;
-			break;
-		case 5:
-			e5 = entry;
-			break;
-		case 6:
-			e6 = entry;
-			break;
-		case 7:
-			e7 = entry;
-			break;
-		case 8:
-			e8 = entry;
-			break;
-		case 9:
-			e9 = entry;
-			break;
-		case 10:
-			e10 = entry;
-			break;
-		case 11:
-			e11 = entry;
-			break;
-		case 12:
-			e12 = entry;
-			break;
-		case 13:
-			e13 = entry;
-			break;
-		case 14:
-			e14 = entry;
-			break;
-		case 15:
-			e15 = entry;
-			break;
-		default:
-			throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
-		}
+    void setTable(int index, Entry entry) {
+        switch (index) {
+        case 0:
+            e0 = entry;
+            break;
+        case 1:
+            e1 = entry;
+            break;
+        case 2:
+            e2 = entry;
+            break;
+        case 3:
+            e3 = entry;
+            break;
+        case 4:
+            e4 = entry;
+            break;
+        case 5:
+            e5 = entry;
+            break;
+        case 6:
+            e6 = entry;
+            break;
+        case 7:
+            e7 = entry;
+            break;
+        case 8:
+            e8 = entry;
+            break;
+        case 9:
+            e9 = entry;
+            break;
+        case 10:
+            e10 = entry;
+            break;
+        case 11:
+            e11 = entry;
+            break;
+        case 12:
+            e12 = entry;
+            break;
+        case 13:
+            e13 = entry;
+            break;
+        case 14:
+            e14 = entry;
+            break;
+        case 15:
+            e15 = entry;
+            break;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        }
 
-	}
+    }
 
-	/**
-	 * Returns a hash value for the specified object. In addition to the object's
-	 * own hashCode, this method applies a "supplemental hash function," which
-	 * defends against poor quality hash functions. This is critical because HashMap
-	 * uses power-of two length hash tables.
-	 * <p>
-	 *
-	 * The shift distances in this function were chosen as the result of an
-	 * automated search over the entire four-dimensional search space.
-	 */
-	static int hash(int x) {
-		return x;
-	}
+    /**
+     * Returns a hash value for the specified object. In addition to the object's
+     * own hashCode, this method applies a "supplemental hash function," which
+     * defends against poor quality hash functions. This is critical because HashMap
+     * uses power-of two length hash tables.
+     * <p>
+     *
+     * The shift distances in this function were chosen as the result of an
+     * automated search over the entire four-dimensional search space.
+     */
+    static int hash(int x) {
+        return x;
+    }
 
-	/**
-	 * Check for equality of non-null reference x and possibly-null y.
-	 */
-	static boolean eq(int x, int y) {
-		return x == y;
-	}
+    /**
+     * Check for equality of non-null reference x and possibly-null y.
+     */
+    static boolean eq(int x, int y) {
+        return x == y;
+    }
 
-	/**
-	 * Returns index for hash code h.
-	 */
-	static int indexFor(int h, int length) {
-		return h & (length - 1);
-	}
+    /**
+     * Returns index for hash code h.
+     */
+    static int indexFor(int h, int length) {
+        return h & (length - 1);
+    }
 
-	/**
-	 * Returns the number of key-value mappings in this map.
-	 *
-	 * @return the number of key-value mappings in this map.
-	 */
-	public int size() {
-		return size;
-	}
+    /**
+     * Returns the number of key-value mappings in this map.
+     *
+     * @return the number of key-value mappings in this map.
+     */
+    public int size() {
+        return size;
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains no key-value mappings.
-	 *
-	 * @return <tt>true</tt> if this map contains no key-value mappings.
-	 */
-	public boolean isEmpty() {
-		return size == 0;
-	}
+    /**
+     * Returns <tt>true</tt> if this map contains no key-value mappings.
+     *
+     * @return <tt>true</tt> if this map contains no key-value mappings.
+     */
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-	/**
-	 * Returns the value to which the specified key is mapped in this identity hash
-	 * map, or <tt>null</tt> if the map contains no mapping for this key. A return
-	 * value of <tt>null</tt> does not <i>necessarily</i> indicate that the map
-	 * contains no mapping for the key; it is also possible that the map explicitly
-	 * maps the key to <tt>null</tt>. The <tt>containsKey</tt> method may be used to
-	 * distinguish these two cases.
-	 *
-	 * @param key the key whose associated value is to be returned.
-	 * @return the value to which this map maps the specified key, or <tt>null</tt>
-	 *         if the map contains no mapping for this key.
-	 * @see #put(Object, Object)
-	 */
-	public Object get(int key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		// Entry e = table[i];
-		Entry e = getTable(i);
-		while (true) {
-			if (e == null)
-				return null;
-			if (e.hash == hash && eq(key, e.key))
-				return e.value;
-			e = e.next;
-		}
-	}
+    /**
+     * Returns the value to which the specified key is mapped in this identity hash
+     * map, or <tt>null</tt> if the map contains no mapping for this key. A return
+     * value of <tt>null</tt> does not <i>necessarily</i> indicate that the map
+     * contains no mapping for the key; it is also possible that the map explicitly
+     * maps the key to <tt>null</tt>. The <tt>containsKey</tt> method may be used to
+     * distinguish these two cases.
+     *
+     * @param key the key whose associated value is to be returned.
+     * @return the value to which this map maps the specified key, or <tt>null</tt>
+     *         if the map contains no mapping for this key.
+     * @see #put(Object, Object)
+     */
+    public Object get(int key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        // Entry e = table[i];
+        Entry e = getTable(i);
+        while (true) {
+            if (e == null)
+                return null;
+            if (e.hash == hash && eq(key, e.key))
+                return e.value;
+            e = e.next;
+        }
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map contains a mapping for the specified key.
-	 *
-	 * @param key The key whose presence in this map is to be tested
-	 * @return <tt>true</tt> if this map contains a mapping for the specified key.
-	 */
-	public boolean containsKey(int key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		// Entry e = table[i];
-		Entry e = getTable(i);
-		while (e != null) {
-			if (e.hash == hash && eq(key, e.key))
-				return true;
-			e = e.next;
-		}
-		return false;
-	}
+    /**
+     * Returns <tt>true</tt> if this map contains a mapping for the specified key.
+     *
+     * @param key The key whose presence in this map is to be tested
+     * @return <tt>true</tt> if this map contains a mapping for the specified key.
+     */
+    public boolean containsKey(int key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        // Entry e = table[i];
+        Entry e = getTable(i);
+        while (e != null) {
+            if (e.hash == hash && eq(key, e.key))
+                return true;
+            e = e.next;
+        }
+        return false;
+    }
 
-	/**
-	 * Returns the entry associated with the specified key in the HashMap. Returns
-	 * null if the HashMap contains no mapping for this key.
-	 */
-	Entry getEntry(int key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		// Entry e = table[i];
-		Entry e = getTable(i);
-		while (e != null && !(e.hash == hash && eq(key, e.key)))
-			e = e.next;
-		return e;
-	}
+    /**
+     * Returns the entry associated with the specified key in the HashMap. Returns
+     * null if the HashMap contains no mapping for this key.
+     */
+    Entry getEntry(int key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        // Entry e = table[i];
+        Entry e = getTable(i);
+        while (e != null && !(e.hash == hash && eq(key, e.key)))
+            e = e.next;
+        return e;
+    }
 
-	/**
-	 * Associates the specified value with the specified key in this map. If the map
-	 * previously contained a mapping for this key, the old value is replaced.
-	 *
-	 * @param key   key with which the specified value is to be associated.
-	 * @param value value to be associated with the specified key.
-	 * @return previous value associated with specified key, or <tt>null</tt> if
-	 *         there was no mapping for key. A <tt>null</tt> return can also
-	 *         indicate that the HashMap previously associated <tt>null</tt> with
-	 *         the specified key.
-	 */
-	public Object put(int key, Object value) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+    /**
+     * Associates the specified value with the specified key in this map. If the map
+     * previously contained a mapping for this key, the old value is replaced.
+     *
+     * @param key   key with which the specified value is to be associated.
+     * @param value value to be associated with the specified key.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key. A <tt>null</tt> return can also
+     *         indicate that the HashMap previously associated <tt>null</tt> with
+     *         the specified key.
+     */
+    public Object put(int key, Object value) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
-		for (Entry e = getTable(i); e != null; e = e.next) {
-			if (e.hash == hash && eq(key, e.key)) {
-				Object oldValue = e.value;
-				e.value = value;
-				e.recordAccess(this);
-				return oldValue;
-			}
-		}
+        for (Entry e = getTable(i); e != null; e = e.next) {
+            if (e.hash == hash && eq(key, e.key)) {
+                Object oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
 
-		addEntry(hash, key, value, i);
-		return null;
-	}
+        addEntry(hash, key, value, i);
+        return null;
+    }
 
-	/**
-	 * Removes the mapping for this key from this map if present.
-	 *
-	 * @param key key whose mapping is to be removed from the map.
-	 * @return previous value associated with specified key, or <tt>null</tt> if
-	 *         there was no mapping for key. A <tt>null</tt> return can also
-	 *         indicate that the map previously associated <tt>null</tt> with the
-	 *         specified key.
-	 */
-	public Object remove(int key) {
-		Entry e = removeEntryForKey(key);
-		return (e == null ? e : e.value);
-	}
+    /**
+     * Removes the mapping for this key from this map if present.
+     *
+     * @param key key whose mapping is to be removed from the map.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key. A <tt>null</tt> return can also
+     *         indicate that the map previously associated <tt>null</tt> with the
+     *         specified key.
+     */
+    public Object remove(int key) {
+        Entry e = removeEntryForKey(key);
+        return (e == null ? e : e.value);
+    }
 
-	/**
-	 * Removes and returns the entry associated with the specified key in the
-	 * HashMap. Returns null if the HashMap contains no mapping for this key.
-	 */
-	Entry removeEntryForKey(int key) {
-		int hash = hash(key);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		Entry prev = getTable(i);
-		Entry e = prev;
+    /**
+     * Removes and returns the entry associated with the specified key in the
+     * HashMap. Returns null if the HashMap contains no mapping for this key.
+     */
+    Entry removeEntryForKey(int key) {
+        int hash = hash(key);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        Entry prev = getTable(i);
+        Entry e = prev;
 
-		while (e != null) {
-			Entry next = e.next;
-			if (e.hash == hash && eq(key, e.key)) {
-				size--;
-				if (prev == e)
-					setTable(i, next);
-				else
-					prev.next = next;
-				e.recordRemoval(this);
-				return e;
-			}
-			prev = e;
-			e = next;
-		}
+        while (e != null) {
+            Entry next = e.next;
+            if (e.hash == hash && eq(key, e.key)) {
+                size--;
+                if (prev == e)
+                    setTable(i, next);
+                else
+                    prev.next = next;
+                e.recordRemoval(this);
+                return e;
+            }
+            prev = e;
+            e = next;
+        }
 
-		return e;
-	}
+        return e;
+    }
 
-	/**
-	 * Special version of remove for EntrySet.
-	 */
-	Entry removeMapping(Object o) {
-		if (!(o instanceof Entry)) {
-			return null;
-		}
+    /**
+     * Special version of remove for EntrySet.
+     */
+    Entry removeMapping(Object o) {
+        if (!(o instanceof Entry)) {
+            return null;
+        }
 
-		Entry entry = (Entry) o;
-		int k = entry.getKey();
-		int hash = hash(k);
-		int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-		Entry prev = getTable(i);
-		Entry e = prev;
+        Entry entry = (Entry) o;
+        int k = entry.getKey();
+        int hash = hash(k);
+        int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
+        Entry prev = getTable(i);
+        Entry e = prev;
 
-		while (e != null) {
-			Entry next = e.next;
-			if (e.hash == hash && e.equals(entry)) {
-				size--;
-				if (prev == e)
-					setTable(i, next);
-				else
-					prev.next = next;
-				e.recordRemoval(this);
-				return e;
-			}
-			prev = e;
-			e = next;
-		}
+        while (e != null) {
+            Entry next = e.next;
+            if (e.hash == hash && e.equals(entry)) {
+                size--;
+                if (prev == e)
+                    setTable(i, next);
+                else
+                    prev.next = next;
+                e.recordRemoval(this);
+                return e;
+            }
+            prev = e;
+            e = next;
+        }
 
-		return e;
-	}
+        return e;
+    }
 
-	/**
-	 * Removes all mappings from this map.
-	 */
-	public void clear() {
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			setTable(i, null);
-		size = 0;
-	}
+    /**
+     * Removes all mappings from this map.
+     */
+    public void clear() {
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            setTable(i, null);
+        size = 0;
+    }
 
-	/**
-	 * Returns <tt>true</tt> if this map maps one or more keys to the specified
-	 * value.
-	 *
-	 * @param value value whose presence in this map is to be tested.
-	 * @return <tt>true</tt> if this map maps one or more keys to the specified
-	 *         value.
-	 */
-	public boolean containsValue(Object value) {
-		if (value == null) {
-			return containsNullValue();
-		}
+    /**
+     * Returns <tt>true</tt> if this map maps one or more keys to the specified
+     * value.
+     *
+     * @param value value whose presence in this map is to be tested.
+     * @return <tt>true</tt> if this map maps one or more keys to the specified
+     *         value.
+     */
+    public boolean containsValue(Object value) {
+        if (value == null) {
+            return containsNullValue();
+        }
 
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			for (Entry e = getTable(i); e != null; e = e.next)
-				if (value.equals(e.value))
-					return true;
-		return false;
-	}
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            for (Entry e = getTable(i); e != null; e = e.next)
+                if (value.equals(e.value))
+                    return true;
+        return false;
+    }
 
-	/**
-	 * Special-case code for containsValue with null argument
-	 **/
-	private boolean containsNullValue() {
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			for (Entry e = getTable(i); e != null; e = e.next)
-				if (e.value == null)
-					return true;
-		return false;
-	}
+    /**
+     * Special-case code for containsValue with null argument
+     **/
+    private boolean containsNullValue() {
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            for (Entry e = getTable(i); e != null; e = e.next)
+                if (e.value == null)
+                    return true;
+        return false;
+    }
 
-	/**
-	 * Add a new entry with the specified key, value and hash code to the specified
-	 * bucket. It is the responsibility of this method to resize the table if
-	 * appropriate.
-	 *
-	 * Subclass overrides this to alter the behavior of put method.
-	 */
-	void addEntry(int hash, int key, Object value, int bucketIndex) {
-		setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
-		size++;
-		// if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
-	}
+    /**
+     * Add a new entry with the specified key, value and hash code to the specified
+     * bucket. It is the responsibility of this method to resize the table if
+     * appropriate.
+     *
+     * Subclass overrides this to alter the behavior of put method.
+     */
+    void addEntry(int hash, int key, Object value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
+        size++;
+        // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
+    }
 
-	/**
-	 * Like addEntry except that this version is used when creating entries as part
-	 * of Map construction or "pseudo-construction" (cloning, deserialization). This
-	 * version needn't worry about resizing the table.
-	 *
-	 * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
-	 * readObject.
-	 */
-	void createEntry(int hash, int key, Object value, int bucketIndex) {
-		setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
-		size++;
-	}
+    /**
+     * Like addEntry except that this version is used when creating entries as part
+     * of Map construction or "pseudo-construction" (cloning, deserialization). This
+     * version needn't worry about resizing the table.
+     *
+     * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
+     * readObject.
+     */
+    void createEntry(int hash, int key, Object value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
+        size++;
+    }
 
-	private void addEntriesToEntrySet(Set<Entry> es, Entry e) {
-		Entry current = e;
-		while (current != null) {
-			es.add(current);
-			current = current.next;
-		}
-	}
+    private void addEntriesToEntrySet(Set<Entry> es, Entry e) {
+        Entry current = e;
+        while (current != null) {
+            es.add(current);
+            current = current.next;
+        }
+    }
 
-	public Set<Entry> entrySet() {
-		Set<Entry> es = new HashSet<Entry>();
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			addEntriesToEntrySet(es, getTable(i));
-		return es;
-	}
+    public Set<Entry> entrySet() {
+        Set<Entry> es = new HashSet<Entry>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            addEntriesToEntrySet(es, getTable(i));
+        return es;
+    }
 
-	public boolean repOK() {
-		Set<Entry> visited = new HashSet<Entry>();
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			if (!isLinkedList(i, visited))
-				return false;
-		return true;
-	}
+    public boolean repOK() {
+        Set<Entry> visited = new HashSet<Entry>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            if (!isLinkedList(i, visited))
+                return false;
+        return true;
+    }
 
-	private boolean isLinkedList(int index, Set<Entry> visited) {
-		Entry current = getTable(index);
-		while (current != null) {
-			if (!visited.add(current))
-				return false;
-			current = current.next;
-		}
-		return true;
-	}
+    private boolean isLinkedList(int index, Set<Entry> visited) {
+        Entry current = getTable(index);
+        while (current != null) {
+            if (!visited.add(current))
+                return false;
+            current = current.next;
+        }
+        return true;
+    }
 
-	public class Entry {
+    public class Entry {
 
-		public int key;
-		public Object value;
-		public int hash;
-		public Entry next;
+        public int key;
+        public Object value;
+        public int hash;
+        public Entry next;
 
-		public Entry() {
-		}
+        public Entry() {
+        }
 
-		/**
-		 * Create new entry.
-		 */
-		Entry(int h, int k, Object v, Entry n) {
-			value = v;
-			next = n;
-			key = k;
-			hash = h;
-		}
+        /**
+         * Create new entry.
+         */
+        Entry(int h, int k, Object v, Entry n) {
+            value = v;
+            next = n;
+            key = k;
+            hash = h;
+        }
 
-		public int getKey() {
-			return key;
-		}
+        public int getKey() {
+            return key;
+        }
 
-		public Object getValue() {
-			return value;
-		}
+        public Object getValue() {
+            return value;
+        }
 
-		public Object setValue(Object newValue) {
-			Object oldValue = value;
-			value = newValue;
-			return oldValue;
-		}
+        public Object setValue(Object newValue) {
+            Object oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
 
-		public boolean equals(Object o) {
-			if (!(o instanceof Entry))
-				return false;
-			Entry e = (Entry) o;
-			int k1 = getKey();
-			int k2 = e.getKey();
-			if (k1 == k2) {
-				Object v1 = getValue();
-				Object v2 = e.getValue();
-				if (v1 == v2 || (v1 != null && v1.equals(v2)))
-					return true;
-			}
-			return false;
-		}
+        public boolean equals(Object o) {
+            if (!(o instanceof Entry))
+                return false;
+            Entry e = (Entry) o;
+            int k1 = getKey();
+            int k2 = e.getKey();
+            if (k1 == k2) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2)))
+                    return true;
+            }
+            return false;
+        }
 
-		// public int hashCode() {
-		// return key ^ (value == null ? 0 : value.hashCode());
-		// }
+        // public int hashCode() {
+        // return key ^ (value == null ? 0 : value.hashCode());
+        // }
 
-		public String toString() {
-			return getKey() + "=" + getValue();
-		}
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
 
-		/**
-		 * This method is invoked whenever the value in an entry is overwritten by an
-		 * invocation of put(k,v) for a key k that's already in the HashMap.
-		 */
-		void recordAccess(HashMap m) {
-		}
+        /**
+         * This method is invoked whenever the value in an entry is overwritten by an
+         * invocation of put(k,v) for a key k that's already in the HashMap.
+         */
+        void recordAccess(HashMap m) {
+        }
 
-		/**
-		 * This method is invoked whenever the entry is removed from the table.
-		 */
-		void recordRemoval(HashMap m) {
-		}
-	}
+        /**
+         * This method is invoked whenever the entry is removed from the table.
+         */
+        void recordRemoval(HashMap m) {
+        }
+    }
 
 }

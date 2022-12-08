@@ -11,22 +11,21 @@ import lissa.SymHeap;
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;
 
-
 public class TemplateMain {
 
-	public static void main(String[] args) {
-		String key = SymHeap.makeSymbolicString("INPUT_KEY");
+    public static void main(String[] args) {
+        String key = SymHeap.makeSymbolicString("INPUT_KEY");
 
-		Template structure = TemplateHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.getParameter(key);
-			} catch (Exception e) {
-			}
+        Template structure = TemplateHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.getParameter(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

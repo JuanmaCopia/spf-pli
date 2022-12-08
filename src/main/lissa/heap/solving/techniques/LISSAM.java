@@ -8,14 +8,11 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
 import symsolve.vector.SymSolveVector;
 
-
 public class LISSAM extends LISSA {
-	
-	
-	HashMap<String, Boolean> isSatCache = new HashMap<>();
 
-    
-	public LISSAM(ConfigParser config) {
+    HashMap<String, Boolean> isSatCache = new HashMap<>();
+
+    public LISSAM(ConfigParser config) {
         super(config);
     }
 
@@ -26,7 +23,7 @@ public class LISSAM extends LISSA {
 
         Boolean isSAT = isSatCache.get(query);
         if (isSAT != null) {
-        	cacheHits++;
+            cacheHits++;
             return isSAT;
         }
 
@@ -34,9 +31,9 @@ public class LISSAM extends LISSA {
         isSatCache.put(query, isSAT);
         return isSAT;
     }
-    
+
     private String createIsSatQueryString(SymSolveVector vector) {
-    	return Arrays.toString(vector.getPartialVector());
+        return Arrays.toString(vector.getPartialVector());
     }
-    
+
 }

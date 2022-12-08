@@ -13,20 +13,20 @@ import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
 
 public class SQLFilterClausesMain {
 
-	public static void main(String[] args) {
-		String clauseName = SymHeap.makeSymbolicString("INPUT_KEY");
-		String tableName = SymHeap.makeSymbolicString("INPUT_KEY2");
+    public static void main(String[] args) {
+        String clauseName = SymHeap.makeSymbolicString("INPUT_KEY");
+        String tableName = SymHeap.makeSymbolicString("INPUT_KEY2");
 
-		SQLFilterClauses structure = SQLFilterClausesHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.get(clauseName, tableName);
-			} catch (Exception e) {
-			}
+        SQLFilterClauses structure = SQLFilterClausesHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.get(clauseName, tableName);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

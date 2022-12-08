@@ -13,7 +13,6 @@ public class OutputVisitor implements SymbolicOutputHeapVisitor {
     protected String currentFieldName;
     protected String currentFieldClassName;
     protected VectorStructure vector;
-    
 
     public OutputVisitor(VectorStructure vector) {
         this.vector = vector;
@@ -32,7 +31,8 @@ public class OutputVisitor implements SymbolicOutputHeapVisitor {
 
     @Override
     public boolean isIgnoredField() {
-        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName, this.currentFieldClassName);
+        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName,
+                this.currentFieldClassName);
         return !vector.isTrackedField(fieldSignature);
     }
 
@@ -66,16 +66,14 @@ public class OutputVisitor implements SymbolicOutputHeapVisitor {
         this.vector.setReferenceFieldAsSymbolic(currentOwnerObjClassName, currentFieldName);
     }
 
-
     @Override
     public void setMaxIdMap(HashMap<ClassInfo, Integer> maxIdMap) {
     }
 
-	@Override
-	public void visitedSymbolicPrimitiveField(FieldInfo fi) {
-		// TODO Auto-generated method stub
-		vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, null);
-		
-	}
+    @Override
+    public void visitedSymbolicPrimitiveField(FieldInfo fi) {
+        vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, null);
+
+    }
 
 }

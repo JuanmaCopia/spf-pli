@@ -13,19 +13,19 @@ import heapsolving.dictionaryinfo.DictionaryInfoHarness;
 
 public class DictionaryInfoMain {
 
-	public static void main(String[] args) {
-		int tagNumber = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int tagNumber = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		DictionaryInfo structure = DictionaryInfoHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.getField(tagNumber);
-			} catch (Exception e) {
-			}
+        DictionaryInfo structure = DictionaryInfoHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.getField(tagNumber);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

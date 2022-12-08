@@ -14,20 +14,20 @@ import heapsolving.hashmap.HashMapHarness;
 
 public class HashMapMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
-		Object value = new Object();
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+        Object value = new Object();
 
-		HashMap structure = HashMapHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.put(key, value);
-			} catch (Exception e) {
-			}
+        HashMap structure = HashMapHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.put(key, value);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

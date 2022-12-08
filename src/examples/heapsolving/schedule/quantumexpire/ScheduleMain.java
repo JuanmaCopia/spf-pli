@@ -14,17 +14,17 @@ import heapsolving.schedule.ScheduleHarness;
 
 public class ScheduleMain {
 
-	public static void main(String[] args) {
-		Schedule structure = ScheduleHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.quantumExpire();
-			} catch (Exception e) {
-			}
+    public static void main(String[] args) {
+        Schedule structure = ScheduleHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.quantumExpire();
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

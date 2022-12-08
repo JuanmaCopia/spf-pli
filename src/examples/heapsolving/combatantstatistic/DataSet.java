@@ -22,7 +22,6 @@ package heapsolving.combatantstatistic;
  THE SOFTWARE.
  */
 
-
 /**
  * All the data about one aspect of a participant of a fortbattle for each
  * {@link CombatantSide}.
@@ -32,46 +31,46 @@ package heapsolving.combatantstatistic;
 public class DataSet {
 //	private final Map<CombatantSide, List<Integer>> valuesPerSide = new HashMap<CombatantSide, List<Integer>>();
 
-	// CombatantSide enum replaced by an equivalent integer representation: 0
-	// (CombatantSide.ATTACKER) or 1 (CombatantSide.DEFENDER)
-	// the domain of the map is 0 (CombatantSide.ATTACKER) or 1
-	// (CombatantSide.DEFENDER)
-	private final HashMapIntList valuesPerSide = new HashMapIntList();
+    // CombatantSide enum replaced by an equivalent integer representation: 0
+    // (CombatantSide.ATTACKER) or 1 (CombatantSide.DEFENDER)
+    // the domain of the map is 0 (CombatantSide.ATTACKER) or 1
+    // (CombatantSide.DEFENDER)
+    private final HashMapIntList valuesPerSide = new HashMapIntList();
 
-	/**
-	 * initialize a new DataSet
-	 */
-	public DataSet() {
-		valuesPerSide.put(0, new LinkedList());
-		valuesPerSide.put(1, new LinkedList());
-	}
+    /**
+     * initialize a new DataSet
+     */
+    public DataSet() {
+        valuesPerSide.put(0, new LinkedList());
+        valuesPerSide.put(1, new LinkedList());
+    }
 
-	/**
-	 * Add an additional value to this set of data
-	 * 
-	 * @param side
-	 * @param value not <code>null</code>!
-	 */
-	public void addData(int side, int value) {
-		if (side < 0 || side > 1)
-			throw new IllegalArgumentException("wrong side!");
+    /**
+     * Add an additional value to this set of data
+     * 
+     * @param side
+     * @param value not <code>null</code>!
+     */
+    public void addData(int side, int value) {
+        if (side < 0 || side > 1)
+            throw new IllegalArgumentException("wrong side!");
 
-		valuesPerSide.get(side).add(value);
-	}
+        valuesPerSide.get(side).add(value);
+    }
 
-	public boolean repOK() {
-		if (valuesPerSide == null)
-			return false;
-		return valuesPerSide.repOK();
-	}
+    public boolean repOK() {
+        if (valuesPerSide == null)
+            return false;
+        return valuesPerSide.repOK();
+    }
 
-	/**
-	 * use the given operation to calculate an aggregated value for this dataset
-	 * 
-	 * @param side
-	 * @param type
-	 * @return
-	 */
+    /**
+     * use the given operation to calculate an aggregated value for this dataset
+     * 
+     * @param side
+     * @param type
+     * @return
+     */
 //	double aggregate(final Integer side, final DataAggregationType type) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -80,10 +79,10 @@ public class DataSet {
 //		return type.aggregate(data);
 //	}
 
-	/**
-	 * @param side
-	 * @return
-	 */
+    /**
+     * @param side
+     * @return
+     */
 //	List<Integer> getSideData(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -97,9 +96,9 @@ public class DataSet {
 //		return data;
 //	}
 
-	/**
-	 * @return the values of all sides
-	 */
+    /**
+     * @return the values of all sides
+     */
 //	private List<Integer> getAll() {
 //		final List<Integer> all = new ArrayList<Integer>();
 //		for (final List<Integer> side : valuesPerSide.values()) {
@@ -108,12 +107,12 @@ public class DataSet {
 //		return all;
 //	}
 
-	/**
-	 * @param value to be counted
-	 * @param side
-	 * @return the number of entries in this data set with the given value for the
-	 *         given side
-	 */
+    /**
+     * @param value to be counted
+     * @param side
+     * @return the number of entries in this data set with the given value for the
+     *         given side
+     */
 //	int countOfValuesWith(final Integer value, final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
@@ -128,11 +127,11 @@ public class DataSet {
 //		return count;
 //	}
 
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getClass() + " values A: " + valuesPerSide.get(0);
-	}
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return getClass() + " values A: " + valuesPerSide.get(0);
+    }
 }

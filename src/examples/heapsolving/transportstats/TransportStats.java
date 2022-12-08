@@ -25,19 +25,18 @@ package heapsolving.transportstats;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class TransportStats {
 
-	//private static final int PRINT_INTERVAL = 60 * 1000;
-	private static final int GRANULARITY = 10; // bytes
+    // private static final int PRINT_INTERVAL = 60 * 1000;
+    private static final int GRANULARITY = 10; // bytes
 
-	public TreeMap read_sizes = new TreeMap();
-	public TreeMap write_sizes = new TreeMap();
+    public TreeMap read_sizes = new TreeMap();
+    public TreeMap write_sizes = new TreeMap();
 
-	public long total_reads = 0;
-	public long total_writes = 0;
+    public long total_reads = 0;
+    public long total_writes = 0;
 
-	public TransportStats() {
+    public TransportStats() {
 //    Timer printer = new Timer("TransportStats:Printer");
 //    printer.addPeriodicEvent(
 //        PRINT_INTERVAL,
@@ -47,76 +46,72 @@ public class TransportStats {
 //          }
 //        }
 //    );
-	}
+    }
 
-	public void bytesRead(int num_bytes_read) {
-		total_reads++;
-		updateSizes(read_sizes, num_bytes_read);
-	}
+    public void bytesRead(int num_bytes_read) {
+        total_reads++;
+        updateSizes(read_sizes, num_bytes_read);
+    }
 
-	public void bytesWritten(int num_bytes_written) {
-		total_writes++;
-		updateSizes(write_sizes, num_bytes_written);
-	}
+    public void bytesWritten(int num_bytes_written) {
+        total_writes++;
+        updateSizes(write_sizes, num_bytes_written);
+    }
 
-	private void updateSizes(TreeMap io_sizes, int num_bytes) {
-		int size_key;
+    private void updateSizes(TreeMap io_sizes, int num_bytes) {
+        int size_key;
 
-		if (num_bytes == 0) {
-			size_key = 0;
-		} else {
-			size_key = (num_bytes / GRANULARITY) + 1;
-		}
+        if (num_bytes == 0) {
+            size_key = 0;
+        } else {
+            size_key = (num_bytes / GRANULARITY) + 1;
+        }
 
-		Long count = (Long) io_sizes.get(size_key);
+        Long count = (Long) io_sizes.get(size_key);
 
-		if (count == null) {
-			io_sizes.put(size_key, new Long(1));
-		} else {
-			io_sizes.put(size_key, new Long(count.longValue() + 1));
-		}
-	}
+        if (count == null) {
+            io_sizes.put(size_key, new Long(1));
+        } else {
+            io_sizes.put(size_key, new Long(count.longValue() + 1));
+        }
+    }
 
-	public boolean repOK() {
-		HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-		if (read_sizes != null)
-			visited_tm.add(read_sizes);
+    public boolean repOK() {
+        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
+        if (read_sizes != null)
+            visited_tm.add(read_sizes);
 
-		if (write_sizes != null && !visited_tm.add(write_sizes))
-			return false;
-		
-		Set<TreeMap.Entry> visited = new HashSet<TreeMap.Entry>();
+        if (write_sizes != null && !visited_tm.add(write_sizes))
+            return false;
 
-		if (read_sizes != null && !read_sizes.repOK(visited))
-			return false;
-		if (write_sizes != null && !write_sizes.repOK(visited))
-			return false;
+        Set<TreeMap.Entry> visited = new HashSet<TreeMap.Entry>();
 
-		return true;
-	}
-	
-	public boolean areTreesOK() {
-		HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-		if (read_sizes != null)
-			visited_tm.add(read_sizes);
+        if (read_sizes != null && !read_sizes.repOK(visited))
+            return false;
+        if (write_sizes != null && !write_sizes.repOK(visited))
+            return false;
 
-		if (write_sizes != null && !visited_tm.add(write_sizes)) {
-			return false;
-		}
+        return true;
+    }
 
-		if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences()) {
-			return false;
-		}
-		if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences()) {
-			return false;
-		}
+    public boolean areTreesOK() {
+        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
+        if (read_sizes != null)
+            visited_tm.add(read_sizes);
 
-		return true;
-	}
+        if (write_sizes != null && !visited_tm.add(write_sizes)) {
+            return false;
+        }
 
+        if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences()) {
+            return false;
+        }
+        if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences()) {
+            return false;
+        }
 
-
-
+        return true;
+    }
 
 //  private void printStats() {
 //    System.out.println( "\n------------------------------" );

@@ -11,27 +11,25 @@ import symsolve.vector.SymSolveVector;
 
 public class LIHYBRID extends LISSA {
 
+    HashMap<Integer, Integer> fieldGetCount = new HashMap<Integer, Integer>();
 
-	HashMap<Integer, Integer> fieldGetCount = new HashMap<Integer, Integer>();
-	
+    public LIHYBRID(ConfigParser config) {
+        super(config);
+    }
 
-	public LIHYBRID(ConfigParser config) {
-		super(config);
-	}
-	
     @Override
     public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
         resetGetFieldCount();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         return heapSolver.isSatisfiableAutoHybridRepOK(vector);
     }
-    
+
     @Override
     public void pathFinished(VM vm, ThreadInfo terminatedThread) {
         countPath();
         checkPathValidity(vm, terminatedThread);
     }
-    
+
     private void checkPathValidity(VM vm, ThreadInfo terminatedThread) {
         HeapChoiceGenerator heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();

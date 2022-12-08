@@ -1,61 +1,61 @@
 package heapsolving.schedule.symsolve;
 
 public class Job {
-	public Job next;
+    public Job next;
 
-	public Job prev;
+    public Job prev;
 
-	public int val;
+    public int val;
 
-	public int priority;
-	
-	public Job() {
+    public int priority;
+
+    public Job() {
     }
 
-	public Job(int newNum) {
-		next = null;
-		prev = null;
-		val = newNum;
-	}
+    public Job(int newNum) {
+        next = null;
+        prev = null;
+        val = newNum;
+    }
 
-	public Job getNext() {
-		return next;
-	}
+    public Job getNext() {
+        return next;
+    }
 
-	public Job getPrev() {
-		return prev;
-	}
+    public Job getPrev() {
+        return prev;
+    }
 
-	public void setNext(Job newNext) {
-		next = newNext;
-	}
+    public void setNext(Job newNext) {
+        next = newNext;
+    }
 
-	public void setPrev(Job newPrev) {
-		prev = newPrev;
-	}
+    public void setPrev(Job newPrev) {
+        prev = newPrev;
+    }
 
-	public int getVal() {
-		return val;
-	}
+    public int getVal() {
+        return val;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	public void setVal(int newVal) {
-		val = newVal;
-	}
+    public void setVal(int newVal) {
+        val = newVal;
+    }
 
-	public void setPriority(int newPriority) {
-		priority = newPriority;
-	}
+    public void setPriority(int newPriority) {
+        priority = newPriority;
+    }
 
-	public String toString() {
-		final StringBuilder buf = new StringBuilder(1);
-		// buf.append(this.val);
-		// buf.append(",");
-		buf.append(this.priority);
-		return buf.toString();
-	}
+    public String toString() {
+        final StringBuilder buf = new StringBuilder(1);
+        // buf.append(this.val);
+        // buf.append(",");
+        buf.append(this.priority);
+        return buf.toString();
+    }
 
 }

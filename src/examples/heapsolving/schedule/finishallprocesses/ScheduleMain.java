@@ -14,18 +14,18 @@ import heapsolving.schedule.ScheduleHarness;
 
 public class ScheduleMain {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		Schedule structure = ScheduleHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.finishAllProcesses();
-			} catch (Exception e) {
-			}
+        Schedule structure = ScheduleHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.finishAllProcesses();
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

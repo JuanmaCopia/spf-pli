@@ -32,31 +32,31 @@ import lissa.heap.symbolicinput.SymbolicReferenceInput;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
-	
-	public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
-            SymbolicInputHeap symInputHeap) {
-    	Expression sym_v = null;
-		String name ="";
 
-		name = field.getName();
-		String fullName = refChain + "." + name + suffix;
-		if (field instanceof IntegerFieldInfo || field instanceof LongFieldInfo) {
-				sym_v = new SymbolicInteger(fullName);
-		} else if (field instanceof FloatFieldInfo || field instanceof DoubleFieldInfo) {
-			sym_v = new SymbolicReal(fullName);
-		} else if (field instanceof ReferenceFieldInfo){
-			if (field.getType().equals("java.lang.String"))
-				sym_v = new StringSymbolic(fullName);
-			else
-				sym_v = new SymbolicInteger(fullName);
-		} else if (field instanceof BooleanFieldInfo) {
-				//	treat boolean as an integer with range [0,1]
-				sym_v = new SymbolicInteger(fullName, 0, 1);
-		}
-		eiRef.setFieldAttr(field, sym_v);
-		
-		// ==== ADDED:
-		
+    public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
+            SymbolicInputHeap symInputHeap) {
+        Expression sym_v = null;
+        String name = "";
+
+        name = field.getName();
+        String fullName = refChain + "." + name + suffix;
+        if (field instanceof IntegerFieldInfo || field instanceof LongFieldInfo) {
+            sym_v = new SymbolicInteger(fullName);
+        } else if (field instanceof FloatFieldInfo || field instanceof DoubleFieldInfo) {
+            sym_v = new SymbolicReal(fullName);
+        } else if (field instanceof ReferenceFieldInfo) {
+            if (field.getType().equals("java.lang.String"))
+                sym_v = new StringSymbolic(fullName);
+            else
+                sym_v = new SymbolicInteger(fullName);
+        } else if (field instanceof BooleanFieldInfo) {
+            // treat boolean as an integer with range [0,1]
+            sym_v = new SymbolicInteger(fullName, 0, 1);
+        }
+        eiRef.setFieldAttr(field, sym_v);
+
+        // ==== ADDED:
+
         SymbolicReferenceInput symRefInput = ((SymbolicInputHeapLISSA) symInputHeap).getImplicitInputThis();
         if (!(field instanceof ReferenceFieldInfo) || field.getType().equals("java.lang.String")) {
             symRefInput.addPrimitiveSymbolicField(eiRef.getObjectRef(), field.getName(), sym_v);
@@ -129,7 +129,7 @@ public class SymHeapHelper {
             pcHeap._addDet(Comparator.NE, n.getSymbolic(), prevSymRefs[i].getSymbolic());
         return daIndex;
     }
-    
+
     public static SymbolicInputHeap getSymbolicInputHeap() {
         HeapChoiceGenerator heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
         return heapCG.getCurrentSymInputHeap();
@@ -143,7 +143,7 @@ public class SymHeapHelper {
     public static ThreadInfo getCurrentThread() {
         return ThreadInfo.getCurrentThread();
     }
-    
+
     public static PathCondition getPathCondition() {
         return PathCondition.getPC(VM.getVM());
     }
@@ -151,20 +151,19 @@ public class SymHeapHelper {
     public static PathCondition getPathCondition(VM vm) {
         return PathCondition.getPC(vm);
     }
-    
+
     public static Integer getSolution(SymbolicInteger symbolicInteger, PathCondition pathCondition) {
-      int solution = 0;
-      if (pathCondition != null) {
-          if (!PathCondition.flagSolved)
-              pathCondition.solveOld();
-          long val = symbolicInteger.solution();
-          if (val != SymbolicInteger.UNDEFINED)
-              solution = (int) val;
-      }
-      return solution;
-  }
-    
-    
+        int solution = 0;
+        if (pathCondition != null) {
+            if (!PathCondition.flagSolved)
+                pathCondition.solveOld();
+            long val = symbolicInteger.solution();
+            if (val != SymbolicInteger.UNDEFINED)
+                solution = (int) val;
+        }
+        return solution;
+    }
+
     public static void acceptBFS(int rootIndex, SymbolicOutputHeapVisitor visitor) {
         HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
         HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
@@ -187,7 +186,6 @@ public class SymHeapHelper {
 
 //            visitor.setCurrentOwner(ownerObjectClass, currentObjID);
 
-
             if (currentObjRef != rootIndex)
                 visitor.setCurrentOwner(ownerObjectClass, currentObjID + 1);
             else
@@ -207,9 +205,9 @@ public class SymHeapHelper {
                 }
 
                 if (field.isReference() && !field.getType().equals("java.lang.String")) {
-                	Object attr = elementInfo.getFieldAttr(field);
-                	int fieldIndex = elementInfo.getReferenceField(field);
-                    //Integer fieldIndex = getReferenceField(currentObjRef, field);
+                    Object attr = elementInfo.getFieldAttr(field);
+                    int fieldIndex = elementInfo.getReferenceField(field);
+                    // Integer fieldIndex = getReferenceField(currentObjRef, field);
                     if (attr != null) {
                         visitor.visitedSymbolicReferenceField();
                     } else if (fieldIndex == MJIEnv.NULL) {
@@ -227,7 +225,7 @@ public class SymHeapHelper {
                         worklist.add(fieldIndex);
                     }
                 } else {
-                	visitor.visitedSymbolicPrimitiveField(field);
+                    visitor.visitedSymbolicPrimitiveField(field);
                 }
                 visitor.resetCurrentField();
             }

@@ -22,7 +22,7 @@ public interface SymbolicOutputHeapVisitor {
 //    public void visitedSymbolicStringField(FieldInfo fi, StringSymbolic symbolicString);
 //
 //    public void visitedSymbolicLongField(FieldInfo fi, SymbolicInteger symbolicLong);
-    
+
     public void visitedSymbolicPrimitiveField(FieldInfo fi);
 
     public void setCurrentField(ClassInfo fieldClass, FieldInfo field);

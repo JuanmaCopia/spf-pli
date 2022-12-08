@@ -10,13 +10,11 @@ import lissa.heap.solving.utils.Utils;
 
 public abstract class SolvingStrategy {
 
-
     long totalTime = 0;
     ConfigParser config;
     public int pathCount = 0;
     public int invalidPaths = 0;
     public int cacheHits = 0;
-
 
     public abstract boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap);
 
@@ -92,9 +90,9 @@ public abstract class SolvingStrategy {
     public boolean isLazyInitializationBased() {
         return true;
     }
-    
+
     public long getSolvingTime() {
-    	return 0;
+        return 0;
     }
 
     public Integer getBoundForClass(String fieldSimpleClassName) {

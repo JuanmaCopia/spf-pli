@@ -19,7 +19,8 @@ public class VectorStructure {
 
     private HashSet<String> fieldSignatures = new HashSet<String>();
 
-    //private HashMap<Integer, Expression> primitiveIndices = new HashMap<Integer, Expression>();
+    // private HashMap<Integer, Expression> primitiveIndices = new HashMap<Integer,
+    // Expression>();
 
     public VectorStructure(CVElem[] structureList) {
         this.vector = new VectorField[structureList.length];
@@ -47,15 +48,17 @@ public class VectorStructure {
 
     public void setPrimitiveFieldAsSymbolic(String ownerClassName, String fieldName, Expression exp) {
         retriveVectorField(ownerClassName, fieldName);
-        //int index = vectorField.getIndexInVector();
-        //primitiveIndices.put(index, exp);
+        // int index = vectorField.getIndexInVector();
+        // primitiveIndices.put(index, exp);
     }
 
     private VectorField retriveVectorField(String ownerClassName, String fieldName) {
         int vectorIndex = currentIndexMap.get(ownerClassName);
         VectorField vectorField = vector[vectorIndex];
         // if (!vectorField.matchesField(ownerClassName, fieldName)) {
-        // 	System.out.println(String.format("%s.%s does not match vector field: %s.%s", ownerClassName, fieldName, vectorField.getOwnerClassName(), vectorField.getFieldName()));
+        // System.out.println(String.format("%s.%s does not match vector field: %s.%s",
+        // ownerClassName, fieldName, vectorField.getOwnerClassName(),
+        // vectorField.getFieldName()));
         // }
         assert (vectorField.matchesField(ownerClassName, fieldName));
         currentIndexMap.put(ownerClassName, vectorIndex + 1);
@@ -66,8 +69,9 @@ public class VectorStructure {
         boolean result = fieldSignatures.contains(signature);
 
         // if (!result) {
-        // 	System.out.println(String.format("Signature %s not tracked. Tracked signatures: \n", signature));
-        // 	System.out.println(fieldSignatures.toString());
+        // System.out.println(String.format("Signature %s not tracked. Tracked
+        // signatures: \n", signature));
+        // System.out.println(fieldSignatures.toString());
         // }
 
         return result;
@@ -91,7 +95,7 @@ public class VectorStructure {
 
     private void clearIndices() {
         this.fixedIndices.clear();
-        //this.primitiveIndices.clear();
+        // this.primitiveIndices.clear();
     }
 
     public VectorField[] getVector() {

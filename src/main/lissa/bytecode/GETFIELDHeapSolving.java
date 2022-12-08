@@ -111,7 +111,8 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
             if (prevHeapCG != null) {
                 // determine # of candidates for lazy initialization
-            	SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+                SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG)
+                        .getCurrentSymInputHeap();
                 prevSymRefs = symInputHeap.getNodesOfType(typeClassInfo);
                 numSymRefs = prevSymRefs.length;
             }
@@ -196,8 +197,8 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             }
             // ================ Modification End ================ //
 
-            daIndex = SymHeapHelper.addNewHeapNode(typeClassInfo, ti, attr, pcHeap, symInputHeap, numSymRefs, prevSymRefs,
-                    ei.isShared());
+            daIndex = SymHeapHelper.addNewHeapNode(typeClassInfo, ti, attr, pcHeap, symInputHeap, numSymRefs,
+                    prevSymRefs, ei.isShared());
 
             // ================ Modification Begin ================ //
             symRefInput.addReferenceField(objRef, fi.getName(), daIndex);

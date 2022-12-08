@@ -16,7 +16,6 @@
 
 package heapsolving.template;
 
-
 //import java.util.List;
 //import java.util.Map;
 
@@ -26,15 +25,15 @@ package heapsolving.template;
 
 public class Template {
 //	private static final Logger logger = Logger.getLogger(Template.class);
-	protected final String name;
+    protected final String name;
 //	protected final HSSFSheet sheet;
-	protected final LinkedList parameters = new LinkedList();
-	private final HashMapStrPar parametersByName = new HashMapStrPar();
+    protected final LinkedList parameters = new LinkedList();
+    private final HashMapStrPar parametersByName = new HashMapStrPar();
 //	private final Map<Integer,Map<Integer,Parameter>> paramsByRowCol = new HashMap<Integer,Map<Integer,Parameter>>();    
 
-	public Template(String name) {
-		this.name = name;
-	}
+    public Template(String name) {
+        this.name = name;
+    }
 
 //	public Template(String name,HSSFSheet sheet)
 //	{
@@ -42,23 +41,23 @@ public class Template {
 //		this.sheet = sheet;
 //	}
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Parameter getParameter(String name) {
-		return parametersByName.get(name);
-	}
+    public Parameter getParameter(String name) {
+        return parametersByName.get(name);
+    }
 
-	public void setParameters(Parameter[] parameters) {
-		for (Parameter p : parameters) {
-			addParameter(p);
-		}
-	}
+    public void setParameters(Parameter[] parameters) {
+        for (Parameter p : parameters) {
+            addParameter(p);
+        }
+    }
 
-	public int getParametersNumber() {
-		return parameters.size();
-	}
+    public int getParametersNumber() {
+        return parameters.size();
+    }
 
 //	protected void createParameter(String paramName, int r, int c)
 //	{
@@ -112,36 +111,36 @@ public class Template {
 //		return null;
 //	}
 
-	public void addParameter(Parameter parameter) {
-		parameters.add(parameter);
-		String name = parameter.getName();
-		// Parameter name is optional
-		if (name != null) {
-			if (!parametersByName.containsKey(name)) {
-				parametersByName.put(name, parameter);
-			} else {
-				// logger.warn("Duplicate parameter: "+name);
-			}
-		}
-	}
+    public void addParameter(Parameter parameter) {
+        parameters.add(parameter);
+        String name = parameter.getName();
+        // Parameter name is optional
+        if (name != null) {
+            if (!parametersByName.containsKey(name)) {
+                parametersByName.put(name, parameter);
+            } else {
+                // logger.warn("Duplicate parameter: "+name);
+            }
+        }
+    }
 
-	public Parameter getParameter(int idx) {
-		return idx >= 1 && idx <= parameters.size() ? (Parameter) parameters.get(idx - 1) : null;
-	}
+    public Parameter getParameter(int idx) {
+        return idx >= 1 && idx <= parameters.size() ? (Parameter) parameters.get(idx - 1) : null;
+    }
 
 //	public abstract int height();
 //
 //	public abstract int width();
 
-	// public abstract Reference absoluteReference(int r, int c);
+    // public abstract Reference absoluteReference(int r, int c);
 
 //	public abstract int getRowHeight(int r);
 
-	// public abstract HSSFCell getCell(int r, int c);
+    // public abstract HSSFCell getCell(int r, int c);
 
-	public boolean isRowBroken(int r) {
-		return false;
-	}
+    public boolean isRowBroken(int r) {
+        return false;
+    }
 
 //	public int getParameterIndex(int r, int c)
 //	{
@@ -154,16 +153,16 @@ public class Template {
 //		return idx;
 //	}
 
-	public boolean repOK() {
-		if (parameters == null)
-			return false;
-		if (!parameters.repOK())
-			return false;
-		if (parametersByName == null)
-			return false;
-		if (!parametersByName.repOK())
-			return false;
-		return true;
-	}
+    public boolean repOK() {
+        if (parameters == null)
+            return false;
+        if (!parameters.repOK())
+            return false;
+        if (parametersByName == null)
+            return false;
+        if (!parametersByName.repOK())
+            return false;
+        return true;
+    }
 
 }

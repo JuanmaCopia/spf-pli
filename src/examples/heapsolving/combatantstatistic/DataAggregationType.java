@@ -31,91 +31,91 @@ import java.util.List;
  * @author daniel
  */
 enum DataAggregationType {
-	/**
-	 * the sum of all values
-	 */
-	SUM {
-		@Override
-		double aggregate(final List<Integer> values) {
-			long sum = 0;
-			for (final Integer value : values) {
-				sum += value.intValue();
-			}
-			return sum;
-		}
-	},
-	/**
-	 * the sum of all positiv values
-	 */
-	POSITIVE_SUM {
-		@Override
-		double aggregate(final List<Integer> values) {
-			double sum = 0;
-			int intValue;
-			for (final Integer value : values) {
-				intValue = value.intValue();
-				if (intValue > 0) {
-					sum += intValue;
-				}
-			}
-			return sum;
-		}
-	},
-	/**
-	 * count of values
-	 */
-	AMOUNT {
-		@Override
-		double aggregate(final List<Integer> values) {
-			return values.size();
-		}
-	},
-	/**
-	 * count of positive values
-	 */
-	POSITIVE_AMOUNT {
-		@Override
-		double aggregate(final List<Integer> values) {
-			double count = 0;
-			for (final Integer value : values) {
-				if (value.intValue() > 0) {
-					count++;
-				}
-			}
-			return count;
-		}
-	},
-	/**
-	 * the average of values is the sum divided by the count
-	 */
-	AVERAGE {
-		@Override
-		double aggregate(final List<Integer> values) {
-			// avoid division by zero
-			if (values.isEmpty()) {
-				return 0.0;
-			}
-			return SUM.aggregate(values) / AMOUNT.aggregate(values);
-		}
-	},
-	/**
-	 * the average of positive values is the sum divided by the count
-	 */
-	POSITIVE_AVERAGE {
-		@Override
-		double aggregate(final List<Integer> values) {
-			final double positiveCount = POSITIVE_AMOUNT.aggregate(values);
-			// avoid division by zero
-			if (positiveCount == 0) {
-				return 0.0;
-			}
-			return POSITIVE_SUM.aggregate(values) / positiveCount;
-		}
-	};
+    /**
+     * the sum of all values
+     */
+    SUM {
+        @Override
+        double aggregate(final List<Integer> values) {
+            long sum = 0;
+            for (final Integer value : values) {
+                sum += value.intValue();
+            }
+            return sum;
+        }
+    },
+    /**
+     * the sum of all positiv values
+     */
+    POSITIVE_SUM {
+        @Override
+        double aggregate(final List<Integer> values) {
+            double sum = 0;
+            int intValue;
+            for (final Integer value : values) {
+                intValue = value.intValue();
+                if (intValue > 0) {
+                    sum += intValue;
+                }
+            }
+            return sum;
+        }
+    },
+    /**
+     * count of values
+     */
+    AMOUNT {
+        @Override
+        double aggregate(final List<Integer> values) {
+            return values.size();
+        }
+    },
+    /**
+     * count of positive values
+     */
+    POSITIVE_AMOUNT {
+        @Override
+        double aggregate(final List<Integer> values) {
+            double count = 0;
+            for (final Integer value : values) {
+                if (value.intValue() > 0) {
+                    count++;
+                }
+            }
+            return count;
+        }
+    },
+    /**
+     * the average of values is the sum divided by the count
+     */
+    AVERAGE {
+        @Override
+        double aggregate(final List<Integer> values) {
+            // avoid division by zero
+            if (values.isEmpty()) {
+                return 0.0;
+            }
+            return SUM.aggregate(values) / AMOUNT.aggregate(values);
+        }
+    },
+    /**
+     * the average of positive values is the sum divided by the count
+     */
+    POSITIVE_AVERAGE {
+        @Override
+        double aggregate(final List<Integer> values) {
+            final double positiveCount = POSITIVE_AMOUNT.aggregate(values);
+            // avoid division by zero
+            if (positiveCount == 0) {
+                return 0.0;
+            }
+            return POSITIVE_SUM.aggregate(values) / positiveCount;
+        }
+    };
 
-	/**
-	 * @param values
-	 * @return
-	 */
-	abstract double aggregate(List<Integer> values);
+    /**
+     * @param values
+     * @return
+     */
+    abstract double aggregate(List<Integer> values);
 }

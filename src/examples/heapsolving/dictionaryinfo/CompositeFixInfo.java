@@ -40,82 +40,82 @@ import java.util.List;
  */
 public interface CompositeFixInfo extends FixInfo {
 
-	/**
-	 * Returns a component given an id
-	 * 
-	 * @param id - a component id
-	 * @return the component given an id
-	 */
-	public ComponentInfo getComponent(int id);
+    /**
+     * Returns a component given an id
+     * 
+     * @param id - a component id
+     * @return the component given an id
+     */
+    public ComponentInfo getComponent(int id);
 
-	/**
-	 * Returns a component given a name
-	 * 
-	 * @param name - a component name;
-	 * @return the component given a name
-	 */
-	public ComponentInfo getComponent(String name);
+    /**
+     * Returns a component given a name
+     * 
+     * @param name - a component name;
+     * @return the component given a name
+     */
+    public ComponentInfo getComponent(String name);
 
-	/**
-	 * Returns the components
-	 * 
-	 * @return the components
-	 */
-	public List<ComponentInfo> getComponents();
+    /**
+     * Returns the components
+     * 
+     * @return the components
+     */
+    public List<ComponentInfo> getComponents();
 
-	/**
-	 * Adds a component
-	 * 
-	 * @param component - a component
-	 * @param position  - a position
-	 */
-	public void addComponent(ComponentInfo component, double position);
+    /**
+     * Adds a component
+     * 
+     * @param component - a component
+     * @param position  - a position
+     */
+    public void addComponent(ComponentInfo component, double position);
 
-	/**
-	 * Returns a field given a tagNumber
-	 * 
-	 * @param tagNumber - a tagNumber
-	 * @return a field given a tagNumber
-	 */
-	public FieldInfo getField(int tagNumber);
+    /**
+     * Returns a field given a tagNumber
+     * 
+     * @param tagNumber - a tagNumber
+     * @return a field given a tagNumber
+     */
+    public FieldInfo getField(int tagNumber);
 
-	/**
-	 * Returns a field given a name
-	 * 
-	 * @param name - a name
-	 * @return a field given a name
-	 */
-	public FieldInfo getField(String name);
+    /**
+     * Returns a field given a name
+     * 
+     * @param name - a name
+     * @return a field given a name
+     */
+    public FieldInfo getField(String name);
 
-	/**
-	 * Returns the fields
-	 * 
-	 * @return the fields
-	 */
-	public List<FieldInfo> getFields();
+    /**
+     * Returns the fields
+     * 
+     * @return the fields
+     */
+    public List<FieldInfo> getFields();
 
-	/**
-	 * Adds a field
-	 * 
-	 * @param field    - a field
-	 * @param position - a position
-	 */
-	public void addField(FieldInfo field, double position);
+    /**
+     * Adds a field
+     * 
+     * @param field    - a field
+     * @param position - a position
+     */
+    public void addField(FieldInfo field, double position);
 
-	/**
-	 * Replace the field by a group. This is used by FPL parsers which cannot tell
-	 * if a field is a group just from Fields.xml
-	 * 
-	 * @param field - a field
-	 * @param group - a group
-	 */
-	public void replaceAsGroup(FieldInfo field, GroupInfo group);
+    /**
+     * Replace the field by a group. This is used by FPL parsers which cannot tell
+     * if a field is a group just from Fields.xml
+     * 
+     * @param field - a field
+     * @param group - a group
+     */
+    public void replaceAsGroup(FieldInfo field, GroupInfo group);
 
-	/**
-	 * Returns the items in this CompositeInfo
-	 * 
-	 * @return the items in this CompositeInfo
-	 */
-	public List<FixInfo> getItems();
+    /**
+     * Returns the items in this CompositeInfo
+     * 
+     * @return the items in this CompositeInfo
+     */
+    public List<FixInfo> getItems();
 
 }

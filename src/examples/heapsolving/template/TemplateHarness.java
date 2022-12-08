@@ -3,7 +3,6 @@ package heapsolving.template;
 import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
 
-
 public class TemplateHarness {
 
     public static Template getStructure() {
@@ -22,18 +21,18 @@ public class TemplateHarness {
     }
 
     private static Template generateDriverStructure() {
-    	int maxScope = SymHeap.getMaxScope();
-		Template t = new Template(SymHeap.makeSymbolicString("t"));
-		int numNodes = Verify.getInt(0, maxScope);
-		for (int i = 1; i <= numNodes; i++) {
-			Parameter p = new Parameter();
-			p.setName(SymHeap.makeSymbolicString("pname" + i));
-			p.setIndex(SymHeap.makeSymbolicInteger("pindex" + i));
-			p.setRow(SymHeap.makeSymbolicInteger("prow" + i));
-			p.setColumn(SymHeap.makeSymbolicInteger("pcol" + i));
-			t.addParameter(p);
-		}
-		return t;
-	}
+        int maxScope = SymHeap.getMaxScope();
+        Template t = new Template(SymHeap.makeSymbolicString("t"));
+        int numNodes = Verify.getInt(0, maxScope);
+        for (int i = 1; i <= numNodes; i++) {
+            Parameter p = new Parameter();
+            p.setName(SymHeap.makeSymbolicString("pname" + i));
+            p.setIndex(SymHeap.makeSymbolicInteger("pindex" + i));
+            p.setRow(SymHeap.makeSymbolicInteger("prow" + i));
+            p.setColumn(SymHeap.makeSymbolicInteger("pcol" + i));
+            t.addParameter(p);
+        }
+        return t;
+    }
 
 }

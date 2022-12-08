@@ -14,23 +14,23 @@ import heapsolving.template.TemplateHarness;
 
 public class TemplateMain {
 
-	public static void main(String[] args) {
-		Parameter p = new Parameter();
-		p.setName(SymHeap.makeSymbolicString("paramName"));
-		p.setIndex(SymHeap.makeSymbolicInteger("paramIndex"));
-		p.setRow(SymHeap.makeSymbolicInteger("paramRow"));
-		p.setColumn(SymHeap.makeSymbolicInteger("paramCol"));
+    public static void main(String[] args) {
+        Parameter p = new Parameter();
+        p.setName(SymHeap.makeSymbolicString("paramName"));
+        p.setIndex(SymHeap.makeSymbolicInteger("paramIndex"));
+        p.setRow(SymHeap.makeSymbolicInteger("paramRow"));
+        p.setColumn(SymHeap.makeSymbolicInteger("paramCol"));
 
-		Template structure = TemplateHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.addParameter(p);
-			} catch (Exception e) {
-			}
+        Template structure = TemplateHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.addParameter(p);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

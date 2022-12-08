@@ -13,19 +13,19 @@ import heapsolving.treemap.TreeMapHarness;
 
 public class TreeMapMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		TreeMap structure = TreeMapHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.containsKey(key);
-			} catch (Exception e) {
-			}
+        TreeMap structure = TreeMapHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.containsKey(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

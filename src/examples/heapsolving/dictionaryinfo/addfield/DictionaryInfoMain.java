@@ -15,23 +15,23 @@ import heapsolving.dictionaryinfo.FieldInfo;
 
 public class DictionaryInfoMain {
 
-	public static void main(String[] args) {
-		int tagNumber = SymHeap.makeSymbolicInteger("tagNumber");
-		String name = SymHeap.makeSymbolicString("fieldName");
-		FieldInfo field = new FieldInfo();
-		field.setName(name);
-		field.setTagNumber(tagNumber);
+    public static void main(String[] args) {
+        int tagNumber = SymHeap.makeSymbolicInteger("tagNumber");
+        String name = SymHeap.makeSymbolicString("fieldName");
+        FieldInfo field = new FieldInfo();
+        field.setName(name);
+        field.setTagNumber(tagNumber);
 
-		DictionaryInfo structure = DictionaryInfoHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.addField(field);
-			} catch (Exception e) {
-			}
+        DictionaryInfo structure = DictionaryInfoHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.addField(field);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

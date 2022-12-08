@@ -14,19 +14,19 @@ import heapsolving.schedule.ScheduleHarness;
 
 public class ScheduleMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		Schedule structure = ScheduleHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.addProcess(key);
-			} catch (Exception e) {
-			}
+        Schedule structure = ScheduleHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.addProcess(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

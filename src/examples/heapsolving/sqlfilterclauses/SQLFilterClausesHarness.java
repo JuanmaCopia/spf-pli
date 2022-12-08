@@ -21,20 +21,20 @@ public class SQLFilterClausesHarness {
     }
 
     private static SQLFilterClauses generateDriverStructure() {
-    	int maxScope = SymHeap.getMaxScope();
-		SQLFilterClauses h = new SQLFilterClauses();
-		int numNodes = Verify.getInt(0, maxScope);
+        int maxScope = SymHeap.getMaxScope();
+        SQLFilterClauses h = new SQLFilterClauses();
+        int numNodes = Verify.getInt(0, maxScope);
 
-		for (int i = 1; i <= numNodes; i++) {
-			String clauseName = SymHeap.makeSymbolicString("N" + i);
-			String tableName = SymHeap.makeSymbolicString("N2" + i);
-			String clauseInformation = SymHeap.makeSymbolicString("N3" + i);
-			try {
-				h.put(clauseName, tableName, clauseInformation);
-			} catch (Exception e) {
-			}
-		}
-		return h;
-	}
+        for (int i = 1; i <= numNodes; i++) {
+            String clauseName = SymHeap.makeSymbolicString("N" + i);
+            String tableName = SymHeap.makeSymbolicString("N2" + i);
+            String clauseInformation = SymHeap.makeSymbolicString("N3" + i);
+            try {
+                h.put(clauseName, tableName, clauseInformation);
+            } catch (Exception e) {
+            }
+        }
+        return h;
+    }
 
 }

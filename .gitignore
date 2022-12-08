@@ -16,3 +16,4 @@ trace
 build/
 
 output/
+.settings/

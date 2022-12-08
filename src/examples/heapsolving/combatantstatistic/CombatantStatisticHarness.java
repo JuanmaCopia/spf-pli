@@ -26,10 +26,10 @@ public class CombatantStatisticHarness {
         int numNodes = Verify.getInt(0, maxScope);
         for (int i = 1; i <= numNodes; i++) {
             try {
-            	int type = SymHeap.makeSymbolicInteger("type" + i);
-            	int side = SymHeap.makeSymbolicInteger("side" + i);
-            	int value = SymHeap.makeSymbolicInteger("value" + i);
-            	SymHeap.assume(side >= 0 && side <= 1);
+                int type = SymHeap.makeSymbolicInteger("type" + i);
+                int side = SymHeap.makeSymbolicInteger("side" + i);
+                int value = SymHeap.makeSymbolicInteger("value" + i);
+                SymHeap.assume(side >= 0 && side <= 1);
                 SymHeap.assume(type >= 0 && type <= 14);
                 structure.addData(type, side, value);
             } catch (Exception e) {

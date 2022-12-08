@@ -42,162 +42,162 @@ import java.util.TreeMap;
  */
 public class GroupInfo extends FieldInfo implements CompositeFixInfo {
 
-	// Default collection
-	private TreeMap<Double, FixInfo> itemsByPosition;
+    // Default collection
+    private TreeMap<Double, FixInfo> itemsByPosition;
 
-	private HashMap<FixInfo, Double> itemsByContent;
+    private HashMap<FixInfo, Double> itemsByContent;
 
-	// Default collection
-	private TreeMap<Integer, FieldInfo> fieldsByTagNumber;
+    // Default collection
+    private TreeMap<Integer, FieldInfo> fieldsByTagNumber;
 
-	private TreeMap<String, FieldInfo> fieldsByName;
+    private TreeMap<String, FieldInfo> fieldsByName;
 
-	// Default collection
-	private TreeMap<String, ComponentInfo> componentsByName;
+    // Default collection
+    private TreeMap<String, ComponentInfo> componentsByName;
 
-	private TreeMap<Integer, ComponentInfo> componentsById;
+    private TreeMap<Integer, ComponentInfo> componentsById;
 
-	/**
-	 * Creates a new GroupInfo
-	 * 
-	 * @param field - a field to populate from
-	 */
-	public GroupInfo(FieldInfo field) {
-		setTagNumber(field.getTagNumber());
-		setName(field.getName());
-		setDataType(field.getDataType());
-		setDescription(getDescription());
-		setAbbreviation(field.getAbbreviation());
-		setOverrideXmlName(field.getOverrideXmlName());
-		setBaseCategory(field.getBaseCategory());
-		setBaseCategoryXmlName(field.getBaseCategoryXmlName());
-		setUnionDataType(field.getUnionDataType());
-		setUsesEnumFromTag(field.getUsesEnumFromTag());
-		setComments(field.getComments());
-		setLength(field.getLength());
-		setDeprecatingVersion(field.getDeprecatingVersion());
-		setRequiringComponents(field.getRequiringComponents());
-		setValidValues(field.getValidValuesMap());
-	}
+    /**
+     * Creates a new GroupInfo
+     * 
+     * @param field - a field to populate from
+     */
+    public GroupInfo(FieldInfo field) {
+        setTagNumber(field.getTagNumber());
+        setName(field.getName());
+        setDataType(field.getDataType());
+        setDescription(getDescription());
+        setAbbreviation(field.getAbbreviation());
+        setOverrideXmlName(field.getOverrideXmlName());
+        setBaseCategory(field.getBaseCategory());
+        setBaseCategoryXmlName(field.getBaseCategoryXmlName());
+        setUnionDataType(field.getUnionDataType());
+        setUsesEnumFromTag(field.getUsesEnumFromTag());
+        setComments(field.getComments());
+        setLength(field.getLength());
+        setDeprecatingVersion(field.getDeprecatingVersion());
+        setRequiringComponents(field.getRequiringComponents());
+        setValidValues(field.getValidValuesMap());
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getFields()
-	 */
-	public List<FieldInfo> getFields() {
-		if (fieldsByTagNumber != null) {
-			return new ArrayList<FieldInfo>(fieldsByTagNumber.values());
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getFields()
+     */
+    public List<FieldInfo> getFields() {
+        if (fieldsByTagNumber != null) {
+            return new ArrayList<FieldInfo>(fieldsByTagNumber.values());
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getField(int)
-	 */
-	public FieldInfo getField(int tagNumber) {
-		if (fieldsByTagNumber != null) {
-			return fieldsByTagNumber.get(tagNumber);
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getField(int)
+     */
+    public FieldInfo getField(int tagNumber) {
+        if (fieldsByTagNumber != null) {
+            return fieldsByTagNumber.get(tagNumber);
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getField(java.lang.String)
-	 */
-	public FieldInfo getField(String name) {
-		if (fieldsByName != null) {
-			return fieldsByName.get(name);
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getField(java.lang.String)
+     */
+    public FieldInfo getField(String name) {
+        if (fieldsByName != null) {
+            return fieldsByName.get(name);
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#addField(org.fixsuite.message.info.FieldInfo,
-	 *      double)
-	 */
-	public void addField(FieldInfo field, double position) {
-		if (fieldsByTagNumber == null) {
-			fieldsByTagNumber = new TreeMap<Integer, FieldInfo>();
-			fieldsByName = new TreeMap<String, FieldInfo>();
-		}
-		fieldsByTagNumber.put(field.getTagNumber(), field);
-		fieldsByName.put(field.getName(), field);
-		addItem(field, position);
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#addField(org.fixsuite.message.info.FieldInfo,
+     *      double)
+     */
+    public void addField(FieldInfo field, double position) {
+        if (fieldsByTagNumber == null) {
+            fieldsByTagNumber = new TreeMap<Integer, FieldInfo>();
+            fieldsByName = new TreeMap<String, FieldInfo>();
+        }
+        fieldsByTagNumber.put(field.getTagNumber(), field);
+        fieldsByName.put(field.getName(), field);
+        addItem(field, position);
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getComponents()
-	 */
-	public List<ComponentInfo> getComponents() {
-		if (componentsByName != null) {
-			return new ArrayList<ComponentInfo>(componentsByName.values());
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getComponents()
+     */
+    public List<ComponentInfo> getComponents() {
+        if (componentsByName != null) {
+            return new ArrayList<ComponentInfo>(componentsByName.values());
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getComponent(int)
-	 */
-	public ComponentInfo getComponent(int id) {
-		if (componentsById != null) {
-			return componentsById.get(id);
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getComponent(int)
+     */
+    public ComponentInfo getComponent(int id) {
+        if (componentsById != null) {
+            return componentsById.get(id);
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getComponent(java.lang.String)
-	 */
-	public ComponentInfo getComponent(String name) {
-		if (componentsByName != null) {
-			return componentsByName.get(name);
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getComponent(java.lang.String)
+     */
+    public ComponentInfo getComponent(String name) {
+        if (componentsByName != null) {
+            return componentsByName.get(name);
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#addComponent(org.fixsuite.message.info.ComponentInfo,
-	 *      double)
-	 */
-	public void addComponent(ComponentInfo component, double position) {
-		if (componentsByName == null) {
-			componentsByName = new TreeMap<String, ComponentInfo>();
-			componentsById = new TreeMap<Integer, ComponentInfo>();
-		}
-		componentsByName.put(component.getName(), component);
-		componentsById.put(component.getId(), component);
-		addItem(component, position);
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#addComponent(org.fixsuite.message.info.ComponentInfo,
+     *      double)
+     */
+    public void addComponent(ComponentInfo component, double position) {
+        if (componentsByName == null) {
+            componentsByName = new TreeMap<String, ComponentInfo>();
+            componentsById = new TreeMap<Integer, ComponentInfo>();
+        }
+        componentsByName.put(component.getName(), component);
+        componentsById.put(component.getId(), component);
+        addItem(component, position);
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#getItems()
-	 */
-	public List<FixInfo> getItems() {
-		if (itemsByPosition != null) {
-			return new ArrayList<FixInfo>(itemsByPosition.values());
-		}
-		return null;
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#getItems()
+     */
+    public List<FixInfo> getItems() {
+        if (itemsByPosition != null) {
+            return new ArrayList<FixInfo>(itemsByPosition.values());
+        }
+        return null;
+    }
 
-	/**
-	 * @see org.fixsuite.message.info.CompositeFixInfo#replaceAsGroup(org.fixsuite.message.info.FieldInfo,
-	 *      org.fixsuite.message.info.GroupInfo)
-	 */
-	public void replaceAsGroup(FieldInfo field, GroupInfo group) {
-		fieldsByTagNumber.put(field.getTagNumber(), group);
-		fieldsByName.put(field.getName(), group);
-		double position = itemsByContent.get(field);
-		itemsByContent.remove(field);
-		itemsByContent.put(group, position);
-		itemsByPosition.put(position, group);
-	}
+    /**
+     * @see org.fixsuite.message.info.CompositeFixInfo#replaceAsGroup(org.fixsuite.message.info.FieldInfo,
+     *      org.fixsuite.message.info.GroupInfo)
+     */
+    public void replaceAsGroup(FieldInfo field, GroupInfo group) {
+        fieldsByTagNumber.put(field.getTagNumber(), group);
+        fieldsByName.put(field.getName(), group);
+        double position = itemsByContent.get(field);
+        itemsByContent.remove(field);
+        itemsByContent.put(group, position);
+        itemsByPosition.put(position, group);
+    }
 
-	private void addItem(FixInfo item, double position) {
-		if (itemsByPosition == null) {
-			itemsByPosition = new TreeMap<Double, FixInfo>();
-			itemsByContent = new HashMap<FixInfo, Double>();
-		}
-		itemsByPosition.put(position, item);
-		itemsByContent.put(item, position);
-	}
+    private void addItem(FixInfo item, double position) {
+        if (itemsByPosition == null) {
+            itemsByPosition = new TreeMap<Double, FixInfo>();
+            itemsByContent = new HashMap<FixInfo, Double>();
+        }
+        itemsByPosition.put(position, item);
+        itemsByContent.put(item, position);
+    }
 
 }

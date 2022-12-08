@@ -110,92 +110,91 @@ public class HashMap {
     }
 
     public boolean repOK() {
-		Set<Entry> visited = new HashSet<Entry>();
-		for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-			if (!isLinkedList(i, visited))
-				return false;
-		return true;
-	}
+        Set<Entry> visited = new HashSet<Entry>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
+            if (!isLinkedList(i, visited))
+                return false;
+        return true;
+    }
 
-	private boolean isLinkedList(int index, Set<Entry> visited) {
-		Entry current = getTable(index);
-		while (current != null) {
-			if (!visited.add(current))
-				return false;
-			current = current.next;
-		}
-		return true;
-	}
+    private boolean isLinkedList(int index, Set<Entry> visited) {
+        Entry current = getTable(index);
+        while (current != null) {
+            if (!visited.add(current))
+                return false;
+            current = current.next;
+        }
+        return true;
+    }
 
-	
-	public class Entry {
+    public class Entry {
 
-		public int key;
-		public Object value;
-		public int hash;
-		public Entry next;
+        public int key;
+        public Object value;
+        public int hash;
+        public Entry next;
 
-		public Entry() {
-		}
+        public Entry() {
+        }
 
-		/**
-		 * Create new entry.
-		 */
-		Entry(int h, int k, Object v, Entry n) {
-			value = v;
-			next = n;
-			key = k;
-			hash = h;
-		}
+        /**
+         * Create new entry.
+         */
+        Entry(int h, int k, Object v, Entry n) {
+            value = v;
+            next = n;
+            key = k;
+            hash = h;
+        }
 
-		public int getKey() {
-			return key;
-		}
+        public int getKey() {
+            return key;
+        }
 
-		public Object getValue() {
-			return value;
-		}
+        public Object getValue() {
+            return value;
+        }
 
-		public Object setValue(Object newValue) {
-			Object oldValue = value;
-			value = newValue;
-			return oldValue;
-		}
+        public Object setValue(Object newValue) {
+            Object oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
 
-		public boolean equals(Object o) {
-			if (!(o instanceof Entry))
-				return false;
-			Entry e = (Entry) o;
-			int k1 = getKey();
-			int k2 = e.getKey();
-			if (k1 == k2) {
-				Object v1 = getValue();
-				Object v2 = e.getValue();
-				if (v1 == v2 || (v1 != null && v1.equals(v2)))
-					return true;
-			}
-			return false;
-		}
+        public boolean equals(Object o) {
+            if (!(o instanceof Entry))
+                return false;
+            Entry e = (Entry) o;
+            int k1 = getKey();
+            int k2 = e.getKey();
+            if (k1 == k2) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2)))
+                    return true;
+            }
+            return false;
+        }
 
-		// public int hashCode() {
-		// return key ^ (value == null ? 0 : value.hashCode());
-		// }
+        // public int hashCode() {
+        // return key ^ (value == null ? 0 : value.hashCode());
+        // }
 
-		public String toString() {
-			return getKey() + "=" + getValue();
-		}
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
 
-		/**
-		 * This method is invoked whenever the value in an entry is overwritten by an
-		 * invocation of put(k,v) for a key k that's already in the HashMap.
-		 */
-		void recordAccess(HashMap m) {
-		}
+        /**
+         * This method is invoked whenever the value in an entry is overwritten by an
+         * invocation of put(k,v) for a key k that's already in the HashMap.
+         */
+        void recordAccess(HashMap m) {
+        }
 
-		/**
-		 * This method is invoked whenever the entry is removed from the table.
-		 */
-		void recordRemoval(HashMap m) {
-		}
-	}
+        /**
+         * This method is invoked whenever the entry is removed from the table.
+         */
+        void recordRemoval(HashMap m) {
+        }
+    }
 }

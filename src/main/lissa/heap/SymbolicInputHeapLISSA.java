@@ -59,10 +59,10 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         header = null;
         this.implicitInputThis = new SymbolicReferenceInput();
     }
-    
+
     @Override
     public SymbolicInputHeap make_copy() {
-    	SymbolicInputHeapLISSA sih_new = new SymbolicInputHeapLISSA();
+        SymbolicInputHeapLISSA sih_new = new SymbolicInputHeapLISSA();
         sih_new.header = this.header;
         sih_new.count = this.count;
         sih_new.implicitInputThis = this.implicitInputThis.makeShallowCopy();

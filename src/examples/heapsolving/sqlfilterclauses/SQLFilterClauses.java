@@ -27,68 +27,68 @@ import java.io.Serializable;
  *
  */
 public class SQLFilterClauses implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/** The container for the SQL filter information */
-	HashMapStrHmap _sqlClauseInformation;
+    /** The container for the SQL filter information */
+    HashMapStrHmap _sqlClauseInformation;
 
-	/**
-	 * Creates a new instance of SQLFilterClauses.
-	 */
-	public SQLFilterClauses() {
-		_sqlClauseInformation = new HashMapStrHmap();
-	}
+    /**
+     * Creates a new instance of SQLFilterClauses.
+     */
+    public SQLFilterClauses() {
+        _sqlClauseInformation = new HashMapStrHmap();
+    }
 
-	/**
-	 * Return the value of the SQL filter information
-	 *
-	 * @param clauseName The name of the clause for which the information is
-	 *                   required.
-	 * @param tableName  The database table name for which the information is
-	 *                   required.
-	 *
-	 * @return A string value containing the requested information
-	 */
-	public String get(String clauseName, String tableName) {
-		HashMapStrStr filterData = _sqlClauseInformation.get(tableName);
-		return (filterData == null) ? null : filterData.get(clauseName);
-	}
+    /**
+     * Return the value of the SQL filter information
+     *
+     * @param clauseName The name of the clause for which the information is
+     *                   required.
+     * @param tableName  The database table name for which the information is
+     *                   required.
+     *
+     * @return A string value containing the requested information
+     */
+    public String get(String clauseName, String tableName) {
+        HashMapStrStr filterData = _sqlClauseInformation.get(tableName);
+        return (filterData == null) ? null : filterData.get(clauseName);
+    }
 
-	/**
-	 * Update (or create) SQL Filter information for a session.
-	 *
-	 * @param clauseName        The name of the clause for which the information
-	 *                          pertains.
-	 * @param tableName         The name of the database table for the filter
-	 *                          information.
-	 *
-	 * @param clauseInformation The SQL filter information to be saved.
-	 */
-	public void put(String clauseName, String tableName, String clauseInformation) {
-		HashMapStrStr filterData = _sqlClauseInformation.get(tableName);
-		if (filterData == null) {
-			filterData = new HashMapStrStr();
-		}
-		filterData.put(clauseName, clauseInformation);
-		_sqlClauseInformation.put(tableName, filterData);
-	}
+    /**
+     * Update (or create) SQL Filter information for a session.
+     *
+     * @param clauseName        The name of the clause for which the information
+     *                          pertains.
+     * @param tableName         The name of the database table for the filter
+     *                          information.
+     *
+     * @param clauseInformation The SQL filter information to be saved.
+     */
+    public void put(String clauseName, String tableName, String clauseInformation) {
+        HashMapStrStr filterData = _sqlClauseInformation.get(tableName);
+        if (filterData == null) {
+            filterData = new HashMapStrStr();
+        }
+        filterData.put(clauseName, clauseInformation);
+        _sqlClauseInformation.put(tableName, filterData);
+    }
 
-	public boolean repOK() {
-		if (_sqlClauseInformation == null)
-			return true;
+    public boolean repOK() {
+        if (_sqlClauseInformation == null)
+            return true;
 
-		if (!_sqlClauseInformation.repOK())
-			return false;
+        if (!_sqlClauseInformation.repOK())
+            return false;
 
-		// Set<Entry> es = _sqlClauseInformation.entrySet();
-		HashMapStrStr h;
-		for (HashMapStrHmap.EntrySH e : _sqlClauseInformation.entrySet()) {
-			h = e.getValue();
-			if (h != null && !h.repOK())
-				return false;
-		}
+        // Set<Entry> es = _sqlClauseInformation.entrySet();
+        HashMapStrStr h;
+        for (HashMapStrHmap.EntrySH e : _sqlClauseInformation.entrySet()) {
+            h = e.getValue();
+            if (h != null && !h.repOK())
+                return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

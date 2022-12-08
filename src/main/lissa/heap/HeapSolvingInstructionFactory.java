@@ -31,7 +31,7 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     @Override
     public Instruction getfield(String fieldName, String clsName, String fieldDescriptor) {
         if (solvingStrategy.isLazyInitializationBased())
-        	return new GETFIELDHeapSolving(fieldName, clsName, fieldDescriptor);
+            return new GETFIELDHeapSolving(fieldName, clsName, fieldDescriptor);
         return super.getfield(fieldName, clsName, fieldDescriptor);
     }
 
@@ -47,9 +47,9 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
         configParser = new ConfigParser(conf);
         solvingStrategy = SolvingStrategyFactory.makeSymbolicHeapSolvingTechnique(configParser);
     }
-    
+
     public static SolvingStrategy getSolvingStrategy() {
-    	assert(solvingStrategy != null);
+        assert (solvingStrategy != null);
         return solvingStrategy;
     }
 

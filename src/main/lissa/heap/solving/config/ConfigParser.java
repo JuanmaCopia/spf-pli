@@ -17,7 +17,7 @@ public class ConfigParser {
     public static final String DEFAULT_PREDICATE_NAME = "repOK";
 
     private static final String RESULTS_FILE_POSFIX = "-results.csv";
-    
+
     public static final String OUTPUT_DIR = "output";
     public static final String STATISTICS_DIR = String.format("%s/%s", OUTPUT_DIR, "results");
     public static final String TESTCASE_DIR = String.format("%s/%s", OUTPUT_DIR, "testcases");
@@ -57,7 +57,7 @@ public class ConfigParser {
             throw new MissingConfigurationValueException(settingName);
         return value.trim();
     }
-    
+
     public String getConfigValueString(String settingName, String defaultValue) {
         return conf.getString(settingName, defaultValue).trim();
     }

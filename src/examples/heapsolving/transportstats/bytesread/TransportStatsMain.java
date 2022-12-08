@@ -14,19 +14,19 @@ import heapsolving.transportstats.TransportStatsHarness;
 
 public class TransportStatsMain {
 
-	public static void main(String[] args) {
-		int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+    public static void main(String[] args) {
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
-		TransportStats structure = TransportStatsHarness.getStructure();
-		if (structure != null) {
-			try {
-				// Call to method under analysis
-				structure.bytesRead(key);
-			} catch (Exception e) {
-			}
+        TransportStats structure = TransportStatsHarness.getStructure();
+        if (structure != null) {
+            try {
+                // Call to method under analysis
+                structure.bytesRead(key);
+            } catch (Exception e) {
+            }
 
-			SymHeap.countPath();
-		}
-	}
+            SymHeap.countPath();
+        }
+    }
 
 }

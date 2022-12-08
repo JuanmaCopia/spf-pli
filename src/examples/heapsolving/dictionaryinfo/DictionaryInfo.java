@@ -30,7 +30,6 @@
 
 package heapsolving.dictionaryinfo;
 
-
 /**
  * Represents a FIX version specification. DictionaryInfo acts as a central
  * storage for all items defined in a version.
@@ -39,72 +38,72 @@ package heapsolving.dictionaryinfo;
  */
 public class DictionaryInfo {
 
-	private String version;
+    private String version;
 
-	private int loadCount;
+    private int loadCount;
 
-	// Default collection
+    // Default collection
 //    private TreeMap<String, MessageInfo> messagesByName;
 //
 //    private TreeMap<Integer, MessageInfo> messagesById;
 
-	// Default collection
-	// =================== Modification =======================
-	// private TreeMap<Integer, FieldInfo> fieldsByTagNumber;
-	public TreeMap fieldsByTagNumber;
+    // Default collection
+    // =================== Modification =======================
+    // private TreeMap<Integer, FieldInfo> fieldsByTagNumber;
+    public TreeMap fieldsByTagNumber;
 
-	// private TreeMap<String, FieldInfo> fieldsByName;
+    // private TreeMap<String, FieldInfo> fieldsByName;
 
-	public TreeMapStrR fieldsByName;
-	// ==========================================================
+    public TreeMapStrR fieldsByName;
+    // ==========================================================
 
-	// Default collection
+    // Default collection
 //    private TreeMap<String, ComponentInfo> componentsByName;
 //
 //    private TreeMap<Integer, ComponentInfo> componentsById;
 
-	/**
-	 * Creates a new DictionaryInfo
-	 *
-	 * @param version - a version
-	 */
-	public DictionaryInfo(String version) {
-		this.version = version;
-	}
+    /**
+     * Creates a new DictionaryInfo
+     *
+     * @param version - a version
+     */
+    public DictionaryInfo(String version) {
+        this.version = version;
+    }
 
-	/**
-	 * Returns the fields
-	 *
-	 * @return the fields
-	 */
-	// =================== Modification =======================
+    /**
+     * Returns the fields
+     *
+     * @return the fields
+     */
+    // =================== Modification =======================
 //    public List<FieldInfo> getFields() {
 //        if (fieldsByTagNumber != null) {
 //            return new ArrayList<FieldInfo>(fieldsByTagNumber.values());
 //        }
 //        return null;
 //    }
-	// ==========================================================
+    // ==========================================================
 
-	/**
-	 * Returns a field given a tagNumber
-	 *
-	 * @param tagNumber - a tagNumber
-	 * @return a field given a tagNumber
-	 */
-	public FieldInfo getField(int tagNumber) {
-		if (fieldsByTagNumber != null) {
-			return (FieldInfo) fieldsByTagNumber.get(tagNumber);
-		}
-		return null;
-	}
+    /**
+     * Returns a field given a tagNumber
+     *
+     * @param tagNumber - a tagNumber
+     * @return a field given a tagNumber
+     */
+    public FieldInfo getField(int tagNumber) {
+        if (fieldsByTagNumber != null) {
+            return (FieldInfo) fieldsByTagNumber.get(tagNumber);
+        }
+        return null;
+    }
 
-	/**
-	 * Returns a field given a name
-	 *
-	 * @param name - a name
-	 * @return a field given a name
-	 */
+    /**
+     * Returns a field given a name
+     *
+     * @param name - a name
+     * @return a field given a name
+     */
 //    public FieldInfo getField(String name) {
 //        if (fieldsByName != null) {
 //            return (FieldInfo) fieldsByName.get(name);
@@ -112,19 +111,19 @@ public class DictionaryInfo {
 //        return null;
 //    }
 
-	/**
-	 * Adds a field
-	 *
-	 * @param field - a field
-	 */
-	public void addField(FieldInfo field) {
-		if (fieldsByTagNumber == null) {
-			fieldsByTagNumber = new TreeMap();
-			fieldsByName = new TreeMapStrR();
-		}
-		fieldsByTagNumber.put(field.getTagNumber(), field);
-		fieldsByName.put(field.getName(), field);
-	}
+    /**
+     * Adds a field
+     *
+     * @param field - a field
+     */
+    public void addField(FieldInfo field) {
+        if (fieldsByTagNumber == null) {
+            fieldsByTagNumber = new TreeMap();
+            fieldsByName = new TreeMapStrR();
+        }
+        fieldsByTagNumber.put(field.getTagNumber(), field);
+        fieldsByName.put(field.getName(), field);
+    }
 
 //    /**
 //     * Returns the components
@@ -236,60 +235,60 @@ public class DictionaryInfo {
 //        messagesByName.put(message.getName(), message);
 //    }
 
-	/**
-	 * Returns the version
-	 *
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * Returns the version
+     *
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/**
-	 * Modifies the version
-	 *
-	 * @param version - the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /**
+     * Modifies the version
+     *
+     * @param version - the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	/**
-	 * Increments the loadCount
-	 */
-	public void incrementLoadCount() {
-		loadCount++;
-	}
+    /**
+     * Increments the loadCount
+     */
+    public void incrementLoadCount() {
+        loadCount++;
+    }
 
-	/**
-	 * Returns whether the dictionary is loaded
-	 *
-	 * @return whether the dictionary is loaded
-	 */
-	public boolean isLoaded() {
-		return loadCount == 5;
-	}
+    /**
+     * Returns whether the dictionary is loaded
+     *
+     * @return whether the dictionary is loaded
+     */
+    public boolean isLoaded() {
+        return loadCount == 5;
+    }
 
-	public boolean repOK() {
-		if (fieldsByTagNumber == null)
-			return false;
-		if (fieldsByName == null)
-			return false;
-		return fieldsByTagNumber.repOK() && fieldsByName.repOK();
-	}
+    public boolean repOK() {
+        if (fieldsByTagNumber == null)
+            return false;
+        if (fieldsByName == null)
+            return false;
+        return fieldsByTagNumber.repOK() && fieldsByName.repOK();
+    }
 
-	public boolean areTreesOK() {
-		if (fieldsByTagNumber == null)
-			return false;
-		if (fieldsByName == null)
-			return false;
-		if (!fieldsByTagNumber.isBinTreeWithParentReferences()) {
-			return false;
-		}
-		if (!fieldsByName.isBinTreeWithParentReferences()) {
-			return false;
-		}
-		return true;
-	}
+    public boolean areTreesOK() {
+        if (fieldsByTagNumber == null)
+            return false;
+        if (fieldsByName == null)
+            return false;
+        if (!fieldsByTagNumber.isBinTreeWithParentReferences()) {
+            return false;
+        }
+        if (!fieldsByName.isBinTreeWithParentReferences()) {
+            return false;
+        }
+        return true;
+    }
 
 }
