@@ -5,6 +5,8 @@ sourcepath=${jpf-symbc}/src/examples
 
 # ---------------   Arguments   ---------------
 
+shell=lissa.LISSAShell
+
 target = heapsolving.hashmap.METHOD.HashMapMain
 method = METHOD
 
@@ -18,6 +20,5 @@ heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-listener=lissa.listeners.HeapSolvingListener
 
 # ---------------------------------------------

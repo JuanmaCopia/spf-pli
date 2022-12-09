@@ -6,15 +6,17 @@ import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.config.ConfigParser;
 import symsolve.vector.SymSolveVector;
 
 public class LIHYBRID extends LISSA {
 
     HashMap<Integer, Integer> fieldGetCount = new HashMap<Integer, Integer>();
+    public int invalidPaths = 0;
 
-    public LIHYBRID(ConfigParser config) {
-        super(config);
+    int getFieldLimit;
+
+    public LIHYBRID(int getFieldLimit) {
+        this.getFieldLimit = getFieldLimit;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class LIHYBRID extends LISSA {
 
     @Override
     public void pathFinished(VM vm, ThreadInfo terminatedThread) {
-        countPath();
+        super.pathFinished(vm, terminatedThread);
         checkPathValidity(vm, terminatedThread);
     }
 
@@ -43,7 +45,7 @@ public class LIHYBRID extends LISSA {
             fieldGetCount.put(objRef, 0);
         Integer count = fieldGetCount.get(objRef);
 
-        if (count >= config.getFieldLimit) {
+        if (count >= getFieldLimit) {
             resetGetFieldCount();
             return true;
         }

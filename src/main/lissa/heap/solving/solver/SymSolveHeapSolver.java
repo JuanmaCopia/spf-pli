@@ -3,7 +3,7 @@ package lissa.heap.solving.solver;
 import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
-import lissa.heap.HeapSolvingInstructionFactory;
+import lissa.LISSAShell;
 import lissa.heap.solving.config.ConfigParser;
 import symsolve.SymSolve;
 import symsolve.config.SolverConfig;
@@ -19,7 +19,7 @@ public class SymSolveHeapSolver {
     }
 
     private SymSolve createSymSolveInstance() {
-        ConfigParser conf = HeapSolvingInstructionFactory.getConfigParser();
+        ConfigParser conf = LISSAShell.configParser;
         SolverConfig symSolveConfig = new SolverConfig(conf.symSolveClassName, conf.finitizationArgs,
                 conf.symmetryBreakingStrategy, conf.predicateName);
         SymSolve solver = new SymSolve(symSolveConfig);
@@ -34,7 +34,10 @@ public class SymSolveHeapSolver {
     }
 
     public boolean isSatisfiableAutoHybridRepOK(SymSolveVector vector) {
-        return solver.isSatAutoHybridRepOK(vector);
+        long time = System.currentTimeMillis();
+        boolean result = solver.isSatAutoHybridRepOK(vector);
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
     }
 
     public HashMap<String, Integer> getDataScopes() {

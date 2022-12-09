@@ -1,7 +1,6 @@
 package lissa.heap.solving.config;
 
 import gov.nasa.jpf.Config;
-import lissa.heap.solving.techniques.SolvingStrategyEnum;
 import symsolve.explorers.impl.SymmetryBreakStrategy;
 
 public class ConfigParser {

@@ -20,14 +20,10 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.solving.config.ConfigParser;
-import lissa.heap.solving.techniques.DRIVER;
-import lissa.heap.solving.techniques.IFREPOK;
-import lissa.heap.solving.techniques.LIHYBRID;
-import lissa.heap.solving.techniques.LISSA;
+import lissa.heap.solving.config.SolvingStrategyEnum;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
@@ -106,40 +102,29 @@ public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
     public static int getMaxScope(MJIEnv env, int objRef) {
-        ConfigParser conf = HeapSolvingInstructionFactory.getConfigParser();
+        ConfigParser conf = LISSAShell.configParser;
         return Integer.valueOf(conf.finitizationArgs);
     }
 
     @MJI
     public static boolean usingDriverStrategy(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        return strategy instanceof DRIVER;
+        return LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER;
     }
 
     @MJI
     public static boolean usingLIHybridStrategy(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        return strategy instanceof LIHYBRID;
-    }
-
-    @MJI
-    public static boolean usingSymSolveBasedStrategy(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        if (strategy instanceof LIHYBRID)
-            return false;
-        return strategy instanceof LISSA;
+        return LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.LIHYBRID;
     }
 
     @MJI
     public static boolean usingIfRepOKStrategy(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        return strategy instanceof IFREPOK;
+        return LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.IFREPOK;
     }
 
     @MJI
     public static void countPath(MJIEnv env, int objRef) {
         VM vm = env.getVM();
-        SolvingStrategy strategy = HeapSolvingInstructionFactory.getSolvingStrategy();
+        SolvingStrategy strategy = LISSAShell.solvingStrategy;
         strategy.pathFinished(vm, vm.getCurrentThread());
     }
 

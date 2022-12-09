@@ -1,27 +1,98 @@
 package lissa.listeners;
 
-import gov.nasa.jpf.PropertyListenerAdapter;
-import gov.nasa.jpf.report.PublisherExtension;
-import gov.nasa.jpf.search.Search;
-import lissa.heap.HeapSolvingInstructionFactory;
-import lissa.heap.solving.techniques.SolvingStrategy;
+import java.util.LinkedList;
 
-/**
- *
- */
-public class HeapSolvingListener extends PropertyListenerAdapter implements PublisherExtension {
+import gov.nasa.jpf.PropertyListenerAdapter;
+import gov.nasa.jpf.search.Search;
+import lissa.heap.solving.config.ConfigParser;
+import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.solving.techniques.LIHYBRID;
+import lissa.heap.solving.techniques.LISSAM;
+import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.solving.utils.Utils;
+
+public class HeapSolvingListener extends PropertyListenerAdapter {
 
     SolvingStrategy heapSolvingStrategy;
+    ConfigParser configParser;
+
+    long totalTime = 0;
+
+    long solvingTime = 0;
+    int cacheHits = 0;
+
+    int exploredPaths = 0;
+    int invalidPaths = 0;
+
+    public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser configParser) {
+        this.heapSolvingStrategy = solvingStrategy;
+        this.configParser = configParser;
+    }
 
     @Override
     public void searchStarted(Search search) {
-        this.heapSolvingStrategy = HeapSolvingInstructionFactory.getSolvingStrategy();
-        this.heapSolvingStrategy.searchStarted();
+        if (!Utils.fileExist(configParser.resultsFileName)) {
+            Utils.createFileAndFolders(configParser.resultsFileName, false);
+            Utils.appendToFile(configParser.resultsFileName, getFileHeader());
+        }
+        this.totalTime = System.currentTimeMillis();
     }
 
     @Override
     public void searchFinished(Search search) {
-        this.heapSolvingStrategy.searchFinished();
+        getStatistics();
+        printReport();
+        writeDataToFile(createStringData());
+    }
+
+    void getStatistics() {
+        totalTime = (System.currentTimeMillis() - totalTime);
+        exploredPaths = heapSolvingStrategy.exploredPaths;
+
+        if (heapSolvingStrategy instanceof LIBasedStrategy) {
+            solvingTime = ((LIBasedStrategy) heapSolvingStrategy).getSolvingTime();
+
+            if (heapSolvingStrategy instanceof LIHYBRID) {
+                invalidPaths = ((LIHYBRID) heapSolvingStrategy).invalidPaths;
+            } else if (heapSolvingStrategy instanceof LISSAM) {
+                cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
+            }
+        }
+    }
+
+    void printReport() {
+        String separator = "--------";
+        String header = String.format("\n %s  %s Finished for %s.%s Scope %s  %s\n", separator,
+                configParser.solvingStrategy.name(), configParser.symSolveSimpleClassName,
+                configParser.targetMethodName, configParser.finitizationArgs, separator);
+        System.out.println(header);
+        System.out.println("    ExecutedPaths:  " + exploredPaths);
+        System.out.println("    InvalidPaths:   " + invalidPaths);
+        System.out.println("    TotalTime:      " + totalTime / 1000 + " s.");
+        System.out.println("    SolvingTime:    " + solvingTime / 1000 + " s.");
+        System.out.println("\n ------------------------------------------------------------------");
+    }
+
+    String createStringData() {
+        LinkedList<String> results = new LinkedList<String>();
+        results.add(configParser.targetMethodName);
+        results.add(configParser.solvingStrategy.name());
+        results.add(configParser.finitizationArgs);
+        results.add(Long.toString(totalTime / 1000));
+        results.add(Long.toString(solvingTime / 1000));
+        results.add(Integer.toString(exploredPaths));
+        results.add(Integer.toString(invalidPaths));
+        results.add(Integer.toString(cacheHits));
+        String resultsData = results.toString();
+        return resultsData.substring(1, resultsData.length() - 1);
+    }
+
+    void writeDataToFile(String data) {
+        Utils.appendToFile(configParser.resultsFileName, data);
+    }
+
+    String getFileHeader() {
+        return "Method,Technique,Scope,TotalTime,SolvingTime,ExecutedPaths,InvalidPaths,CacheHits";
     }
 
 }

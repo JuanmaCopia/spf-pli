@@ -5,16 +5,12 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.config.ConfigParser;
 import symsolve.vector.SymSolveVector;
 
 public class LISSAM extends LISSA {
 
     HashMap<String, Boolean> isSatCache = new HashMap<>();
-
-    public LISSAM(ConfigParser config) {
-        super(config);
-    }
+    public int cacheHits = 0;
 
     @Override
     public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
