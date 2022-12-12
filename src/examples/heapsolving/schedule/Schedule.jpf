@@ -14,7 +14,7 @@ symbolic.debug = false
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.finitization.class = heapsolving.schedule.symsolve.Schedule
+heapsolving.symsolve.finitization.class = heapsolving.schedule.Schedule
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 

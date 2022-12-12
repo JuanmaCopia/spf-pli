@@ -3,6 +3,10 @@ package heapsolving.schedule;
 import java.util.HashSet;
 import java.util.Set;
 
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
+
 public class Schedule {
 
     public final static int MAXPRIO = 3;
@@ -313,6 +317,30 @@ public class Schedule {
         if (last != current)
             return false;
         return true;
+    }
+
+    public static IFinitization finSchedule(int jobsNum) {
+        IFinitization f = FinitizationFactory.create(Schedule.class);
+
+        IObjSet jobs = f.createObjSet(Job.class, jobsNum, true);
+        f.set(Schedule.class, "curProc", jobs);
+
+        IObjSet lists = f.createObjSet(List.class, 4, true);
+        f.set(Schedule.class, "prio_1", lists);
+        f.set(Schedule.class, "prio_2", lists);
+        f.set(Schedule.class, "prio_3", lists);
+        f.set(Schedule.class, "blockQueue", lists);
+
+        f.set(Job.class, "next", jobs);
+        f.set(Job.class, "prev", jobs);
+        f.set(Job.class, "val", f.createIntSet(0, jobsNum - 1));
+        f.set(Job.class, "priority", f.createIntSet(1, MAXPRIO));
+
+        f.set(List.class, "mem_count", f.createIntSet(0, jobsNum));
+        f.set(List.class, "first", jobs);
+        f.set(List.class, "last", jobs);
+
+        return f;
     }
 
 }
