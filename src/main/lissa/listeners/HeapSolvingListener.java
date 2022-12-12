@@ -61,16 +61,20 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     void printReport() {
-        String separator = "--------";
-        String header = String.format("\n %s  %s Finished for %s.%s Scope %s  %s\n", separator,
-                configParser.solvingStrategy.name(), configParser.symSolveSimpleClassName,
-                configParser.targetMethodName, configParser.finitizationArgs, separator);
-        System.out.println(header);
-        System.out.println("    ExecutedPaths:  " + exploredPaths);
-        System.out.println("    InvalidPaths:   " + invalidPaths);
-        System.out.println("    TotalTime:      " + totalTime / 1000 + " s.");
-        System.out.println("    SolvingTime:    " + solvingTime / 1000 + " s.");
-        System.out.println("\n ------------------------------------------------------------------");
+        System.out.println("\n\nTechnique:  " + configParser.solvingStrategy.name());
+        System.out.println(String.format("Method:     %s.%s", configParser.symSolveSimpleClassName,
+                configParser.targetMethodName));
+        System.out.println("Scope:      " + configParser.finitizationArgs);
+        System.out.println("\n------- Statistics -------\n");
+        System.out.println(" - Executed Paths:  " + exploredPaths);
+        if (heapSolvingStrategy instanceof LIHYBRID)
+            System.out.println(" - Invalid Paths:   " + invalidPaths);
+        System.out.println(" - Total Time:      " + totalTime / 1000 + " s.");
+        if (heapSolvingStrategy instanceof LIBasedStrategy)
+            System.out.println(" - Solving Time:    " + solvingTime / 1000 + " s.");
+        if (heapSolvingStrategy instanceof LISSAM)
+            System.out.println(" - Cache Hits:      " + cacheHits);
+        System.out.println("");
     }
 
     String createStringData() {
