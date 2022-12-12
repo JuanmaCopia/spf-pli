@@ -7,8 +7,15 @@
 
 package heapsolving.hashmap;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
+
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
 
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
@@ -637,6 +644,36 @@ public class HashMap {
          */
         void recordRemoval(HashMap m) {
         }
+    }
+
+    public static IFinitization finHashMap(int nodesNum) {
+        IFinitization f = FinitizationFactory.create(HashMap.class);
+        f.set(HashMap.class, "size", f.createIntSet(0, nodesNum));
+
+        IObjSet entries = f.createObjSet(Entry.class, nodesNum, true);
+        f.set(HashMap.class, "e0", entries);
+        f.set(HashMap.class, "e1", entries);
+        f.set(HashMap.class, "e2", entries);
+        f.set(HashMap.class, "e3", entries);
+        f.set(HashMap.class, "e4", entries);
+        f.set(HashMap.class, "e5", entries);
+        f.set(HashMap.class, "e6", entries);
+        f.set(HashMap.class, "e7", entries);
+        f.set(HashMap.class, "e8", entries);
+        f.set(HashMap.class, "e9", entries);
+        f.set(HashMap.class, "e10", entries);
+        f.set(HashMap.class, "e11", entries);
+        f.set(HashMap.class, "e12", entries);
+        f.set(HashMap.class, "e13", entries);
+        f.set(HashMap.class, "e14", entries);
+        f.set(HashMap.class, "e15", entries);
+
+        int maxint = DEFAULT_INITIAL_CAPACITY * nodesNum;
+        f.set(Entry.class, "key", f.createIntSet(0, maxint - 1));
+        f.set(Entry.class, "hash", f.createIntSet(0, maxint - 1));
+        f.set(Entry.class, "next", entries);
+
+        return f;
     }
 
 }
