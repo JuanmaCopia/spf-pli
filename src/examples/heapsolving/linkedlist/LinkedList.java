@@ -7,9 +7,15 @@
 
 package heapsolving.linkedlist;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Vector;
+
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -445,6 +451,17 @@ public class LinkedList {
             this.next = next;
             this.previous = previous;
         }
+    }
+
+    public static IFinitization finLinkedList(int nodesNum) {
+        IFinitization f = FinitizationFactory.create(LinkedList.class);
+        IObjSet nodes = f.createObjSet(Entry.class, nodesNum, true);
+        f.set(LinkedList.class, "header", nodes);
+        f.set(LinkedList.class, "size", f.createIntSet(0, nodesNum));
+        f.set(Entry.class, "element", f.createIntSet(0, nodesNum - 1));
+        f.set(Entry.class, "next", nodes);
+        f.set(Entry.class, "previous", nodes);
+        return f;
     }
 
 }
