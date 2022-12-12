@@ -11,11 +11,11 @@ target = heapsolving.hashmap.METHOD.HashMapMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.hashmap.symsolve.HashMap
+heapsolving.symsolve.finitization.class = heapsolving.hashmap.symsolve.HashMap
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

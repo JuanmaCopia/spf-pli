@@ -7,9 +7,9 @@ public class ConfigParser {
 
     private static final String TARGET_METHOD_CONFIG = "method";
     private static final String TARGET_CLASS_CONFIG = "target";
-    private static final String SYMSOLVE_CLASS_CONFIG = "heapsolving.symsolve.class";
+    private static final String SYMSOLVE_CLASS_CONFIG = "heapsolving.symsolve.finitization.class";
     private static final String SYMSOLVE_PREDICATE_CONFIG = "heapsolving.symsolve.predicate";
-    private static final String SYMSOLVE_FINITIZATION_ARGS_CONFIG = "symbolic.scope";
+    private static final String SYMSOLVE_FINITIZATION_ARGS_CONFIG = "heapsolving.symsolve.finitization.args";
     private static final String HEAP_SOLVING_TECHNIQUE_CONFIG = "heapsolving.strategy";
     private static final String HEAP_GETFIELD_LIMIT_CONFIG = "heap.getFieldLimit";
 

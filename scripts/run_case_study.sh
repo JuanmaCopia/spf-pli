@@ -27,7 +27,7 @@ STRATEGY=${STRATEGY^^} # To upper case
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = ${METHOD}/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = $STRATEGY/g" $PATH_CONFIG_FILE
-sed -i -E "s/symbolic\.scope.*/symbolic\.scope = $SCOPE/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = $SCOPE/g" $PATH_CONFIG_FILE
 
 # Run JPF:
 java -Dfile.encoding=UTF-8 -Xms4096m -Xmx4096m -Xss100m -ea -cp $CP gov.nasa.jpf.tool.RunJPF $PATH_CONFIG_FILE
@@ -37,4 +37,4 @@ TARGET="${PACKAGE}.METHOD.${CLASS_NAME}Main"
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = METHOD/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = HEAP_SOLVING_STRATEGY/g" $PATH_CONFIG_FILE
-sed -i -E "s/symbolic\.scope.*/symbolic\.scope = MAX_SCOPE/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = MAX_SCOPE/g" $PATH_CONFIG_FILE

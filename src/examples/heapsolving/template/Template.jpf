@@ -11,7 +11,6 @@ target = heapsolving.template.METHOD.TemplateMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
 symbolic.strings = true
@@ -19,7 +18,8 @@ symbolic.string_dp=z3-str
 symbolic.string_dp_timeout_ms=3000
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.template.symsolve.Template
+heapsolving.symsolve.finitization.class = heapsolving.template.symsolve.Template
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

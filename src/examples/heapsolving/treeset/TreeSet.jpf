@@ -11,11 +11,11 @@ target = heapsolving.treeset.METHOD.TreeSetMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.treeset.symsolve.TreeSet
+heapsolving.symsolve.finitization.class = heapsolving.treeset.symsolve.TreeSet
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

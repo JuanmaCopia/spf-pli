@@ -11,11 +11,11 @@ target = heapsolving.schedule.METHOD.ScheduleMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.schedule.symsolve.Schedule
+heapsolving.symsolve.finitization.class = heapsolving.schedule.symsolve.Schedule
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

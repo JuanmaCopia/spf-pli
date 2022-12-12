@@ -11,11 +11,11 @@ target = heapsolving.linkedlist.METHOD.LinkedListMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.linkedlist.symsolve.LinkedList
+heapsolving.symsolve.finitization.class = heapsolving.linkedlist.symsolve.LinkedList
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

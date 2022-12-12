@@ -11,11 +11,11 @@ target = heapsolving.combatantstatistic.METHOD.CombatantStatisticMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.scope = MAX_SCOPE
 symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.combatantstatistic.symsolve.CombatantStatistic
+heapsolving.symsolve.finitization.class = heapsolving.combatantstatistic.symsolve.CombatantStatistic
+heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
