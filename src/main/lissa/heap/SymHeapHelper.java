@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
@@ -96,15 +95,6 @@ public class SymHeapHelper {
 
         initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
 
-        // neha: this change allows all the static fields in the class hierarchy
-        // of the object to be initialized as symbolic and not just its immediate
-        // static fields
-        ClassInfo superClass = typeClassInfo;
-        while (superClass != null) {
-            FieldInfo[] staticFields = superClass.getDeclaredStaticFields();
-            Helper.initializeStaticFields(staticFields, superClass, ti);
-            superClass = superClass.getSuperClass();
-        }
 
         // Put symbolic array in PC if we create a new array.
         if (typeClassInfo.isArray()) {
