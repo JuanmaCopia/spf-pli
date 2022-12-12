@@ -7,10 +7,17 @@
 
 package heapsolving.treemap;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
 
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This
@@ -799,6 +806,20 @@ public class TreeMap {
             return key + "=" + value;
         }
 
+    }
+
+    public static IFinitization finTreeMap(int nodesNum) {
+        IFinitization f = FinitizationFactory.create(TreeMap.class);
+        IObjSet nodes = f.createObjSet(Entry.class, nodesNum, true);
+        f.set(TreeMap.class, "root", nodes);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        // f.set(Object.class, "value", f.createObjSet(Object.class, 0, true));
+        f.set(Entry.class, "left", nodes);
+        f.set(Entry.class, "right", nodes);
+        f.set(Entry.class, "parent", nodes);
+        f.set(Entry.class, "color", f.createBooleanSet());
+        return f;
     }
 
 }

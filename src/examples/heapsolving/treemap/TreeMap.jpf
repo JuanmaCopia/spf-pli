@@ -15,7 +15,7 @@ symbolic.scope = MAX_SCOPE
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.symsolve.class = heapsolving.treemap.symsolve.TreeMap
+heapsolving.symsolve.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
