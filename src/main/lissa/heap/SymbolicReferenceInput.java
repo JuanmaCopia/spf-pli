@@ -1,4 +1,4 @@
-package lissa.heap.symbolicinput;
+package lissa.heap;
 
 import java.util.HashMap;
 import java.util.LinkedList;

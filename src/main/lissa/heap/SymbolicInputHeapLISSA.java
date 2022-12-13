@@ -42,7 +42,6 @@ import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ClassInfo;
-import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
 public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
 

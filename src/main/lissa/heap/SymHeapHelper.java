@@ -27,7 +27,6 @@ import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.heap.symbolicinput.SymbolicReferenceInput;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {

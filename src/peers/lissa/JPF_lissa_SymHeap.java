@@ -24,8 +24,8 @@ import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.SolvingStrategy;
-import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
 public class JPF_lissa_SymHeap extends NativePeer {
 

@@ -20,10 +20,10 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.SolvingStrategy;
-import lissa.heap.symbolicinput.SymbolicReferenceInput;
 
 public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
     public GETFIELDHeapSolving(String fieldName, String clsName, String fieldDescriptor) {

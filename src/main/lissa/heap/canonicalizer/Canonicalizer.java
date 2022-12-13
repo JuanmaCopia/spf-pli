@@ -2,7 +2,7 @@ package lissa.heap.canonicalizer;
 
 import korat.finitization.impl.CVElem;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.symbolicinput.SymbolicReferenceInput;
+import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.visitors.ReferenceFieldOnlyVisitor;
 import symsolve.vector.SymSolveVector;
 
