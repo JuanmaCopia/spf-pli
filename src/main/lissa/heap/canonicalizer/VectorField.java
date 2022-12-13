@@ -23,12 +23,12 @@ public class VectorField {
     public VectorField(CVElem elem, int indexInVector) {
         this.elem = elem;
         this.name = elem.getFieldName();
-        this.ownerClassName = elem.getObj().getClass().getSimpleName();
+        this.ownerClassName = elem.getObj().getClass().getName();
         this.value = DEFAULT_VALUE;
         this.indexInVector = indexInVector;
         this.domain = this.elem.getFieldDomain();
 
-        String fieldClassName = this.domain.getClassOfField().getSimpleName();
+        String fieldClassName = this.domain.getClassOfField().getName();
         this.signature = createFieldSignature(this.ownerClassName, this.name, fieldClassName);
     }
 

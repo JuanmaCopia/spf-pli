@@ -22,13 +22,13 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
 
     @Override
     public void setCurrentOwner(ClassInfo ownerObjectClass, int currentObjID) {
-        this.currentOwnerObjClassName = ownerObjectClass.getSimpleName();
+        this.currentOwnerObjClassName = ownerObjectClass.getName();
     }
 
     @Override
     public void setCurrentField(ClassInfo fieldClass, FieldInfo field) {
         this.currentFieldName = field.getName();
-        this.currentFieldClassName = fieldClass.getSimpleName();
+        this.currentFieldClassName = fieldClass.getName();
     }
 
     @Override
