@@ -15,7 +15,7 @@ public class LISSA extends LIBasedStrategy {
 
     public LISSA() {
         heapSolver = new SymSolveHeapSolver();
-        canonicalizer = new Canonicalizer(heapSolver.getVectorFormat());
+        canonicalizer = new Canonicalizer(heapSolver.getStructureList());
     }
 
     @Override
@@ -26,8 +26,8 @@ public class LISSA extends LIBasedStrategy {
 
     @Override
     public Integer getBoundForClass(String simpleClassName) {
-        HashMap<String, Integer> scopes = heapSolver.getDataScopes();
-        return scopes.get(simpleClassName);
+        HashMap<String, Integer> dataBounds = heapSolver.getDataBounds();
+        return dataBounds.get(simpleClassName);
     }
 
     @Override

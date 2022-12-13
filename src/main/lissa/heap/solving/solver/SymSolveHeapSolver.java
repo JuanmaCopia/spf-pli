@@ -3,6 +3,7 @@ package lissa.heap.solving.solver;
 import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
+import korat.finitization.impl.Finitization;
 import lissa.LISSAShell;
 import lissa.config.ConfigParser;
 import symsolve.SymSolve;
@@ -12,10 +13,13 @@ import symsolve.vector.SymSolveVector;
 public class SymSolveHeapSolver {
 
     SymSolve solver;
+    Finitization finitization;
     long solvingTime = 0;
 
     public SymSolveHeapSolver() {
         solver = createSymSolveInstance();
+        finitization = solver.getFinitization();
+        assert (finitization != null);
     }
 
     private SymSolve createSymSolveInstance() {
@@ -40,16 +44,20 @@ public class SymSolveHeapSolver {
         return result;
     }
 
-    public HashMap<String, Integer> getDataScopes() {
-        return solver.getScopes();
-    }
-
-    public CVElem[] getVectorFormat() {
-        return solver.getVectorFormat();
-    }
-
     public long getSolvingTime() {
         return solvingTime;
+    }
+
+    public Finitization getFinitization() {
+        return finitization;
+    }
+
+    public CVElem[] getStructureList() {
+        return finitization.getStateSpace().getStructureList();
+    }
+
+    public HashMap<String, Integer> getDataBounds() {
+        return finitization.getDataBounds();
     }
 
 }

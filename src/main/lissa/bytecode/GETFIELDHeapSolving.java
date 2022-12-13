@@ -77,10 +77,10 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
 
         ClassInfo typeClassInfo = fi.getTypeClassInfo(); // use this instead of fullType
-        String fieldSimpleClassName = typeClassInfo.getSimpleName();
+        String fullClassName = typeClassInfo.getName();
 
         if (!fi.isReference() || attr == null || attr instanceof StringExpression
-                || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fieldSimpleClassName)
+                || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fullClassName)
 
         ) {
             return super.execute(ti);
@@ -178,7 +178,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             // SymbolicHeap
 
             // ================ Modification Begin ================ //
-            Integer bound = heapSolvingStrategy.getBoundForClass(fieldSimpleClassName);
+            Integer bound = heapSolvingStrategy.getBoundForClass(fullClassName);
 
             // backtrack if the max bound of nodes has been reached
             if (numSymRefs == bound) {
