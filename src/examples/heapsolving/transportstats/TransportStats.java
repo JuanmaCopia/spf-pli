@@ -25,6 +25,10 @@ package heapsolving.transportstats;
 import java.util.HashSet;
 import java.util.Set;
 
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
+
 public class TransportStats {
 
     // private static final int PRINT_INTERVAL = 60 * 1000;
@@ -111,6 +115,23 @@ public class TransportStats {
         }
 
         return true;
+    }
+
+    public static IFinitization finTransportStats(int nodesNum) {
+        IFinitization f = FinitizationFactory.create(TransportStats.class);
+
+        IObjSet treemaps = f.createObjSet(TreeMap.class, 2, true);
+        f.set(TransportStats.class, "read_sizes", treemaps);
+        f.set(TransportStats.class, "write_sizes", treemaps);
+
+        IObjSet nodes = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
+        f.set(TreeMap.class, "root", nodes);
+        f.set(TreeMap.Entry.class, "left", nodes);
+        f.set(TreeMap.Entry.class, "right", nodes);
+        f.set(TreeMap.Entry.class, "parent", nodes);
+        f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
+
+        return f;
     }
 
 //  private void printStats() {
