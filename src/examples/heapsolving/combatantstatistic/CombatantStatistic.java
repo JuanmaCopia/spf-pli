@@ -28,10 +28,10 @@ import korat.finitization.impl.FinitizationFactory;
 
 /**
  * A statistic for combatants
- * 
+ *
  * TODO use separate classes for calculating and storing the statistics, so
  * statistics i.e. can be serialized
- * 
+ *
  * @author daniel
  */
 
@@ -66,7 +66,7 @@ public class CombatantStatistic {
 
     /**
      * create statistics for the given number of rounds.
-     * 
+     *
      * @param numberOfRounds
      */
     public CombatantStatistic(final int numberOfRounds) {
@@ -115,7 +115,7 @@ public class CombatantStatistic {
             return false;
 
         DataSet h;
-        for (HashMapIntDataSet.EntryIDS e : allData.entrySet()) {
+        for (HashMapIntDataSet.Entry e : allData.entrySet()) {
             h = e.getValue();
             if (h != null && !h.repOK())
                 return false;
@@ -130,7 +130,7 @@ public class CombatantStatistic {
         IObjSet hashmap = f.createObjSet(HashMapIntDataSet.class, 1, true);
         f.set(CombatantStatistic.class, "allData", hashmap);
 
-        IObjSet entries = f.createObjSet(HashMapIntDataSet.EntryIDS.class, nodesNum, true);
+        IObjSet entries = f.createObjSet(HashMapIntDataSet.Entry.class, nodesNum, true);
         f.set(HashMapIntDataSet.class, "e0", entries);
         f.set(HashMapIntDataSet.class, "e1", entries);
         f.set(HashMapIntDataSet.class, "e2", entries);
@@ -141,13 +141,13 @@ public class CombatantStatistic {
         f.set(HashMapIntDataSet.class, "e7", entries);
 
         IObjSet datasets = f.createObjSet(DataSet.class, nodesNum, true);
-        f.set(HashMapIntDataSet.EntryIDS.class, "value", datasets);
-        f.set(HashMapIntDataSet.EntryIDS.class, "next", entries);
+        f.set(HashMapIntDataSet.Entry.class, "value", datasets);
+        f.set(HashMapIntDataSet.Entry.class, "next", entries);
 
         IObjSet hashmap2 = f.createObjSet(HashMapIntList.class, nodesNum, true);
         f.set(DataSet.class, "valuesPerSide", hashmap2);
 
-        IObjSet entries2 = f.createObjSet(HashMapIntList.EntryIL.class, nodesNum, true);
+        IObjSet entries2 = f.createObjSet(HashMapIntList.Entry.class, nodesNum, true);
         f.set(HashMapIntList.class, "e0", entries2);
         f.set(HashMapIntList.class, "e1", entries2);
         f.set(HashMapIntList.class, "e2", entries2);
@@ -158,8 +158,8 @@ public class CombatantStatistic {
         f.set(HashMapIntList.class, "e7", entries2);
 
         IObjSet list = f.createObjSet(LinkedList.class, nodesNum, true);
-        f.set(HashMapIntList.EntryIL.class, "value", list);
-        f.set(HashMapIntList.EntryIL.class, "next", entries2);
+        f.set(HashMapIntList.Entry.class, "value", list);
+        f.set(HashMapIntList.Entry.class, "next", entries2);
 
         IObjSet listNodes = f.createObjSet(LinkedList.Entry.class, nodesNum * nodesNum, true);
         f.set(LinkedList.class, "header", listNodes);
@@ -174,7 +174,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		// some data may not be present in old logs (ie. since 1.29 charlevel
 //		// and charclass were added)
 //		if (!allData.containsKey(stat)) {
@@ -190,7 +190,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.AVERAGE);
 //	}
 //
@@ -199,7 +199,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.SUM);
 //	}
 
@@ -208,7 +208,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.AMOUNT);
 //	}
 //
@@ -217,7 +217,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.POSITIVE_AVERAGE);
 //	}
 //
@@ -226,7 +226,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.POSITIVE_SUM);
 //	}
 //
@@ -235,7 +235,7 @@ public class CombatantStatistic {
 //			throw new IllegalArgumentException("wrong type!");
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return aggregate(stat, side, DataAggregationType.POSITIVE_AMOUNT);
 //	}
 
@@ -245,7 +245,7 @@ public class CombatantStatistic {
 //	public int numberOfPlayers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		// just a stat that is available for all combatants
 //		return (int) Math.round(getCount(8, side));
 //	}
@@ -256,7 +256,7 @@ public class CombatantStatistic {
 //	public int survivedPlayers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getPositiveCount(7, side));
 //	}
 
@@ -266,7 +266,7 @@ public class CombatantStatistic {
 //	public double initialHealthPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getAverage(8, side));
 //	}
 //
@@ -276,7 +276,7 @@ public class CombatantStatistic {
 //	public double averageWeaponDamage(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final DataSet allMinDamage = allData.get(10);
 //		final DataSet allMaxDamage = allData.get(11);
 //		if (allMinDamage == null || allMaxDamage == null) {
@@ -296,7 +296,7 @@ public class CombatantStatistic {
 //	public double causedDamagePerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(2, side);
 //	}
 //
@@ -306,7 +306,7 @@ public class CombatantStatistic {
 //	public int shotsFiredWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(1, side) + getSum(5, side));
 //	}
 //
@@ -316,7 +316,7 @@ public class CombatantStatistic {
 //	public int hitsWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(1, side));
 //	}
 //
@@ -326,7 +326,7 @@ public class CombatantStatistic {
 //	public double averageLifetime(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final int totalPlayers = (int) getCount(12, side);
 //		if (totalPlayers == 0) {
 //			return 0.0;
@@ -341,7 +341,7 @@ public class CombatantStatistic {
 //	private int numberOfClass(final CharacterClass charClass, final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final DataSet data = allData.get(14);
 //		// only available since v1.29
 //		if (data == null) {
@@ -357,7 +357,7 @@ public class CombatantStatistic {
 //	public int numberOfAdventurers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return numberOfClass(CharacterClass.ADVENTURER, side);
 //	}
 //
@@ -367,7 +367,7 @@ public class CombatantStatistic {
 //	public int numberOfDuelants(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return numberOfClass(CharacterClass.DUELANT, side);
 //	}
 //
@@ -377,7 +377,7 @@ public class CombatantStatistic {
 //	public int numberOfGreenhorns(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return numberOfClass(CharacterClass.GREENHORN, side);
 //	}
 //
@@ -387,7 +387,7 @@ public class CombatantStatistic {
 //	public int numberOfSoldiers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return numberOfClass(CharacterClass.SOLDIER, side);
 //	}
 //
@@ -397,7 +397,7 @@ public class CombatantStatistic {
 //	public int numberOfWorkers(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return numberOfClass(CharacterClass.WORKER, side);
 //	}
 
@@ -407,7 +407,7 @@ public class CombatantStatistic {
 //	public double averageLevel(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(13, side);
 //	}
 //
@@ -417,7 +417,7 @@ public class CombatantStatistic {
 //	public int initialHealthWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(8, side));
 //	}
 //
@@ -427,7 +427,7 @@ public class CombatantStatistic {
 //	public int endHealthPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getPositiveAverage(7, side));
 //	}
 //
@@ -437,7 +437,7 @@ public class CombatantStatistic {
 //	public int endHealthWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getPositiveSum(7, side));
 //	}
 //
@@ -447,7 +447,7 @@ public class CombatantStatistic {
 //	public int maxPossibleHealthPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getAverage(9, side));
 //	}
 //
@@ -457,7 +457,7 @@ public class CombatantStatistic {
 //	public int maxPossibleHealthWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(9, side));
 //	}
 //
@@ -467,7 +467,7 @@ public class CombatantStatistic {
 //	public int causedDamageWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(2, side));
 //	}
 //
@@ -477,7 +477,7 @@ public class CombatantStatistic {
 //	public double shotsFiredPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(1, side) + getAverage(5, side);
 //	}
 //
@@ -487,7 +487,7 @@ public class CombatantStatistic {
 //	public double hitsPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(1, side);
 //	}
 //
@@ -497,7 +497,7 @@ public class CombatantStatistic {
 //	public double takenDamagePerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(3, side);
 //	}
 //
@@ -507,7 +507,7 @@ public class CombatantStatistic {
 //	public int takenDamageWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(3, side));
 //	}
 
@@ -517,7 +517,7 @@ public class CombatantStatistic {
 //	public double averageHitDamage(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		// don't count the misses
 //		final double teamHits = hitsWholeSide(side);
 //		if (teamHits == 0) {
@@ -534,7 +534,7 @@ public class CombatantStatistic {
 //	public double dodgesPerPlayer(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return getAverage(4, side);
 //	}
 //
@@ -544,7 +544,7 @@ public class CombatantStatistic {
 //	public int dodgesWholeSide(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		return (int) Math.round(getSum(4, side));
 //	}
 //
@@ -554,7 +554,7 @@ public class CombatantStatistic {
 //	public SortedMap<Number, Number> healthDistribution(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		// initialize map
 //		final SortedMap<Number, Number> result = new TreeMap<Number, Number>();
 //		final int maxHP = 14000;
@@ -585,7 +585,7 @@ public class CombatantStatistic {
 //	public SortedMap<Number, Double> healthDistributionRelative(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final SortedMap<Number, Number> distribution = healthDistribution(side);
 //		final TreeMap<Number, Double> result = new TreeMap<Number, Double>();
 //		final double totalPlayers = numberOfPlayers(side);

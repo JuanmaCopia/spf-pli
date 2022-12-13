@@ -67,7 +67,7 @@ import java.util.Set;
  * object exists, the map should be "wrapped" using the
  * <tt>Collections.synchronizedMap</tt> method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the map:
- * 
+ *
  * <pre>
  *  Map m = Collections.synchronizedMap(new HashMap(...));
  * </pre>
@@ -126,16 +126,16 @@ public class HashMapIntDataSet {
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
      */
-    // transient EntryIDS[] table;
+    // transient Entry[] table;
 
-    EntryIDS e0;
-    EntryIDS e1;
-    EntryIDS e2;
-    EntryIDS e3;
-    EntryIDS e4;
-    EntryIDS e5;
-    EntryIDS e6;
-    EntryIDS e7;
+    Entry e0;
+    Entry e1;
+    Entry e2;
+    Entry e3;
+    Entry e4;
+    Entry e5;
+    Entry e6;
+    Entry e7;
 
     /**
      * The number of key-value mappings contained in this identity hash map.
@@ -144,7 +144,7 @@ public class HashMapIntDataSet {
 
     /**
      * The next size value at which to resize (capacity * load factor).
-     * 
+     *
      * @serial
      */
     int threshold;
@@ -172,7 +172,7 @@ public class HashMapIntDataSet {
     public HashMapIntDataSet() {
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
-//    table = new EntryIDS[DEFAULT_INITIAL_CAPACITY];
+//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -187,7 +187,7 @@ public class HashMapIntDataSet {
     void init() {
     }
 
-    EntryIDS getTable(int index) {
+    Entry getTable(int index) {
         switch (index) {
         case 0:
             return e0;
@@ -210,7 +210,7 @@ public class HashMapIntDataSet {
         }
     }
 
-    void setTable(int index, EntryIDS entry) {
+    void setTable(int index, Entry entry) {
         switch (index) {
         case 0:
             e0 = entry;
@@ -304,8 +304,8 @@ public class HashMapIntDataSet {
     public DataSet get(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIDS e = table[i];
-        EntryIDS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (true) {
             if (e == null)
                 return null;
@@ -324,8 +324,8 @@ public class HashMapIntDataSet {
     public boolean containsKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIDS e = table[i];
-        EntryIDS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
                 return true;
@@ -338,11 +338,11 @@ public class HashMapIntDataSet {
      * Returns the entry associated with the specified key in the HashMap. Returns
      * null if the HashMap contains no mapping for this key.
      */
-    EntryIDS getEntryIDS(int key) {
+    Entry getEntry(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIDS e = table[i];
-        EntryIDS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
         return e;
@@ -363,7 +363,7 @@ public class HashMapIntDataSet {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
-        for (EntryIDS e = getTable(i); e != null; e = e.next) {
+        for (Entry e = getTable(i); e != null; e = e.next) {
             if (e.hash == hash && eq(key, e.key)) {
                 DataSet oldValue = e.value;
                 e.value = value;
@@ -373,7 +373,7 @@ public class HashMapIntDataSet {
         }
 
         modCount++;
-        addEntryIDS(hash, key, value, i);
+        addEntry(hash, key, value, i);
         return null;
     }
 
@@ -387,7 +387,7 @@ public class HashMapIntDataSet {
      *         specified key.
      */
     public DataSet remove(int key) {
-        EntryIDS e = removeEntryIDSForKey(key);
+        Entry e = removeEntryForKey(key);
         return (e == null ? null : e.value);
     }
 
@@ -395,14 +395,14 @@ public class HashMapIntDataSet {
      * Removes and returns the entry associated with the specified key in the
      * HashMap. Returns null if the HashMap contains no mapping for this key.
      */
-    EntryIDS removeEntryIDSForKey(int key) {
+    Entry removeEntryForKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntryIDS prev = getTable(i);
-        EntryIDS e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntryIDS next = e.next;
+            Entry next = e.next;
             if (e.hash == hash && eq(key, e.key)) {
                 modCount++;
                 size--;
@@ -421,22 +421,22 @@ public class HashMapIntDataSet {
     }
 
     /**
-     * Special version of remove for EntryIDSSet.
+     * Special version of remove for EntrySet.
      */
-    EntryIDS removeMapping(Object o) {
-        if (!(o instanceof EntryIDS)) {
+    Entry removeMapping(Object o) {
+        if (!(o instanceof Entry)) {
             return null;
         }
 
-        EntryIDS entry = (EntryIDS) o;
+        Entry entry = (Entry) o;
         int k = entry.getKey();
         int hash = hash(k);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntryIDS prev = getTable(i);
-        EntryIDS e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntryIDS next = e.next;
+            Entry next = e.next;
             if (e.hash == hash && e.equals(entry)) {
                 modCount++;
                 size--;
@@ -478,7 +478,7 @@ public class HashMapIntDataSet {
         }
 
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntryIDS e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (value.equals(e.value))
                     return true;
         return false;
@@ -489,22 +489,22 @@ public class HashMapIntDataSet {
      **/
     private boolean containsNullValue() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntryIDS e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (e.value == null)
                     return true;
         return false;
     }
 
-    public static class EntryIDS {
+    public static class Entry {
         final int key;
         DataSet value;
         final int hash;
-        EntryIDS next;
+        Entry next;
 
         /**
          * Create new entry.
          */
-        EntryIDS(int h, int k, DataSet v, EntryIDS n) {
+        Entry(int h, int k, DataSet v, Entry n) {
             value = v;
             next = n;
             key = k;
@@ -526,9 +526,9 @@ public class HashMapIntDataSet {
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof EntryIDS))
+            if (!(o instanceof Entry))
                 return false;
-            EntryIDS e = (EntryIDS) o;
+            Entry e = (Entry) o;
             int k1 = getKey();
             int k2 = e.getKey();
             if (k1 == k2) {
@@ -569,43 +569,43 @@ public class HashMapIntDataSet {
      *
      * Subclass overrides this to alter the behavior of put method.
      */
-    void addEntryIDS(int hash, int key, DataSet value, int bucketIndex) {
-        setTable(bucketIndex, new EntryIDS(hash, key, value, getTable(bucketIndex)));
+    void addEntry(int hash, int key, DataSet value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
-     * Like addEntryIDS except that this version is used when creating entries as
+     * Like addEntry except that this version is used when creating entries as
      * part of Map construction or "pseudo-construction" (cloning, deserialization).
      * This version needn't worry about resizing the table.
      *
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
      */
-    void createEntryIDS(int hash, int key, DataSet value, int bucketIndex) {
-        setTable(bucketIndex, new EntryIDS(hash, key, value, getTable(bucketIndex)));
+    void createEntry(int hash, int key, DataSet value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         size++;
     }
 
-    private void addEntriesToEntryIDSSet(Set<EntryIDS> es, EntryIDS e) {
-        EntryIDS current = e;
+    private void addEntriesToEntrySet(Set<Entry> es, Entry e) {
+        Entry current = e;
         while (current != null) {
             es.add(current);
             current = current.next;
         }
     }
 
-    public Set<EntryIDS> entrySet() {
-        Set<EntryIDS> es = new HashSet<EntryIDS>();
+    public Set<Entry> entrySet() {
+        Set<Entry> es = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            addEntriesToEntryIDSSet(es, getTable(i));
+            addEntriesToEntrySet(es, getTable(i));
         return es;
     }
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    private boolean isLL(EntryIDS e, HashSet<EntryIDS> visited) {
-        EntryIDS current = e;
+    private boolean isLL(Entry e, HashSet<Entry> visited) {
+        Entry current = e;
         while (current != null) {
             if (!visited.add(current))
                 return false;
@@ -615,7 +615,7 @@ public class HashMapIntDataSet {
     }
 
     public boolean repOK() {
-        HashSet<EntryIDS> visited = new HashSet<EntryIDS>();
+        HashSet<Entry> visited = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
             if (!isLL(getTable(i), visited))
                 return false;

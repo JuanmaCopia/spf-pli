@@ -129,16 +129,16 @@ public class HashMapIntList {
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
      */
-    // transient EntryIL[] table;
+    // transient Entry[] table;
 
-    EntryIL e0;
-    EntryIL e1;
-    EntryIL e2;
-    EntryIL e3;
-    EntryIL e4;
-    EntryIL e5;
-    EntryIL e6;
-    EntryIL e7;
+    Entry e0;
+    Entry e1;
+    Entry e2;
+    Entry e3;
+    Entry e4;
+    Entry e5;
+    Entry e6;
+    Entry e7;
 
     /**
      * The number of key-value mappings contained in this identity hash map.
@@ -175,7 +175,7 @@ public class HashMapIntList {
     public HashMapIntList() {
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
-//    table = new EntryIL[DEFAULT_INITIAL_CAPACITY];
+//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -190,7 +190,7 @@ public class HashMapIntList {
     void init() {
     }
 
-    EntryIL getTable(int index) {
+    Entry getTable(int index) {
         switch (index) {
         case 0:
             return e0;
@@ -213,7 +213,7 @@ public class HashMapIntList {
         }
     }
 
-    void setTable(int index, EntryIL entry) {
+    void setTable(int index, Entry entry) {
         switch (index) {
         case 0:
             e0 = entry;
@@ -307,8 +307,8 @@ public class HashMapIntList {
     public LinkedList get(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIL e = table[i];
-        EntryIL e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (true) {
             if (e == null)
                 return null;
@@ -327,8 +327,8 @@ public class HashMapIntList {
     public boolean containsKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIL e = table[i];
-        EntryIL e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
                 return true;
@@ -341,11 +341,11 @@ public class HashMapIntList {
      * Returns the entry associated with the specified key in the HashMap. Returns
      * null if the HashMap contains no mapping for this key.
      */
-    EntryIL getEntryIL(int key) {
+    Entry getEntry(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntryIL e = table[i];
-        EntryIL e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
         return e;
@@ -366,7 +366,7 @@ public class HashMapIntList {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
-        for (EntryIL e = getTable(i); e != null; e = e.next) {
+        for (Entry e = getTable(i); e != null; e = e.next) {
             if (e.hash == hash && eq(key, e.key)) {
                 LinkedList oldValue = e.value;
                 e.value = value;
@@ -376,7 +376,7 @@ public class HashMapIntList {
         }
 
         modCount++;
-        addEntryIL(hash, key, value, i);
+        addEntry(hash, key, value, i);
         return null;
     }
 
@@ -390,7 +390,7 @@ public class HashMapIntList {
      *         specified key.
      */
     public LinkedList remove(int key) {
-        EntryIL e = removeEntryILForKey(key);
+        Entry e = removeEntryForKey(key);
         return (e == null ? null : e.value);
     }
 
@@ -398,14 +398,14 @@ public class HashMapIntList {
      * Removes and returns the entry associated with the specified key in the
      * HashMap. Returns null if the HashMap contains no mapping for this key.
      */
-    EntryIL removeEntryILForKey(int key) {
+    Entry removeEntryForKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntryIL prev = getTable(i);
-        EntryIL e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntryIL next = e.next;
+            Entry next = e.next;
             if (e.hash == hash && eq(key, e.key)) {
                 modCount++;
                 size--;
@@ -424,22 +424,22 @@ public class HashMapIntList {
     }
 
     /**
-     * Special version of remove for EntryILSet.
+     * Special version of remove for EntrySet.
      */
-    EntryIL removeMapping(Object o) {
-        if (!(o instanceof EntryIL)) {
+    Entry removeMapping(Object o) {
+        if (!(o instanceof Entry)) {
             return null;
         }
 
-        EntryIL entry = (EntryIL) o;
+        Entry entry = (Entry) o;
         int k = entry.getKey();
         int hash = hash(k);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntryIL prev = getTable(i);
-        EntryIL e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntryIL next = e.next;
+            Entry next = e.next;
             if (e.hash == hash && e.equals(entry)) {
                 modCount++;
                 size--;
@@ -481,7 +481,7 @@ public class HashMapIntList {
         }
 
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntryIL e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (value.equals(e.value))
                     return true;
         return false;
@@ -492,22 +492,22 @@ public class HashMapIntList {
      **/
     private boolean containsNullValue() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntryIL e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (e.value == null)
                     return true;
         return false;
     }
 
-    public static class EntryIL {
+    public static class Entry {
         final int key;
         LinkedList value;
         final int hash;
-        EntryIL next;
+        Entry next;
 
         /**
          * Create new entry.
          */
-        EntryIL(int h, int k, LinkedList v, EntryIL n) {
+        Entry(int h, int k, LinkedList v, Entry n) {
             value = v;
             next = n;
             key = k;
@@ -529,9 +529,9 @@ public class HashMapIntList {
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof EntryIL))
+            if (!(o instanceof Entry))
                 return false;
-            EntryIL e = (EntryIL) o;
+            Entry e = (Entry) o;
             int k1 = getKey();
             int k2 = e.getKey();
             if (k1 == k2) {
@@ -572,43 +572,43 @@ public class HashMapIntList {
      *
      * Subclass overrides this to alter the behavior of put method.
      */
-    void addEntryIL(int hash, int key, LinkedList value, int bucketIndex) {
-        setTable(bucketIndex, new EntryIL(hash, key, value, getTable(bucketIndex)));
+    void addEntry(int hash, int key, LinkedList value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
-     * Like addEntryIL except that this version is used when creating entries as
+     * Like addEntry except that this version is used when creating entries as
      * part of Map construction or "pseudo-construction" (cloning, deserialization).
      * This version needn't worry about resizing the table.
      *
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
      */
-    void createEntryIL(int hash, int key, LinkedList value, int bucketIndex) {
-        setTable(bucketIndex, new EntryIL(hash, key, value, getTable(bucketIndex)));
+    void createEntry(int hash, int key, LinkedList value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         size++;
     }
 
-    private void addEntriesToEntryILSet(Set<EntryIL> es, EntryIL e) {
-        EntryIL current = e;
+    private void addEntriesToEntrySet(Set<Entry> es, Entry e) {
+        Entry current = e;
         while (current != null) {
             es.add(current);
             current = current.next;
         }
     }
 
-    public Set<EntryIL> entrySet() {
-        Set<EntryIL> es = new HashSet<EntryIL>();
+    public Set<Entry> entrySet() {
+        Set<Entry> es = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            addEntriesToEntryILSet(es, getTable(i));
+            addEntriesToEntrySet(es, getTable(i));
         return es;
     }
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    private boolean isLL(EntryIL e, HashSet<EntryIL> visited) {
-        EntryIL current = e;
+    private boolean isLL(Entry e, HashSet<Entry> visited) {
+        Entry current = e;
         while (current != null) {
             if (!visited.add(current))
                 return false;
@@ -622,13 +622,13 @@ public class HashMapIntList {
             if (getTable(i) != null)
                 return false;
 
-        HashSet<EntryIL> visited = new HashSet<EntryIL>();
+        HashSet<Entry> visited = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             if (!isLL(getTable(i), visited))
                 return false;
         }
 
-        for (EntryIL e : visited) {
+        for (Entry e : visited) {
             LinkedList list = e.getValue();
             if (list != null && !list.repOK())
                 return false;
