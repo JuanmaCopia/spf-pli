@@ -7,8 +7,11 @@
 
 package heapsolving.dictionaryinfo;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -375,7 +378,7 @@ public class TreeMap {
      * Node in the Tree. Doubles as a means to pass key-value pairs back to user
      * (see Map.Entry).
      */
-    static class Entry {
+    public static class Entry {
         int key;
         Object value;
         Entry left = null;
