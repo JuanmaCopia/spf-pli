@@ -33,7 +33,7 @@ public class Template {
 //	protected final HSSFSheet sheet;
     public LinkedList parameters = new LinkedList();
     public HashMapStrPar parametersByName = new HashMapStrPar();
-//	private final Map<Integer,Map<Integer,Parameter>> paramsByRowCol = new HashMap<Integer,Map<Integer,Parameter>>();    
+//	private final Map<Integer,Map<Integer,Parameter>> paramsByRowCol = new HashMap<Integer,Map<Integer,Parameter>>();
 
     public Template(String name) {
         this.name = name;
@@ -183,7 +183,7 @@ public class Template {
         f.set(LinkedList.Entry.class, "next", nodes);
         f.set(LinkedList.Entry.class, "previous", nodes);
 
-        IObjSet entries = f.createObjSet(HashMapStrPar.EntrySP.class, nodesNum, true);
+        IObjSet entries = f.createObjSet(HashMapStrPar.Entry.class, nodesNum, true);
         f.set(HashMapStrPar.class, "e0", entries);
         f.set(HashMapStrPar.class, "e1", entries);
         f.set(HashMapStrPar.class, "e2", entries);
@@ -201,7 +201,7 @@ public class Template {
         f.set(HashMapStrPar.class, "e14", entries);
         f.set(HashMapStrPar.class, "e15", entries);
 
-        f.set(HashMapStrPar.EntrySP.class, "next", entries);
+        f.set(HashMapStrPar.Entry.class, "next", entries);
 
         return f;
     }
