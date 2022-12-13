@@ -1,14 +1,17 @@
 package myexample;
 
+import gov.nasa.jpf.symbc.Debug;
 import heapsolving.treemap.TreeMap;
-import lissa.SymHeap;
 
 public class Example {
 
     public static void main(String[] args) {
         TreeMap tree = new TreeMap();
-        for (int i = 1; i <= 7; i++) {
-            tree.put(SymHeap.makeSymbolicInteger("N" + i), new Object());
+        tree = (TreeMap) Debug.makeSymbolicRef("tree", tree);
+
+        if (tree != null && tree.repOK()) {
+            tree.put(Debug.makeSymbolicInteger("INPUTKEY"), new Object());
         }
+
     }
 }
