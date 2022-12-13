@@ -95,7 +95,6 @@ public class SymHeapHelper {
 
         initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
 
-
         // Put symbolic array in PC if we create a new array.
         if (typeClassInfo.isArray()) {
             String typeClass = typeClassInfo.getType();
