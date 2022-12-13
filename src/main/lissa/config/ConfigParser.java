@@ -1,4 +1,4 @@
-package lissa.heap.solving.config;
+package lissa.config;
 
 import gov.nasa.jpf.Config;
 import symsolve.explorers.impl.SymmetryBreakStrategy;

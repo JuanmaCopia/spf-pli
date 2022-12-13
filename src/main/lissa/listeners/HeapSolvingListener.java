@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.search.Search;
-import lissa.heap.solving.config.ConfigParser;
+import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;

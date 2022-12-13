@@ -8,7 +8,7 @@ import lissa.LISSAShell;
 import lissa.bytecode.ALOAD;
 import lissa.bytecode.GETFIELDHeapSolving;
 import lissa.bytecode.GETSTATIC;
-import lissa.heap.solving.config.SolvingStrategyEnum;
+import lissa.config.SolvingStrategyEnum;
 
 public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 

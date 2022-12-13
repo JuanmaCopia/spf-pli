@@ -1,4 +1,4 @@
-package lissa.heap.solving.config;
+package lissa.config;
 
 public class MissingConfigurationValueException extends RuntimeException {
 

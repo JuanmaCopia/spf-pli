@@ -20,10 +20,10 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.config.ConfigParser;
+import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.config.ConfigParser;
-import lissa.heap.solving.config.SolvingStrategyEnum;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.symbolicinput.SymbolicReferenceInput;
 

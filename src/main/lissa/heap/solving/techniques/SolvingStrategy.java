@@ -2,7 +2,7 @@ package lissa.heap.solving.techniques;
 
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.heap.solving.config.ConfigParser;
+import lissa.config.ConfigParser;
 import symsolve.explorers.impl.SymmetryBreakStrategy;
 
 public class SolvingStrategy {

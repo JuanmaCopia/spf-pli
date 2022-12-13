@@ -7,7 +7,7 @@ import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
 import gov.nasa.jpf.JPFShell;
 import gov.nasa.jpf.PropertyListenerAdapter;
-import lissa.heap.solving.config.ConfigParser;
+import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.listeners.HeapSolvingListener;
 

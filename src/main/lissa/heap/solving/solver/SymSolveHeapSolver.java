@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
 import lissa.LISSAShell;
-import lissa.heap.solving.config.ConfigParser;
+import lissa.config.ConfigParser;
 import symsolve.SymSolve;
 import symsolve.config.SolverConfig;
 import symsolve.vector.SymSolveVector;
