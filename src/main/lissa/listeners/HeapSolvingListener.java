@@ -9,7 +9,7 @@ import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
 import lissa.heap.solving.techniques.SolvingStrategy;
-import lissa.heap.solving.utils.Utils;
+import lissa.utils.Utils;
 
 public class HeapSolvingListener extends PropertyListenerAdapter {
 
