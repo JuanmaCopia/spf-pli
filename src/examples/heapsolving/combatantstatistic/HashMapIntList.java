@@ -7,7 +7,10 @@
 
 package heapsolving.combatantstatistic;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -495,7 +498,7 @@ public class HashMapIntList {
         return false;
     }
 
-    static class EntryIL {
+    public static class EntryIL {
         final int key;
         LinkedList value;
         final int hash;
