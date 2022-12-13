@@ -86,7 +86,7 @@ public class SQLFilterClauses implements Serializable {
 
         // Set<Entry> es = _sqlClauseInformation.entrySet();
         HashMapStrStr h;
-        for (HashMapStrHmap.EntrySH e : _sqlClauseInformation.entrySet()) {
+        for (HashMapStrHmap.Entry e : _sqlClauseInformation.entrySet()) {
             h = e.getValue();
             if (h != null && !h.repOK())
                 return false;
@@ -101,7 +101,7 @@ public class SQLFilterClauses implements Serializable {
         IObjSet hashmap = f.createObjSet(HashMapStrHmap.class, 1, true);
         f.set(SQLFilterClauses.class, "_sqlClauseInformation", hashmap);
 
-        IObjSet entries = f.createObjSet(HashMapStrHmap.EntrySH.class, nodesNum, true);
+        IObjSet entries = f.createObjSet(HashMapStrHmap.Entry.class, nodesNum, true);
         f.set(HashMapStrHmap.class, "e0", entries);
         f.set(HashMapStrHmap.class, "e1", entries);
         f.set(HashMapStrHmap.class, "e2", entries);
@@ -112,10 +112,10 @@ public class SQLFilterClauses implements Serializable {
         f.set(HashMapStrHmap.class, "e7", entries);
 
         IObjSet subhashmaps = f.createObjSet(HashMapStrStr.class, nodesNum, true);
-        f.set(HashMapStrHmap.EntrySH.class, "value", subhashmaps);
-        f.set(HashMapStrHmap.EntrySH.class, "next", entries);
+        f.set(HashMapStrHmap.Entry.class, "value", subhashmaps);
+        f.set(HashMapStrHmap.Entry.class, "next", entries);
 
-        IObjSet entries2 = f.createObjSet(HashMapStrStr.EntrySS.class, nodesNum, true);
+        IObjSet entries2 = f.createObjSet(HashMapStrStr.Entry.class, nodesNum, true);
         f.set(HashMapStrStr.class, "e0", entries2);
         f.set(HashMapStrStr.class, "e1", entries2);
         f.set(HashMapStrStr.class, "e2", entries2);
@@ -125,7 +125,7 @@ public class SQLFilterClauses implements Serializable {
         f.set(HashMapStrStr.class, "e6", entries2);
         f.set(HashMapStrStr.class, "e7", entries2);
 
-        f.set(HashMapStrStr.EntrySS.class, "next", entries2);
+        f.set(HashMapStrStr.Entry.class, "next", entries2);
         return f;
     }
 

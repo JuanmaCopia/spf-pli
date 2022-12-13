@@ -69,7 +69,7 @@ import gov.nasa.jpf.vm.Verify;
  * object exists, the map should be "wrapped" using the
  * <tt>Collections.synchronizedMap</tt> method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the map:
- * 
+ *
  * <pre>
  *  Map m = Collections.synchronizedMap(new HashMap(...));
  * </pre>
@@ -128,16 +128,16 @@ public class HashMapStrStr {
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
      */
-    // transient EntrySS[] table;
+    // transient Entry[] table;
 
-    EntrySS e0;
-    EntrySS e1;
-    EntrySS e2;
-    EntrySS e3;
-    EntrySS e4;
-    EntrySS e5;
-    EntrySS e6;
-    EntrySS e7;
+    Entry e0;
+    Entry e1;
+    Entry e2;
+    Entry e3;
+    Entry e4;
+    Entry e5;
+    Entry e6;
+    Entry e7;
 
     /**
      * The number of key-value mappings contained in this identity hash map.
@@ -146,7 +146,7 @@ public class HashMapStrStr {
 
     /**
      * The next size value at which to resize (capacity * load factor).
-     * 
+     *
      * @serial
      */
     int threshold;
@@ -174,7 +174,7 @@ public class HashMapStrStr {
     public HashMapStrStr() {
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
-//    table = new EntrySS[DEFAULT_INITIAL_CAPACITY];
+//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -189,7 +189,7 @@ public class HashMapStrStr {
     void init() {
     }
 
-    EntrySS getTable(int index) {
+    Entry getTable(int index) {
         switch (index) {
         case 0:
             return e0;
@@ -212,31 +212,31 @@ public class HashMapStrStr {
         }
     }
 
-    void setTable(int index, EntrySS EntrySS) {
+    void setTable(int index, Entry Entry) {
         switch (index) {
         case 0:
-            e0 = EntrySS;
+            e0 = Entry;
             break;
         case 1:
-            e1 = EntrySS;
+            e1 = Entry;
             break;
         case 2:
-            e2 = EntrySS;
+            e2 = Entry;
             break;
         case 3:
-            e3 = EntrySS;
+            e3 = Entry;
             break;
         case 4:
-            e4 = EntrySS;
+            e4 = Entry;
             break;
         case 5:
-            e5 = EntrySS;
+            e5 = Entry;
             break;
         case 6:
-            e6 = EntrySS;
+            e6 = Entry;
             break;
         case 7:
-            e7 = EntrySS;
+            e7 = Entry;
             break;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
@@ -306,8 +306,8 @@ public class HashMapStrStr {
     public String get(String key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntrySS e = table[i];
-        EntrySS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (true) {
             if (e == null)
                 return null;
@@ -326,8 +326,8 @@ public class HashMapStrStr {
     public boolean containsKey(String key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntrySS e = table[i];
-        EntrySS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
                 return true;
@@ -337,14 +337,14 @@ public class HashMapStrStr {
     }
 
     /**
-     * Returns the EntrySS associated with the specified key in the HashMap. Returns
+     * Returns the Entry associated with the specified key in the HashMap. Returns
      * null if the HashMap contains no mapping for this key.
      */
-    EntrySS getEntrySS(String key) {
+    Entry getEntry(String key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    EntrySS e = table[i];
-        EntrySS e = getTable(i);
+//    Entry e = table[i];
+        Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
         return e;
@@ -365,7 +365,7 @@ public class HashMapStrStr {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
-        for (EntrySS e = getTable(i); e != null; e = e.next) {
+        for (Entry e = getTable(i); e != null; e = e.next) {
             if (e.hash == hash && eq(key, e.key)) {
                 String oldValue = e.value;
                 e.value = value;
@@ -375,7 +375,7 @@ public class HashMapStrStr {
         }
 
         modCount++;
-        addEntrySS(hash, key, value, i);
+        addEntry(hash, key, value, i);
         return null;
     }
 
@@ -389,22 +389,22 @@ public class HashMapStrStr {
      *         specified key.
      */
     public String remove(String key) {
-        EntrySS e = removeEntrySSForKey(key);
+        Entry e = removeEntryForKey(key);
         return (e == null ? null : e.value);
     }
 
     /**
-     * Removes and returns the EntrySS associated with the specified key in the
+     * Removes and returns the Entry associated with the specified key in the
      * HashMap. Returns null if the HashMap contains no mapping for this key.
      */
-    EntrySS removeEntrySSForKey(String key) {
+    Entry removeEntryForKey(String key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntrySS prev = getTable(i);
-        EntrySS e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntrySS next = e.next;
+            Entry next = e.next;
             if (e.hash == hash && eq(key, e.key)) {
                 modCount++;
                 size--;
@@ -423,23 +423,23 @@ public class HashMapStrStr {
     }
 
     /**
-     * Special version of remove for EntrySSSet.
+     * Special version of remove for EntrySet.
      */
-    EntrySS removeMapping(Object o) {
-        if (!(o instanceof EntrySS)) {
+    Entry removeMapping(Object o) {
+        if (!(o instanceof Entry)) {
             return null;
         }
 
-        EntrySS EntrySS = (EntrySS) o;
-        String k = EntrySS.getKey();
+        Entry Entry = (Entry) o;
+        String k = Entry.getKey();
         int hash = hash(k);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-        EntrySS prev = getTable(i);
-        EntrySS e = prev;
+        Entry prev = getTable(i);
+        Entry e = prev;
 
         while (e != null) {
-            EntrySS next = e.next;
-            if (e.hash == hash && e.equals(EntrySS)) {
+            Entry next = e.next;
+            if (e.hash == hash && e.equals(Entry)) {
                 modCount++;
                 size--;
                 if (prev == e)
@@ -480,7 +480,7 @@ public class HashMapStrStr {
         }
 
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntrySS e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (value.equals(e.value))
                     return true;
         return false;
@@ -491,22 +491,22 @@ public class HashMapStrStr {
      **/
     private boolean containsNullValue() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            for (EntrySS e = getTable(i); e != null; e = e.next)
+            for (Entry e = getTable(i); e != null; e = e.next)
                 if (e.value == null)
                     return true;
         return false;
     }
 
-    public static class EntrySS {
+    public static class Entry {
         String key;
         String value;
         final int hash;
-        EntrySS next;
+        Entry next;
 
         /**
-         * Create new EntrySS.
+         * Create new Entry.
          */
-        EntrySS(int h, String k, String v, EntrySS n) {
+        Entry(int h, String k, String v, Entry n) {
             value = v;
             next = n;
             key = k;
@@ -528,9 +528,9 @@ public class HashMapStrStr {
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof EntrySS))
+            if (!(o instanceof Entry))
                 return false;
-            EntrySS e = (EntrySS) o;
+            Entry e = (Entry) o;
             String k1 = getKey();
             String k2 = e.getKey();
             if (k1 == k2) {
@@ -551,54 +551,54 @@ public class HashMapStrStr {
         }
 
         /**
-         * This method is invoked whenever the value in an EntrySS is overwritten by an
+         * This method is invoked whenever the value in an Entry is overwritten by an
          * invocation of put(k,v) for a key k that's already in the HashMap.
          */
         void recordAccess(HashMapStrStr m) {
         }
 
         /**
-         * This method is invoked whenever the EntrySS is removed from the table.
+         * This method is invoked whenever the Entry is removed from the table.
          */
         void recordRemoval(HashMapStrStr m) {
         }
     }
 
     /**
-     * Add a new EntrySS with the specified key, value and hash code to the
+     * Add a new Entry with the specified key, value and hash code to the
      * specified bucket. It is the responsibility of this method to resize the table
      * if appropriate.
      *
      * Subclass overrides this to alter the behavior of put method.
      */
-    void addEntrySS(int hash, String key, String value, int bucketIndex) {
-        setTable(bucketIndex, new EntrySS(hash, key, value, getTable(bucketIndex)));
+    void addEntry(int hash, String key, String value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
-     * Like addEntrySS except that this version is used when creating entries as
+     * Like addEntry except that this version is used when creating entries as
      * part of Map construction or "pseudo-construction" (cloning, deserialization).
      * This version needn't worry about resizing the table.
      *
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
      */
-    void createEntrySS(int hash, String key, String value, int bucketIndex) {
-        setTable(bucketIndex, new EntrySS(hash, key, value, getTable(bucketIndex)));
+    void createEntry(int hash, String key, String value, int bucketIndex) {
+        setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         size++;
     }
 
-    private void addEntriesToEntrySet(Set<EntrySS> es, EntrySS e) {
-        EntrySS current = e;
+    private void addEntriesToEntrySet(Set<Entry> es, Entry e) {
+        Entry current = e;
         while (current != null) {
             es.add(current);
             current = current.next;
         }
     }
 
-    public Set<EntrySS> entrySet() {
-        Set<EntrySS> es = new HashSet<EntrySS>();
+    public Set<Entry> entrySet() {
+        Set<Entry> es = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
             addEntriesToEntrySet(es, getTable(i));
         return es;
@@ -606,8 +606,8 @@ public class HashMapStrStr {
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    private boolean isLL(EntrySS e, HashSet<EntrySS> visited) {
-        EntrySS current = e;
+    private boolean isLL(Entry e, HashSet<Entry> visited) {
+        Entry current = e;
         while (current != null) {
             if (!visited.add(current))
                 return false;
@@ -617,7 +617,7 @@ public class HashMapStrStr {
     }
 
     public boolean repOK() {
-        HashSet<EntrySS> visited = new HashSet<EntrySS>();
+        HashSet<Entry> visited = new HashSet<Entry>();
 
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
             if (!isLL(getTable(i), visited))
