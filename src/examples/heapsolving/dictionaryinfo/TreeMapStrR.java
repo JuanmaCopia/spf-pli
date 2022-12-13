@@ -92,7 +92,7 @@ import java.util.NoSuchElementException;
  */
 public class TreeMapStrR {
 
-    public transient EntryB root = null;
+    public transient Entry root = null;
 
     /**
      * The number of entries in the tree
@@ -166,7 +166,7 @@ public class TreeMapStrR {
         return (root == null ? false : (value == null ? valueSearchNull(root) : valueSearchNonNull(root, value)));
     }
 
-    private boolean valueSearchNull(EntryB n) {
+    private boolean valueSearchNull(Entry n) {
         if (n.value == null) {
             return true;
         }
@@ -175,7 +175,7 @@ public class TreeMapStrR {
         return (n.left != null && valueSearchNull(n.left)) || (n.right != null && valueSearchNull(n.right));
     }
 
-    private boolean valueSearchNonNull(EntryB n, Object value) {
+    private boolean valueSearchNonNull(Entry n, Object value) {
         // Check this node for the value
         if (value.equals(n.value)) {
             return true;
@@ -206,7 +206,7 @@ public class TreeMapStrR {
      * @see #containsKey(Object)
      */
     public Object get(String key) {
-        EntryB p = getEntry(key);
+        Entry p = getEntry(key);
         return (p == null ? null : p.value);
     }
 
@@ -242,8 +242,8 @@ public class TreeMapStrR {
      *                              order, or its comparator does not tolerate *
      *                              <tt>null</tt> keys.
      */
-    private EntryB getEntry(String key) {
-        EntryB p = root;
+    private Entry getEntry(String key) {
+        Entry p = root;
         while (p != null) {
             int cmp = compare(key, p.key);
             if (cmp == 0)
@@ -258,9 +258,9 @@ public class TreeMapStrR {
 
     /**
      * Returns the key corresonding to the specified Entry. Throw
-     * NoSuchElementException if the EntryB is <tt>null</tt>.
+     * NoSuchElementException if the Entry is <tt>null</tt>.
      */
-    private static String key(EntryB e) {
+    private static String key(Entry e) {
         if (e == null)
             throw new NoSuchElementException();
         return e.key;
@@ -284,11 +284,11 @@ public class TreeMapStrR {
      *                              <tt>null</tt> keys.
      */
     public Object put(String key, Object value) {
-        EntryB t = root;
+        Entry t = root;
 
         if (t == null) {
             incrementSize();
-            root = new EntryB(key, value, null);
+            root = new Entry(key, value, null);
             return null;
         }
 
@@ -301,7 +301,7 @@ public class TreeMapStrR {
                     t = t.left;
                 } else {
                     incrementSize();
-                    t.left = new EntryB(key, value, t);
+                    t.left = new Entry(key, value, t);
                     fixAfterInsertion(t.left);
                     return null;
                 }
@@ -310,7 +310,7 @@ public class TreeMapStrR {
                     t = t.right;
                 } else {
                     incrementSize();
-                    t.right = new EntryB(key, value, t);
+                    t.right = new Entry(key, value, t);
                     fixAfterInsertion(t.right);
                     return null;
                 }
@@ -334,7 +334,7 @@ public class TreeMapStrR {
      *                              <tt>null</tt> keys.
      */
     public Object remove(String key) {
-        EntryB p = getEntry(key);
+        Entry p = getEntry(key);
         if (p == null) {
             return null;
         }
@@ -374,19 +374,19 @@ public class TreeMapStrR {
      * Node in the Tree. Doubles as a means to pass key-value pairs back to user
      * (see Map.Entry).
      */
-    public static class EntryB {
+    public static class Entry {
         String key;
         Object value;
-        EntryB left = null;
-        EntryB right = null;
-        EntryB parent;
+        Entry left = null;
+        Entry right = null;
+        Entry parent;
         boolean color = BLACK;
 
         /**
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
          * child links, and BLACK color.
          */
-        EntryB(String key, Object value, EntryB parent) {
+        Entry(String key, Object value, Entry parent) {
             this.key = key;
             this.value = value;
             this.parent = parent;
@@ -422,9 +422,9 @@ public class TreeMapStrR {
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof EntryB))
+            if (!(o instanceof Entry))
                 return false;
-            EntryB e = (EntryB) o;
+            Entry e = (Entry) o;
 
             return valEquals(key, e.getKey()) && valEquals(value, e.getValue());
         }
@@ -435,11 +435,11 @@ public class TreeMapStrR {
     }
 
     /**
-     * Returns the first EntryB in the TreeMap (according to the TreeMap's key-sort
+     * Returns the first Entry in the TreeMap (according to the TreeMap's key-sort
      * function). Returns null if the TreeMap is empty.
      */
-    private EntryB firstEntry() {
-        EntryB p = root;
+    private Entry firstEntry() {
+        Entry p = root;
         if (p != null)
             while (p.left != null)
                 p = p.left;
@@ -447,11 +447,11 @@ public class TreeMapStrR {
     }
 
     /**
-     * Returns the last EntryB in the TreeMap (according to the TreeMap's key-sort
+     * Returns the last Entry in the TreeMap (according to the TreeMap's key-sort
      * function). Returns null if the TreeMap is empty.
      */
-    private EntryB lastEntry() {
-        EntryB p = root;
+    private Entry lastEntry() {
+        Entry p = root;
         if (p != null)
             while (p.right != null)
                 p = p.right;
@@ -459,19 +459,19 @@ public class TreeMapStrR {
     }
 
     /**
-     * Returns the successor of the specified EntryB, or null if no such.
+     * Returns the successor of the specified Entry, or null if no such.
      */
-    private EntryB successor(EntryB t) {
+    private Entry successor(Entry t) {
         if (t == null)
             return null;
         else if (t.right != null) {
-            EntryB p = t.right;
+            Entry p = t.right;
             while (p.left != null)
                 p = p.left;
             return p;
         } else {
-            EntryB p = t.parent;
-            EntryB ch = t;
+            Entry p = t.parent;
+            Entry ch = t;
             while (p != null && ch == p.right) {
                 ch = p;
                 p = p.parent;
@@ -488,30 +488,30 @@ public class TreeMapStrR {
      * set of accessors that deal properly with null. They are used to avoid
      * messiness surrounding nullness checks in the main algorithms.
      */
-    private static boolean colorOf(EntryB p) {
+    private static boolean colorOf(Entry p) {
         return (p == null ? BLACK : p.color);
     }
 
-    private static EntryB parentOf(EntryB p) {
+    private static Entry parentOf(Entry p) {
         return (p == null ? null : p.parent);
     }
 
-    private static void setColor(EntryB p, boolean c) {
+    private static void setColor(Entry p, boolean c) {
         if (p != null)
             p.color = c;
     }
 
-    private static EntryB leftOf(EntryB p) {
+    private static Entry leftOf(Entry p) {
         return (p == null) ? null : p.left;
     }
 
-    private static EntryB rightOf(EntryB p) {
+    private static Entry rightOf(Entry p) {
         return (p == null) ? null : p.right;
     }
 
     /** From CLR **/
-    private void rotateLeft(EntryB p) {
-        EntryB r = p.right;
+    private void rotateLeft(Entry p) {
+        Entry r = p.right;
         p.right = r.left;
         if (r.left != null)
             r.left.parent = p;
@@ -527,8 +527,8 @@ public class TreeMapStrR {
     }
 
     /** From CLR **/
-    private void rotateRight(EntryB p) {
-        EntryB l = p.left;
+    private void rotateRight(Entry p) {
+        Entry l = p.left;
         p.left = l.right;
         if (l.right != null)
             l.right.parent = p;
@@ -544,12 +544,12 @@ public class TreeMapStrR {
     }
 
     /** From CLR **/
-    private void fixAfterInsertion(EntryB x) {
+    private void fixAfterInsertion(Entry x) {
         x.color = RED;
 
         while (x != null && x != root && x.parent.color == RED) {
             if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
-                EntryB y = rightOf(parentOf(parentOf(x)));
+                Entry y = rightOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
@@ -566,7 +566,7 @@ public class TreeMapStrR {
                         rotateRight(parentOf(parentOf(x)));
                 }
             } else {
-                EntryB y = leftOf(parentOf(parentOf(x)));
+                Entry y = leftOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
@@ -590,20 +590,20 @@ public class TreeMapStrR {
     /**
      * Delete node p, and then rebalance the tree.
      */
-    private void deleteEntry(EntryB p) {
+    private void deleteEntry(Entry p) {
         decrementSize();
 
         // If strictly internal, copy successor's element to p and then make p
         // point to successor.
         if (p.left != null && p.right != null) {
-            EntryB s = successor(p);
+            Entry s = successor(p);
             p.key = s.key;
             p.value = s.value;
             p = s;
         } // p has 2 children
 
         // Start fixup at replacement node, if it exists.
-        EntryB replacement = (p.left != null ? p.left : p.right);
+        Entry replacement = (p.left != null ? p.left : p.right);
 
         if (replacement != null) {
             // Link replacement to parent
@@ -639,10 +639,10 @@ public class TreeMapStrR {
     }
 
     /** From CLR **/
-    private void fixAfterDeletion(EntryB x) {
+    private void fixAfterDeletion(Entry x) {
         while (x != root && colorOf(x) == BLACK) {
             if (x == leftOf(parentOf(x))) {
-                EntryB sib = rightOf(parentOf(x));
+                Entry sib = rightOf(parentOf(x));
 
                 if (colorOf(sib) == RED) {
                     setColor(sib, BLACK);
@@ -668,7 +668,7 @@ public class TreeMapStrR {
                     x = root;
                 }
             } else { // symmetric
-                EntryB sib = leftOf(parentOf(x));
+                Entry sib = leftOf(parentOf(x));
 
                 if (colorOf(sib) == RED) {
                     setColor(sib, BLACK);
@@ -712,16 +712,16 @@ public class TreeMapStrR {
     public boolean isBinTreeWithParentReferences() {
         if (root == null)
             return true;
-        HashSet<EntryB> visited = new HashSet<EntryB>();
-        LinkedList<EntryB> worklist = new LinkedList<EntryB>();
+        HashSet<Entry> visited = new HashSet<Entry>();
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
         if (root.parent != null)
             return false;
 
         while (!worklist.isEmpty()) {
-            EntryB node = worklist.removeFirst();
-            EntryB left = node.left;
+            Entry node = worklist.removeFirst();
+            Entry left = node.left;
             if (left != null) {
                 if (!visited.add(left))
                     return false;
@@ -729,7 +729,7 @@ public class TreeMapStrR {
                     return false;
                 worklist.add(left);
             }
-            EntryB right = node.right;
+            Entry right = node.right;
             if (right != null) {
                 if (!visited.add(right))
                     return false;
@@ -744,12 +744,12 @@ public class TreeMapStrR {
     public boolean isWellColored() {
         if (root.color != BLACK)
             return false;
-        LinkedList<EntryB> worklist = new LinkedList<EntryB>();
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
         worklist.add(root);
         while (!worklist.isEmpty()) {
-            EntryB current = worklist.removeFirst();
-            EntryB cl = current.left;
-            EntryB cr = current.right;
+            Entry current = worklist.removeFirst();
+            Entry cl = current.left;
+            Entry cr = current.right;
             if (current.color == RED) {
                 if (cl != null && cl.color == RED)
                     return false;
@@ -762,11 +762,11 @@ public class TreeMapStrR {
                 worklist.add(cr);
         }
         int numberOfBlack = -1;
-        LinkedList<Pair<EntryB, Integer>> worklist2 = new LinkedList<Pair<EntryB, Integer>>();
-        worklist2.add(new Pair<EntryB, Integer>(root, 0));
+        LinkedList<Pair<Entry, Integer>> worklist2 = new LinkedList<Pair<Entry, Integer>>();
+        worklist2.add(new Pair<Entry, Integer>(root, 0));
         while (!worklist2.isEmpty()) {
-            Pair<EntryB, Integer> p = worklist2.removeFirst();
-            EntryB e = p.first();
+            Pair<Entry, Integer> p = worklist2.removeFirst();
+            Entry e = p.first();
             int n = p.second();
             if (e != null && e.color == BLACK)
                 n++;
@@ -776,8 +776,8 @@ public class TreeMapStrR {
                 else if (numberOfBlack != n)
                     return false;
             } else {
-                worklist2.add(new Pair<EntryB, Integer>(e.left, n));
-                worklist2.add(new Pair<EntryB, Integer>(e.right, n));
+                worklist2.add(new Pair<Entry, Integer>(e.left, n));
+                worklist2.add(new Pair<Entry, Integer>(e.right, n));
             }
         }
         return true;

@@ -311,12 +311,12 @@ public class DictionaryInfo {
         f.set(TreeMap.Entry.class, "parent", entries);
         f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
 
-        IObjSet entriesB = f.createObjSet(TreeMapStrR.EntryB.class, nodesNum, true);
+        IObjSet entriesB = f.createObjSet(TreeMapStrR.Entry.class, nodesNum, true);
         f.set(TreeMapStrR.class, "root", entriesB);
-        f.set(TreeMapStrR.EntryB.class, "left", entriesB);
-        f.set(TreeMapStrR.EntryB.class, "right", entriesB);
-        f.set(TreeMapStrR.EntryB.class, "parent", entriesB);
-        f.set(TreeMapStrR.EntryB.class, "color", f.createBooleanSet());
+        f.set(TreeMapStrR.Entry.class, "left", entriesB);
+        f.set(TreeMapStrR.Entry.class, "right", entriesB);
+        f.set(TreeMapStrR.Entry.class, "parent", entriesB);
+        f.set(TreeMapStrR.Entry.class, "color", f.createBooleanSet());
 
         return f;
     }
