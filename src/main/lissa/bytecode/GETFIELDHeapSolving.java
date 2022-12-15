@@ -18,6 +18,7 @@ import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.LISSAShell;
+import lissa.Prueba;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -212,6 +213,10 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return this;
         }
+
+        // Trying to run another symbolic execution:
+        Prueba.runSPF();
+
         // ================ Modification End ================ //
         return getNext(ti);
     }

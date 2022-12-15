@@ -2,6 +2,5 @@ target = myexample.Example2
 
 symbolic.dp=z3
 
-search.depth_limit = 30
 
 
