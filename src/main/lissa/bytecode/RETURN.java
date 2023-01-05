@@ -24,7 +24,6 @@ import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.heap.HeapSolvingInstructionFactory;
 
 /**
  * Return void from method ... [empty]
@@ -35,7 +34,7 @@ public class RETURN extends JVMReturnInstruction {
     public Instruction execute(ThreadInfo ti) {
 
         System.out.println("(spf-lissa) returning from: " + mi.getName());
-        HeapSolvingInstructionFactory.executingRepOK = false;
+        // HeapSolvingInstructionFactory.executingRepOK = false;
 
         if (mi.isInit()) { // Check to see if this method is a constructor.
             int objref = ti.getThis();
