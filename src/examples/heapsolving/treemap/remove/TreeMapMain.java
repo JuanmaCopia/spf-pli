@@ -7,10 +7,9 @@
 
 package heapsolving.treemap.remove;
 
-import lissa.SymHeap;
-
 import heapsolving.treemap.TreeMap;
 import heapsolving.treemap.TreeMapHarness;
+import lissa.SymHeap;
 
 public class TreeMapMain {
 
@@ -19,11 +18,12 @@ public class TreeMapMain {
 
         TreeMap structure = TreeMapHarness.getStructure();
         if (structure != null) {
-            try {
-                // Call to method under analysis
-                structure.remove(key);
-            } catch (Exception e) {
-            }
+            structure.remove(key);
+//            try {
+//                // Call to method under analysis
+//                structure.remove(key);
+//            } catch (Exception e) {
+//            }
 
             SymHeap.countPath();
         }

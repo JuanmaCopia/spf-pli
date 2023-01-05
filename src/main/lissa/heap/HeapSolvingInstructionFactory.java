@@ -12,6 +12,12 @@ import lissa.config.SolvingStrategyEnum;
 
 public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
+//    public static boolean executingRepOK = false;
+//
+//    public static Instruction createInvokeVirtualIns(String clsName, String methodName, String methodSignature) {
+//        return new INVOKEREPOK(clsName, methodName, methodSignature);
+//    }
+
     @Override
     public Instruction getfield(String fieldName, String clsName, String fieldDescriptor) {
         if (LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER)
@@ -28,6 +34,15 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     public Instruction aload(int localVarIndex) {
         return new ALOAD(localVarIndex);
     }
+
+//    @Override
+//    public Instruction return_() {
+//        return new RETURN();
+//    }
+//
+//    public static INVOKEREPOK2 invokerepok2(String clsName, String methodName, String methodSignature) {
+//        return new INVOKEREPOK2(clsName, methodName, methodSignature);
+//    }
 
     public HeapSolvingInstructionFactory(Config conf) {
         super(conf);

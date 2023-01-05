@@ -68,6 +68,10 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         return sih_new;
     }
 
+    public ClassInfo getImplicitInputClassInfo() {
+        return implicitInputThis.getRootHeapNode().getType();
+    }
+
     public void _add(HeapNode n) {
         if (!hasNode(n)) {
             n.setNext(header);

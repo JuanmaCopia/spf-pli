@@ -118,14 +118,13 @@ public class SymHeapHelper {
         return daIndex;
     }
 
-    public static SymbolicInputHeap getSymbolicInputHeap() {
-        HeapChoiceGenerator heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
-        return heapCG.getCurrentSymInputHeap();
+    public static SymbolicInputHeapLISSA getSymbolicInputHeap() {
+        return getSymbolicInputHeap(VM.getVM());
     }
 
-    public static SymbolicInputHeap getSymbolicInputHeap(VM vm) {
+    public static SymbolicInputHeapLISSA getSymbolicInputHeap(VM vm) {
         HeapChoiceGenerator heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
-        return heapCG.getCurrentSymInputHeap();
+        return (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
     }
 
     public static ThreadInfo getCurrentThread() {

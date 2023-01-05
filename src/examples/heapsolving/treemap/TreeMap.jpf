@@ -7,15 +7,15 @@ sourcepath=${spf-lissa}/src/examples
 
 shell=lissa.LISSAShell
 
-target = heapsolving.treemap.METHOD.TreeMapMain
-method = METHOD
+target = heapsolving.treemap.remove.TreeMapMain
+method = remove
 
-symbolic.debug = false
+symbolic.debug = true
 symbolic.dp = z3
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.strategy = LISSA
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
-heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.finitization.args = 4
 heapsolving.symsolve.predicate = repOK
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory

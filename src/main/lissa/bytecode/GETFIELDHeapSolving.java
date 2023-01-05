@@ -207,15 +207,199 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         if (SymbolicInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 
-        // ================ Modification End ================ //
+        // ================ Modification Begin ================ //
         if (!heapSolvingStrategy.checkHeapSatisfiability(ti, symInputHeap)) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return this;
         }
+        // ================= Modification End ================= //
 
-        // ================ Modification End ================ //
+
         return getNext(ti);
+
     }
+
+    /*
+     *
+     * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
+     * fi.getName()); HeapSolvingInstructionFactory.executingRepOK = true;
+     *
+     * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
+     * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
+     * rootClassInfo.getMethod("emptyMethod()V", false);
+     *
+     * String clsName = repokMI.getClassInfo().getName(); String mthName =
+     * repokMI.getName(); String signature = repokMI.getSignature();
+     *
+     * // JVMInstructionFactory insnFactory = JVMInstructionFactory.getFactory(); //
+     * Instruction realInvoke = insnFactory.invokevirtual(clsName, mthName,
+     * signature);
+     *
+     * INVOKEREPOK2 realInvoke = HeapSolvingInstructionFactory.invokerepok2(clsName,
+     * mthName, signature);
+     *
+     * int position = this.getPosition() + 3; int insIndex =
+     * this.getInstructionIndex() + 1; // realInvoke.setMethodInfo(repokMI);
+     * realInvoke.setLocation(insIndex, position);
+     *
+     * StackFrame f = ti.getModifiableTopFrame(); // frame.pushLocal(rootIndex);
+     * f.push(rootIndex);
+     *
+     * return realInvoke;
+     *
+     *
+     */
+
+//        System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
+//        HeapSolvingInstructionFactory.executingRepOK = true;
+//
+//        int rootIndex = symRefInput.getRootHeapNode().getIndex();
+//        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+//        MethodInfo repokMI = rootClassInfo.getMethod("emptyMethod()V", false);
+//
+//        String clsName = repokMI.getClassInfo().getName();
+//        String mthName = repokMI.getName();
+//        String signature = repokMI.getSignature();
+//
+////        JVMInstructionFactory insnFactory = JVMInstructionFactory.getFactory();
+////        Instruction realInvoke = insnFactory.invokevirtual(clsName, mthName, signature);
+//
+//        Instruction realInvoke = HeapSolvingInstructionFactory.invokerepok2(clsName, mthName, signature);
+//
+//        int position = this.getPosition() + 3;
+//        int insIndex = this.getInstructionIndex() + 1;
+//
+//        realInvoke.setMethodInfo(repokMI);
+//        realInvoke.setLocation(insIndex, position);
+//
+//        StackFrame f = ti.getModifiableTopFrame();
+//        // frame.pushLocal(rootIndex);
+//        f.push(rootIndex);
+//
+//        return realInvoke;
+
+//        HeapNode rootHeapNode = symRefInput.getRootHeapNode();
+//        int rootIndex = rootHeapNode.getIndex();
+//        ClassInfo rootClassInfo = rootHeapNode.getType();
+//        Instruction myIns = HeapSolvingInstructionFactory.createInvokeVirtualIns("heapsolving.treemap.TreeMap",
+//                "emptyMethod", "()V");
+    // HeapSolvingInstructionFactory.executingRepOK = true;
+//        MethodInfo repokMI = rootClassInfo.getMethod("emptyMethod()V", false);
+//        myIns.setMethodInfo(repokMI);
+//        ((INVOKEREPOK) myIns).next = getNext(ti);
+//        ((INVOKEREPOK) myIns).rootIndex = rootIndex;
+
+    // return new INVREPOK();
+
+    // ========== direct call repok
+//
+//        int rootIndex = symRefInput.getRootHeapNode().getIndex();
+//        executeRepOK(ti, rootIndex);
+//        return getNext(ti);
+
+    // ================ Modification End ================ //
+//        return getNext(ti);
+
+//    public void invokevirtual(String clsName, String methodName, String methodSignature) {
+//        add(insnFactory.invokevirtual(clsName, methodName, methodSignature));
+//        pc += 3;
+//    }
+//
+//    protected void add(Instruction insn) {
+//        insn.setMethodInfo(mi);
+//        insn.setLocation(idx++, pc);
+//        code.add(insn);
+//    }
+
+//    public void executeRepOK(ThreadInfo ti, int rootIndex) {
+//        MJIEnv env = ti.getEnv();
+//
+//        System.out.println("# entering emptyMethod");
+//        MethodInfo repokMI = env.getClassInfo(rootIndex).getMethod("emptyMethod()V", false);
+//
+//        DirectCallStackFrame frame = repokMI.createDirectCallStackFrame(ti, 0);
+//        // DirectCallStackFrame frame = repokMI.createRunStartStackFrame(ti);
+//
+//        int argOffset = frame.setReferenceArgument(0, rootIndex, null);
+//        // frame.setArgument( argOffset, a, null);
+//        // frame.setFireWall();
+//
+//        try {
+//            executeMethodHidden(ti, frame);
+//            // ti.executeMethodHidden(frame);
+//            // ti.advancePC();
+//
+//        } catch (UncaughtException ux) { // frame's method is firewalled
+//            System.out.println("# hidden method execution failed: " + ux);
+//            ti.clearPendingException();
+//            ti.popFrame(); // this is still the DirectCallStackFrame, and we want to continue execution
+//            // return -1;
+//        }
+//
+//        // get the return value from the (already popped) frame
+//        // int res = frame.getResult();
+//
+//        System.out.println("# exit emptyMethod");
+//        // return res;
+//    }
+//
+//    /**
+//     * enter method atomically, but also hide it from listeners and do NOT add
+//     * executed instructions to the path.
+//     *
+//     * this can be even more confusing than executeMethodAtomic(), since nothing
+//     * prevents such a method from changing the program state, and we wouldn't know
+//     * for what reason by looking at the trace
+//     *
+//     * this method should only be used if we have to enter test application code
+//     * like hashCode() or equals() from native code, e.g. to silently check property
+//     * violations
+//     *
+//     * executeMethodHidden also acts as an exception firewall, since we don't want
+//     * any silently executed code fall back into the visible path (for no observable
+//     * reason)
+//     */
+//    public void executeMethodHidden(ThreadInfo ti, StackFrame frame) {
+//        System.out.println("enter executeMethodHidden");
+//        ti.pushFrame(frame);
+//
+//        int depth = ti.countStackFrames(); // this includes the DirectCallStackFrame
+//        Instruction pc = frame.getPC();
+//
+//        VM vm = ti.getVM();
+//        // vm.getSystemState().incAtomic(); // to shut off avoidable context switches
+//        // (MONITOR_ENTER and wait() can still
+//        // block)
+//
+//        while (depth <= ti.countStackFrames()) {
+//            System.out.println("loop1: depth: " + depth + " countStackFrames: " + ti.countStackFrames());
+//            Instruction nextPC = ti.executeInstructionHidden();
+//
+//            if (ti.getPendingException() != null) {
+//
+//            } else {
+//                // ==================== EDITED
+////              if (nextPC == pc) {
+////                // BANG - we can't have CG's here
+////                // should be rather an ordinary exception
+////                // createAndThrowException("java.lang.AssertionError", "choice point in sync executed method: " + frame);
+////                throw new JPFException("choice point in hidden method execution: " + frame);
+////              } else {
+////                pc = nextPC;
+////              }
+//                pc = nextPC;
+//                // ==================== EDITED
+//            }
+//            System.out.println("loop2");
+//        }
+//
+//        vm.getSystemState().decAtomic();
+//
+//        ti.nextPc = null;
+//
+//        System.out.println("exit executeMethodHidden");
+//        // the frame was already removed by the RETURN insn of the frame's method
+//    }
 
 //    public static void startSecondJVM() throws Exception {
 //        String separator = System.getProperty("file.separator");

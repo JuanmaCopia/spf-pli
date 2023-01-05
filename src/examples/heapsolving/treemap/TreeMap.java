@@ -822,4 +822,18 @@ public class TreeMap {
         return f;
     }
 
+    public void emptyMethod() {
+        System.out.println("\nI'm emptyMethod code!");
+//        if (root != null) {
+//            if (root.key > 0) {
+//                System.out.println("    root.key > 0");
+//            } else {
+//                System.out.println("    root.key < 0");
+//            }
+//        }
+
+        // System.out.println("resultado: " + repOK());
+
+    }
+
 }
