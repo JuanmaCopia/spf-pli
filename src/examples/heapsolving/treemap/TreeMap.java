@@ -18,6 +18,7 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This
@@ -834,6 +835,16 @@ public class TreeMap {
 
         // System.out.println("resultado: " + repOK());
 
+    }
+
+    public static void emptyMethodStatic() {
+        System.out.println("\nI'm emptyMethod static code! ");
+        int a = SymHeap.makeSymbolicInteger("ASDASD");
+        if (a > 0) {
+            System.out.println("    a > 0");
+        } else {
+            System.out.println("    a < 0");
+        }
     }
 
 }

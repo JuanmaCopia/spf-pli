@@ -10,7 +10,7 @@ shell=lissa.LISSAShell
 target = heapsolving.treemap.remove.TreeMapMain
 method = remove
 
-symbolic.debug = true
+symbolic.debug = false
 symbolic.dp = z3
 
 heapsolving.strategy = LISSA

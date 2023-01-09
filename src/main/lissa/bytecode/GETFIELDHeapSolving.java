@@ -15,8 +15,11 @@ import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
+import gov.nasa.jpf.vm.MethodInfo;
+import gov.nasa.jpf.vm.ObjRef;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -64,7 +67,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                     "referencing field '" + fname + "' in " + ei);
         }
 
-        // System.out.println("\nFIELD: " + ei.toString() + "." + fi.getName());
+        // System.out.println("\nObject: " + ei.toString() + " field: " + fi.getName());
 
         Object attr = ei.getFieldAttr(fi);
         // check if the field is of ref type & it is symbolic (i.e. it has an attribute)
@@ -214,41 +217,194 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
         // ================= Modification End ================= //
 
+        System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
+        System.out.println("GETFIELD: Instruction Index: " + insnIndex);
 
-        return getNext(ti);
+        int rootIndex = symRefInput.getRootHeapNode().getIndex();
+        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+        MethodInfo repokMI = rootClassInfo.getMethod("emptyMethodStatic()V", false);
+
+        assert (repokMI != null);
+
+        String clsName = repokMI.getClassInfo().getName();
+        String mthName = repokMI.getName();
+        String signature = repokMI.getSignature();
+
+        Instruction realInvoke = new STATICREPOK(clsName, mthName, signature);
+        realInvoke.setMethodInfo(this.getMethodInfo());
+        realInvoke.setLocation(this.insnIndex, this.position);
+
+        Object[] args = null;
+        Object[] attrs = null;
+        pushArguments(ti, args, attrs);
+
+        return realInvoke;
 
     }
 
+    void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
+        StackFrame frame = ti.getModifiableTopFrame();
+
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Object a = args[i];
+                boolean isLong = false;
+
+                if (a != null) {
+                    if (a instanceof ObjRef) {
+                        frame.pushRef(((ObjRef) a).getReference());
+                    } else if (a instanceof Boolean) {
+                        frame.push((Boolean) a ? 1 : 0, false);
+                    } else if (a instanceof Integer) {
+                        frame.push((Integer) a, false);
+                    } else if (a instanceof Long) {
+                        frame.pushLong((Long) a);
+                        isLong = true;
+                    } else if (a instanceof Double) {
+                        frame.pushLong(Types.doubleToLong((Double) a));
+                        isLong = true;
+                    } else if (a instanceof Byte) {
+                        frame.push((Byte) a, false);
+                    } else if (a instanceof Short) {
+                        frame.push((Short) a, false);
+                    } else if (a instanceof Float) {
+                        frame.push(Types.floatToInt((Float) a), false);
+                    }
+                }
+
+                if (attrs != null && attrs[i] != null) {
+                    if (isLong) {
+                        frame.setLongOperandAttr(attrs[i]);
+                    } else {
+                        frame.setOperandAttr(attrs[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    // ====================== WORKING: STATIC METHOD CALL V3 ======================
+
     /*
-     *
      * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
-     * fi.getName()); HeapSolvingInstructionFactory.executingRepOK = true;
-     *
+     * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
+     * insnIndex);
+     * 
      * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
      * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
-     * rootClassInfo.getMethod("emptyMethod()V", false);
-     *
+     * rootClassInfo.getMethod("emptyMethodStatic()V", false);
+     * 
+     * assert (repokMI != null);
+     * 
      * String clsName = repokMI.getClassInfo().getName(); String mthName =
      * repokMI.getName(); String signature = repokMI.getSignature();
-     *
-     * // JVMInstructionFactory insnFactory = JVMInstructionFactory.getFactory(); //
-     * Instruction realInvoke = insnFactory.invokevirtual(clsName, mthName,
-     * signature);
-     *
-     * INVOKEREPOK2 realInvoke = HeapSolvingInstructionFactory.invokerepok2(clsName,
-     * mthName, signature);
-     *
-     * int position = this.getPosition() + 3; int insIndex =
-     * this.getInstructionIndex() + 1; // realInvoke.setMethodInfo(repokMI);
-     * realInvoke.setLocation(insIndex, position);
-     *
-     * StackFrame f = ti.getModifiableTopFrame(); // frame.pushLocal(rootIndex);
-     * f.push(rootIndex);
-     *
+     * 
+     * Instruction realInvoke = new INVOKESTATIC(clsName, mthName, signature);
+     * realInvoke.setMethodInfo(this.getMethodInfo());
+     * realInvoke.setLocation(this.insnIndex, this.position);
+     * 
+     * Object[] args = null; Object[] attrs = null; pushArguments(ti, args, attrs);
+     * 
      * return realInvoke;
-     *
-     *
      */
+
+    // ====================== WORKING: STATIC METHOD CALL ====================== //
+
+    // ====================== WORKING: STATIC METHOD CALL V2 ======================
+    // //
+
+    /*
+     * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
+     * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
+     * insnIndex);
+     * 
+     * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
+     * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
+     * rootClassInfo.getMethod("emptyMethodStatic()V", false);
+     * 
+     * assert (repokMI != null);
+     * 
+     * Object[] args = null; Invocation repokCall = new Invocation(repokMI, args,
+     * null); LinkedList<Invocation> invList = new LinkedList<>();
+     * invList.add(repokCall);
+     * 
+     * INVOKECG realInvoke = new INVOKECG(invList);
+     * 
+     * MethodInfo thisMI = this.getMethodInfo(); realInvoke.setMethodInfo(thisMI);
+     * realInvoke.setLocation(this.insnIndex, this.position);
+     * 
+     * return realInvoke;
+     */
+
+    // ====================== WORKING: STATIC METHOD CALL ====================== //
+
+    // ====================== WORKING: STATIC METHOD CALL ====================== //
+
+    /*
+     * 
+     * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
+     * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
+     * insnIndex);
+     * 
+     * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
+     * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
+     * rootClassInfo.getMethod("emptyMethodStatic()V", false);
+     * 
+     * assert (repokMI != null);
+     * 
+     * Invocation repokCall = new Invocation(repokMI, null, null);
+     * LinkedList<Invocation> invList = new LinkedList<>(); invList.add(repokCall);
+     * 
+     * INVOKECG realInvoke = new INVOKECG(invList);
+     * 
+     * MethodInfo thisMI = this.getMethodInfo(); realInvoke.setMethodInfo(thisMI);
+     * realInvoke.insnIndex = this.insnIndex;
+     * 
+     * return realInvoke;
+     * 
+     */
+
+    // ====================== WORKING: STATIC METHOD CALL ====================== //
+
+//    System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
+//
+//    int rootIndex = symRefInput.getRootHeapNode().getIndex();
+//    ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+//    MethodInfo repokMI = rootClassInfo.getMethod("emptyMethodStatic()V", false);
+//
+//    assert (repokMI != null);
+//
+//    String clsName = repokMI.getClassInfo().getName();
+//    String mthName = repokMI.getName();
+//    String signature = repokMI.getSignature();
+//
+//    STATICREPOK realInvoke = new STATICREPOK(clsName, mthName, signature);
+//    realInvoke.setMethodInfo(repokMI);
+//    return realInvoke;
+
+//    System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
+//    // HeapSolvingInstructionFactory.executingRepOK = true;
+//
+//    int rootIndex = symRefInput.getRootHeapNode().getIndex();
+//    ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+//    MethodInfo repokMI = rootClassInfo.getMethod("emptyMethod()V", false);
+//
+//    String clsName = repokMI.getClassInfo().getName();
+//    String mthName = repokMI.getName();
+//    String signature = repokMI.getSignature();
+//
+//    INVOKEREPOK2 realInvoke = new INVOKEREPOK2(clsName, mthName, signature);
+//
+//    int position = this.getPosition() + 3;
+//    int insIndex = this.getInstructionIndex() + 1;
+//    realInvoke.setMethodInfo(repokMI);
+//    realInvoke.setLocation(insIndex, position);
+//
+//    StackFrame f = ti.getModifiableTopFrame();
+//    // frame.pushLocal(rootIndex);
+//    f.push(rootIndex);
+//
+//    return realInvoke;
 
 //        System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
 //        HeapSolvingInstructionFactory.executingRepOK = true;

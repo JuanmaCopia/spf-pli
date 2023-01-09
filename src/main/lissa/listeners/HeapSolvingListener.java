@@ -4,6 +4,9 @@ import java.util.LinkedList;
 
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.search.Search;
+import gov.nasa.jpf.vm.Instruction;
+import gov.nasa.jpf.vm.ThreadInfo;
+import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
@@ -36,6 +39,12 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             Utils.appendToFile(configParser.resultsFileName, getFileHeader());
         }
         this.totalTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void executeInstruction(VM vm, ThreadInfo currentThread, Instruction instructionToExecute) {
+        System.out.println("About to execute instruction: " + instructionToExecute + "   MI: "
+                + instructionToExecute.getMethodInfo());
     }
 
     @Override
