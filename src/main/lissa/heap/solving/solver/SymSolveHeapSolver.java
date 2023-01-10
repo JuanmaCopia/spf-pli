@@ -44,6 +44,17 @@ public class SymSolveHeapSolver {
         return result;
     }
 
+    public int[] solve(SymSolveVector vector) {
+        long time = System.currentTimeMillis();
+        int[] result = solver.solve(vector);
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
+    }
+
+    public int[] getCurrentSolutionVector() {
+        return solver.getCurrentSolutionVector();
+    }
+
     public long getSolvingTime() {
         return solvingTime;
     }

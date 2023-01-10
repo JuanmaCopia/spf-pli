@@ -12,9 +12,9 @@ public class HeapSolutionBuilder {
         this.stateSpace = statespace;
     }
 
-    public void buildSolution(int[] solutionVector) {
+    public void buildSolution(int[] solutionVector, int objRef) {
         CandidateTraversal traverser = new BFSCandidateTraversal(stateSpace);
-        HeapSolutionVisitor visitor = new HeapSolutionVisitor();
+        HeapSolutionVisitor visitor = new HeapSolutionVisitor(objRef);
         traverser.traverse(solutionVector, visitor);
     }
 }

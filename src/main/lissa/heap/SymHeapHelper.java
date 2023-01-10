@@ -220,4 +220,230 @@ public class SymHeapHelper {
         }
     }
 
+//    
+//    public boolean isStateMatching(SymbolicInputHeapVisitor visitor, int candidate) {
+//        HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
+//        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
+//
+//        HashMap<Integer, Integer> idMap2 = new HashMap<Integer, Integer>();
+//
+//        ThreadInfo ti = VM.getVM().getCurrentThread();
+//        ClassInfo rootClass = this.rootHeapNode.getType();
+//        Integer rootIndex = this.rootHeapNode.getIndex();
+//
+//        ElementInfo candElementInfo = ti.getElementInfo(candidate);
+//        ClassInfo candClass = candElementInfo.getClassInfo();
+//
+//        if (candClass != rootClass)
+//            return false;
+//
+//        idMap.put(rootIndex, 0);
+//        idMap2.put(candidate, 0);
+//        maxIdMap.put(rootClass, 0);
+//
+//        LinkedList<Integer> worklist = new LinkedList<Integer>();
+//        worklist.add(rootIndex);
+//
+//        LinkedList<Integer> worklist2 = new LinkedList<Integer>();
+//        worklist2.add(candidate);
+//
+//        while (!worklist.isEmpty()) {
+//
+//            if (worklist2.isEmpty())
+//                return false;
+//
+//            int currentObjRef = worklist.removeFirst();
+//            int currentObjID = idMap.get(currentObjRef);
+//            ElementInfo elementInfo = ti.getElementInfo(currentObjRef);
+//            ClassInfo ownerObjectClass = elementInfo.getClassInfo();
+//
+//            int currentObjRef2 = worklist2.removeFirst();
+//            int currentObjID2 = idMap2.get(currentObjRef2);
+//            ElementInfo elementInfo2 = ti.getElementInfo(currentObjRef2);
+//
+//            if (currentObjID != currentObjID2)
+//                return false;
+//
+//            visitor.setCurrentOwner(ownerObjectClass, currentObjID + 1);
+//
+//            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+//            for (int i = 0; i < instanceFields.length; i++) {
+//                FieldInfo field = instanceFields[i];
+//                ClassInfo fieldClass = field.getTypeClassInfo();
+//
+//                visitor.setCurrentField(fieldClass, field);
+//
+//                if (visitor.isIgnoredField()) {
+//                    // System.out.println("Ignored field: " + field.getName());
+//                    // System.out.println("type: " + fieldClass.getSimpleName());
+//                    continue;
+//                }
+//
+//                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+//                    Integer fieldIndex = getReferenceField(currentObjRef, field);
+//
+//                    int fieldIndex2 = elementInfo2.getReferenceField(field);
+//
+//
+//                    if (fieldIndex == SYMBOLIC) {
+//                        visitor.visitedSymbolicReferenceField();
+//                    } else if (fieldIndex == NULL) {
+//                        visitor.visitedNullReferenceField();
+//                        if (fieldIndex2 != MJIEnv.NULL)
+//                            return false;
+//                    } else if (idMap.containsKey(fieldIndex)) { // previously visited object
+//                        visitor.visitedExistentReferenceField(idMap.get(fieldIndex) + 1);
+//                        if (fieldIndex2 == MJIEnv.NULL || !idMap2.containsKey(fieldIndex2) || idMap.get(fieldIndex) != idMap2.get(fieldIndex2))
+//                            return false;
+//
+//                    } else { // first time visited
+//                        if (fieldIndex2 == MJIEnv.NULL || idMap2.containsKey(fieldIndex2))
+//                            return false;
+//
+//                        int id = 0;
+//                        if (maxIdMap.containsKey(fieldClass))
+//                            id = maxIdMap.get(fieldClass) + 1;
+//
+//                        idMap.put(fieldIndex, id);
+//                        idMap2.put(fieldIndex2, id);
+//
+//                        maxIdMap.put(fieldClass, id);
+//                        visitor.visitedNewReferenceField(id + 1);
+//                        worklist.add(fieldIndex);
+//                        worklist2.add(fieldIndex2);
+//                    }
+//                } else {
+//                    Expression symbolicPrimitive = getPrimitiveSymbolicField(currentObjRef, field);
+//                    if (symbolicPrimitive instanceof SymbolicInteger) {
+//                        SymbolicInteger symbolicInteger = (SymbolicInteger) symbolicPrimitive;
+//                        if (field.isBooleanField()) {
+//                            visitor.visitedSymbolicBooleanField(field, symbolicInteger);
+//                        } else if (field.isLongField()) {
+//                            visitor.visitedSymbolicLongField(field, symbolicInteger);
+//                        } else if (field.isIntField()) {
+//                            visitor.visitedSymbolicIntegerField(field, symbolicInteger);
+//                        } else {
+//                            assert (false); // ERROR!
+//                        }
+//                    } else if (symbolicPrimitive instanceof StringSymbolic) {
+//                        visitor.visitedSymbolicStringField(field, (StringSymbolic) symbolicPrimitive);
+//                    } else {
+//                        assert (false); // ERROR!
+//                    }
+//                }
+//                visitor.resetCurrentField();
+//            }
+//            visitor.resetCurrentOwner();
+//        }
+//        visitor.setMaxIdMap(maxIdMap);
+//        return true;
+//    }
+//
+//
+//    public boolean doesItMatch(int candidate) {
+//        HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
+//        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
+//
+//        HashMap<Integer, Integer> idMap2 = new HashMap<Integer, Integer>();
+//        HashMap<ClassInfo, Integer> maxIdMap2 = new HashMap<ClassInfo, Integer>();
+//
+//        ThreadInfo ti = VM.getVM().getCurrentThread();
+//        ClassInfo rootClass = this.rootHeapNode.getType();
+//        Integer rootIndex = this.rootHeapNode.getIndex();
+//
+//        ElementInfo candElementInfo = ti.getElementInfo(candidate);
+//        ClassInfo candClass = candElementInfo.getClassInfo();
+//
+//        if (candClass != rootClass)
+//            return false;
+//
+//        idMap.put(rootIndex, 0);
+//        idMap2.put(candidate, 0);
+//        maxIdMap.put(rootClass, 0);
+//        maxIdMap2.put(candClass, 0);
+//
+//        LinkedList<Integer> worklist = new LinkedList<Integer>();
+//        worklist.add(rootIndex);
+//
+//        LinkedList<Integer> worklist2 = new LinkedList<Integer>();
+//        worklist2.add(candidate);
+//
+//        while (!worklist.isEmpty()) {
+//            int currentObjRef = worklist.removeFirst();
+//            int currentObjID = idMap.get(currentObjRef);
+//            ElementInfo elementInfo = ti.getElementInfo(currentObjRef);
+//            ClassInfo ownerObjectClass = elementInfo.getClassInfo();
+//
+//            int currentObjRef2 = worklist2.removeFirst();
+//            int currentObjID2 = idMap2.get(currentObjRef2);
+//            ElementInfo elementInfo2 = ti.getElementInfo(currentObjRef2);
+//
+//            if (currentObjID != currentObjID2)
+//                return false;
+//
+//            //visitor.setCurrentOwner(ownerObjectClass, currentObjID + 1);
+//
+//            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+//            for (int i = 0; i < instanceFields.length; i++) {
+//                FieldInfo field = instanceFields[i];
+//                ClassInfo fieldClass = field.getTypeClassInfo();
+//
+////                visitor.setCurrentField(fieldClass, field);
+////
+////                if (visitor.isIgnoredField()) {
+////                    // System.out.println("Ignored field: " + field.getName());
+////                    // System.out.println("type: " + fieldClass.getSimpleName());
+////                    continue;
+////                }
+//
+//                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+//                    Integer fieldIndex = getReferenceField(currentObjRef, field);
+//
+//                    Object attr2 = elementInfo2.getFieldAttr(field);
+//                    int fieldIndex2 = elementInfo2.getReferenceField(field);
+//
+//
+//
+//
+//                    if (fieldIndex == SYMBOLIC) {
+//                        //visitor.visitedSymbolicReferenceField();
+//                    } else if (fieldIndex == NULL && fieldIndex2 != MJIEnv.NULL) {
+//                        return false;
+//                        //visitor.visitedNullReferenceField();
+//                    } else if (idMap.containsKey(fieldIndex)) { // previously visited object
+//                        if (!idMap2.containsKey(fieldIndex2) || idMap.get(fieldIndex) != idMap2.get(fieldIndex2))
+//                            return false;
+//                        //visitor.visitedExistentReferenceField(idMap.get(fieldIndex) + 1);
+//                    } else { // first time visited
+//                        int id = 0;
+//                        if (maxIdMap.containsKey(fieldClass))
+//                            id = maxIdMap.get(fieldClass) + 1;
+//
+//                        int id2 = 0;
+//                        if (maxIdMap2.containsKey(fieldClass))
+//                            id2 = maxIdMap2.get(fieldClass) + 1;
+//
+//                        if (id != id2)
+//                            return false;
+//
+//                        idMap.put(fieldIndex, id);
+//                        maxIdMap.put(fieldClass, id);
+//
+//                        idMap2.put(fieldIndex2, id2);
+//                        maxIdMap2.put(fieldClass, id2);
+//
+//                        //visitor.visitedNewReferenceField(id + 1);
+//                        worklist.add(fieldIndex);
+//                        worklist2.add(fieldIndex2);
+//                    }
+//                } else {
+//                    //visitor.visitedSymbolicPrimitiveField(field);
+//                }
+//                //visitor.resetCurrentField();
+//            }
+//            //visitor.resetCurrentOwner();
+//        }
+//        return true;
+//    }
+
 }
