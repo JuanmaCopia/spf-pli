@@ -823,8 +823,8 @@ public class TreeMap {
         return f;
     }
 
-    public void emptyMethod() {
-        System.out.println("\nI'm emptyMethod code!");
+//    public void emptyMethod() {
+//        System.out.println("\nI'm emptyMethod code!");
 //        if (root != null) {
 //            if (root.key > 0) {
 //                System.out.println("    root.key > 0");
@@ -832,19 +832,22 @@ public class TreeMap {
 //                System.out.println("    root.key < 0");
 //            }
 //        }
-
-        // System.out.println("resultado: " + repOK());
-
-    }
+//    }
 
     public static void emptyMethodStatic() {
         System.out.println("\nI'm emptyMethod static code! ");
-        int a = SymHeap.makeSymbolicInteger("ASDASD");
-        if (a > 0) {
-            System.out.println("    a > 0");
-        } else {
-            System.out.println("    a < 0");
-        }
+        TreeMap toBuild = new TreeMap();
+        toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
+        if (toBuild.repOK())
+            System.out.println("    Valid TreeMap!");
+        else
+            System.out.println("    Invalid TreeMap!");
+//        int a = SymHeap.makeSymbolicInteger("ASDASD");
+//        if (a > 0) {
+//            System.out.println("    a > 0");
+//        } else {
+//            System.out.println("    a < 0");
+//        }
     }
 
 }

@@ -10,12 +10,20 @@ public class SymHeap {
         return thisObject;
     }
 
+    public static Object buildHeap(Object thisObject) {
+        assert (thisObject != null);
+        buildSolutionHeap(thisObject);
+        return thisObject;
+    }
+
     public static void assume(boolean c) {
         if (!c)
             Verify.ignoreIf(true);
     }
 
     native public static void makeSymbolicImplicitInputThis(String name, Object v);
+
+    native public static void buildSolutionHeap(Object v);
 
     native public static int getMaxScope();
 

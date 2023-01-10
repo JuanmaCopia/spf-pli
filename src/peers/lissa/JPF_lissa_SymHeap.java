@@ -25,9 +25,20 @@ import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.solving.techniques.LISSAPC;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
+
+    @MJI
+    public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+
+        assert (LISSAShell.solvingStrategy instanceof LISSAPC);
+        LISSAPC technique = (LISSAPC) LISSAShell.solvingStrategy;
+        technique.buildSolutionHeap(objvRef);
+    }
 
     @MJI
     public static void makeSymbolicImplicitInputThis(MJIEnv env, int objRef, int stringRef, int objvRef) {

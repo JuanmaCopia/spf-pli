@@ -13,7 +13,7 @@ method = remove
 symbolic.debug = false
 symbolic.dp = z3
 
-heapsolving.strategy = LISSA
+heapsolving.strategy = LISSAPC
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = 4
 heapsolving.symsolve.predicate = repOK
