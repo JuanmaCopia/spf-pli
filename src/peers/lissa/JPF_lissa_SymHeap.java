@@ -37,7 +37,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
 
         assert (LISSAShell.solvingStrategy instanceof LISSAPC);
         LISSAPC technique = (LISSAPC) LISSAShell.solvingStrategy;
-        technique.buildSolutionHeap(objvRef);
+        technique.buildSolutionHeap(env, objvRef);
     }
 
     @MJI

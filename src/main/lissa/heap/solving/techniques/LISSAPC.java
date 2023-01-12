@@ -1,5 +1,6 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.vm.MJIEnv;
 import lissa.heap.builder.HeapSolutionBuilder;
 
 public class LISSAPC extends LISSA {
@@ -10,9 +11,9 @@ public class LISSAPC extends LISSA {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace());
     }
 
-    public void buildSolutionHeap(int objRef) {
+    public void buildSolutionHeap(MJIEnv env, int objRef) {
         System.out.println("\n\n LISSAPC: BUILD SOLUTION \n");
-        builder.buildSolution(heapSolver.getCurrentSolutionVector(), objRef);
+        builder.buildSolution(env, objRef, heapSolver.getCurrentSolutionVector());
 //      ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
 
     }

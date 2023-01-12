@@ -220,9 +220,8 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
         System.out.println("GETFIELD: Instruction Index: " + insnIndex);
 
-        int rootIndex = symRefInput.getRootHeapNode().getIndex();
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
-        MethodInfo repokMI = rootClassInfo.getMethod("emptyMethodStatic()V", false);
+        MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
 
         assert (repokMI != null);
 

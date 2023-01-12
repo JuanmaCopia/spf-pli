@@ -834,14 +834,17 @@ public class TreeMap {
 //        }
 //    }
 
-    public static void emptyMethodStatic() {
+    public static void runRepOK() {
         System.out.println("\nI'm emptyMethod static code! ");
         TreeMap toBuild = new TreeMap();
         toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
-        if (toBuild.repOK())
-            System.out.println("    Valid TreeMap!");
-        else
-            System.out.println("    Invalid TreeMap!");
+        String strTree = toBuild.treeToString();
+        System.out.println("\n TREE STRING:");
+        System.out.println(strTree);
+//        if (toBuild.isBinTreeWithParentReferences())
+//            System.out.println("    Valid TreeMap!");
+//        else
+//            System.out.println("    Invalid TreeMap!");
 //        int a = SymHeap.makeSymbolicInteger("ASDASD");
 //        if (a > 0) {
 //            System.out.println("    a > 0");
@@ -850,4 +853,73 @@ public class TreeMap {
 //        }
     }
 
+    public String treeToString() {
+        if (root == null)
+            return "root -> null";
+
+        StringBuilder sb = new StringBuilder();
+        String indent = "  ";
+        sb.append("root\n");
+
+        Set<Entry> visited = new HashSet<Entry>();
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
+        visited.add(root);
+        worklist.add(root);
+        if (root.parent != null)
+            sb.append(indent + "root.parent != null (WRONG!)\n");
+
+        sb.append(indent + "root.parent -> null (OK)\n");
+
+        while (!worklist.isEmpty()) {
+            Entry node = worklist.removeFirst();
+            Entry left = node.left;
+
+            if (left != null) {
+                boolean add = true;
+                if (!visited.add(left)) {
+                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "left -> NewObject (OK)\n");
+                }
+                if (left.parent != node) {
+                    sb.append(indent + "left.parent -> (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "left.parent -> OK\n");
+                }
+                if (add) {
+                    worklist.add(left);
+                }
+            } else {
+                sb.append(indent + "left -> null (OK)\n");
+            }
+
+            Entry right = node.right;
+
+            if (right != null) {
+                boolean add = true;
+                if (!visited.add(right)) {
+                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
+                    add = false;
+                } else
+                    sb.append(indent + "rigth -> NewObject (OK)\n");
+
+                if (right.parent != node) {
+                    sb.append(indent + "right.parent -> (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "right.parent -> OK\n");
+                }
+                if (add) {
+                    worklist.add(right);
+                }
+            } else {
+                sb.append(indent + "right -> null (OK)\n");
+            }
+
+            indent = indent + "  ";
+        }
+        return sb.toString();
+    }
 }
