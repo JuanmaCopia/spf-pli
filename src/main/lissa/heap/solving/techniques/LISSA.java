@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.canonicalizer.Canonicalizer;
 import lissa.heap.solving.solver.SymSolveHeapSolver;
 import symsolve.vector.SymSolveVector;
@@ -12,6 +13,7 @@ public class LISSA extends LIBasedStrategy {
 
     protected SymSolveHeapSolver heapSolver;
     protected Canonicalizer canonicalizer;
+    protected SymbolicReferenceInput currentSymbolicInput;
 
     public LISSA() {
         heapSolver = new SymSolveHeapSolver();
@@ -20,6 +22,7 @@ public class LISSA extends LIBasedStrategy {
 
     @Override
     public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+        currentSymbolicInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         return heapSolver.isSatisfiable(vector);
     }

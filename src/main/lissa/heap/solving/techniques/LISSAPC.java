@@ -13,8 +13,6 @@ public class LISSAPC extends LISSA {
 
     public void buildSolutionHeap(MJIEnv env, int objRef) {
         System.out.println("\n\n LISSAPC: BUILD SOLUTION \n");
-        builder.buildSolution(env, objRef, heapSolver.getCurrentSolutionVector());
-//      ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
-
+        builder.buildSolution(env, objRef, currentSymbolicInput, heapSolver.getCurrentSolutionVector());
     }
 }

@@ -167,14 +167,14 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             pcHeap._addDet(Comparator.EQ, (SymbolicInteger) attr, candidateNode.getSymbolic());
             daIndex = candidateNode.getIndex();
             // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), daIndex);
+            symRefInput.addReferenceField(objRef, fi, daIndex);
             // ================ Modification End ================ //
         } else if (currentChoice == numSymRefs) { // null object
             pcHeap._addDet(Comparator.EQ, (SymbolicInteger) attr, new IntegerConstant(-1));
             daIndex = MJIEnv.NULL;
 
             // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), SymbolicReferenceInput.NULL);
+            symRefInput.addReferenceField(objRef, fi, SymbolicReferenceInput.NULL);
             // ================ Modification End ================ //
         } else if (currentChoice == (numSymRefs + 1) && !abstractClass) {
             // creates a new object with all fields symbolic and adds the object to
@@ -194,7 +194,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                     prevSymRefs, ei.isShared());
 
             // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), daIndex);
+            symRefInput.addReferenceField(objRef, fi, daIndex);
             // ================ Modification End ================ //
         } else {
             System.err.println("subtyping not handled");

@@ -57,9 +57,9 @@ public class SymHeapHelper {
 
         SymbolicReferenceInput symRefInput = ((SymbolicInputHeapLISSA) symInputHeap).getImplicitInputThis();
         if (!(field instanceof ReferenceFieldInfo) || field.getType().equals("java.lang.String")) {
-            symRefInput.addPrimitiveSymbolicField(eiRef.getObjectRef(), field.getName(), sym_v);
+            symRefInput.addPrimitiveSymbolicField(eiRef.getObjectRef(), field, sym_v);
         } else {
-            symRefInput.addReferenceField(eiRef.getObjectRef(), field.getName(), SymbolicReferenceInput.SYMBOLIC);
+            symRefInput.addReferenceField(eiRef.getObjectRef(), field, SymbolicReferenceInput.SYMBOLIC);
         }
         return sym_v;
     }
