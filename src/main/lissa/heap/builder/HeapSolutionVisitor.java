@@ -130,6 +130,8 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
             }
         }
         assert (symbolicValue != null);
+        // System.out.println("Setted field " + field.getName() + " to value " +
+        // symbolicValue.toString());
         currentObjectElementInfo.setFieldAttr(field, symbolicValue);
     }
 }
