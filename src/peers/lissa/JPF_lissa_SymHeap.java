@@ -22,13 +22,45 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
+import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.cg.RepOKCallCG;
 import lissa.heap.solving.techniques.LISSAPC;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
+
+    @MJI
+    public static void reportRepOKResult(MJIEnv env, int objRef, boolean result) {
+        SystemState ss = env.getVM().getSystemState();
+        System.out.println("report result: " + result);
+        if (!result) {
+            ss.setIgnored(true);
+        } else {
+            String cgID = "repOKCG";
+            ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
+            assert (lastCG != null);
+            boolean found = false;
+            for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+                if (cgID.equals(cg.getId())) {
+                    found = true;
+                    RepOKCallCG rcg = (RepOKCallCG) cg;
+                    rcg.result = true;
+                    break;
+                }
+                cg.setDone();
+            }
+            assert (found);
+            ss.setIgnored(true);
+        }
+        HeapSolvingInstructionFactory.isRepOKRun = false;
+    }
+
+//  String cgID = "repOKCG";
+//  RepOKCallCG repOKCG = env.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+//  assert (repOKCG != null && repOKCG instanceof RepOKCallCG);
 
     @MJI
     public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {

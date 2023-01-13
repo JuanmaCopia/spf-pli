@@ -835,12 +835,18 @@ public class TreeMap {
 //    }
 
     public static void runRepOK() {
-        System.out.println("\nI'm emptyMethod static code! ");
         TreeMap toBuild = new TreeMap();
         toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
-        String strTree = toBuild.treeToString();
-        System.out.println("\n TREE STRING:");
-        System.out.println(strTree);
+        // String strTree = toBuild.treeToString();
+
+        System.out.println("\nExecuting repok!");
+        boolean val = toBuild.repOK();
+        // Verify.ignoreIf(!val);
+        SymHeap.reportRepOKResult(val);
+
+        // System.out.println(" result: " + val);
+//        System.out.println("\n TREE STRING:");
+//        System.out.println(strTree);
 //        if (toBuild.isBinTreeWithParentReferences())
 //            System.out.println("    Valid TreeMap!");
 //        else
@@ -861,6 +867,13 @@ public class TreeMap {
         String indent = "  ";
         sb.append("root\n");
 
+        if (root.color)
+            sb.append("root.color: BLACK\n");
+        else
+            sb.append("root.color: RED\n");
+
+        sb.append("root.color -> " + root.color + "\n");
+
         Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
@@ -872,6 +885,10 @@ public class TreeMap {
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
+
+            sb.append(indent + "color -> " + node.color + "\n");
+            sb.append(indent + "key -> " + node.key + "\n");
+
             Entry left = node.left;
 
             if (left != null) {

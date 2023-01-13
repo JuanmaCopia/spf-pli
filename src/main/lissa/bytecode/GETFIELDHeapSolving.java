@@ -21,7 +21,6 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
-import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -218,15 +217,36 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
         // ================= Modification End ================= //
 
+        return createInvokeRepOKInstruction(ti, symRefInput);
+
         // System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
         // fi.getName());
         // System.out.println("GETFIELD: Instruction Index: " + insnIndex);
-        return createInvokeRepOKInstruction(ti, symRefInput);
+
+//        boolean mustInvokeRepOK;
+//        RepOKCallCG repOKCG;
+//        String cgID = "repOKCG";
+//
+//        if (!ti.isFirstStepInsn()) {
+//            repOKCG = new RepOKCallCG(cgID, 2); // invoke repok and dont invoke but recover result
+//            ti.getVM().getSystemState().setNextChoiceGenerator(repOKCG);
+//
+//            System.out.println("# Repok CG registered: " + repOKCG);
+//            return this;
+//
+//        }
+//
+//        repOKCG = ti.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+//        assert (repOKCG != null && thisHeapCG instanceof RepOKCallCG);
+//        mustInvokeRepOK = repOKCG.getNextChoice() == 0;
+//
+//        if (mustInvokeRepOK)
+//            return createInvokeRepOKInstruction(ti, symRefInput);
+//
+//        return getNext(ti);
     }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, SymbolicReferenceInput symRefInput) {
-        HeapSolvingInstructionFactory.isRepOKRun = true;
-
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
         MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
 
@@ -236,9 +256,10 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         String mthName = repokMI.getName();
         String signature = repokMI.getSignature();
 
-        Instruction realInvoke = new STATICREPOK(clsName, mthName, signature);
+        STATICREPOK2 realInvoke = new STATICREPOK2(clsName, mthName, signature);
         realInvoke.setMethodInfo(this.getMethodInfo());
         realInvoke.setLocation(this.insnIndex, this.position);
+        realInvoke.nextOfGETFIELD = getNext(ti);
 
         Object[] args = null;
         Object[] attrs = null;
@@ -294,22 +315,22 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
      * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
      * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
      * insnIndex);
-     * 
+     *
      * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
      * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
      * rootClassInfo.getMethod("emptyMethodStatic()V", false);
-     * 
+     *
      * assert (repokMI != null);
-     * 
+     *
      * String clsName = repokMI.getClassInfo().getName(); String mthName =
      * repokMI.getName(); String signature = repokMI.getSignature();
-     * 
+     *
      * Instruction realInvoke = new INVOKESTATIC(clsName, mthName, signature);
      * realInvoke.setMethodInfo(this.getMethodInfo());
      * realInvoke.setLocation(this.insnIndex, this.position);
-     * 
+     *
      * Object[] args = null; Object[] attrs = null; pushArguments(ti, args, attrs);
-     * 
+     *
      * return realInvoke;
      */
 
@@ -322,22 +343,22 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
      * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
      * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
      * insnIndex);
-     * 
+     *
      * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
      * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
      * rootClassInfo.getMethod("emptyMethodStatic()V", false);
-     * 
+     *
      * assert (repokMI != null);
-     * 
+     *
      * Object[] args = null; Invocation repokCall = new Invocation(repokMI, args,
      * null); LinkedList<Invocation> invList = new LinkedList<>();
      * invList.add(repokCall);
-     * 
+     *
      * INVOKECG realInvoke = new INVOKECG(invList);
-     * 
+     *
      * MethodInfo thisMI = this.getMethodInfo(); realInvoke.setMethodInfo(thisMI);
      * realInvoke.setLocation(this.insnIndex, this.position);
-     * 
+     *
      * return realInvoke;
      */
 
@@ -346,27 +367,27 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
     // ====================== WORKING: STATIC METHOD CALL ====================== //
 
     /*
-     * 
+     *
      * System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
      * fi.getName()); System.out.println("GETFIELD: Instruction Index: " +
      * insnIndex);
-     * 
+     *
      * int rootIndex = symRefInput.getRootHeapNode().getIndex(); ClassInfo
      * rootClassInfo = symRefInput.getRootHeapNode().getType(); MethodInfo repokMI =
      * rootClassInfo.getMethod("emptyMethodStatic()V", false);
-     * 
+     *
      * assert (repokMI != null);
-     * 
+     *
      * Invocation repokCall = new Invocation(repokMI, null, null);
      * LinkedList<Invocation> invList = new LinkedList<>(); invList.add(repokCall);
-     * 
+     *
      * INVOKECG realInvoke = new INVOKECG(invList);
-     * 
+     *
      * MethodInfo thisMI = this.getMethodInfo(); realInvoke.setMethodInfo(thisMI);
      * realInvoke.insnIndex = this.insnIndex;
-     * 
+     *
      * return realInvoke;
-     * 
+     *
      */
 
     // ====================== WORKING: STATIC METHOD CALL ====================== //

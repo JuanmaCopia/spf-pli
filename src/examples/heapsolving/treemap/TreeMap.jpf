@@ -7,8 +7,8 @@ sourcepath=${spf-lissa}/src/examples
 
 shell=lissa.LISSAShell
 
-target = heapsolving.treemap.remove.TreeMapMain
-method = remove
+target = heapsolving.treemap.containskey.TreeMapMain
+method = containsKey
 
 symbolic.debug = false
 symbolic.dp = z3
