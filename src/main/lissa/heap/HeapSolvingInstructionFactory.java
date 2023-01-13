@@ -12,9 +12,11 @@ import lissa.config.SolvingStrategyEnum;
 
 public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
+    public static boolean isRepOKRun = false;
+
     @Override
     public Instruction getfield(String fieldName, String clsName, String fieldDescriptor) {
-        if (LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER)
+        if (LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER || isRepOKRun)
             return super.getfield(fieldName, clsName, fieldDescriptor);
         return new GETFIELDHeapSolving(fieldName, clsName, fieldDescriptor);
     }

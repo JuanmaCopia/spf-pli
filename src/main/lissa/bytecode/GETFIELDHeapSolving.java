@@ -21,6 +21,7 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
+import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -217,8 +218,14 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
         // ================= Modification End ================= //
 
-        System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." + fi.getName());
-        System.out.println("GETFIELD: Instruction Index: " + insnIndex);
+        // System.out.println("GETFIELD: " + ei.getClassInfo().getName() + "." +
+        // fi.getName());
+        // System.out.println("GETFIELD: Instruction Index: " + insnIndex);
+        return createInvokeRepOKInstruction(ti, symRefInput);
+    }
+
+    Instruction createInvokeRepOKInstruction(ThreadInfo ti, SymbolicReferenceInput symRefInput) {
+        HeapSolvingInstructionFactory.isRepOKRun = true;
 
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
         MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
@@ -238,7 +245,6 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         pushArguments(ti, args, attrs);
 
         return realInvoke;
-
     }
 
     void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
