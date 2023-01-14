@@ -9,7 +9,7 @@ public class Example {
         TreeMap tree = new TreeMap();
         tree = (TreeMap) Debug.makeSymbolicRef("tree", tree);
 
-        if (tree != null && tree.repOK()) {
+        if (tree != null && tree.repOKStructure()) {
             tree.put(Debug.makeSymbolicInteger("INPUTKEY"), new Object());
         }
 

@@ -7,8 +7,8 @@ sourcepath=${spf-lissa}/src/examples
 
 shell=lissa.LISSAShell
 
-target = heapsolving.treemap.containskey.TreeMapMain
-method = containsKey
+target = heapsolving.treemap.remove.TreeMapMain
+method = remove
 
 symbolic.debug = false
 symbolic.dp = z3
@@ -16,7 +16,7 @@ symbolic.dp = z3
 heapsolving.strategy = LISSAPC
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = 4
-heapsolving.symsolve.predicate = repOK
+heapsolving.symsolve.predicate = repOKStructure
 
 jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
