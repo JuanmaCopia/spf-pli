@@ -29,9 +29,12 @@ import gov.nasa.jpf.vm.MethodInfo;
 import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
+import lissa.LISSAShell;
 import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.cg.RepOKCallCG;
+import lissa.heap.solving.techniques.LISSAPC;
+import lissa.heap.solving.techniques.SolvingStrategy;
 
 // need to fix names
 
@@ -109,8 +112,13 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
             return executeInvokeRepOK(ti);
         }
 
-        if (!repOKCG.result)
+        if (!repOKCG.result) {
+            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+            assert (solvingStrategy instanceof LISSAPC);
+            LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+            lissaPC.prunedPathsDueToPathCondition++;
             ti.getVM().getSystemState().setIgnored(true);
+        }
 
         PathCondition pc = SymHeapHelper.getPathCondition();
         if (pc != null)

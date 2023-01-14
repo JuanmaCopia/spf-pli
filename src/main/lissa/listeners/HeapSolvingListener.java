@@ -8,6 +8,7 @@ import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
+import lissa.heap.solving.techniques.LISSAPC;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
 
@@ -23,6 +24,8 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
     int exploredPaths = 0;
     int invalidPaths = 0;
+
+    int prunedPathsDueToPathCondition = 0;
 
     public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser configParser) {
         this.heapSolvingStrategy = solvingStrategy;
@@ -62,7 +65,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 invalidPaths = ((LIHYBRID) heapSolvingStrategy).invalidPaths;
             } else if (heapSolvingStrategy instanceof LISSAM) {
                 cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
+            } else if (heapSolvingStrategy instanceof LISSAPC) {
+                prunedPathsDueToPathCondition = ((LISSAPC) heapSolvingStrategy).prunedPathsDueToPathCondition;
             }
+
         }
     }
 
@@ -72,14 +78,16 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 configParser.targetMethodName));
         System.out.println("Scope:      " + configParser.finitizationArgs);
         System.out.println("\n------- Statistics -------\n");
-        System.out.println(" - Executed Paths:  " + exploredPaths);
+        System.out.println(" - Executed Paths:        " + exploredPaths);
         if (heapSolvingStrategy instanceof LIHYBRID)
-            System.out.println(" - Invalid Paths:   " + invalidPaths);
-        System.out.println(" - Total Time:      " + totalTime / 1000 + " s.");
+            System.out.println(" - Invalid Paths:         " + invalidPaths);
+        System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
         if (heapSolvingStrategy instanceof LIBasedStrategy)
-            System.out.println(" - Solving Time:    " + solvingTime / 1000 + " s.");
+            System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
         if (heapSolvingStrategy instanceof LISSAM)
-            System.out.println(" - Cache Hits:      " + cacheHits);
+            System.out.println(" - Cache Hits:            " + cacheHits);
+        if (heapSolvingStrategy instanceof LISSAPC)
+            System.out.println(" - Pruned due invalid PC: " + prunedPathsDueToPathCondition);
         System.out.println("");
     }
 

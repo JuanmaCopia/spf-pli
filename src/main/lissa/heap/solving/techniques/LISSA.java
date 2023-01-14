@@ -2,6 +2,7 @@ package lissa.heap.solving.techniques;
 
 import java.util.HashMap;
 
+import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -41,6 +42,12 @@ public class LISSA extends LIBasedStrategy {
     @Override
     public long getSolvingTime() {
         return heapSolver.getSolvingTime();
+    }
+
+    @Override
+    public Instruction getNextInstructionForGETFIELD(ThreadInfo ti, Instruction getfield,
+            SymbolicReferenceInput symRefInput) {
+        return ti.getPC().getNext();
     }
 
 }

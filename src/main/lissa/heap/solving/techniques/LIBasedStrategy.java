@@ -1,7 +1,9 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.SymbolicReferenceInput;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
@@ -12,5 +14,8 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     public abstract boolean isClassInBounds(String fieldSimpleClassName);
 
     public abstract Integer getBoundForClass(String fieldSimpleClassName);
+
+    public abstract Instruction getNextInstructionForGETFIELD(ThreadInfo ti, Instruction getfield,
+            SymbolicReferenceInput symRefInput);
 
 }
