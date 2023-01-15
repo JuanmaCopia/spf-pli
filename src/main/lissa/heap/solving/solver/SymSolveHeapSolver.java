@@ -71,4 +71,11 @@ public class SymSolveHeapSolver {
         return finitization.getDataBounds();
     }
 
+    public boolean searchNextSolution() {
+        long time = System.currentTimeMillis();
+        boolean result = solver.searchNextSolution();
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
+    }
+
 }

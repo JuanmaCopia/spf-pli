@@ -116,8 +116,17 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
             SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
             assert (solvingStrategy instanceof LISSAPC);
             LISSAPC lissaPC = (LISSAPC) solvingStrategy;
-            lissaPC.prunedPathsDueToPathCondition++;
-            ti.getVM().getSystemState().setIgnored(true);
+//            lissaPC.prunedPathsDueToPathCondition++;
+//            ti.getVM().getSystemState().setIgnored(true);
+            if (lissaPC.hasNextSolution()) {
+                repOKCG.reset();
+                System.out.println("# Reexecuting repok with new solution");
+                // return executeInvokeRepOK(ti);
+                return this;
+            } else {
+                lissaPC.prunedPathsDueToPathCondition++;
+                ti.getVM().getSystemState().setIgnored(true);
+            }
         }
 
         PathCondition pc = SymHeapHelper.getPathCondition();

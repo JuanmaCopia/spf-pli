@@ -21,6 +21,10 @@ public class LISSAPC extends LISSA {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace());
     }
 
+    public boolean hasNextSolution() {
+        return heapSolver.searchNextSolution();
+    }
+
     @Override
     public Instruction getNextInstructionForGETFIELD(ThreadInfo ti, Instruction getfield,
             SymbolicReferenceInput symRefInput) {
