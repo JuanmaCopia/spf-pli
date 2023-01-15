@@ -85,30 +85,24 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
 
     @Override
     public Instruction execute(ThreadInfo ti) {
-        boolean mustInvokeRepOK;
         RepOKCallCG repOKCG;
         String cgID = "repOKCG";
 
-        if (!ti.isFirstStepInsn()) {
-            repOKCG = new RepOKCallCG(cgID, 2); // invoke repok and dont invoke but recover result
+        repOKCG = ti.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+
+        if (repOKCG == null) {
+            repOKCG = new RepOKCallCG(cgID);
             PathCondition pc = SymHeapHelper.getPathCondition();
             if (pc != null)
                 repOKCG.pccount = pc.count();
             ti.getVM().getSystemState().setNextChoiceGenerator(repOKCG);
-
             System.out.println("# Repok CG registered: " + repOKCG);
             return this;
-
         }
 
-        repOKCG = ti.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
-        assert (repOKCG != null && repOKCG instanceof RepOKCallCG);
-
-        assert (repOKCG.getNextChoice() == 0 || repOKCG.getNextChoice() == 1);
-        mustInvokeRepOK = repOKCG.getNextChoice() == 0;
-
-        if (mustInvokeRepOK) {
+        if (repOKCG.repOKExecutions == 0) {
             HeapSolvingInstructionFactory.isRepOKRun = true;
+            repOKCG.repOKExecutions++;
             return executeInvokeRepOK(ti);
         }
 
@@ -116,17 +110,14 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
             SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
             assert (solvingStrategy instanceof LISSAPC);
             LISSAPC lissaPC = (LISSAPC) solvingStrategy;
-//            lissaPC.prunedPathsDueToPathCondition++;
-//            ti.getVM().getSystemState().setIgnored(true);
             if (lissaPC.hasNextSolution()) {
-                repOKCG.reset();
-                System.out.println("# Reexecuting repok with new solution");
-                // return executeInvokeRepOK(ti);
-                return this;
-            } else {
-                lissaPC.prunedPathsDueToPathCondition++;
-                ti.getVM().getSystemState().setIgnored(true);
+                System.out.println("# Reexecuting repok with new solution, exex num: " + repOKCG.repOKExecutions);
+                repOKCG.repOKExecutions++;
+                return executeInvokeRepOK(ti);
             }
+            System.out.println("No solution found after: " + repOKCG.repOKExecutions);
+            lissaPC.prunedPathsDueToPathCondition++;
+            ti.getVM().getSystemState().setIgnored(true);
         }
 
         PathCondition pc = SymHeapHelper.getPathCondition();
@@ -135,8 +126,8 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
         else
             assert (repOKCG.pccount == 0);
 
+        repOKCG.setDone();
         HeapSolvingInstructionFactory.isRepOKRun = false;
-
         return nextOfGETFIELD;
     }
 
