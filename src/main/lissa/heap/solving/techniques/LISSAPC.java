@@ -8,7 +8,7 @@ import gov.nasa.jpf.vm.ObjRef;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.bytecode.STATICREPOK2;
+import lissa.bytecode.StaticRepOKCallInstruction;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.HeapSolutionBuilder;
 
@@ -41,7 +41,7 @@ public class LISSAPC extends LISSA {
         String mthName = repokMI.getName();
         String signature = repokMI.getSignature();
 
-        STATICREPOK2 realInvoke = new STATICREPOK2(clsName, mthName, signature);
+        StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
         realInvoke.setMethodInfo(getfield.getMethodInfo());
         realInvoke.setLocation(getfield.getInstructionIndex(), getfield.getPosition());
         realInvoke.nextOfGETFIELD = ti.getPC().getNext();

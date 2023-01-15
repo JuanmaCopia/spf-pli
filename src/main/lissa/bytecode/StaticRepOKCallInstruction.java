@@ -38,13 +38,13 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 
 // need to fix names
 
-public class STATICREPOK2 extends JVMInvokeInstruction {
+public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
 
     public Instruction nextOfGETFIELD;
 
-    public STATICREPOK2(String clsName, String methodName, String methodSignature) {
+    public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
@@ -239,10 +239,10 @@ public class STATICREPOK2 extends JVMInvokeInstruction {
 
     @Override
     public Instruction typeSafeClone(MethodInfo mi) {
-        STATICREPOK2 clone = null;
+        StaticRepOKCallInstruction clone = null;
 
         try {
-            clone = (STATICREPOK2) super.clone();
+            clone = (StaticRepOKCallInstruction) super.clone();
 
             // reset the method that this insn belongs to
             clone.mi = mi;
