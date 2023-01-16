@@ -887,9 +887,8 @@ public class TreeMap {
     public static void runRepOK() {
         TreeMap toBuild = new TreeMap();
         toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
-        System.out.println("\nExecuting repok!");
-        boolean val = toBuild.repOK();
-        SymHeap.reportRepOKResult(val);
+        // System.out.println("\nExecuting repok!");
+        SymHeap.handleRepOKResult(toBuild.repOK());
     }
 
 //    public String treeToString() {

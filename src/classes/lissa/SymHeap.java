@@ -21,7 +21,7 @@ public class SymHeap {
             Verify.ignoreIf(true);
     }
 
-    native public static void reportRepOKResult(boolean result);
+    native public static void handleRepOKResult(boolean result);
 
     native public static void makeSymbolicImplicitInputThis(String name, Object v);
 

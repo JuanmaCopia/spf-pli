@@ -33,12 +33,10 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
-    public static void reportRepOKResult(MJIEnv env, int objRef, boolean result) {
+    public static void handleRepOKResult(MJIEnv env, int objRef, boolean result) {
         SystemState ss = env.getVM().getSystemState();
-        System.out.println("report result: " + result);
-        if (!result) {
-            ss.setIgnored(true);
-        } else {
+        // System.out.println("report result: " + result);
+        if (result) {
             String cgID = "repOKCG";
             ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
             assert (lastCG != null);
@@ -53,8 +51,8 @@ public class JPF_lissa_SymHeap extends NativePeer {
                 cg.setDone();
             }
             assert (found);
-            ss.setIgnored(true);
         }
+        ss.setIgnored(true);
         HeapSolvingInstructionFactory.isRepOKRun = false;
     }
 

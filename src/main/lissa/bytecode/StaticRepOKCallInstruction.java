@@ -96,7 +96,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             if (pc != null)
                 repOKCG.pccount = pc.count();
             ti.getVM().getSystemState().setNextChoiceGenerator(repOKCG);
-            System.out.println("# Repok CG registered: " + repOKCG);
+            // System.out.println("# Repok CG registered: " + repOKCG);
             return this;
         }
 
@@ -111,11 +111,13 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             assert (solvingStrategy instanceof LISSAPC);
             LISSAPC lissaPC = (LISSAPC) solvingStrategy;
             if (lissaPC.hasNextSolution()) {
-                System.out.println("# Reexecuting repok with new solution, exex num: " + repOKCG.repOKExecutions);
+                // System.out.println("# Reexecuting repok with new solution, exex num: " +
+                // repOKCG.repOKExecutions);
+                HeapSolvingInstructionFactory.isRepOKRun = true;
                 repOKCG.repOKExecutions++;
                 return executeInvokeRepOK(ti);
             }
-            System.out.println("No solution found after: " + repOKCG.repOKExecutions);
+            // System.out.println("No solution found after: " + repOKCG.repOKExecutions);
             lissaPC.prunedPathsDueToPathCondition++;
             ti.getVM().getSystemState().setIgnored(true);
         }
