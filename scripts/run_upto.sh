@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Constants
-TIMEOUT=7210 # 2 hours and 10 seconds
+TIMEOUT=18010 # 5 hours and 10 seconds
 
 # Time between timeout checks
 INTERVAL=60 # 1 minutes
