@@ -8,7 +8,7 @@ target = heapsolving.binomialheap.METHOD.BinomialHeapMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.dp = z3
+symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap

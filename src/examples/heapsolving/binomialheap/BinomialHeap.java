@@ -24,6 +24,7 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 //import kodkod.util.collections.IdentityHashSet;
 
@@ -404,6 +405,13 @@ public class BinomialHeap {
         if (!checkDegrees())
             return false;
         return true;
+    }
+
+    public static void runRepOK() {
+        BinomialHeap toBuild = new BinomialHeap();
+        toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
+        // System.out.println("\nExecuting repok!");
+        SymHeap.handleRepOKResult(toBuild.repOK());
     }
 
     public static IFinitization finBinomialHeap(int nodesNum) {
