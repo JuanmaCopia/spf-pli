@@ -406,7 +406,7 @@ public class BinomialHeap {
         return true;
     }
 
-    public static IFinitization finTreeMap(int nodesNum) {
+    public static IFinitization finBinomialHeap(int nodesNum) {
         IFinitization f = FinitizationFactory.create(BinomialHeap.class);
         IObjSet nodes = f.createObjSet(BinomialHeapNode.class, nodesNum, true);
         f.set(BinomialHeap.class, "Nodes", nodes);
