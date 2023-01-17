@@ -214,7 +214,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
         // ================= Modification End ================= //
 
-        return heapSolvingStrategy.getNextInstructionToGETFIELD(ti, this, symRefInput);
+        return heapSolvingStrategy.getNextInstructionToGETFIELD(ti, this, symInputHeap);
     }
 }
 

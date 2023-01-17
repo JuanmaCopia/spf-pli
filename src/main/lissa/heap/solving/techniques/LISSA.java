@@ -46,13 +46,12 @@ public class LISSA extends LIBasedStrategy {
 
     @Override
     public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction getfield,
-            SymbolicReferenceInput symRefInput) {
+            SymbolicInputHeapLISSA symInputHeap) {
         return ti.getPC().getNext();
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction ins,
-            SymbolicReferenceInput symRefInput) {
+    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction) {
         return ti.getPC().getNext();
     }
 

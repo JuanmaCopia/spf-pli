@@ -43,7 +43,9 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
 
-    public Instruction nextOfGETFIELD;
+    public Instruction nextInstruction;
+
+    public SymbolicInputHeapLISSA currentSymInputHeap;
 
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
@@ -122,8 +124,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             lissaPC.prunedPathsDueToPathCondition++;
             ti.getVM().getSystemState().setIgnored(true);
         } else { // Repok returned true
-            SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
-            symInputHeap.setRepOKPC(SymHeapHelper.getPathCondition());
+            currentSymInputHeap.setRepOKPC(SymHeapHelper.getPathCondition());
         }
 
         PathCondition pc = SymHeapHelper.getPathCondition();
@@ -134,7 +135,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
         repOKCG.setDone();
         HeapSolvingInstructionFactory.isRepOKRun = false;
-        return nextOfGETFIELD;
+        return nextInstruction;
     }
 
     public Instruction executeInvokeRepOK(ThreadInfo ti) {

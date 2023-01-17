@@ -9,6 +9,8 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.bytecode.StaticRepOKCallInstruction;
+import lissa.heap.SymHeapHelper;
+import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.HeapSolutionBuilder;
 
@@ -26,18 +28,22 @@ public class LISSAPC extends LISSA {
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction ins,
-            SymbolicReferenceInput symRefInput) {
-        return ti.getPC().getNext();
+    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction) {
+        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
+        return createInvokeRepOKInstruction(ti, currentInstruction, symInputHeap);
     }
 
     @Override
     public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction getfield,
-            SymbolicReferenceInput symRefInput) {
-        return createInvokeRepOKInstruction(ti, getfield, symRefInput);
+            SymbolicInputHeapLISSA symInputHeap) {
+        return createInvokeRepOKInstruction(ti, getfield, symInputHeap);
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction getfield, SymbolicReferenceInput symRefInput) {
+    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction,
+            SymbolicInputHeapLISSA symInputHeap) {
+        assert (symInputHeap != null);
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+        assert (symRefInput != null);
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
         MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
 
@@ -48,9 +54,10 @@ public class LISSAPC extends LISSA {
         String signature = repokMI.getSignature();
 
         StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
-        realInvoke.setMethodInfo(getfield.getMethodInfo());
-        realInvoke.setLocation(getfield.getInstructionIndex(), getfield.getPosition());
-        realInvoke.nextOfGETFIELD = ti.getPC().getNext();
+        realInvoke.setMethodInfo(currentInstruction.getMethodInfo());
+        realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
+        realInvoke.nextInstruction = ti.getPC().getNext();
+        realInvoke.currentSymInputHeap = symInputHeap;
 
         Object[] args = null;
         Object[] attrs = null;
