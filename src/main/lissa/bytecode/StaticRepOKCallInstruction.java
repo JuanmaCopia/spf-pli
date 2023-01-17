@@ -32,6 +32,7 @@ import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
 import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
+import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.cg.RepOKCallCG;
 import lissa.heap.solving.techniques.LISSAPC;
 import lissa.heap.solving.techniques.SolvingStrategy;
@@ -120,6 +121,9 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             // System.out.println("No solution found after: " + repOKCG.repOKExecutions);
             lissaPC.prunedPathsDueToPathCondition++;
             ti.getVM().getSystemState().setIgnored(true);
+        } else { // Repok returned true
+            SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
+            symInputHeap.setRepOKPC(SymHeapHelper.getPathCondition());
         }
 
         PathCondition pc = SymHeapHelper.getPathCondition();

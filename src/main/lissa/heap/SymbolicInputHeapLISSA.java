@@ -40,12 +40,15 @@ package lissa.heap;
 import gov.nasa.jpf.symbc.arrays.ArrayHeapNode;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ClassInfo;
 
 public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
 
     private SymbolicReferenceInput implicitInputThis;
+
+    private PathCondition repOKPC;
 
     public SymbolicReferenceInput getImplicitInputThis() {
         return this.implicitInputThis;
@@ -65,7 +68,19 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         sih_new.header = this.header;
         sih_new.count = this.count;
         sih_new.implicitInputThis = this.implicitInputThis.makeShallowCopy();
+        if (this.repOKPC != null)
+            sih_new.repOKPC = this.repOKPC.make_copy();
         return sih_new;
+    }
+
+    public void setRepOKPC(PathCondition pc) {
+        repOKPC = pc;
+    }
+
+    public PathCondition getRepOKPC() {
+        if (repOKPC != null)
+            return repOKPC.make_copy();
+        return null;
     }
 
     public ClassInfo getImplicitInputClassInfo() {
