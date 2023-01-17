@@ -11,14 +11,7 @@ public class ALOAD extends gov.nasa.jpf.jvm.bytecode.ALOAD {
 
     @Override
     public Instruction execute(ThreadInfo ti) {
-        Instruction returnedIns = super.execute(ti);
-
-//        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-//        if (solvingStrategy instanceof LIBasedStrategy) {
-//            LIBasedStrategy heapSolvingStrategy = (LIBasedStrategy) solvingStrategy;
-//            return heapSolvingStrategy.getNextInstructionToPrimitiveBranching(ti, this);
-//        }
-        return returnedIns;
+        return super.execute(ti);
     }
 
 }

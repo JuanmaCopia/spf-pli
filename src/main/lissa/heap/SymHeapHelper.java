@@ -124,7 +124,9 @@ public class SymHeapHelper {
 
     public static SymbolicInputHeapLISSA getSymbolicInputHeap(VM vm) {
         HeapChoiceGenerator heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
-        return (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
+        if (heapCG != null)
+            return (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
+        return null;
     }
 
     public static ThreadInfo getCurrentThread() {

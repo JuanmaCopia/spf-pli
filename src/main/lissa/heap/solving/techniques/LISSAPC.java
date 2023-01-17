@@ -28,19 +28,19 @@ public class LISSAPC extends LISSA {
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction) {
+    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
-        return createInvokeRepOKInstruction(ti, currentInstruction, symInputHeap);
+        if (symInputHeap == null)
+            return ti.getPC().getNext();
+        return createInvokeRepOKInstruction(ti, symInputHeap);
     }
 
     @Override
-    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction getfield,
-            SymbolicInputHeapLISSA symInputHeap) {
-        return createInvokeRepOKInstruction(ti, getfield, symInputHeap);
+    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+        return createInvokeRepOKInstruction(ti, symInputHeap);
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction,
-            SymbolicInputHeapLISSA symInputHeap) {
+    Instruction createInvokeRepOKInstruction(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
         assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert (symRefInput != null);
@@ -54,6 +54,7 @@ public class LISSAPC extends LISSA {
         String signature = repokMI.getSignature();
 
         StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
+        Instruction currentInstruction = ti.getPC();
         realInvoke.setMethodInfo(currentInstruction.getMethodInfo());
         realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
         realInvoke.nextInstruction = ti.getPC().getNext();
