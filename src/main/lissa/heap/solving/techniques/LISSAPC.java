@@ -9,7 +9,6 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.bytecode.StaticRepOKCallInstruction;
-import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.HeapSolutionBuilder;
@@ -28,16 +27,13 @@ public class LISSAPC extends LISSA {
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti) {
-        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
-        if (symInputHeap == null)
-            return ti.getPC().getNext();
-        return createInvokeRepOKInstruction(ti, symInputHeap);
-    }
-
-    @Override
-    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
-        return createInvokeRepOKInstruction(ti, symInputHeap);
+    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+        boolean isHeapSAT = super.checkHeapSatisfiability(ti, symInputHeap);
+        if (isHeapSAT) {
+            Instruction invokeRepOKInstruction = createInvokeRepOKInstruction(ti, symInputHeap);
+            ti.getPC().setNext(invokeRepOKInstruction);
+        }
+        return isHeapSAT;
     }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
@@ -57,7 +53,7 @@ public class LISSAPC extends LISSA {
         Instruction currentInstruction = ti.getPC();
         realInvoke.setMethodInfo(currentInstruction.getMethodInfo());
         realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
-        realInvoke.nextInstruction = ti.getPC().getNext();
+        realInvoke.nextInstruction = currentInstruction.getNext();
         realInvoke.currentSymInputHeap = symInputHeap;
 
         Object[] args = null;
