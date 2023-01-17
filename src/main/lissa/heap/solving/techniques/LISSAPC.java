@@ -26,7 +26,13 @@ public class LISSAPC extends LISSA {
     }
 
     @Override
-    public Instruction getNextInstructionForGETFIELD(ThreadInfo ti, Instruction getfield,
+    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction ins,
+            SymbolicReferenceInput symRefInput) {
+        return ti.getPC().getNext();
+    }
+
+    @Override
+    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction getfield,
             SymbolicReferenceInput symRefInput) {
         return createInvokeRepOKInstruction(ti, getfield, symRefInput);
     }

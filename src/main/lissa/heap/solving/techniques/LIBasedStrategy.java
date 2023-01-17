@@ -15,7 +15,10 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     public abstract Integer getBoundForClass(String fieldSimpleClassName);
 
-    public abstract Instruction getNextInstructionForGETFIELD(ThreadInfo ti, Instruction getfield,
+    public abstract Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction getfield,
+            SymbolicReferenceInput symRefInput);
+
+    public abstract Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction ins,
             SymbolicReferenceInput symRefInput);
 
 }
