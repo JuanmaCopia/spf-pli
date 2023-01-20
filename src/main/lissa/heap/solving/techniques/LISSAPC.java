@@ -18,6 +18,7 @@ public class LISSAPC extends LISSA {
 
     HeapSolutionBuilder builder;
     public int prunedPathsDueToPathCondition = 0;
+    public long repokExecTime = 0;
 
     public LISSAPC() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace());

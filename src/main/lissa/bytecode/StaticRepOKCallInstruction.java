@@ -106,18 +106,23 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         if (repOKCG.repOKExecutions == 0) {
             HeapSolvingInstructionFactory.isRepOKRun = true;
             repOKCG.repOKExecutions++;
+            repOKCG.startTime = System.currentTimeMillis();
             return executeInvokeRepOK(ti);
         }
 
+        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+        assert (solvingStrategy instanceof LISSAPC);
+        LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+        lissaPC.repokExecTime += System.currentTimeMillis() - repOKCG.startTime;
+
         if (!repOKCG.result) {
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            assert (solvingStrategy instanceof LISSAPC);
-            LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+
             if (lissaPC.hasNextSolution()) {
                 // System.out.println("# Reexecuting repok with new solution, exex num: " +
                 // repOKCG.repOKExecutions);
                 HeapSolvingInstructionFactory.isRepOKRun = true;
                 repOKCG.repOKExecutions++;
+                repOKCG.startTime = System.currentTimeMillis();
                 return executeInvokeRepOK(ti);
             }
             // System.out.println("No solution found after: " + repOKCG.repOKExecutions);

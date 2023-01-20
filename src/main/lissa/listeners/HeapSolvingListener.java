@@ -26,6 +26,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int invalidPaths = 0;
 
     int prunedPathsDueToPathCondition = 0;
+    long repOKPCSolvingTime = 0;
 
     public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser configParser) {
         this.heapSolvingStrategy = solvingStrategy;
@@ -67,6 +68,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
             } else if (heapSolvingStrategy instanceof LISSAPC) {
                 prunedPathsDueToPathCondition = ((LISSAPC) heapSolvingStrategy).prunedPathsDueToPathCondition;
+                repOKPCSolvingTime = ((LISSAPC) heapSolvingStrategy).repokExecTime;
             }
 
         }
@@ -86,8 +88,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
         if (heapSolvingStrategy instanceof LISSAM)
             System.out.println(" - Cache Hits:            " + cacheHits);
-        if (heapSolvingStrategy instanceof LISSAPC)
+        if (heapSolvingStrategy instanceof LISSAPC) {
+            System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
             System.out.println(" - Pruned due invalid PC: " + prunedPathsDueToPathCondition);
+        }
         System.out.println("");
     }
 

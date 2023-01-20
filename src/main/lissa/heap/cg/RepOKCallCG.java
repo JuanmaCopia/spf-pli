@@ -7,12 +7,14 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     public boolean result = false;
     public int repOKExecutions = 0;
     public int pccount = 0;
+    public long startTime = 0;
 
     public RepOKCallCG(String id) {
         super(id);
         result = false;
         repOKExecutions = 0;
         pccount = 0;
+        startTime = 0;
     }
 
     @Override
