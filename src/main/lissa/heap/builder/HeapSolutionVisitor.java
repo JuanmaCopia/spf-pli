@@ -32,6 +32,10 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     ElementInfo currentObjectElementInfo;
     Integer currentObjectInSymRefInput;
 
+    ClassInfo currentObjectClass;
+
+    FieldInfo currentField;
+
     HashMap<Object, ElementInfo> symSolveToNewJPFObjects = new HashMap<>();
     HashMap<Object, Integer> symSolveToSymbolicInputObjects = new HashMap<>();
 
@@ -56,6 +60,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         super.setCurrentOwner(currentOwnerObject, currentOwnerID);
         currentObjectElementInfo = symSolveToNewJPFObjects.get(currentOwnerObject);
         assert (currentObjectElementInfo != null);
+        currentObjectClass = currentObjectElementInfo.getClassInfo();
 
         // check
         currentObjectInSymRefInput = symSolveToSymbolicInputObjects.get(currentOwnerObject);
@@ -63,32 +68,35 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     }
 
     @Override
+    public void setCurrentField(String clsOfFieldName, String fieldName, int fieldIndexInVector) {
+        super.setCurrentField(clsOfFieldName, fieldName, fieldIndexInVector);
+        currentField = currentObjectClass.getInstanceField(currentFieldName);
+    }
+
+    @Override
     public void accessedVisitedReferenceField(Object fieldObject, int fieldObjectID) {
         ElementInfo mirrorFieldObject = symSolveToNewJPFObjects.get(fieldObject);
-        currentObjectElementInfo.setReferenceField(currentFieldName, mirrorFieldObject.getObjectRef());
+        currentObjectElementInfo.setReferenceField(currentField, mirrorFieldObject.getObjectRef());
     }
 
     @Override
     public void accessedNullReferenceField(int fieldObjectID) {
-        currentObjectElementInfo.setReferenceField(currentFieldName, MJIEnv.NULL);
+        currentObjectElementInfo.setReferenceField(currentField, MJIEnv.NULL);
     }
 
     @Override
     public void accessedNewReferenceField(Object fieldObject, int fieldObjectID) {
 //        System.out.println("Accesed new reference field: " + currentFieldName);
         ElementInfo newObjectElementInfo = env.newElementInfo(currentFieldClassName);
-        currentObjectElementInfo.setReferenceField(currentFieldName, newObjectElementInfo.getObjectRef());
+        currentObjectElementInfo.setReferenceField(currentField, newObjectElementInfo.getObjectRef());
         symSolveToNewJPFObjects.put(fieldObject, newObjectElementInfo);
-
-        ClassInfo clsInfo = currentObjectElementInfo.getClassInfo();
-        FieldInfo field = clsInfo.getInstanceField(currentFieldName);
 
         Integer equivalentObjectInSymInput;
 
         if (currentObjectInSymRefInput == SymbolicReferenceInput.SYMBOLIC) {
             equivalentObjectInSymInput = SymbolicReferenceInput.SYMBOLIC;
         } else {
-            equivalentObjectInSymInput = symRefInput.getReferenceField(currentObjectInSymRefInput, field);
+            equivalentObjectInSymInput = symRefInput.getReferenceField(currentObjectInSymRefInput, currentField);
             assert (equivalentObjectInSymInput != null);
 
             // if it is null there is an inconsistency: If the solution has a new object,
@@ -105,33 +113,38 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     public void accessedPrimitiveField(int fieldObjectID) {
         assert (currentObjectInSymRefInput != SymbolicReferenceInput.NULL);
 
-        ClassInfo clsInfo = currentObjectElementInfo.getClassInfo();
-        FieldInfo field = clsInfo.getInstanceField(currentFieldName);
-
-        Expression symbolicValue = null;
         if (currentObjectInSymRefInput != SymbolicReferenceInput.SYMBOLIC) {
-            symbolicValue = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, field);
-            assert (symbolicValue != null);
+            setValueForExistingPrimitiveField();
         } else {
-            String name = field.getName() + "(sym)_" + symbolicID;
-            symbolicID++;
-            if (field instanceof IntegerFieldInfo || field instanceof LongFieldInfo) {
-                symbolicValue = new SymbolicInteger(name);
-            } else if (field instanceof FloatFieldInfo || field instanceof DoubleFieldInfo) {
-                symbolicValue = new SymbolicReal(name);
-            } else if (field instanceof ReferenceFieldInfo) {
-                if (field.getType().equals("java.lang.String"))
-                    symbolicValue = new StringSymbolic(name);
-                else
-                    symbolicValue = new SymbolicInteger(name);
-            } else if (field instanceof BooleanFieldInfo) {
-                // treat boolean as an integer with range [0,1]
-                symbolicValue = new SymbolicInteger(name, 0, 1);
-            }
+            setValueForNonExistingPrimitiveField();
         }
+    }
+
+    void setValueForExistingPrimitiveField() {
+        Expression symbolicValue = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
         assert (symbolicValue != null);
-        // System.out.println("Setted field " + field.getName() + " to value " +
-        // symbolicValue.toString());
-        currentObjectElementInfo.setFieldAttr(field, symbolicValue);
+        currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
+    }
+
+    void setValueForNonExistingPrimitiveField() {
+        Expression symbolicValue = null;
+        String name = currentField.getName() + "(sym)_" + symbolicID;
+        symbolicID++;
+        if (currentField instanceof IntegerFieldInfo || currentField instanceof LongFieldInfo) {
+            symbolicValue = new SymbolicInteger(name);
+        } else if (currentField instanceof FloatFieldInfo || currentField instanceof DoubleFieldInfo) {
+            symbolicValue = new SymbolicReal(name);
+        } else if (currentField instanceof ReferenceFieldInfo) {
+            if (currentField.getType().equals("java.lang.String"))
+                symbolicValue = new StringSymbolic(name);
+            else
+                symbolicValue = new SymbolicInteger(name);
+        } else if (currentField instanceof BooleanFieldInfo) {
+            // treat boolean as an integer with range [0,1]
+            symbolicValue = new SymbolicInteger(name, 0, 1);
+        } else {
+            throw new RuntimeException("symbolicValue is null !!!!");
+        }
+        currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
     }
 }
