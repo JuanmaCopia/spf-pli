@@ -18,7 +18,7 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     @Override
     public Instruction getfield(String fieldName, String clsName, String fieldDescriptor) {
-        if (LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER || isRepOKRun)
+        if (LISSAShell.configParser.solvingStrategy == SolvingStrategyEnum.DRIVER)
             return super.getfield(fieldName, clsName, fieldDescriptor);
         return new GETFIELDHeapSolving(fieldName, clsName, fieldDescriptor);
     }
