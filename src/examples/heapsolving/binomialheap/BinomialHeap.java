@@ -417,10 +417,19 @@ public class BinomialHeap {
     public static IFinitization finBinomialHeap(int nodesNum) {
         IFinitization f = FinitizationFactory.create(BinomialHeap.class);
         IObjSet nodes = f.createObjSet(BinomialHeapNode.class, nodesNum, true);
+
+        // Calculate Max degree
+        Double degree = Math.sqrt(nodesNum);
+        int maxDegree;
+        if (degree % 1 == 0.0)
+            maxDegree = degree.intValue();
+        else
+            maxDegree = degree.intValue() + 1;
+
         f.set(BinomialHeap.class, "Nodes", nodes);
         f.set(BinomialHeap.class, "size", f.createIntSet(0, nodesNum));
         f.set(BinomialHeapNode.class, "key", f.createIntSet(0, nodesNum - 1));
-        f.set(BinomialHeapNode.class, "degree", f.createIntSet(0, nodesNum));
+        f.set(BinomialHeapNode.class, "degree", f.createIntSet(0, maxDegree));
         f.set(BinomialHeapNode.class, "parent", nodes);
         f.set(BinomialHeapNode.class, "sibling", nodes);
         f.set(BinomialHeapNode.class, "child", nodes);
