@@ -1,5 +1,6 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
@@ -12,7 +13,10 @@ import lissa.bytecode.StaticRepOKCallInstruction;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
+import symsolve.candidates.traversals.BFSCandidateTraversal;
+import symsolve.candidates.traversals.CandidateTraversal;
 
 public class LISSAPC extends LISSA {
 
@@ -21,7 +25,33 @@ public class LISSAPC extends LISSA {
     public long repokExecTime = 0;
 
     public LISSAPC() {
-        builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace());
+        builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
+    }
+
+//    @Override
+//    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+//        currentSymbolicInput = symInputHeap.getImplicitInputThis();
+//        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+//        boolean hasSolution = heapSolver.isSatisfiable(vector);
+//        while (hasSolution) {
+//            if (isSatWithRespectToPathCondition(ti))
+//                return true;
+//            hasSolution = heapSolver.searchNextSolution();
+//        }
+//        return false;
+//    }
+
+    protected boolean isSatWithRespectToPathCondition(ThreadInfo ti) {
+        PathCondition pc = PathCondition.getPC(ti.getVM());
+        if (pc == null)
+            return true;
+
+        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc.make_copy(), currentSymbolicInput,
+                heapSolver.getAccessedIndices());
+        CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
+        traverser.traverse(heapSolver.getCurrentSolutionVector(), visitor);
+
+        return visitor.isSolutionSAT();
     }
 
     public boolean hasNextSolution() {

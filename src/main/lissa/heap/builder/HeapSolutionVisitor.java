@@ -17,6 +17,7 @@ import gov.nasa.jpf.vm.LongFieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
 import gov.nasa.jpf.vm.VM;
+import korat.finitization.impl.FieldDomain;
 import lissa.heap.SymbolicReferenceInput;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
 
@@ -68,8 +69,9 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     }
 
     @Override
-    public void setCurrentField(String clsOfFieldName, String fieldName, int fieldIndexInVector) {
-        super.setCurrentField(clsOfFieldName, fieldName, fieldIndexInVector);
+    public void setCurrentField(FieldDomain fieldDomain, String fieldName, int fieldIndexInVector,
+            int fieldIndexInFieldDomain) {
+        super.setCurrentField(fieldDomain, fieldName, fieldIndexInVector, fieldIndexInFieldDomain);
         currentField = currentObjectClass.getInstanceField(currentFieldName);
     }
 
@@ -87,7 +89,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     @Override
     public void accessedNewReferenceField(Object fieldObject, int fieldObjectID) {
 //        System.out.println("Accesed new reference field: " + currentFieldName);
-        ElementInfo newObjectElementInfo = env.newElementInfo(currentFieldClassName);
+        ElementInfo newObjectElementInfo = env.newElementInfo(currentFieldDomain.getClassOfField().getName());
         currentObjectElementInfo.setReferenceField(currentField, newObjectElementInfo.getObjectRef());
         symSolveToNewJPFObjects.put(fieldObject, newObjectElementInfo);
 

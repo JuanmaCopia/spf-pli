@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
 import korat.finitization.impl.Finitization;
+import korat.utils.IIntList;
 import lissa.LISSAShell;
 import lissa.config.ConfigParser;
 import symsolve.SymSolve;
@@ -76,6 +77,10 @@ public class SymSolveHeapSolver {
         boolean result = solver.searchNextSolution();
         solvingTime += (System.currentTimeMillis() - time);
         return result;
+    }
+
+    public IIntList getAccessedIndices() {
+        return solver.getAccessedIndices();
     }
 
 }
