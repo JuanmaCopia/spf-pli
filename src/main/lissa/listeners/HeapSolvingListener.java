@@ -100,11 +100,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         results.add(configParser.targetMethodName);
         results.add(configParser.solvingStrategy.name());
         results.add(configParser.finitizationArgs);
-        results.add(Long.toString(totalTime / 1000));
-        results.add(Long.toString(solvingTime / 1000));
+        results.add(Utils.calculateTimeInHHMMSS(totalTime));
+        results.add(Utils.calculateTimeInHHMMSS(solvingTime));
+        results.add(Utils.calculateTimeInHHMMSS(repOKPCSolvingTime));
         results.add(Integer.toString(exploredPaths));
-        results.add(Integer.toString(invalidPaths));
-        results.add(Integer.toString(cacheHits));
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
     }
@@ -114,7 +113,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SolvingTime,ExecutedPaths,InvalidPaths,CacheHits";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,ExecutedPaths";
     }
 
 }
