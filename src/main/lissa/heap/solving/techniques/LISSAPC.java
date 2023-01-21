@@ -17,6 +17,7 @@ import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
 import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.CandidateTraversal;
+import symsolve.vector.SymSolveVector;
 
 public class LISSAPC extends LISSA {
 
@@ -28,18 +29,21 @@ public class LISSAPC extends LISSA {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
     }
 
-//    @Override
-//    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
-//        currentSymbolicInput = symInputHeap.getImplicitInputThis();
-//        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-//        boolean hasSolution = heapSolver.isSatisfiable(vector);
-//        while (hasSolution) {
-//            if (isSatWithRespectToPathCondition(ti))
-//                return true;
-//            hasSolution = heapSolver.searchNextSolution();
-//        }
-//        return false;
-//    }
+    @Override
+    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+        currentSymbolicInput = symInputHeap.getImplicitInputThis();
+        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+        boolean hasSolution = heapSolver.isSatisfiable(vector);
+        while (hasSolution) {
+            if (isSatWithRespectToPathCondition(ti))
+                return true;
+            hasSolution = heapSolver.searchNextSolution();
+            if (!hasSolution)
+                prunedPathsDueToPathCondition++;
+        }
+
+        return false;
+    }
 
     protected boolean isSatWithRespectToPathCondition(ThreadInfo ti) {
         PathCondition pc = PathCondition.getPC(ti.getVM());

@@ -55,16 +55,27 @@ public class CheckPathConditionVisitor extends GenericCandidateVisitor {
     public void setCurrentOwner(Object currentOwnerObject, int currentOwnerID) {
         super.setCurrentOwner(currentOwnerObject, currentOwnerID);
         currentObjectInSymRefInput = symSolveToSymbolicInputObjects.get(currentOwnerObject);
-        ElementInfo currentObjectElementInfo = ti.getModifiableElementInfo(currentObjectInSymRefInput);
-        currentObjectClassInfo = currentObjectElementInfo.getClassInfo();
-        assert (currentObjectInSymRefInput != null && currentObjectElementInfo != null);
+        assert (currentObjectInSymRefInput != null);
+        assert (currentObjectInSymRefInput != SymbolicReferenceInput.NULL);
+
+        if (currentObjectInSymRefInput != SymbolicReferenceInput.SYMBOLIC) {
+            ElementInfo currentObjectElementInfo = ti.getModifiableElementInfo(currentObjectInSymRefInput);
+            assert (currentObjectElementInfo != null);
+            currentObjectClassInfo = currentObjectElementInfo.getClassInfo();
+            assert (currentObjectInSymRefInput != null);
+        } else {
+            currentObjectClassInfo = null;
+        }
     }
 
     @Override
     public void setCurrentField(FieldDomain fieldDomain, String fieldName, int fieldIndexInVector,
             int fieldIndexInFieldDomain) {
         super.setCurrentField(fieldDomain, fieldName, fieldIndexInVector, fieldIndexInFieldDomain);
-        currentField = currentObjectClassInfo.getInstanceField(fieldName);
+        if (currentObjectClassInfo != null)
+            currentField = currentObjectClassInfo.getInstanceField(fieldName);
+        else
+            currentField = null;
     }
 
     @Override
@@ -73,6 +84,7 @@ public class CheckPathConditionVisitor extends GenericCandidateVisitor {
         if (currentObjectInSymRefInput == SymbolicReferenceInput.SYMBOLIC) {
             equivalentObjectInSymInput = SymbolicReferenceInput.SYMBOLIC;
         } else {
+            assert (currentField != null);
             equivalentObjectInSymInput = symRefInput.getReferenceField(currentObjectInSymRefInput, currentField);
             assert (equivalentObjectInSymInput != null);
             assert (equivalentObjectInSymInput != SymbolicReferenceInput.NULL);
@@ -92,6 +104,7 @@ public class CheckPathConditionVisitor extends GenericCandidateVisitor {
         assert (currentFieldDomain.isPrimitiveType());
 
         if (accessedIndices.contains(currentFieldIndexInVector)) {
+            assert (currentField != null);
             Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
             assert (symbolicVar != null);
 
