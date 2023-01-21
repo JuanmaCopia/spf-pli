@@ -58,8 +58,12 @@ public class LISSAPC extends LISSA {
         return visitor.isSolutionSAT();
     }
 
-    public boolean hasNextSolution() {
-        return heapSolver.searchNextSolution();
+    public boolean hasNextSolution(ThreadInfo ti) {
+        while (heapSolver.searchNextSolution()) {
+            if (isSatWithRespectToPathCondition(ti))
+                return true;
+        }
+        return false;
     }
 
     @Override

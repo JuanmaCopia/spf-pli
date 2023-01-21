@@ -117,7 +117,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
         if (!repOKCG.result) {
 
-            if (lissaPC.hasNextSolution()) {
+            if (lissaPC.hasNextSolution(ti)) {
                 // System.out.println("# Reexecuting repok with new solution, exex num: " +
                 // repOKCG.repOKExecutions);
                 HeapSolvingInstructionFactory.isRepOKRun = true;
