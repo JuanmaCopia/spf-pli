@@ -17,15 +17,18 @@ import gov.nasa.jpf.vm.LongFieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
 import gov.nasa.jpf.vm.VM;
+import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
+import korat.finitization.impl.IntSet;
+import korat.utils.IIntList;
 import lissa.heap.SymbolicReferenceInput;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
 
 public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
     MJIEnv env;
-
     SymbolicReferenceInput symRefInput;
+    IIntList accessedIndices;
 
     ElementInfo newObjectRootElementInfo;
     Integer rootSymbolicInputIndex;
@@ -42,11 +45,13 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
     int symbolicID = 0;
 
-    public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicReferenceInput symRefInput) {
+    public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicReferenceInput symRefInput,
+            IIntList accessedIndices) {
         this.env = env;
         this.newObjectRootElementInfo = VM.getVM().getHeap().getModifiable(newObjectRootRef);
         this.symRefInput = symRefInput;
         this.rootSymbolicInputIndex = symRefInput.getRootHeapNode().getIndex();
+        this.accessedIndices = accessedIndices;
     }
 
     @Override
@@ -123,9 +128,23 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     }
 
     void setValueForExistingPrimitiveField() {
-        Expression symbolicValue = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
-        assert (symbolicValue != null);
-        currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
+        assert (currentFieldDomain.isPrimitiveType());
+        if (accessedIndices.contains(currentFieldIndexInVector)) {
+            Class<?> clsOfField = currentFieldDomain.getClassOfField();
+            if (clsOfField == int.class) {
+                int value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
+                currentObjectElementInfo.setIntField(currentField, value);
+            } else if (clsOfField == boolean.class) {
+                boolean value = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
+                currentObjectElementInfo.setBooleanField(currentField, value);
+            } else {
+                assert (false); // TODO: add support for other types, String, Long, etc.
+            }
+        } else {
+            Expression symbolicValue = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
+            assert (symbolicValue != null);
+            currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
+        }
     }
 
     void setValueForNonExistingPrimitiveField() {

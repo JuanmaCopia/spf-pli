@@ -19,9 +19,7 @@ public class HeapSolutionBuilder {
 
     public void buildSolution(MJIEnv env, int objRef, SymbolicReferenceInput symInput, int[] solutionVector) {
         CandidateTraversal traverser = new BFSCandidateTraversal(stateSpace);
-        // HeapSolutionVisitor visitor = new HeapSolutionVisitor2(env, objRef, symInput,
-        // heapSolver.getAccessedIndices());
-        HeapSolutionVisitor visitor = new HeapSolutionVisitor(env, objRef, symInput);
+        HeapSolutionVisitor visitor = new HeapSolutionVisitor(env, objRef, symInput, heapSolver.getAccessedIndices());
         traverser.traverse(solutionVector, visitor);
     }
 }
