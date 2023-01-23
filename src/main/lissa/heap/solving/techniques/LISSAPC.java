@@ -22,6 +22,7 @@ import symsolve.vector.SymSolveVector;
 public class LISSAPC extends LISSA {
 
     HeapSolutionBuilder builder;
+    public boolean executingRepOK = false;
     public int prunedPathsDueToPathCondition = 0;
     public long repokExecTime = 0;
 

@@ -102,31 +102,23 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             return this;
         }
 
-        if (repOKCG.repOKExecutions == 0) {
-            repOKCG.repOKExecutions++;
-            repOKCG.startTime = System.currentTimeMillis();
-            return executeInvokeRepOK(ti);
-        }
-
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        assert (solvingStrategy instanceof LISSAPC);
         LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+
+        if (repOKCG.repOKExecutions == 0)
+            return executeInvokeRepOK(ti, repOKCG, lissaPC);
+
         lissaPC.repokExecTime += System.currentTimeMillis() - repOKCG.startTime;
+        lissaPC.executingRepOK = false;
 
         if (!repOKCG.result) {
-
-            if (lissaPC.hasNextSolution(ti)) {
-                // System.out.println("# Reexecuting repok with new solution, exex num: " +
-                // repOKCG.repOKExecutions);
-                repOKCG.repOKExecutions++;
-                repOKCG.startTime = System.currentTimeMillis();
-                return executeInvokeRepOK(ti);
-            }
+            if (lissaPC.hasNextSolution(ti))
+                return executeInvokeRepOK(ti, repOKCG, lissaPC);
             // System.out.println("No solution found after: " + repOKCG.repOKExecutions);
             lissaPC.prunedPathsDueToPathCondition++;
             ti.getVM().getSystemState().setIgnored(true);
         } else { // Repok returned true
-            currentSymInputHeap.setRepOKPC(SymHeapHelper.getPathCondition());
+            currentSymInputHeap.setRepOKPC(repOKCG.getRepOKPathCondition());
         }
 
         PathCondition pc = SymHeapHelper.getPathCondition();
@@ -139,7 +131,11 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         return nextInstruction;
     }
 
-    public Instruction executeInvokeRepOK(ThreadInfo ti) {
+    public Instruction executeInvokeRepOK(ThreadInfo ti, RepOKCallCG repOKCG, LISSAPC lissaPC) {
+        repOKCG.repOKExecutions++;
+        repOKCG.startTime = System.currentTimeMillis();
+        lissaPC.executingRepOK = true;
+
         MethodInfo callee;
 
         try {

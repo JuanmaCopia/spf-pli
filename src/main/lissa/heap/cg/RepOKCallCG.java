@@ -1,5 +1,6 @@
 package lissa.heap.cg;
 
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
@@ -8,6 +9,8 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     public int repOKExecutions = 0;
     public int pccount = 0;
     public long startTime = 0;
+
+    PathCondition repOKPathCondition;
 
     public RepOKCallCG(String id) {
         super(id);
@@ -49,6 +52,14 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     @Override
     public Class<Integer> getChoiceType() {
         return Integer.class;
+    }
+
+    public PathCondition getRepOKPathCondition() {
+        return repOKPathCondition;
+    }
+
+    public void setRepOKPathCondition(PathCondition pc) {
+        repOKPathCondition = pc;
     }
 
 }
