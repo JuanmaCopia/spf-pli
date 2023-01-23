@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package lissa.bytecode;
+package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;

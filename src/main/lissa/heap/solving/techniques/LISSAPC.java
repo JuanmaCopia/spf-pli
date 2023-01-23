@@ -9,7 +9,7 @@ import gov.nasa.jpf.vm.ObjRef;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.bytecode.StaticRepOKCallInstruction;
+import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;

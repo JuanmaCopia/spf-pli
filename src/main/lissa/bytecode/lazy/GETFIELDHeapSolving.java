@@ -1,4 +1,4 @@
-package lissa.bytecode;
+package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
