@@ -29,7 +29,6 @@ import gov.nasa.jpf.vm.MethodInfo;
 import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.HeapSolvingInstructionFactory;
 import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -104,7 +103,6 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         }
 
         if (repOKCG.repOKExecutions == 0) {
-            HeapSolvingInstructionFactory.isRepOKRun = true;
             repOKCG.repOKExecutions++;
             repOKCG.startTime = System.currentTimeMillis();
             return executeInvokeRepOK(ti);
@@ -120,7 +118,6 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             if (lissaPC.hasNextSolution(ti)) {
                 // System.out.println("# Reexecuting repok with new solution, exex num: " +
                 // repOKCG.repOKExecutions);
-                HeapSolvingInstructionFactory.isRepOKRun = true;
                 repOKCG.repOKExecutions++;
                 repOKCG.startTime = System.currentTimeMillis();
                 return executeInvokeRepOK(ti);
@@ -139,7 +136,6 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             assert (repOKCG.pccount == 0);
 
         repOKCG.setDone();
-        HeapSolvingInstructionFactory.isRepOKRun = false;
         return nextInstruction;
     }
 

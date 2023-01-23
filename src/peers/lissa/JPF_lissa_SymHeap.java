@@ -52,7 +52,6 @@ public class JPF_lissa_SymHeap extends NativePeer {
             assert (found);
         }
         ss.setIgnored(true);
-        HeapSolvingInstructionFactory.isRepOKRun = false;
     }
 
 //  String cgID = "repOKCG";
