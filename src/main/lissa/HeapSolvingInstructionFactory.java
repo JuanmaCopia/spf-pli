@@ -1,10 +1,9 @@
 
-package lissa.heap;
+package lissa;
 
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.vm.Instruction;
-import lissa.LISSAShell;
 import lissa.bytecode.lazy.ALOAD;
 import lissa.bytecode.lazy.GETFIELDHeapSolving;
 import lissa.bytecode.lazy.GETSTATIC;

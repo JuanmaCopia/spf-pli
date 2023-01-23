@@ -15,7 +15,7 @@ heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOKStructure
 
-jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

@@ -18,7 +18,7 @@ heapsolving.symsolve.finitization.class = heapsolving.schedule.Schedule
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

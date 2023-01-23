@@ -22,7 +22,6 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
-import lissa.heap.HeapSolvingInstructionFactory;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
