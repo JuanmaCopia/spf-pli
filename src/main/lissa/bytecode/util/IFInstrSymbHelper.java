@@ -3,21 +3,21 @@
  * Administrator of the National Aeronautics and Space Administration.
  * All rights reserved.
  *
- * Symbolic Pathfinder (jpf-symbc) is licensed under the Apache License, 
+ * Symbolic Pathfinder (jpf-symbc) is licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
- *        http://www.apache.org/licenses/LICENSE-2.0. 
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 /**
- * 
+ *
  */
 package lissa.bytecode.util;
 
@@ -488,6 +488,28 @@ public class IFInstrSymbHelper {
                 ti.getModifiableTopFrame().pop();
                 return instr.getNext(ti);
             }
+
+            // if (eqSat && neSat) { // Both branches are SAT
+            //     PCChoiceGenerator newPCChoice;
+            //     newPCChoice = new PCChoiceGenerator(2);
+            //     newPCChoice.setOffset(instr.getPosition());
+            //     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
+            //     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
+            //     return instr;
+            // }
+
+            // ti.getModifiableTopFrame().pop();
+
+            // if (eqSat) { // Only False branch is SAT
+            //     pc._addDet(trueComparator, sym_v, 0);
+            //     prevPcGen.setCurrentPC(pc);
+            //     return instr.getTarget();
+            // }
+
+            // // Only False branch is SAT
+            // pc._addDet(falseComparator, sym_v, 0);
+            // prevPcGen.setCurrentPC(pc);
+            // return instr.getNext(ti);
         } else {
             ti.getModifiableTopFrame().pop();
             PathCondition pc;
