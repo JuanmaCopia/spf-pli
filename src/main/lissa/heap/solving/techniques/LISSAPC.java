@@ -68,19 +68,22 @@ public class LISSAPC extends LISSA {
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti) {
-        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap();
+    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
+            Instruction nextInstruction) {
+        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
         if (symInputHeap == null)
-            return ti.getPC().getNext();
-        return createInvokeRepOKInstruction(ti, symInputHeap);
+            return nextInstruction;
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
     }
 
     @Override
-    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
-        return createInvokeRepOKInstruction(ti, symInputHeap);
+    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction currentInstruction,
+            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            SymbolicInputHeapLISSA symInputHeap) {
         assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert (symRefInput != null);
@@ -94,10 +97,9 @@ public class LISSAPC extends LISSA {
         String signature = repokMI.getSignature();
 
         StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
-        Instruction currentInstruction = ti.getPC();
         realInvoke.setMethodInfo(currentInstruction.getMethodInfo());
         realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
-        realInvoke.nextInstruction = ti.getPC().getNext();
+        realInvoke.nextInstruction = nextInstruction;
         realInvoke.currentSymInputHeap = symInputHeap;
 
         Object[] args = null;
