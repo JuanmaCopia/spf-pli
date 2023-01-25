@@ -22,9 +22,10 @@ import symsolve.vector.SymSolveVector;
 public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     HeapSolutionBuilder builder;
-    public boolean executingRepOK = false;
-    public int prunedPathsDueToPathCondition = 0;
-    public long repokExecTime = 0;
+    boolean executingRepOK = false;
+    int prunedBranches = 0;
+    long repokExecTime = 0;
+    long repOKStartTime = 0;
 
     public LISSAPC() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
@@ -40,7 +41,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
                 return true;
             hasSolution = heapSolver.searchNextSolution();
             if (!hasSolution)
-                prunedPathsDueToPathCondition++;
+                prunedBranches++;
         }
 
         return false;
@@ -59,6 +60,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         return visitor.isSolutionSAT();
     }
 
+    @Override
     public boolean hasNextSolution(ThreadInfo ti) {
         while (heapSolver.searchNextSolution()) {
             if (isSatWithRespectToPathCondition(ti))
@@ -152,6 +154,38 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     public void buildSolutionHeap(MJIEnv env, int objRef) {
         builder.buildSolution(env, objRef, currentSymbolicInput, heapSolver.getCurrentSolutionVector());
+    }
+
+    @Override
+    public boolean isRepOKExecutionMode() {
+        return executingRepOK;
+    }
+
+    @Override
+    public void startRepOKExecutionMode() {
+        executingRepOK = true;
+        repOKStartTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void stopRepOKExecutionMode() {
+        executingRepOK = false;
+        repokExecTime += System.currentTimeMillis() - repOKStartTime;
+    }
+
+    @Override
+    public long getRepOKSolvingTime() {
+        return repokExecTime;
+    }
+
+    @Override
+    public void countPrunedBranch() {
+        prunedBranches++;
+    }
+
+    @Override
+    public int getPrunedBranchCount() {
+        return prunedBranches;
     }
 
 }

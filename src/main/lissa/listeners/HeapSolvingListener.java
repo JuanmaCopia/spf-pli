@@ -9,6 +9,7 @@ import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
 import lissa.heap.solving.techniques.LISSAPC;
+import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
 
@@ -25,7 +26,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int exploredPaths = 0;
     int invalidPaths = 0;
 
-    int prunedPathsDueToPathCondition = 0;
+    int prunedBranchesDueToPC = 0;
     long repOKPCSolvingTime = 0;
 
     public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser configParser) {
@@ -66,9 +67,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 invalidPaths = ((LIHYBRID) heapSolvingStrategy).invalidPaths;
             } else if (heapSolvingStrategy instanceof LISSAM) {
                 cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
-            } else if (heapSolvingStrategy instanceof LISSAPC) {
-                prunedPathsDueToPathCondition = ((LISSAPC) heapSolvingStrategy).prunedPathsDueToPathCondition;
-                repOKPCSolvingTime = ((LISSAPC) heapSolvingStrategy).repokExecTime;
+            } else if (heapSolvingStrategy instanceof PCCheckStrategy) {
+                prunedBranchesDueToPC = ((PCCheckStrategy) heapSolvingStrategy).getPrunedBranchCount();
+                repOKPCSolvingTime = ((PCCheckStrategy) heapSolvingStrategy).getRepOKSolvingTime();
             }
 
         }
@@ -90,7 +91,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Cache Hits:            " + cacheHits);
         if (heapSolvingStrategy instanceof LISSAPC) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
-            System.out.println(" - Pruned due invalid PC: " + prunedPathsDueToPathCondition);
+            System.out.println(" - Pruned due invalid PC: " + prunedBranchesDueToPC);
         }
         System.out.println("");
     }

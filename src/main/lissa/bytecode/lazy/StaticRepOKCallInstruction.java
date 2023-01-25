@@ -19,7 +19,6 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -30,11 +29,9 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
-import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.cg.RepOKCallCG;
-import lissa.heap.solving.techniques.LISSAPC;
-import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.solving.techniques.PCCheckStrategy;
 
 // need to fix names
 
@@ -94,47 +91,44 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
         if (repOKCG == null) {
             repOKCG = new RepOKCallCG(cgID);
-            PathCondition pc = SymHeapHelper.getPathCondition();
-            if (pc != null)
-                repOKCG.pccount = pc.count();
+//            PathCondition pc = SymHeapHelper.getPathCondition();
+//            if (pc != null)
+//                repOKCG.pccount = pc.count();
             ti.getVM().getSystemState().setNextChoiceGenerator(repOKCG);
             // System.out.println("# Repok CG registered: " + repOKCG);
             return this;
         }
 
-        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+        PCCheckStrategy strategy = (PCCheckStrategy) LISSAShell.solvingStrategy;
 
         if (repOKCG.repOKExecutions == 0)
-            return executeInvokeRepOK(ti, repOKCG, lissaPC);
+            return executeInvokeRepOK(ti, repOKCG, strategy);
 
-        lissaPC.repokExecTime += System.currentTimeMillis() - repOKCG.startTime;
-        lissaPC.executingRepOK = false;
+        strategy.stopRepOKExecutionMode();
 
         if (!repOKCG.result) {
-            if (lissaPC.hasNextSolution(ti))
-                return executeInvokeRepOK(ti, repOKCG, lissaPC);
+            if (strategy.hasNextSolution(ti))
+                return executeInvokeRepOK(ti, repOKCG, strategy);
             // System.out.println("No solution found after: " + repOKCG.repOKExecutions);
-            lissaPC.prunedPathsDueToPathCondition++;
+            strategy.countPrunedBranch();
             ti.getVM().getSystemState().setIgnored(true);
         } else { // Repok returned true
             currentSymInputHeap.setRepOKPC(repOKCG.getRepOKPathCondition());
         }
 
-        PathCondition pc = SymHeapHelper.getPathCondition();
-        if (pc != null)
-            assert (repOKCG.pccount == pc.count());
-        else
-            assert (repOKCG.pccount == 0);
+//        PathCondition pc = SymHeapHelper.getPathCondition();
+//        if (pc != null)
+//            assert (repOKCG.pccount == pc.count());
+//        else
+//            assert (repOKCG.pccount == 0);
 
         repOKCG.setDone();
         return nextInstruction;
     }
 
-    public Instruction executeInvokeRepOK(ThreadInfo ti, RepOKCallCG repOKCG, LISSAPC lissaPC) {
+    public Instruction executeInvokeRepOK(ThreadInfo ti, RepOKCallCG repOKCG, PCCheckStrategy strategy) {
         repOKCG.repOKExecutions++;
-        repOKCG.startTime = System.currentTimeMillis();
-        lissaPC.executingRepOK = true;
+        strategy.startRepOKExecutionMode();
 
         MethodInfo callee;
 

@@ -6,10 +6,24 @@ import lissa.heap.SymbolicInputHeapLISSA;
 
 public interface PCCheckStrategy {
 
-    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap);
+    boolean hasNextSolution(ThreadInfo ti);
 
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
+    Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            SymbolicInputHeapLISSA symInputHeap);
+
+    Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction);
+
+    boolean isRepOKExecutionMode();
+
+    void startRepOKExecutionMode();
+
+    void stopRepOKExecutionMode();
+
+    long getRepOKSolvingTime();
+
+    void countPrunedBranch();
+
+    int getPrunedBranchCount();
 
 }
