@@ -488,28 +488,6 @@ public class IFInstrSymbHelper {
                 ti.getModifiableTopFrame().pop();
                 return instr.getNext(ti);
             }
-
-            // if (eqSat && neSat) { // Both branches are SAT
-            //     PCChoiceGenerator newPCChoice;
-            //     newPCChoice = new PCChoiceGenerator(2);
-            //     newPCChoice.setOffset(instr.getPosition());
-            //     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
-            //     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
-            //     return instr;
-            // }
-
-            // ti.getModifiableTopFrame().pop();
-
-            // if (eqSat) { // Only False branch is SAT
-            //     pc._addDet(trueComparator, sym_v, 0);
-            //     prevPcGen.setCurrentPC(pc);
-            //     return instr.getTarget();
-            // }
-
-            // // Only False branch is SAT
-            // pc._addDet(falseComparator, sym_v, 0);
-            // prevPcGen.setCurrentPC(pc);
-            // return instr.getNext(ti);
         } else {
             ti.getModifiableTopFrame().pop();
             PathCondition pc;
@@ -522,15 +500,26 @@ public class IFInstrSymbHelper {
             else
                 pc = prevCg.getCurrentPC();
             boolean conditionValue = (Integer) curCg.getNextChoice() == 1 ? true : false;
+            Instruction nextInstruction;
             if (conditionValue) {
                 pc._addDet(trueComparator, sym_v, 0);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
-                return instr.getTarget();
+                nextInstruction = instr.getTarget();
             } else {
                 pc._addDet(falseComparator, sym_v, 0);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
-                return instr.getNext(ti);
+                nextInstruction = instr.getNext(ti);
             }
+
+//            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+//            if (solvingStrategy instanceof LISSAPC) {
+//                LISSAPC lissaPC = (LISSAPC) solvingStrategy;
+//                if (!lissaPC.executingRepOK) {
+//
+//                }
+//            }
+
+            return nextInstruction;
         }
     }
 

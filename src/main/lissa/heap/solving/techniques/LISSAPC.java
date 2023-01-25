@@ -19,7 +19,7 @@ import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveVector;
 
-public class LISSAPC extends LISSA {
+public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     HeapSolutionBuilder builder;
     public boolean executingRepOK = false;

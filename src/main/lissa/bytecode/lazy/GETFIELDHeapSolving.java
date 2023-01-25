@@ -23,6 +23,7 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
+import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
@@ -214,7 +215,11 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         }
         // ================= Modification End ================= //
 
-        return heapSolvingStrategy.getNextInstructionToGETFIELD(ti, this, getNext(ti), symInputHeap);
+        if (heapSolvingStrategy instanceof PCCheckStrategy)
+            return ((PCCheckStrategy) heapSolvingStrategy).getNextInstructionToGETFIELD(ti, this, getNext(ti),
+                    symInputHeap);
+
+        return getNext(ti);
     }
 }
 
