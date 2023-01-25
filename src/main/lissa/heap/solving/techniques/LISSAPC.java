@@ -1,5 +1,6 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.Constraint;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
@@ -26,6 +27,9 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     int prunedBranches = 0;
     long repokExecTime = 0;
     long repOKStartTime = 0;
+
+    public int primitiveBranchingCacheHits = 0;
+    public int primitiveBranches = 0;
 
     public LISSAPC() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
@@ -71,10 +75,22 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction) {
+            Instruction nextInstruction, PathCondition pc) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
         if (symInputHeap == null)
             return nextInstruction;
+
+        primitiveBranches++;
+        Constraint lastConstraint = pc.header;
+
+        PathCondition repOKPC = symInputHeap.getRepOKPC();
+        repOKPC._addDet(lastConstraint.getComparator(), lastConstraint.getLeft(), lastConstraint.getRight());
+        if (repOKPC.simplify()) {
+            // Is Sat with cached repOK path condition
+            primitiveBranchingCacheHits++;
+            return nextInstruction;
+        }
+
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
     }
 

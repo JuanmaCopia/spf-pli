@@ -91,7 +91,11 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Cache Hits:            " + cacheHits);
         if (heapSolvingStrategy instanceof LISSAPC) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
-            System.out.println(" - Pruned due invalid PC: " + prunedBranchesDueToPC);
+            System.out.println(" - PC invalid branches  : " + prunedBranchesDueToPC);
+            LISSAPC lissaPC = (LISSAPC) heapSolvingStrategy;
+            System.out.println(" - Total branches seen  : " + lissaPC.primitiveBranches);
+            System.out.println(" - branches cache hits  : " + lissaPC.primitiveBranchingCacheHits);
+
         }
         System.out.println("");
     }
