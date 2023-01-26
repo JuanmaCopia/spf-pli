@@ -4,10 +4,19 @@ package lissa;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.vm.Instruction;
+import lissa.bytecode.D2I;
+import lissa.bytecode.D2L;
 import lissa.bytecode.DCMPG;
 import lissa.bytecode.DCMPL;
+import lissa.bytecode.DDIV;
+import lissa.bytecode.F2I;
+import lissa.bytecode.F2L;
 import lissa.bytecode.FCMPG;
 import lissa.bytecode.FCMPL;
+import lissa.bytecode.FDIV;
+import lissa.bytecode.I2D;
+import lissa.bytecode.I2F;
+import lissa.bytecode.IDIV;
 import lissa.bytecode.IFEQ;
 import lissa.bytecode.IFGE;
 import lissa.bytecode.IFGT;
@@ -20,6 +29,13 @@ import lissa.bytecode.IF_ICMPGT;
 import lissa.bytecode.IF_ICMPLE;
 import lissa.bytecode.IF_ICMPLT;
 import lissa.bytecode.IF_ICMPNE;
+import lissa.bytecode.IREM;
+import lissa.bytecode.L2D;
+import lissa.bytecode.L2F;
+import lissa.bytecode.LCMP;
+import lissa.bytecode.LDIV;
+import lissa.bytecode.LREM;
+import lissa.bytecode.TABLESWITCH;
 import lissa.bytecode.lazy.ALOAD;
 import lissa.bytecode.lazy.GETFIELDHeapSolving;
 import lissa.bytecode.lazy.GETSTATIC;
@@ -69,6 +85,8 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     }
 
     // --- Primitive type Path Condition Branching ---
+
+    // PC optimization:
 
     public Instruction ifle(int targetPc) {
         return new IFLE(targetPc);
@@ -138,6 +156,72 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     public HeapSolvingInstructionFactory(Config conf) {
         super(conf);
+    }
+
+    // others
+
+    public Instruction ddiv() {
+        return new DDIV();
+    }
+
+    public Instruction idiv() {
+        return new IDIV();
+    }
+
+    public Instruction irem() {
+        return new IREM();
+    }
+
+    public Instruction fdiv() {
+        return new FDIV();
+    }
+
+    public Instruction lcmp() {
+        return new LCMP();
+    }
+
+    public Instruction ldiv() {
+        return new LDIV();
+    }
+
+    public Instruction lrem() {
+        return new LREM();
+    }
+
+    public Instruction i2d() {
+        return new I2D();
+    }
+
+    public Instruction d2i() {
+        return new D2I();
+    }
+
+    public Instruction d2l() {
+        return new D2L();
+    }
+
+    public Instruction i2f() {
+        return new I2F();
+    }
+
+    public Instruction l2d() {
+        return new L2D();
+    }
+
+    public Instruction l2f() {
+        return new L2F();
+    }
+
+    public Instruction f2l() {
+        return new F2L();
+    }
+
+    public Instruction f2i() {
+        return new F2I();
+    }
+
+    public Instruction tableswitch(int defaultTargetPc, int low, int high) {
+        return new TABLESWITCH(defaultTargetPc, low, high);
     }
 
 }
