@@ -125,6 +125,11 @@ public class IFInstrSymbHelper {
                 ti.getVM().getSystemState().setIgnored(true);
             }
 
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+            return instr.getNext(ti);
+
         } else { // This branch will only be taken if there is a choice
 
             long v1 = ti.getModifiableTopFrame().peekLong();
@@ -168,11 +173,21 @@ public class IFInstrSymbHelper {
                     pc._addDet(thirdComparator, sym_v2, v1);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
             }
+
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+
+            Instruction nextInstruction = instr.getNext(ti);
+            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+            if (solvingStrategy instanceof PCCheckStrategy) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+                if (!strategy.isRepOKExecutionMode()) {
+                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
+                }
+            }
+            return nextInstruction;
         }
-        ti.getModifiableTopFrame().popLong();
-        ti.getModifiableTopFrame().popLong();
-        ti.getModifiableTopFrame().push(conditionValue, false);
-        return instr.getNext(ti);
     }
 
     public static Instruction getNextInstructionAndSetPCChoiceFloat(ThreadInfo ti, Instruction instr,
@@ -261,6 +276,11 @@ public class IFInstrSymbHelper {
                 System.err.println("***********Warning: everything false");
                 ti.getVM().getSystemState().setIgnored(true);
             }
+
+            ti.getModifiableTopFrame().pop();
+            ti.getModifiableTopFrame().pop();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+            return instr.getNext(ti);
         } else { // This branch will only be taken if there is a choice
 
             float v1 = Types.intToFloat(ti.getModifiableTopFrame().peek());
@@ -304,11 +324,21 @@ public class IFInstrSymbHelper {
                     pc._addDet(thirdComparator, sym_v2, v1);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
             }
+
+            ti.getModifiableTopFrame().pop();
+            ti.getModifiableTopFrame().pop();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+
+            Instruction nextInstruction = instr.getNext(ti);
+            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+            if (solvingStrategy instanceof PCCheckStrategy) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+                if (!strategy.isRepOKExecutionMode()) {
+                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
+                }
+            }
+            return nextInstruction;
         }
-        ti.getModifiableTopFrame().pop();
-        ti.getModifiableTopFrame().pop();
-        ti.getModifiableTopFrame().push(conditionValue, false);
-        return instr.getNext(ti);
 
     }
 
@@ -398,6 +428,11 @@ public class IFInstrSymbHelper {
                 System.err.println("***********Warning: everything false");
                 ti.getVM().getSystemState().setIgnored(true);
             }
+
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+            return instr.getNext(ti);
         } else { // This branch will only be taken if there is a choice
 
             double v1 = Types.longToDouble(ti.getModifiableTopFrame().peekLong());
@@ -442,11 +477,21 @@ public class IFInstrSymbHelper {
                     pc._addDet(thirdComparator, sym_v2, v1);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
             }
+
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().popLong();
+            ti.getModifiableTopFrame().push(conditionValue, false);
+
+            Instruction nextInstruction = instr.getNext(ti);
+            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+            if (solvingStrategy instanceof PCCheckStrategy) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+                if (!strategy.isRepOKExecutionMode()) {
+                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
+                }
+            }
+            return nextInstruction;
         }
-        ti.getModifiableTopFrame().popLong();
-        ti.getModifiableTopFrame().popLong();
-        ti.getModifiableTopFrame().push(conditionValue, false);
-        return instr.getNext(ti);
     }
 
     public static Instruction getNextInstructionAndSetPCChoice(ThreadInfo ti, IfInstruction instr,
@@ -585,6 +630,8 @@ public class IFInstrSymbHelper {
             }
         } else { // This branch will only be taken if there is a choice
 
+            Instruction nextInstruction;
+
             int v2 = ti.getModifiableTopFrame().pop();
             int v1 = ti.getModifiableTopFrame().pop();
             PathCondition pc;
@@ -607,7 +654,7 @@ public class IFInstrSymbHelper {
                 } else
                     pc._addDet(trueComparator, v1, sym_v2);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
-                return instr.getTarget();
+                nextInstruction = instr.getTarget();
             } else {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -617,8 +664,18 @@ public class IFInstrSymbHelper {
                 } else
                     pc._addDet(falseComparator, v1, sym_v2);
                 ((PCChoiceGenerator) curCg).setCurrentPC(pc);
-                return instr.getNext(ti);
+                nextInstruction = instr.getNext(ti);
             }
+
+            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+            if (solvingStrategy instanceof PCCheckStrategy) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+                if (!strategy.isRepOKExecutionMode()) {
+                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
+                }
+            }
+
+            return nextInstruction;
         }
     }
 }
