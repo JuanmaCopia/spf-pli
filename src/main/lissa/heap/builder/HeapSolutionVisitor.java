@@ -2,7 +2,10 @@ package lissa.heap.builder;
 
 import java.util.HashMap;
 
+import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
+import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
@@ -21,6 +24,7 @@ import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
 import korat.utils.IIntList;
+import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicReferenceInput;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
 
@@ -130,20 +134,32 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     void setValueForExistingPrimitiveField() {
         assert (currentFieldDomain.isPrimitiveType());
         if (accessedIndices.contains(currentFieldIndexInVector)) {
+            int value = 0;
             Class<?> clsOfField = currentFieldDomain.getClassOfField();
             if (clsOfField == int.class) {
-                int value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
+                value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
                 currentObjectElementInfo.setIntField(currentField, value);
             } else if (clsOfField == boolean.class) {
-                boolean value = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
-                currentObjectElementInfo.setBooleanField(currentField, value);
+                boolean boolValue = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
+                currentObjectElementInfo.setBooleanField(currentField, boolValue);
+                if (boolValue)
+                    value = 1;
             } else {
                 assert (false); // TODO: add support for other types, String, Long, etc.
             }
+
+            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
+            assert (symbolicVar != null);
+
+            IntegerConstant constant = new IntegerConstant(value);
+
+            PathCondition pc = SymHeapHelper.getPathCondition(env.getVM());
+            if (pc != null)
+                pc._addDet(Comparator.EQ, symbolicVar, constant);
         } else {
-            Expression symbolicValue = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
-            assert (symbolicValue != null);
-            currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
+            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
+            assert (symbolicVar != null);
+            currentObjectElementInfo.setFieldAttr(currentField, symbolicVar);
         }
     }
 
