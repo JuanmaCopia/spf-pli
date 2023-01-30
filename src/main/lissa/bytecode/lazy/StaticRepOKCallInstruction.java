@@ -26,6 +26,7 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.LoadOnJPFRequired;
 import gov.nasa.jpf.vm.MethodInfo;
 import gov.nasa.jpf.vm.StaticElementInfo;
+import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.LISSAShell;
@@ -86,19 +87,19 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     public Instruction execute(ThreadInfo ti) {
         RepOKCallCG repOKCG;
         String cgID = "repOKCG";
+        SystemState ss = ti.getVM().getSystemState();
 
-        repOKCG = ti.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
-
-        if (repOKCG == null) {
+        if (!ti.isFirstStepInsn()) {
             repOKCG = new RepOKCallCG(cgID);
-//            PathCondition pc = SymHeapHelper.getPathCondition();
-//            if (pc != null)
-//                repOKCG.pccount = pc.count();
-            ti.getVM().getSystemState().setNextChoiceGenerator(repOKCG);
+//          PathCondition pc = SymHeapHelper.getPathCondition();
+//          if (pc != null)
+//              repOKCG.pccount = pc.count();
+            ss.setNextChoiceGenerator(repOKCG);
             // System.out.println("# Repok CG registered: " + repOKCG);
             return this;
         }
 
+        repOKCG = ss.getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
         PCCheckStrategy strategy = (PCCheckStrategy) LISSAShell.solvingStrategy;
 
         if (repOKCG.repOKExecutions == 0)
