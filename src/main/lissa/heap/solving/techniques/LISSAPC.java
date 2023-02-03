@@ -18,6 +18,7 @@ import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
 import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.CandidateTraversal;
+import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
 public class LISSAPC extends LISSA implements PCCheckStrategy {
@@ -37,40 +38,46 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
-        currentSymbolicInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-        boolean hasSolution = heapSolver.isSatisfiable(vector);
-        while (hasSolution) {
-            if (isSatWithRespectToPathCondition(ti))
+        SymSolveSolution solution = heapSolver.solve(vector);
+        while (solution != null) {
+            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
+                symInputHeap.setHeapSolution(solution);
                 return true;
-            hasSolution = heapSolver.searchNextSolution();
-            if (!hasSolution)
-                prunedBranches++;
+            }
+            solution = heapSolver.getNextSolution(solution);
         }
-
         return false;
     }
 
-    protected boolean isSatWithRespectToPathCondition(ThreadInfo ti) {
+    protected boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
+            SymbolicInputHeapLISSA symInputHeap) {
         PathCondition pc = PathCondition.getPC(ti.getVM());
         if (pc == null)
             return true;
 
-        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc.make_copy(), currentSymbolicInput,
-                heapSolver.getAccessedIndices());
+        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc.make_copy(), symInputHeap,
+                candidateSolution);
         CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
-        traverser.traverse(heapSolver.getCurrentSolutionVector(), visitor);
+        traverser.traverse(candidateSolution.getSolutionVector(), visitor);
 
         return visitor.isSolutionSAT();
     }
 
     @Override
-    public boolean hasNextSolution(ThreadInfo ti) {
-        while (heapSolver.searchNextSolution()) {
-            if (isSatWithRespectToPathCondition(ti))
-                return true;
+    public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
+            SymbolicInputHeapLISSA symInputHeap) {
+        assert (previousSolution != null);
+
+        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
+        while (solution != null) {
+            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
+                return solution;
+            }
+            solution = heapSolver.getNextSolution(solution);
         }
-        return false;
+
+        return null;
     }
 
     @Override
@@ -80,15 +87,23 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         if (symInputHeap == null)
             return nextInstruction;
 
+        SymSolveSolution previousSolution = symInputHeap.getHeapSolution();
+        if (previousSolution == null) {
+            if (!checkHeapSatisfiability(ti, symInputHeap))
+                return nextInstruction;
+        }
+
         primitiveBranches++;
         Constraint lastConstraint = pc.header;
 
         PathCondition repOKPC = symInputHeap.getRepOKPC();
-        repOKPC._addDet(lastConstraint.getComparator(), lastConstraint.getLeft(), lastConstraint.getRight());
-        if (repOKPC.simplify()) {
-            // Is Sat with cached repOK path condition
-            primitiveBranchingCacheHits++;
-            return nextInstruction;
+        if (repOKPC != null) {
+            repOKPC._addDet(lastConstraint.getComparator(), lastConstraint.getLeft(), lastConstraint.getRight());
+            if (repOKPC.simplify()) {
+                // Is Sat with cached repOK path condition
+                primitiveBranchingCacheHits++;
+                return nextInstruction;
+            }
         }
 
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
@@ -169,7 +184,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     }
 
     public void buildSolutionHeap(MJIEnv env, int objRef) {
-        builder.buildSolution(env, objRef, currentSymbolicInput, heapSolver.getCurrentSolutionVector());
+        builder.buildSolution(env, objRef);
     }
 
     @Override

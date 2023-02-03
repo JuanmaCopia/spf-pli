@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 import korat.finitization.impl.CVElem;
 import korat.finitization.impl.Finitization;
-import korat.utils.IIntList;
 import lissa.LISSAShell;
 import lissa.config.ConfigParser;
 import symsolve.SymSolve;
 import symsolve.config.SolverConfig;
+import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
 public class SymSolveHeapSolver {
@@ -45,15 +45,18 @@ public class SymSolveHeapSolver {
         return result;
     }
 
-    public int[] solve(SymSolveVector vector) {
+    public SymSolveSolution solve(SymSolveVector vector) {
         long time = System.currentTimeMillis();
-        int[] result = solver.solve(vector);
+        SymSolveSolution result = solver.solve(vector);
         solvingTime += (System.currentTimeMillis() - time);
         return result;
     }
 
-    public int[] getCurrentSolutionVector() {
-        return solver.getCurrentSolutionVector();
+    public SymSolveSolution getNextSolution(SymSolveSolution previousSolution) {
+        long time = System.currentTimeMillis();
+        SymSolveSolution result = solver.getNextSolution(previousSolution);
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
     }
 
     public long getSolvingTime() {
@@ -70,17 +73,6 @@ public class SymSolveHeapSolver {
 
     public HashMap<String, Integer> getDataBounds() {
         return finitization.getDataBounds();
-    }
-
-    public boolean searchNextSolution() {
-        long time = System.currentTimeMillis();
-        boolean result = solver.searchNextSolution();
-        solvingTime += (System.currentTimeMillis() - time);
-        return result;
-    }
-
-    public IIntList getAccessedIndices() {
-        return solver.getAccessedIndices();
     }
 
 }

@@ -43,13 +43,13 @@ import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ClassInfo;
+import symsolve.vector.SymSolveSolution;
 
 public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
 
     SymbolicReferenceInput implicitInputThis;
 
-    int[] heapSolutionVector;
-
+    SymSolveSolution heapSolution;
     PathCondition repOKPC;
 
     public SymbolicReferenceInput getImplicitInputThis() {
@@ -72,8 +72,7 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         sih_new.implicitInputThis = this.implicitInputThis.makeShallowCopy();
         if (this.repOKPC != null)
             sih_new.repOKPC = this.repOKPC.make_copy();
-        if (heapSolutionVector != null)
-            sih_new.heapSolutionVector = heapSolutionVector.clone();
+        sih_new.heapSolution = heapSolution;
         return sih_new;
     }
 
@@ -87,21 +86,16 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         return null;
     }
 
-    public void setHeapSolutionVector(int[] vector) {
-        heapSolutionVector = vector;
+    public void setHeapSolution(SymSolveSolution solution) {
+        heapSolution = solution;
     }
 
-    public int[] getHeapSolutionVector() {
-        return heapSolutionVector;
+    public SymSolveSolution getHeapSolution() {
+        return heapSolution;
     }
 
     public ClassInfo getImplicitInputClassInfo() {
         return implicitInputThis.getRootHeapNode().getType();
-    }
-
-    public void setCurrentHeapSolution(int[] solutionVector, PathCondition pc) {
-        repOKPC = pc;
-        heapSolutionVector = solutionVector;
     }
 
     public void _add(HeapNode n) {

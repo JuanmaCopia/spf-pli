@@ -29,7 +29,7 @@ public class LISSAM extends LISSA {
     }
 
     private String createIsSatQueryString(SymSolveVector vector) {
-        return Arrays.toString(vector.getPartialVector());
+        return Arrays.toString(vector.createPartialVector());
     }
 
 }

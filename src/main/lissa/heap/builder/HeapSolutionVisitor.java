@@ -23,16 +23,18 @@ import gov.nasa.jpf.vm.VM;
 import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
-import korat.utils.IIntList;
+import korat.utils.IntListAI;
 import lissa.heap.SymHeapHelper;
+import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
+import symsolve.vector.SymSolveSolution;
 
 public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
     MJIEnv env;
     SymbolicReferenceInput symRefInput;
-    IIntList accessedIndices;
+    IntListAI accessedIndices;
 
     ElementInfo newObjectRootElementInfo;
     Integer rootSymbolicInputIndex;
@@ -49,13 +51,13 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
     int symbolicID = 0;
 
-    public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicReferenceInput symRefInput,
-            IIntList accessedIndices) {
+    public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicInputHeapLISSA symInputHeap,
+            SymSolveSolution solution) {
         this.env = env;
         this.newObjectRootElementInfo = VM.getVM().getHeap().getModifiable(newObjectRootRef);
-        this.symRefInput = symRefInput;
+        this.symRefInput = symInputHeap.getImplicitInputThis();
         this.rootSymbolicInputIndex = symRefInput.getRootHeapNode().getIndex();
-        this.accessedIndices = accessedIndices;
+        this.accessedIndices = solution.getAccessedIndices();
     }
 
     @Override

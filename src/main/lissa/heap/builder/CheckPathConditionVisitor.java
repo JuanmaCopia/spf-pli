@@ -15,8 +15,10 @@ import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
 import korat.utils.IIntList;
+import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
+import symsolve.vector.SymSolveSolution;
 
 public class CheckPathConditionVisitor extends GenericCandidateVisitor {
 
@@ -37,12 +39,12 @@ public class CheckPathConditionVisitor extends GenericCandidateVisitor {
 
     boolean isAborted = false;
 
-    public CheckPathConditionVisitor(ThreadInfo ti, PathCondition pc, SymbolicReferenceInput symRefInput,
-            IIntList accessedIndices) {
+    public CheckPathConditionVisitor(ThreadInfo ti, PathCondition pc, SymbolicInputHeapLISSA symInputHeap,
+            SymSolveSolution solution) {
         this.ti = ti;
         this.pc = pc;
-        this.symRefInput = symRefInput;
-        this.accessedIndices = accessedIndices;
+        this.symRefInput = symInputHeap.getImplicitInputThis();
+        this.accessedIndices = solution.getAccessedIndices();
     }
 
     @Override
