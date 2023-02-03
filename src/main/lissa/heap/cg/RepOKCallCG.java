@@ -9,7 +9,7 @@ import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
-    public boolean result = false;
+    boolean pathReturningTrueFound = false;
     public int repOKExecutions = 0;
 
     SymSolveSolution candidateHeapSolution;
@@ -20,7 +20,6 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap) {
         super(id);
-        result = false;
         repOKExecutions = 0;
         candidateHeapSolution = symInputHeap.getHeapSolution();
         strategy = (PCCheckStrategy) LISSAShell.solvingStrategy;
@@ -45,13 +44,17 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     public boolean allRepOKPathsReturnedFalse() {
         strategy.stopRepOKExecutionMode();
-        if (result) {
+        if (pathReturningTrueFound) {
             symInputHeap.setRepOKPC(repOKPathCondition);
             symInputHeap.setHeapSolution(candidateHeapSolution);
             setDone();
         }
 
-        return !result;
+        return !pathReturningTrueFound;
+    }
+
+    public void pathReturningTrueFound() {
+        pathReturningTrueFound = true;
     }
 
     public void setCandidateHeapSolution(SymSolveSolution solution) {

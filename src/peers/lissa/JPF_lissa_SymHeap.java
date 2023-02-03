@@ -45,7 +45,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
                     found = true;
                     RepOKCallCG rcg = (RepOKCallCG) cg;
                     rcg.setRepOKPathCondition(SymHeapHelper.getPathCondition(env.getVM()));
-                    rcg.result = true;
+                    rcg.pathReturningTrueFound();
                     break;
                 }
                 cg.setDone();
