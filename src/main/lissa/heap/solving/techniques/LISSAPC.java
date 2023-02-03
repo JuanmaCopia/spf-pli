@@ -94,10 +94,10 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         }
 
         primitiveBranches++;
-        Constraint lastConstraint = pc.header;
 
         PathCondition repOKPC = symInputHeap.getRepOKPC();
         if (repOKPC != null) {
+            Constraint lastConstraint = pc.header;
             repOKPC._addDet(lastConstraint.getComparator(), lastConstraint.getLeft(), lastConstraint.getRight());
             if (repOKPC.simplify()) {
                 // Is Sat with cached repOK path condition
