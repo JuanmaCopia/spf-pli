@@ -32,41 +32,37 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
-    public static void handleRepOKResult(MJIEnv env, int objRef, boolean result) {
+    public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
-        // System.out.println("report result: " + result);
-        if (result) {
-            String cgID = "repOKCG";
-            ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
-            assert (lastCG != null);
-            boolean found = false;
-            for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-                if (cgID.equals(cg.getId())) {
-                    found = true;
-                    RepOKCallCG rcg = (RepOKCallCG) cg;
-                    rcg.setRepOKPathCondition(SymHeapHelper.getPathCondition(env.getVM()));
-                    rcg.pathReturningTrueFound();
-                    break;
-                }
-                cg.setDone();
-            }
-            assert (found);
+
+        if (repOKResult) {
+            RepOKCallCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setRepOKPathCondition(SymHeapHelper.getPathCondition(env.getVM()));
+            repOKChoiceGenerator.pathReturningTrueFound();
         }
         ss.setIgnored(true);
     }
 
-//  String cgID = "repOKCG";
-//  RepOKCallCG repOKCG = env.getVM().getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
-//  assert (repOKCG != null && repOKCG instanceof RepOKCallCG);
+    private static RepOKCallCG removeAddedChoicesByRepOK(SystemState ss) {
+        String cgID = "repOKCG";
+        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
+        assert (lastCG != null);
+        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cgID.equals(cg.getId())) {
+                return (RepOKCallCG) cg;
+            }
+            cg.setDone();
+        }
+
+        throw new RuntimeException("Error: RepOKCall choice generator not found");
+    }
 
     @MJI
     public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {
         if (objvRef == MJIEnv.NULL)
             throw new RuntimeException("## Error: null object");
 
-        assert (LISSAShell.solvingStrategy instanceof LISSAPC);
-        LISSAPC technique = (LISSAPC) LISSAShell.solvingStrategy;
-        technique.buildSolutionHeap(env, objvRef);
+        ((LISSAPC) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
     }
 
     @MJI
