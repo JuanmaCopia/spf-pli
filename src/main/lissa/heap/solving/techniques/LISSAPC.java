@@ -194,14 +194,18 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public void startRepOKExecutionMode() {
-        executingRepOK = true;
-        repOKStartTime = System.currentTimeMillis();
+        if (!executingRepOK) {
+            executingRepOK = true;
+            repOKStartTime = System.currentTimeMillis();
+        }
     }
 
     @Override
     public void stopRepOKExecutionMode() {
-        executingRepOK = false;
-        repokExecTime += System.currentTimeMillis() - repOKStartTime;
+        if (executingRepOK) {
+            executingRepOK = false;
+            repokExecTime += System.currentTimeMillis() - repOKStartTime;
+        }
     }
 
     @Override
