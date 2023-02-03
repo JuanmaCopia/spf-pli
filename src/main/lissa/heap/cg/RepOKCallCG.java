@@ -43,7 +43,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         return true;
     }
 
-    public boolean repOKReturnedTrue() {
+    public boolean allRepOKPathsReturnedFalse() {
         strategy.stopRepOKExecutionMode();
         if (result) {
             symInputHeap.setRepOKPC(repOKPathCondition);
@@ -51,7 +51,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
             setDone();
         }
 
-        return result;
+        return !result;
     }
 
     public void setCandidateHeapSolution(SymSolveSolution solution) {

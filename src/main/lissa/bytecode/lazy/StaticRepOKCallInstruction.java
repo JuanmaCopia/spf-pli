@@ -94,17 +94,14 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         }
 
         repOKCG = ss.getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
-        if (repOKCG.repOKReturnedTrue()) {
-            return nextInstruction;
+
+        if (repOKCG.allRepOKPathsReturnedFalse()) {
+            if (repOKCG.hasNextSolution())
+                return executeInvokeRepOK(ti);
+            ti.getVM().getSystemState().setIgnored(true);
         }
 
-        if (repOKCG.hasNextSolution()) {
-            return executeInvokeRepOK(ti);
-        }
-
-        ti.getVM().getSystemState().setIgnored(true);
         return nextInstruction;
-
     }
 
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
