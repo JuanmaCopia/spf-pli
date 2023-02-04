@@ -17,77 +17,79 @@
  */
 package lissa.bytecode;
 
-
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.RealExpression;
+import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
- * Convert double to int
- * ..., value => ..., result
+ * Convert double to int ..., value => ..., result
  */
 public class D2I extends gov.nasa.jpf.jvm.bytecode.D2I {
 
-  @Override
-  public Instruction execute (ThreadInfo th) {
-	  RealExpression sym_dval = (RealExpression) th.getModifiableTopFrame().getLongOperandAttr();
-		
-	  if(sym_dval == null) {
-		  //System.out.println("Execute concrete D2I");
-		  return super.execute(th); 
-	  }
-	  else {
-		  //System.out.println("Execute symbolic D2I");
-		 
-		  // here we get a hold of the current path condition and 
-		  // add an extra mixed constraint sym_dval==sym_ival
+    @Override
+    public Instruction execute(ThreadInfo th) {
+        RealExpression sym_dval = (RealExpression) th.getModifiableTopFrame().getLongOperandAttr();
 
-		    ChoiceGenerator cg; 
-			if (!th.isFirstStepInsn()) { // first time around
-				cg = new PCChoiceGenerator(1); // only one choice 
-				th.getVM().getSystemState().setNextChoiceGenerator(cg);
-				return this;  	      
-			} else {  // this is what really returns results
-				cg = th.getVM().getSystemState().getChoiceGenerator();
-				assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
-			}	
-			
-			// get the path condition from the 
-			// previous choice generator of the same type 
+        if (sym_dval == null) {
+            // System.out.println("Execute concrete D2I");
+            return super.execute(th);
+        } else {
+            // System.out.println("Execute symbolic D2I");
 
-		    PathCondition pc;
-			ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
-			
+            // here we get a hold of the current path condition and
+            // add an extra mixed constraint sym_dval==sym_ival
 
-			if (prev_cg == null)
-				pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
-			else 
-				pc = ((PCChoiceGenerator)prev_cg).getCurrentPC();
-			assert pc != null;
-			StackFrame sf = th.getModifiableTopFrame();
-			
-		    double v = sf.popDouble();
-		    sf.push( (int)v);
-		    
-			SymbolicInteger sym_ival = new SymbolicInteger();
-			
-			sf.setOperandAttr(sym_ival);
-			
-			pc._addDet(Comparator.EQ, sym_dval, sym_ival);
-			
-			if(!pc.simplify())  { // not satisfiable
-				th.getVM().getSystemState().setIgnored(true);
-			} else {
-				//pc.solve();
-				((PCChoiceGenerator) cg).setCurrentPC(pc);
-				//System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
-			}
-			
-			//System.out.println("Execute D2I: " + sf.getLongOperandAttr());
-			return getNext(th);
-		  
-	  }
-  }
+            ChoiceGenerator cg;
+            if (!th.isFirstStepInsn()) { // first time around
+                cg = new PCChoiceGenerator(1); // only one choice
+                th.getVM().getSystemState().setNextChoiceGenerator(cg);
+                return this;
+            } else { // this is what really returns results
+                cg = th.getVM().getSystemState().getChoiceGenerator();
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+            }
+
+            // get the path condition from the
+            // previous choice generator of the same type
+
+            PathCondition pc;
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+
+            if (prev_cg == null)
+                pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
+            else
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            assert pc != null;
+            StackFrame sf = th.getModifiableTopFrame();
+
+            double v = sf.popDouble();
+            sf.push((int) v);
+
+            SymbolicInteger sym_ival = new SymbolicInteger();
+
+            sf.setOperandAttr(sym_ival);
+
+            pc._addDet(Comparator.EQ, sym_dval, sym_ival);
+
+            if (!pc.simplify()) { // not satisfiable
+                th.getVM().getSystemState().setIgnored(true);
+            } else {
+                // pc.solve();
+                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                // System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
+            }
+
+            // System.out.println("Execute D2I: " + sf.getLongOperandAttr());
+            Instruction nextInstruction = getNext(th);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
+
+        }
+    }
 }

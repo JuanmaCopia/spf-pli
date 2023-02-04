@@ -88,68 +88,129 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     // PC optimization:
 
+    @Override
     public Instruction ifle(int targetPc) {
         return new IFLE(targetPc);
     }
 
+    @Override
     public Instruction iflt(int targetPc) {
         return new IFLT(targetPc);
     }
 
+    @Override
     public Instruction ifge(int targetPc) {
         return new IFGE(targetPc);
     }
 
+    @Override
     public Instruction ifgt(int targetPc) {
         return new IFGT(targetPc);
     }
 
+    @Override
     public Instruction ifeq(int targetPc) {
         return new IFEQ(targetPc);
     }
 
+    @Override
     public Instruction ifne(int targetPc) {
         return new IFNE(targetPc);
     }
 
+    @Override
     public Instruction if_icmpge(int targetPc) {
         return new IF_ICMPGE(targetPc);
     }
 
+    @Override
     public Instruction if_icmpgt(int targetPc) {
         return new IF_ICMPGT(targetPc);
     }
 
+    @Override
     public Instruction if_icmple(int targetPc) {
         return new IF_ICMPLE(targetPc);
     }
 
+    @Override
     public Instruction if_icmplt(int targetPc) {
         return new IF_ICMPLT(targetPc);
     }
 
+    @Override
     public Instruction if_icmpeq(int targetPc) {
         return new IF_ICMPEQ(targetPc);
     }
 
+    @Override
     public Instruction if_icmpne(int targetPc) {
         return new IF_ICMPNE(targetPc);
     }
 
+    @Override
     public Instruction fcmpg() {
         return new FCMPG();
     }
 
+    @Override
     public Instruction fcmpl() {
         return new FCMPL();
     }
 
+    @Override
     public Instruction dcmpg() {
         return new DCMPG();
     }
 
+    @Override
     public Instruction dcmpl() {
         return new DCMPL();
+    }
+
+    @Override
+    public Instruction ddiv() {
+        return new DDIV();
+    }
+
+    @Override
+    public Instruction idiv() {
+        return new IDIV();
+    }
+
+    @Override
+    public Instruction irem() {
+        return new IREM();
+    }
+
+    @Override
+    public Instruction fdiv() {
+        return new FDIV();
+    }
+
+    @Override
+    public Instruction lcmp() {
+        return new LCMP();
+    }
+
+    @Override
+    public Instruction ldiv() {
+        return new LDIV();
+    }
+
+    @Override
+    public Instruction lrem() {
+        return new LREM();
+    }
+
+    @Override
+    public Instruction i2d() {
+        return new I2D();
+    }
+
+    @Override
+    public Instruction d2i() {
+        return new D2I();
     }
 
     // ============ Constructor ============ //
@@ -160,66 +221,37 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     // others
 
-    public Instruction ddiv() {
-        return new DDIV();
-    }
-
-    public Instruction idiv() {
-        return new IDIV();
-    }
-
-    public Instruction irem() {
-        return new IREM();
-    }
-
-    public Instruction fdiv() {
-        return new FDIV();
-    }
-
-    public Instruction lcmp() {
-        return new LCMP();
-    }
-
-    public Instruction ldiv() {
-        return new LDIV();
-    }
-
-    public Instruction lrem() {
-        return new LREM();
-    }
-
-    public Instruction i2d() {
-        return new I2D();
-    }
-
-    public Instruction d2i() {
-        return new D2I();
-    }
-
+    @Override
     public Instruction d2l() {
         return new D2L();
     }
 
+    @Override
     public Instruction i2f() {
         return new I2F();
     }
 
+    @Override
     public Instruction l2d() {
         return new L2D();
     }
 
+    @Override
     public Instruction l2f() {
         return new L2F();
     }
 
+    @Override
     public Instruction f2l() {
         return new F2L();
     }
 
+    @Override
     public Instruction f2i() {
         return new F2I();
     }
 
+    @Override
     public Instruction tableswitch(int defaultTargetPc, int low, int high) {
         return new TABLESWITCH(defaultTargetPc, low, high);
     }

@@ -38,7 +38,7 @@ public class SymHeapHelper {
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
             PathCondition pc) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        if (solvingStrategy instanceof PCCheckStrategy) {
+        if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
             PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
             if (!strategy.isRepOKExecutionMode()) {
                 return strategy.getNextInstructionToPrimitiveBranching(ti, current, next, pc);

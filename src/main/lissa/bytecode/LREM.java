@@ -26,11 +26,13 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Remainder long ..., value1, value2 => ..., result
  * 
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class LREM extends gov.nasa.jpf.jvm.bytecode.LREM {
 
@@ -94,7 +96,8 @@ public class LREM extends gov.nasa.jpf.jvm.bytecode.LREM {
             if (pc.simplify()) { // satisfiable
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
 
-                return th.createAndThrowException("java.lang.ArithmeticException", "rem by 0");
+                Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "rem by 0");
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -113,7 +116,9 @@ public class LREM extends gov.nasa.jpf.jvm.bytecode.LREM {
 
                 sf = th.getModifiableTopFrame();
                 sf.setLongOperandAttr(result);
-                return getNext(th);
+
+                Instruction nextInstruction = getNext(th);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

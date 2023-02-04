@@ -45,31 +45,29 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.vm.Types;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Divide 2 doubles ..., value1, value2 => ..., value2/value1
  * 
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
 
-	
-	
-	
     @Override
     public Instruction execute(ThreadInfo th) {
-    	
+
         StackFrame sf = th.getModifiableTopFrame();
 
         RealExpression sym_v1 = (RealExpression) sf.getOperandAttr(1);
         double v1 = sf.peekDouble();
         RealExpression sym_v2 = (RealExpression) sf.getOperandAttr(3);
         double v2 = sf.peekDouble(2);
-        //super.execute should take care of if(v1==0) return th.createAndThrowException
+        // super.execute should take care of if(v1==0) return th.createAndThrowException
         if (sym_v1 == null) {
             Instruction next_insn = super.execute(th);
-        	
+
             if (sym_v2 != null) // result is symbolic expression
                 sf.setLongOperandAttr(sym_v2._div(v1));
             return next_insn;
@@ -78,7 +76,6 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
         // div by zero check affects path condition
         // sym_v1 is non-null and should be checked against zero
 
-        
         ChoiceGenerator<?> cg;
         boolean condition;
 
@@ -100,14 +97,13 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
             }
         }
 
-        
-        //super.execute(th); // pops v1, v2 and pushes r = v2 / v1;
+        // super.execute(th); // pops v1, v2 and pushes r = v2 / v1;
         sf.popDouble();
         sf.popDouble();
-        if(v1==0)
-        	sf.pushDouble(0.0);
+        if (v1 == 0)
+            sf.pushDouble(0.0);
         else
-        	sf.pushDouble(v2/v1);
+            sf.pushDouble(v2 / v1);
 
         PathCondition pc;
         ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
@@ -120,12 +116,14 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
         assert pc != null;
 
         if (condition) { // check div by zero
-        	
+
             pc._addDet(Comparator.EQ, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
-                
-                return th.createAndThrowException("java.lang.ArithmeticException", "!!!div by 0");
+
+                Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException",
+                        "!!!div by 0");
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -144,7 +142,9 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
 
                 sf = th.getModifiableTopFrame();
                 sf.setLongOperandAttr(result);
-                return getNext(th);
+
+                Instruction nextInstruction = getNext(th);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

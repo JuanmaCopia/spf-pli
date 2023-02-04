@@ -35,14 +35,19 @@
 package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.IntegerExpression;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
 
@@ -105,7 +110,8 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
             if (pc.simplify()) { // satisfiable
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
 
-                return th.createAndThrowException("java.lang.ArithmeticException", "rem by 0");
+                Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "rem by 0");
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -124,7 +130,9 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
 
                 sf = th.getModifiableTopFrame();
                 sf.setOperandAttr(result);
-                return getNext(th);
+
+                Instruction nextInstruction = getNext(th);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

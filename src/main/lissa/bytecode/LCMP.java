@@ -26,11 +26,13 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Compare long ..., value1, value2 => ..., result
  * 
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
 
@@ -128,7 +130,8 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
                 }
             }
 
-            return getNext(th);
+            Instruction nextInstruction = getNext(th);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
         }
 
     }

@@ -35,14 +35,19 @@
 package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.IntegerExpression;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class IDIV extends gov.nasa.jpf.jvm.bytecode.IDIV {
 
@@ -56,14 +61,13 @@ public class IDIV extends gov.nasa.jpf.jvm.bytecode.IDIV {
         // super.execute takes care of if(v1==0) return th.createAndThrowException ...
 
         if (sym_v1 == null) {
-        	
+
             Instruction next_insn = super.execute(th);
             if (sym_v2 != null) // result is symbolic expression
                 sf.setOperandAttr(sym_v2._div(v1));
             return next_insn;
         }
 
-       
         // div by zero check affects path condition
         // sym_v1 is non-null and should be checked against zero
 
@@ -88,14 +92,14 @@ public class IDIV extends gov.nasa.jpf.jvm.bytecode.IDIV {
             }
         }
 
-        //super.execute(th); // pops v1, v2 and pushes r = v2 / v1;
+        // super.execute(th); // pops v1, v2 and pushes r = v2 / v1;
         sf.pop();
         sf.pop();
-        if(v1==0)
-        	sf.push(0);
+        if (v1 == 0)
+            sf.push(0);
         else
-        	sf.push(v2/v1);
-        
+            sf.push(v2 / v1);
+
         PathCondition pc;
         ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
 
@@ -110,8 +114,9 @@ public class IDIV extends gov.nasa.jpf.jvm.bytecode.IDIV {
             pc._addDet(Comparator.EQ, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
-                
-                return th.createAndThrowException("java.lang.ArithmeticException", "div by 0");
+
+                Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "div by 0");
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -130,7 +135,9 @@ public class IDIV extends gov.nasa.jpf.jvm.bytecode.IDIV {
 
                 sf = th.getModifiableTopFrame();
                 sf.setOperandAttr(result);
-                return getNext(th);
+
+                Instruction nextInstruction = getNext(th);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

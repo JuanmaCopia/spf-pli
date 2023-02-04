@@ -26,10 +26,11 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.vm.Types;
+import lissa.heap.SymHeapHelper;
 
 /**
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
 
@@ -92,7 +93,8 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
             if (pc.simplify()) { // satisfiable
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
 
-                return th.createAndThrowException("java.lang.ArithmeticException", "div by 0");
+                Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "div by 0");
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -111,7 +113,9 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
 
                 sf = th.getModifiableTopFrame();
                 sf.setOperandAttr(result);
-                return getNext(th);
+
+                Instruction nextInstruction = getNext(th);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);
