@@ -32,9 +32,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.LISSAShell;
-import lissa.heap.solving.techniques.PCCheckStrategy;
-import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.SymHeapHelper;
 
 public class IFInstrSymbHelper {
 
@@ -179,14 +177,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            if (solvingStrategy instanceof PCCheckStrategy) {
-                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
-                }
-            }
-            return nextInstruction;
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
         }
     }
 
@@ -330,14 +321,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            if (solvingStrategy instanceof PCCheckStrategy) {
-                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
-                }
-            }
-            return nextInstruction;
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
         }
 
     }
@@ -483,14 +467,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            if (solvingStrategy instanceof PCCheckStrategy) {
-                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
-                }
-            }
-            return nextInstruction;
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
         }
     }
 
@@ -559,15 +536,7 @@ public class IFInstrSymbHelper {
                 nextInstruction = instr.getNext(ti);
             }
 
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            if (solvingStrategy instanceof PCCheckStrategy) {
-                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
-                }
-            }
-
-            return nextInstruction;
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
         }
     }
 
@@ -667,15 +636,7 @@ public class IFInstrSymbHelper {
                 nextInstruction = instr.getNext(ti);
             }
 
-            SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-            if (solvingStrategy instanceof PCCheckStrategy) {
-                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.getNextInstructionToPrimitiveBranching(ti, instr, nextInstruction, pc);
-                }
-            }
-
-            return nextInstruction;
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
         }
     }
 }

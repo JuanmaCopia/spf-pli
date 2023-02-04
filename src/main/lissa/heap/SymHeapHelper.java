@@ -21,15 +21,31 @@ import gov.nasa.jpf.vm.DoubleFieldInfo;
 import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.FloatFieldInfo;
+import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.IntegerFieldInfo;
 import gov.nasa.jpf.vm.LongFieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.LISSAShell;
+import lissa.heap.solving.techniques.PCCheckStrategy;
+import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
+
+    public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
+            PathCondition pc) {
+        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+        if (solvingStrategy instanceof PCCheckStrategy) {
+            PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+            if (!strategy.isRepOKExecutionMode()) {
+                return strategy.getNextInstructionToPrimitiveBranching(ti, current, next, pc);
+            }
+        }
+        return next;
+    }
 
     public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
             SymbolicInputHeap symInputHeap) {
