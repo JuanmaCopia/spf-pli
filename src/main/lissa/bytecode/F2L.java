@@ -17,11 +17,16 @@
  */
 package lissa.bytecode;
 
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.RealExpression;
+import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Convert float to long ..., value => ..., result
@@ -71,7 +76,9 @@ public class F2L extends gov.nasa.jpf.jvm.bytecode.F2L {
             } else {
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
             }
-            return getNext(th);
+
+            Instruction nextInstruction = getNext(th);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
         }
     }
 }

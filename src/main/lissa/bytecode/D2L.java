@@ -17,11 +17,16 @@
  */
 package lissa.bytecode;
 
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.RealExpression;
+import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Convert double to long ..., value => ..., result
@@ -42,7 +47,7 @@ public class D2L extends gov.nasa.jpf.jvm.bytecode.D2L {
             // here we get a hold of the current path condition and
             // add an extra mixed constraint sym_dval==sym_ival
 
-            ChoiceGenerator cg;
+            ChoiceGenerator<?> cg;
             if (!th.isFirstStepInsn()) { // first time around
                 cg = new PCChoiceGenerator(1); // only one choice
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
@@ -83,7 +88,8 @@ public class D2L extends gov.nasa.jpf.jvm.bytecode.D2L {
             }
 
             // System.out.println("Execute D2L: " + sf.getLongOperandAttr());
-            return getNext(th);
+            Instruction nextInstruction = getNext(th);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
         }
     }
 }

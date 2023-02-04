@@ -23,11 +23,11 @@ import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
-
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Access jump table by index and jump ..., index ...
@@ -114,7 +114,9 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             } else {
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
             }
-            return mi.getInstructionAt(target);
+
+            Instruction nextInstruction = mi.getInstructionAt(target);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, pc);
         } else {
             lastIdx = idx;
             pc._addDet(Comparator.EQ, sym_v._minus(min), idx);
@@ -123,7 +125,9 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             } else {
                 ((PCChoiceGenerator) cg).setCurrentPC(pc);
             }
-            return mi.getInstructionAt(targets[idx]);
+
+            Instruction nextInstruction = mi.getInstructionAt(targets[idx]);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, pc);
         }
 
     }

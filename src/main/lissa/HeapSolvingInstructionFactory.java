@@ -168,6 +168,8 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
         return new DCMPL();
     }
 
+    // others
+
     @Override
     public Instruction ddiv() {
         return new DDIV();
@@ -213,14 +215,6 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
         return new D2I();
     }
 
-    // ============ Constructor ============ //
-
-    public HeapSolvingInstructionFactory(Config conf) {
-        super(conf);
-    }
-
-    // others
-
     @Override
     public Instruction d2l() {
         return new D2L();
@@ -254,6 +248,12 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     @Override
     public Instruction tableswitch(int defaultTargetPc, int low, int high) {
         return new TABLESWITCH(defaultTargetPc, low, high);
+    }
+
+    // ============ Constructor ============ //
+
+    public HeapSolvingInstructionFactory(Config conf) {
+        super(conf);
     }
 
 }

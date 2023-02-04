@@ -17,11 +17,16 @@
  */
 package lissa.bytecode;
 
-import gov.nasa.jpf.symbc.numeric.*;
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.IntegerExpression;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.SymbolicReal;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Convert long to double ..., value => ..., result
@@ -79,7 +84,8 @@ public class L2D extends gov.nasa.jpf.jvm.bytecode.L2D {
             }
 
             // System.out.println("Execute L2D: " + sf.getLongOperandAttr());
-            return getNext(th);
+            Instruction nextInstruction = getNext(th);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, pc);
         }
     }
 }

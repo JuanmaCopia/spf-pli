@@ -46,7 +46,7 @@ public class D2I extends gov.nasa.jpf.jvm.bytecode.D2I {
             // here we get a hold of the current path condition and
             // add an extra mixed constraint sym_dval==sym_ival
 
-            ChoiceGenerator cg;
+            ChoiceGenerator<?> cg;
             if (!th.isFirstStepInsn()) { // first time around
                 cg = new PCChoiceGenerator(1); // only one choice
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
