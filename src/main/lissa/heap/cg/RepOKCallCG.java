@@ -10,7 +10,7 @@ import symsolve.vector.SymSolveSolution;
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     boolean pathReturningTrueFound = false;
-    public int repOKExecutions = 0;
+    int repOKExecutions = 0;
 
     SymSolveSolution candidateHeapSolution;
     PathCondition repOKPathCondition;

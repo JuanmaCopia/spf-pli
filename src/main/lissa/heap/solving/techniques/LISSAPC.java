@@ -87,13 +87,16 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         if (symInputHeap == null)
             return nextInstruction;
 
+        primitiveBranches++;
+
         SymSolveSolution previousSolution = symInputHeap.getHeapSolution();
         if (previousSolution == null) {
-            if (!checkHeapSatisfiability(ti, symInputHeap))
+            if (!checkHeapSatisfiability(ti, symInputHeap)) {
+                ti.getVM().getSystemState().setIgnored(true);
+                prunedBranches++;
                 return nextInstruction;
+            }
         }
-
-        primitiveBranches++;
 
         PathCondition repOKPC = symInputHeap.getRepOKPC();
         if (repOKPC != null) {
