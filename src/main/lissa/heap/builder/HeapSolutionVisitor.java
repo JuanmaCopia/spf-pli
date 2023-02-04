@@ -5,6 +5,7 @@ import java.util.HashMap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -155,9 +156,15 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
             IntegerConstant constant = new IntegerConstant(value);
 
-            PathCondition pc = SymHeapHelper.getPathCondition(env.getVM());
-            if (pc != null)
-                pc._addDet(Comparator.EQ, symbolicVar, constant);
+            PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
+            if (currPCCG != null) {
+                PathCondition pc = currPCCG.getCurrentPC();
+                if (pc != null)
+                    pc._addDet(Comparator.EQ, symbolicVar, constant);
+
+                assert (pc.simplify());
+                currPCCG.setCurrentPC(pc);
+            }
         } else {
             Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
             assert (symbolicVar != null);

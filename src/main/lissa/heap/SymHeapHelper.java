@@ -16,6 +16,7 @@ import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.BooleanFieldInfo;
+import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.DoubleFieldInfo;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -155,6 +156,19 @@ public class SymHeapHelper {
 
     public static PathCondition getPathCondition(VM vm) {
         return PathCondition.getPC(vm);
+    }
+
+    public static PCChoiceGenerator getCurrentPCChoiceGenerator(VM vm) {
+        ChoiceGenerator<?> cg = vm.getChoiceGenerator();
+        if (cg != null && !(cg instanceof PCChoiceGenerator)) {
+            cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+        }
+
+        if (cg instanceof PCChoiceGenerator) {
+            return ((PCChoiceGenerator) cg);
+        } else {
+            return null;
+        }
     }
 
     public static Integer getSolution(SymbolicInteger symbolicInteger, PathCondition pathCondition) {
