@@ -88,7 +88,8 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
         // int idx = (Integer)cg.getNextChoice();
         int idx;
         if (SymbolicInstructionFactory.collect_constraints) {
-            // Check whether the value from the concrete execution is covered by the table switch or whether it should
+            // Check whether the value from the concrete execution is covered by the table
+            // switch or whether it should
             // trigger the default branch.
             if (value < 0 || value >= targets.length) {
                 idx = targets.length; // default branch
