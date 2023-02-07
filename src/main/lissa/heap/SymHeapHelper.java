@@ -42,7 +42,7 @@ public class SymHeapHelper {
         if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
             PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
             if (!strategy.isRepOKExecutionMode()) {
-                return strategy.getNextInstructionToPrimitiveBranching(ti, current, next, pc);
+                return strategy.handlePrimitiveBranch(ti, current, next, pc);
             }
         }
         return next;

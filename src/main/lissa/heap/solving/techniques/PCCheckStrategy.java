@@ -8,12 +8,6 @@ import symsolve.vector.SymSolveSolution;
 
 public interface PCCheckStrategy {
 
-    Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            SymbolicInputHeapLISSA symInputHeap);
-
-    Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, PathCondition pc);
-
     boolean isRepOKExecutionMode();
 
     void startRepOKExecutionMode();
@@ -26,7 +20,13 @@ public interface PCCheckStrategy {
 
     int getPrunedBranchCount();
 
+    Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            PathCondition pc);
+
     SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
+            SymbolicInputHeapLISSA symInputHeap);
+
+    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
             SymbolicInputHeapLISSA symInputHeap);
 
 }

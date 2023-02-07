@@ -1,6 +1,5 @@
 package lissa.heap.solving.techniques;
 
-import gov.nasa.jpf.symbc.numeric.Constraint;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
@@ -16,6 +15,7 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
+import lissa.heap.cg.RepOKCallCG;
 import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveSolution;
@@ -37,30 +37,36 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     }
 
     @Override
-    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+    public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
+            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
+
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {
             if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
-                symInputHeap.setHeapSolution(solution);
-                return true;
+                break;
             }
             solution = heapSolver.getNextSolution(solution);
         }
-        return false;
+
+        if (solution == null) {
+            ti.getVM().getSystemState().setIgnored(true); // Backtrack
+            return currentInstruction;
+        }
+
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution);
     }
 
-    protected boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
+    @Override
+    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         PathCondition pc = PathCondition.getPC(ti.getVM());
         if (pc == null)
             return true;
 
-        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc.make_copy(), symInputHeap,
-                candidateSolution);
+        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc, symInputHeap, candidateSolution);
         CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
         traverser.traverse(candidateSolution.getSolutionVector(), visitor);
-
         return visitor.isSolutionSAT();
     }
 
@@ -68,7 +74,6 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
-
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         while (solution != null) {
             if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
@@ -76,50 +81,38 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
             }
             solution = heapSolver.getNextSolution(solution);
         }
-
         return null;
     }
 
     @Override
-    public Instruction getNextInstructionToPrimitiveBranching(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, PathCondition pc) {
+    public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            PathCondition pc) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
         if (symInputHeap == null)
             return nextInstruction;
 
         primitiveBranches++;
 
-        SymSolveSolution previousSolution = symInputHeap.getHeapSolution();
-        if (previousSolution == null) {
-            if (!checkHeapSatisfiability(ti, symInputHeap)) {
-                ti.getVM().getSystemState().setIgnored(true);
-                prunedBranches++;
-                return nextInstruction;
+        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+        SymSolveSolution solution = heapSolver.solve(vector);
+        while (solution != null) {
+            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
+                break;
             }
+            solution = heapSolver.getNextSolution(solution);
         }
 
-        PathCondition repOKPC = symInputHeap.getRepOKPC();
-        if (repOKPC != null) {
-            Constraint lastConstraint = pc.header;
-            repOKPC._addDet(lastConstraint.getComparator(), lastConstraint.getLeft(), lastConstraint.getRight());
-            if (repOKPC.simplify()) {
-                // Is Sat with cached repOK path condition
-                primitiveBranchingCacheHits++;
-                return nextInstruction;
-            }
+        if (solution == null) {
+            ti.getVM().getSystemState().setIgnored(true); // Backtrack
+            prunedBranches++;
+            return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
-    }
-
-    @Override
-    public Instruction getNextInstructionToGETFIELD(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution);
     }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            SymbolicInputHeapLISSA symInputHeap) {
+            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution) {
         assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert (symRefInput != null);
@@ -137,6 +130,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
         realInvoke.nextInstruction = nextInstruction;
         realInvoke.currentSymInputHeap = symInputHeap;
+        realInvoke.solution = solution;
 
         Object[] args = null;
         Object[] attrs = null;
@@ -187,7 +181,16 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     }
 
     public void buildSolutionHeap(MJIEnv env, int objRef) {
-        builder.buildSolution(env, objRef);
+        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
+        assert (symInputHeap != null);
+
+        String cgID = "repOKCG";
+        RepOKCallCG repOKCG = env.getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+        SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
+        assert (solution != null);
+        assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, symInputHeap));
+
+        builder.buildSolution(env, objRef, symInputHeap, solution);
     }
 
     @Override
@@ -195,7 +198,6 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         return executingRepOK;
     }
 
-    @Override
     public void startRepOKExecutionMode() {
         if (!executingRepOK) {
             executingRepOK = true;
@@ -203,7 +205,6 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         }
     }
 
-    @Override
     public void stopRepOKExecutionMode() {
         if (executingRepOK) {
             executingRepOK = false;
@@ -211,17 +212,14 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         }
     }
 
-    @Override
     public long getRepOKSolvingTime() {
         return repokExecTime;
     }
 
-    @Override
     public void countPrunedBranch() {
         prunedBranches++;
     }
 
-    @Override
     public int getPrunedBranchCount() {
         return prunedBranches;
     }

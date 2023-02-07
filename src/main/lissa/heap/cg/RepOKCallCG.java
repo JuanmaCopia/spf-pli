@@ -1,13 +1,17 @@
 package lissa.heap.cg;
 
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import lissa.LISSAShell;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.techniques.PCCheckStrategy;
+import lissa.heap.solving.techniques.LISSAPC;
 import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
+
+    public PCChoiceGenerator currPCCG;
+    public PathCondition programPC;
 
     boolean pathReturningTrueFound = false;
     int repOKExecutions = 0;
@@ -16,18 +20,26 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     PathCondition repOKPathCondition;
 
     SymbolicInputHeapLISSA symInputHeap;
-    PCCheckStrategy strategy;
+    LISSAPC strategy;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap) {
+    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGenerator currPCCG,
+            SymSolveSolution solution) {
         super(id);
         repOKExecutions = 0;
-        candidateHeapSolution = symInputHeap.getHeapSolution();
-        strategy = (PCCheckStrategy) LISSAShell.solvingStrategy;
+        strategy = (LISSAPC) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
+        candidateHeapSolution = solution;
+        if (currPCCG != null) {
+            this.currPCCG = currPCCG;
+            programPC = currPCCG.getCurrentPC();
+        } else {
+            this.programPC = new PathCondition();
+        }
     }
 
     public boolean hasNextSolution() {
         assert (candidateHeapSolution != null);
+        assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, symInputHeap));
         if (repOKExecutions > 0) {
             candidateHeapSolution = strategy.getNextSolution(ti, candidateHeapSolution, symInputHeap);
             if (candidateHeapSolution == null) {
@@ -44,13 +56,18 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     public boolean allRepOKPathsReturnedFalse() {
         strategy.stopRepOKExecutionMode();
-        if (pathReturningTrueFound) {
-            symInputHeap.setRepOKPC(repOKPathCondition);
-            symInputHeap.setHeapSolution(candidateHeapSolution);
+
+        if (pathReturningTrueFound)
             setDone();
-        }
+
+        resetProgramPathCondition();
 
         return !pathReturningTrueFound;
+    }
+
+    private void resetProgramPathCondition() {
+        if (currPCCG != null)
+            currPCCG.setCurrentPC(programPC);
     }
 
     public void pathReturningTrueFound() {

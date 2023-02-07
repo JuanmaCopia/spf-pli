@@ -3,6 +3,7 @@ package lissa.heap.solving.techniques;
 import java.util.HashMap;
 
 import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
+import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -20,10 +21,15 @@ public class LIHYBRID extends LISSA {
     }
 
     @Override
-    public boolean checkHeapSatisfiability(ThreadInfo ti, SymbolicInputHeapLISSA symInputHeap) {
+    public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
+            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
         resetGetFieldCount();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-        return heapSolver.isSatisfiableAutoHybridRepOK(vector);
+        if (!heapSolver.isSatisfiableAutoHybridRepOK(vector)) {
+            ti.getVM().getSystemState().setIgnored(true); // Backtrack
+            return currentInstruction;
+        }
+        return nextInstruction;
     }
 
     @Override
