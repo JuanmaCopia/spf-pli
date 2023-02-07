@@ -37,12 +37,12 @@ import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 public class SymHeapHelper {
 
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
-            PathCondition pc) {
+            PCChoiceGenerator cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
         if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
             PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
             if (!strategy.isRepOKExecutionMode()) {
-                return strategy.handlePrimitiveBranch(ti, current, next, pc);
+                return strategy.handlePrimitiveBranch(ti, current, next, cg);
             }
         }
         return next;

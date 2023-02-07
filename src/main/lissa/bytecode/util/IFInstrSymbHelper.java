@@ -177,7 +177,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, curCg);
         }
     }
 
@@ -321,7 +321,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, curCg);
         }
 
     }
@@ -467,7 +467,7 @@ public class IFInstrSymbHelper {
             ti.getModifiableTopFrame().push(conditionValue, false);
 
             Instruction nextInstruction = instr.getNext(ti);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, curCg);
         }
     }
 
@@ -536,7 +536,7 @@ public class IFInstrSymbHelper {
                 nextInstruction = instr.getNext(ti);
             }
 
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, curCg);
         }
     }
 
@@ -636,7 +636,7 @@ public class IFInstrSymbHelper {
                 nextInstruction = instr.getNext(ti);
             }
 
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, pc);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, instr, nextInstruction, curCg);
         }
     }
 }

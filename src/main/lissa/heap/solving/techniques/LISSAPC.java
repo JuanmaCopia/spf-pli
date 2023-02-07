@@ -1,5 +1,6 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
@@ -59,7 +60,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PathCondition pc) {
+            PCChoiceGenerator cg) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
         if (symInputHeap == null)
             return nextInstruction;
