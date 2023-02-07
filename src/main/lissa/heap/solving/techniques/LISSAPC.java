@@ -58,33 +58,6 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     }
 
     @Override
-    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
-            SymbolicInputHeapLISSA symInputHeap) {
-        PathCondition pc = PathCondition.getPC(ti.getVM());
-        if (pc == null)
-            return true;
-
-        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc, symInputHeap, candidateSolution);
-        CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
-        traverser.traverse(candidateSolution.getSolutionVector(), visitor);
-        return visitor.isSolutionSAT();
-    }
-
-    @Override
-    public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
-            SymbolicInputHeapLISSA symInputHeap) {
-        assert (previousSolution != null);
-        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-        while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
-                return solution;
-            }
-            solution = heapSolver.getNextSolution(solution);
-        }
-        return null;
-    }
-
-    @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PathCondition pc) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
@@ -111,30 +84,48 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution);
     }
 
+    @Override
+    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
+            SymbolicInputHeapLISSA symInputHeap) {
+        PathCondition pc = PathCondition.getPC(ti.getVM());
+        if (pc == null)
+            return true;
+
+        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc, symInputHeap, candidateSolution);
+        CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
+        traverser.traverse(candidateSolution.getSolutionVector(), visitor);
+        return visitor.isSolutionSAT();
+    }
+
+    @Override
+    public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
+            SymbolicInputHeapLISSA symInputHeap) {
+        assert (previousSolution != null);
+        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
+        while (solution != null) {
+            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
+                return solution;
+            }
+            solution = heapSolver.getNextSolution(solution);
+        }
+        return null;
+    }
+
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution) {
-        assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-        assert (symRefInput != null);
+
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
         MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
-
-        assert (repokMI != null);
 
         String clsName = repokMI.getClassInfo().getName();
         String mthName = repokMI.getName();
         String signature = repokMI.getSignature();
 
         StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
-        realInvoke.setMethodInfo(currentInstruction.getMethodInfo());
-        realInvoke.setLocation(currentInstruction.getInstructionIndex(), currentInstruction.getPosition());
-        realInvoke.nextInstruction = nextInstruction;
-        realInvoke.currentSymInputHeap = symInputHeap;
-        realInvoke.solution = solution;
+        realInvoke.initialize(currentInstruction, nextInstruction, symInputHeap, solution);
 
-        Object[] args = null;
-        Object[] attrs = null;
-        pushArguments(ti, args, attrs);
+        pushArguments(ti, null, null);
 
         return realInvoke;
     }

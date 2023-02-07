@@ -42,14 +42,21 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
 
-    public Instruction nextInstruction;
-
-    public SymbolicInputHeapLISSA currentSymInputHeap;
-
-    public SymSolveSolution solution;
+    Instruction next;
+    SymbolicInputHeapLISSA symInputHeap;
+    SymSolveSolution solution;
 
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
+    }
+
+    public void initialize(Instruction current, Instruction next, SymbolicInputHeapLISSA symInputHeap,
+            SymSolveSolution solution) {
+        setMethodInfo(current.getMethodInfo());
+        setLocation(current.getInstructionIndex(), current.getPosition());
+        this.next = next;
+        this.symInputHeap = symInputHeap;
+        this.solution = solution;
     }
 
     protected ClassInfo getClassInfo() {
@@ -95,7 +102,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
         if (!ti.isFirstStepInsn()) {
             PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
-            repOKCG = new RepOKCallCG(cgID, currentSymInputHeap, currPCCG, solution);
+            repOKCG = new RepOKCallCG(cgID, symInputHeap, currPCCG, solution);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }
@@ -113,7 +120,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             assert (repOKCG.programPC.equals(currentPC));
         }
 
-        return nextInstruction;
+        return next;
     }
 
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
