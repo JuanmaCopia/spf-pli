@@ -67,6 +67,8 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
             setDone();
             if (isLazyStep) {
                 // Cache Solution and repOK Path Condition
+                assert (candidateHeapSolution != null);
+                assert (repOKPathCondition != null);
                 curHeapCG.setCurrentSolution(candidateHeapSolution);
                 curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
             }
@@ -133,6 +135,8 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     }
 
     public void setRepOKPathCondition(PathCondition pc) {
+        if (pc == null)
+            pc = new PathCondition();
         repOKPathCondition = pc;
     }
 

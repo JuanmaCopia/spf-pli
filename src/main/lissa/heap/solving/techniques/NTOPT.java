@@ -1,5 +1,9 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.Constraint;
+import gov.nasa.jpf.symbc.numeric.Expression;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
@@ -7,7 +11,6 @@ import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
-import symsolve.vector.SymSolveVector;
 
 public class NTOPT extends NT {
 
@@ -24,8 +27,22 @@ public class NTOPT extends NT {
 
         primitiveBranches++;
 
-        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-        SymSolveSolution solution = heapSolver.solve(vector);
+        // ========== cache check
+
+        PathCondition currentProgramPC = pcCG.getCurrentPC();
+        assert (currentProgramPC != null);
+        PathCondition repOKPC = heapCG.getCurrentRepOKPathCondition();
+        if (isConjuntionSAT(currentProgramPC.make_copy(), repOKPC.make_copy())) {
+            primitiveBranchingCacheHits++;
+            return nextInstruction;
+        }
+
+//        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+//        SymSolveSolution solution = heapSolver.solve(vector);
+        SymSolveSolution solution = heapCG.getCurrentSolution();
+
+        // ==========
+
         while (solution != null) {
             if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
                 break;
@@ -41,6 +58,22 @@ public class NTOPT extends NT {
 
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
                 heapCG, false);
+    }
+
+    boolean isConjuntionSAT(PathCondition pc1, PathCondition pc2) {
+        PathCondition conjuntion = pc1.make_copy();
+
+        Constraint current = pc2.header;
+        while (current != null) {
+            Expression left = current.getLeft();
+            Expression right = current.getRight();
+            Comparator comp = current.getComparator();
+            conjuntion._addDet(comp, left, right);
+
+            current = current.and;
+        }
+
+        return conjuntion.simplify();
     }
 
 }
