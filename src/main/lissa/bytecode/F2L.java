@@ -18,7 +18,7 @@
 package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.numeric.Comparator;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
@@ -42,24 +42,24 @@ public class F2L extends gov.nasa.jpf.jvm.bytecode.F2L {
 
             ChoiceGenerator<?> cg;
             if (!th.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGenerator(1); // only one choice
+                cg = new PCChoiceGeneratorLISSA(1); // only one choice
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
                 return this;
             } else { // this is what really returns results
                 cg = th.getVM().getSystemState().getChoiceGenerator();
-                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
             }
 
             // get the path condition from the
             // previous choice generator of the same type
 
             PathCondition pc;
-            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prev_cg == null)
                 pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
             else
-                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
             assert pc != null;
 
             StackFrame sf = th.getModifiableTopFrame();
@@ -74,11 +74,11 @@ public class F2L extends gov.nasa.jpf.jvm.bytecode.F2L {
             if (!pc.simplify()) { // not satisfiable
                 th.getVM().getSystemState().setIgnored(true);
             } else {
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
             }
 
             Instruction nextInstruction = getNext(th);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
         }
     }
 }

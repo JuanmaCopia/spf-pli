@@ -19,7 +19,7 @@ package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.vm.ChoiceGenerator;
@@ -60,17 +60,17 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
         boolean condition;
 
         if (!th.isFirstStepInsn()) { // first time around
-            cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
-            ((PCChoiceGenerator) cg).setOffset(this.position);
-            ((PCChoiceGenerator) cg).setMethodName(this.getMethodInfo().getFullName());
+            cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
+            ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
+            ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
             th.getVM().getSystemState().setNextChoiceGenerator(cg);
             return this;
         } else { // this is what really returns results
             cg = th.getVM().getSystemState().getChoiceGenerator();
-            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
             if (SymbolicInstructionFactory.collect_constraints) {
                 condition = v1 == 0; // i.e. false
-                ((PCChoiceGenerator) cg).select(condition ? 1 : 0); // YN: set the choice correctly
+                ((PCChoiceGeneratorLISSA) cg).select(condition ? 1 : 0); // YN: set the choice correctly
             } else {
                 condition = (Integer) cg.getNextChoice() == 0 ? false : true;
             }
@@ -79,22 +79,22 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
         super.execute(th); // pops v1, v2 and pushes r = v2 / v1;
 
         PathCondition pc;
-        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
         if (prev_cg == null)
             pc = new PathCondition();
         else
-            pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
 
         assert pc != null;
 
         if (condition) { // check div by zero
             pc._addDet(Comparator.EQ, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
 
                 Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "div by 0");
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -102,7 +102,7 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
         } else {
             pc._addDet(Comparator.NE, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
 
                 // set the result
                 RealExpression result;
@@ -115,7 +115,7 @@ public class FDIV extends gov.nasa.jpf.jvm.bytecode.FDIV {
                 sf.setOperandAttr(result);
 
                 Instruction nextInstruction = getNext(th);
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

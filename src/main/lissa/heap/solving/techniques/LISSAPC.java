@@ -1,6 +1,5 @@
 package lissa.heap.solving.techniques;
 
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
@@ -16,6 +15,7 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import lissa.heap.cg.RepOKCallCG;
 import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.CandidateTraversal;
@@ -60,7 +60,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGenerator cg) {
+            PCChoiceGeneratorLISSA cg) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
         if (symInputHeap == null)
             return nextInstruction;

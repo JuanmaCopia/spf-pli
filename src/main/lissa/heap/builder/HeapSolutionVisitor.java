@@ -5,7 +5,7 @@ import java.util.HashMap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -156,7 +156,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
             IntegerConstant constant = new IntegerConstant(value);
 
-            PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
+            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(env.getVM());
             if (currPCCG != null) {
                 PathCondition pc = currPCCG.getCurrentPC();
                 if (pc != null)

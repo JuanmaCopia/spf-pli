@@ -10,7 +10,7 @@ import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -37,7 +37,7 @@ import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 public class SymHeapHelper {
 
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
-            PCChoiceGenerator cg) {
+            PCChoiceGeneratorLISSA cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
         if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
             PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
@@ -120,7 +120,7 @@ public class SymHeapHelper {
             } else {
                 arrayAttr = new ArrayExpression(eiRef.toString(), typeClass.substring(2, typeClass.length() - 1));
             }
-            ti.getVM().getLastChoiceGeneratorOfType(PCChoiceGenerator.class).getCurrentPC().arrayExpressions
+            ti.getVM().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class).getCurrentPC().arrayExpressions
                     .put(eiRef.toString(), arrayAttr);
         }
 
@@ -158,14 +158,14 @@ public class SymHeapHelper {
         return PathCondition.getPC(vm);
     }
 
-    public static PCChoiceGenerator getCurrentPCChoiceGenerator(VM vm) {
+    public static PCChoiceGeneratorLISSA getCurrentPCChoiceGeneratorLISSA(VM vm) {
         ChoiceGenerator<?> cg = vm.getChoiceGenerator();
-        if (cg != null && !(cg instanceof PCChoiceGenerator)) {
-            cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+        if (cg != null && !(cg instanceof PCChoiceGeneratorLISSA)) {
+            cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
         }
 
-        if (cg instanceof PCChoiceGenerator) {
-            return ((PCChoiceGenerator) cg);
+        if (cg instanceof PCChoiceGeneratorLISSA) {
+            return ((PCChoiceGeneratorLISSA) cg);
         } else {
             return null;
         }
@@ -252,7 +252,7 @@ public class SymHeapHelper {
         }
     }
 
-//    
+//
 //    public boolean isStateMatching(SymbolicInputHeapVisitor visitor, int candidate) {
 //        HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
 //        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();

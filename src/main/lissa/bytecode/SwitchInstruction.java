@@ -3,16 +3,16 @@
  * Administrator of the National Aeronautics and Space Administration.
  * All rights reserved.
  *
- * Symbolic Pathfinder (jpf-symbc) is licensed under the Apache License, 
+ * Symbolic Pathfinder (jpf-symbc) is licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
- *        http://www.apache.org/licenses/LICENSE-2.0. 
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0.
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -40,7 +40,7 @@ package lissa.bytecode;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
@@ -49,7 +49,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 
 /**
  * common root class for LOOKUPSWITCH and TABLESWITCH insns
- * 
+ *
  * YN: fixed choice selection in symcrete support (Yannic Noller
  * <nolleryc@gmail.com>)
  */
@@ -71,14 +71,14 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
             ChoiceGenerator<?> cg;
 
             if (!ti.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : matches.length + 1);
-                ((PCChoiceGenerator) cg).setOffset(this.position);
-                ((PCChoiceGenerator) cg).setMethodName(this.getMethodInfo().getCompleteName());
+                cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : matches.length + 1);
+                ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
+                ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getCompleteName());
                 ti.getVM().getSystemState().setNextChoiceGenerator(cg);
                 return this;
             } else { // this is what really returns results
                 cg = ti.getVM().getSystemState().getChoiceGenerator();
-                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
             }
             int value = sf.pop();
             PathCondition pc;
@@ -87,12 +87,12 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
             // previous choice generator of the same type
 
             // TODO: could be optimized to not do this for each choice
-            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prev_cg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
 
             assert pc != null;
             int idx;
@@ -105,7 +105,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                         break;
                     }
                 }
-                ((PCChoiceGenerator) cg).select(idx); // YN: set the choice correctly
+                ((PCChoiceGeneratorLISSA) cg).select(idx); // YN: set the choice correctly
             } else {
                 idx = (Integer) cg.getNextChoice();
             }
@@ -116,7 +116,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                 if (!pc.simplify()) {// not satisfiable
                     ti.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
                 }
                 return mi.getInstructionAt(target);
             } else {
@@ -125,7 +125,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                 if (!pc.simplify()) {// not satisfiable
                     ti.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
                 }
                 return mi.getInstructionAt(targets[idx]);
             }

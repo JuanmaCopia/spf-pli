@@ -10,7 +10,7 @@ PACKAGE="heapsolving.binomialheap"
 CLASS_NAME="BinomialHeap"
 echo "===============================  Class: $CLASS_NAME  ================================="
 MINSCOPE=1
-MAXSCOPE=50
+MAXSCOPE=9
 
 
 METHOD="extractMinBugged"

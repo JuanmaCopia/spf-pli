@@ -19,7 +19,7 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
@@ -101,7 +101,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
             repOKCG = new RepOKCallCG(cgID, symInputHeap, currPCCG, solution);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
