@@ -20,12 +20,12 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.RepOKCallCG;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.cg.RepOKCallCG;
 import lissa.heap.solving.techniques.LISSAPC;
 import lissa.heap.solving.techniques.SolvingStrategy;
 

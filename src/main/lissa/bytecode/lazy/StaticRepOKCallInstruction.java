@@ -19,7 +19,6 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
@@ -31,9 +30,10 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.cg.RepOKCallCG;
 import symsolve.vector.SymSolveSolution;
 
 // need to fix names

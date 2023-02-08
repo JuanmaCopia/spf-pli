@@ -1,4 +1,4 @@
-package lissa.heap.cg;
+package lissa.choicegenerators;
 
 import java.util.HashMap;
 

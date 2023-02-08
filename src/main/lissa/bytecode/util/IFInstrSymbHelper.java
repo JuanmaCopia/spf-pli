@@ -25,13 +25,13 @@ import gov.nasa.jpf.jvm.bytecode.IfInstruction;
 import gov.nasa.jpf.jvm.bytecode.LCMP;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
-import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 public class IFInstrSymbHelper {

@@ -18,7 +18,6 @@
 package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.numeric.Comparator;
-import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
@@ -26,6 +25,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 /**

@@ -1,6 +1,5 @@
-package lissa.heap.cg;
+package lissa.choicegenerators;
 
-import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import lissa.LISSAShell;

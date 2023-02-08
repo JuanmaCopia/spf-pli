@@ -1,8 +1,8 @@
 package lissa.heap.solving.techniques;
 
-import lissa.heap.cg.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
 
