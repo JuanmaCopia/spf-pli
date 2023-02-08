@@ -26,7 +26,7 @@ import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.solving.techniques.LISSAPC;
+import lissa.heap.solving.techniques.NT;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
@@ -62,7 +62,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         if (objvRef == MJIEnv.NULL)
             throw new RuntimeException("## Error: null object");
 
-        ((LISSAPC) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+        ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
     }
 
     @MJI

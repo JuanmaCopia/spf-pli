@@ -23,7 +23,7 @@ import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class LISSAPC extends LISSA implements PCCheckStrategy {
+public class NT extends LISSA implements PCCheckStrategy {
 
     StaticRepOKCallInstruction repOKCallInstruction;
 
@@ -36,7 +36,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
     public int primitiveBranchingCacheHits = 0;
     public int primitiveBranches = 0;
 
-    public LISSAPC() {
+    public NT() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
     }
 

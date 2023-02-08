@@ -4,7 +4,7 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import lissa.LISSAShell;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.techniques.LISSAPC;
+import lissa.heap.solving.techniques.NT;
 import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
@@ -19,13 +19,13 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     PathCondition repOKPathCondition;
 
     SymbolicInputHeapLISSA symInputHeap;
-    LISSAPC strategy;
+    NT strategy;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGeneratorLISSA currPCCG,
             SymSolveSolution solution) {
         super(id);
         repOKExecutions = 0;
-        strategy = (LISSAPC) LISSAShell.solvingStrategy;
+        strategy = (NT) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         candidateHeapSolution = solution;
         if (currPCCG != null) {

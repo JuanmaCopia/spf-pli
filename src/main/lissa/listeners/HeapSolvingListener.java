@@ -8,7 +8,7 @@ import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
-import lissa.heap.solving.techniques.LISSAPC;
+import lissa.heap.solving.techniques.NT;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
@@ -89,10 +89,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
         if (heapSolvingStrategy instanceof LISSAM)
             System.out.println(" - Cache Hits:            " + cacheHits);
-        if (heapSolvingStrategy instanceof LISSAPC) {
+        if (heapSolvingStrategy instanceof NT) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
             System.out.println(" - PC invalid branches  : " + prunedBranchesDueToPC);
-            LISSAPC lissaPC = (LISSAPC) heapSolvingStrategy;
+            NT lissaPC = (NT) heapSolvingStrategy;
             System.out.println(" - Total branches seen  : " + lissaPC.primitiveBranches);
             System.out.println(" - branches cache hits  : " + lissaPC.primitiveBranchingCacheHits);
 
