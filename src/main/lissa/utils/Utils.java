@@ -145,13 +145,13 @@ public class Utils {
         long minutes = timeLeft / 60;
         long seconds = timeLeft % 60;
 
-        String min = prependZeroIfNecessary(minutes);
+        String min = Long.toString(minutes);
         String sec = prependZeroIfNecessary(seconds);
 
         if (hours == 0)
             return String.format("%s:%s", min, sec);
 
-        String h = prependZeroIfNecessary(hours);
+        String h = Long.toString(hours);
         return String.format("%s:%s:%s", h, min, sec);
     }
 
