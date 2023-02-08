@@ -1,7 +1,6 @@
 package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
@@ -18,6 +17,7 @@ import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.LISSAShell;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -96,12 +96,12 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             prevSymRefs = null;
             numSymRefs = 0;
 
-            prevHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+            prevHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
             // to check if this still works in the case of cascaded choices...
 
             if (prevHeapCG != null) {
                 // determine # of candidates for lazy initialization
-                SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG)
+                SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG)
                         .getCurrentSymInputHeap();
                 prevSymRefs = symInputHeap.getNodesOfType(typeClassInfo);
                 numSymRefs = prevSymRefs.length;
@@ -112,7 +112,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                 increment = 1; // only null
             }
 
-            thisHeapCG = new HeapChoiceGenerator(numSymRefs + increment); // +null,new
+            thisHeapCG = new HeapChoiceGeneratorLISSA(numSymRefs + increment); // +null,new
             ti.getVM().getSystemState().setNextChoiceGenerator(thisHeapCG);
             // ti.reExecuteInstruction();
             if (SymbolicInstructionFactory.debugMode)
@@ -124,10 +124,11 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
             frame.pop(); // Ok, now we can remove the object ref from the stack
 
-            thisHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+            thisHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
             assert (thisHeapCG != null
-                    && thisHeapCG instanceof HeapChoiceGenerator) : "expected HeapChoiceGenerator, got: " + thisHeapCG;
-            currentChoice = ((HeapChoiceGenerator) thisHeapCG).getNextChoice();
+                    && thisHeapCG instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: "
+                            + thisHeapCG;
+            currentChoice = ((HeapChoiceGeneratorLISSA) thisHeapCG).getNextChoice();
         }
 
         PathCondition pcHeap; // this pc contains only the constraints on the heap
@@ -139,14 +140,14 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         // where we set all its
         // fields to be symbolic
 
-        prevHeapCG = thisHeapCG.getPreviousChoiceGeneratorOfType(HeapChoiceGenerator.class);
+        prevHeapCG = thisHeapCG.getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
 
         if (prevHeapCG == null) {
             pcHeap = new PathCondition();
             symInputHeap = new SymbolicInputHeapLISSA();
         } else {
-            pcHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentPCheap();
-            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+            pcHeap = ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentPCheap();
+            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentSymInputHeap();
         }
 
         assert pcHeap != null;
@@ -202,8 +203,8 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
         frame.pushRef(daIndex);
 
-        ((HeapChoiceGenerator) thisHeapCG).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGenerator) thisHeapCG).setCurrentSymInputHeap(symInputHeap);
+        ((HeapChoiceGeneratorLISSA) thisHeapCG).setCurrentPCheap(pcHeap);
+        ((HeapChoiceGeneratorLISSA) thisHeapCG).setCurrentSymInputHeap(symInputHeap);
         if (SymbolicInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 

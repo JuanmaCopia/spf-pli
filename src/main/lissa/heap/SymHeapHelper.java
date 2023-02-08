@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
@@ -29,6 +28,7 @@ import gov.nasa.jpf.vm.ReferenceFieldInfo;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
@@ -140,7 +140,7 @@ public class SymHeapHelper {
     }
 
     public static SymbolicInputHeapLISSA getSymbolicInputHeap(VM vm) {
-        HeapChoiceGenerator heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+        HeapChoiceGeneratorLISSA heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
         if (heapCG != null)
             return (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         return null;

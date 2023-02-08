@@ -7,7 +7,7 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 
 public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
 
-    protected HashMap<Integer, PathCondition> repOKPCMap = new HashMap<>();
+    HashMap<Integer, PathCondition> repOKPCMap = new HashMap<>();
 
     public PCChoiceGeneratorLISSA(int size) {
         super(size);

@@ -1,7 +1,6 @@
 package lissa;
 
 import gov.nasa.jpf.annotation.MJI;
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.numeric.Comparator;
@@ -20,6 +19,7 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
@@ -77,7 +77,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new HeapChoiceGenerator(1); // new
+            cg = new HeapChoiceGeneratorLISSA(1); // new
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
             return; // not used anyways
@@ -85,11 +85,11 @@ public class JPF_lissa_SymHeap extends NativePeer {
         // else this is what really returns results
 
         cg = ss.getChoiceGenerator();
-        assert (cg instanceof HeapChoiceGenerator) : "expected HeapChoiceGenerator, got: " + cg;
+        assert (cg instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: " + cg;
 
         // see if there were more inputs added before
         ChoiceGenerator<?> prevHeapCG = cg.getPreviousChoiceGenerator();
-        while (!((prevHeapCG == null) || (prevHeapCG instanceof HeapChoiceGenerator))) {
+        while (!((prevHeapCG == null) || (prevHeapCG instanceof HeapChoiceGeneratorLISSA))) {
             prevHeapCG = prevHeapCG.getPreviousChoiceGenerator();
         }
 
@@ -100,8 +100,8 @@ public class JPF_lissa_SymHeap extends NativePeer {
             pcHeap = new PathCondition();
             symInputHeap = new SymbolicInputHeapLISSA();
         } else {
-            pcHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentPCheap();
-            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+            pcHeap = ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentPCheap();
+            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentSymInputHeap();
         }
 
         // set all the fields to be symbolic
@@ -130,8 +130,8 @@ public class JPF_lissa_SymHeap extends NativePeer {
         symRefInput.setRootHeapNode(rootHeapNode);
 
         pcHeap._addDet(Comparator.NE, newSymRef, new IntegerConstant(-1));
-        ((HeapChoiceGenerator) cg).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGenerator) cg).setCurrentSymInputHeap(symInputHeap);
+        ((HeapChoiceGeneratorLISSA) cg).setCurrentPCheap(pcHeap);
+        ((HeapChoiceGeneratorLISSA) cg).setCurrentSymInputHeap(symInputHeap);
 
         return;
     }

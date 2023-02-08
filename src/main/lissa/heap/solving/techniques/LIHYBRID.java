@@ -2,10 +2,10 @@ package lissa.heap.solving.techniques;
 
 import java.util.HashMap;
 
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveVector;
 
@@ -39,7 +39,7 @@ public class LIHYBRID extends LISSA {
     }
 
     private void checkPathValidity(VM vm, ThreadInfo terminatedThread) {
-        HeapChoiceGenerator heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+        HeapChoiceGeneratorLISSA heapCG = vm.getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         if (symInputHeap != null && !heapSolver.isSatisfiable(vector))
