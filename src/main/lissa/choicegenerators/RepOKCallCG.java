@@ -9,6 +9,7 @@ import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
+    HeapChoiceGeneratorLISSA curHeapCG;
     public PCChoiceGeneratorLISSA currPCCG;
     public PathCondition programPC;
 
@@ -22,12 +23,13 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     NT strategy;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGeneratorLISSA currPCCG,
-            SymSolveSolution solution) {
+            HeapChoiceGeneratorLISSA curHeapCG, SymSolveSolution solution) {
         super(id);
         repOKExecutions = 0;
         strategy = (NT) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         candidateHeapSolution = solution;
+        this.curHeapCG = curHeapCG;
         if (currPCCG != null) {
             this.currPCCG = currPCCG;
             programPC = currPCCG.getCurrentPC();
@@ -58,8 +60,10 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     public boolean allRepOKPathsReturnedFalse() {
         strategy.stopRepOKExecutionMode();
 
-        if (pathReturningTrueFound)
+        if (pathReturningTrueFound) {
+
             setDone();
+        }
 
         resetProgramPathCondition();
 

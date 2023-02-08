@@ -100,12 +100,13 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     @Override
     public Instruction execute(ThreadInfo ti) {
+        assert (curHeapCG != null);
         RepOKCallCG repOKCG;
         String cgID = "repOKCG";
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, solution);
+            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, curHeapCG, solution);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }
