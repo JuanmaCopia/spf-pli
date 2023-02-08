@@ -10,6 +10,7 @@ import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
@@ -39,8 +40,8 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
-
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {

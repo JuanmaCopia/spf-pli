@@ -22,9 +22,9 @@ public class LIHYBRID extends LISSA {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
         resetGetFieldCount();
-        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+        SymSolveVector vector = canonicalizer.createVector((SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap());
         if (!heapSolver.isSatisfiableAutoHybridRepOK(vector)) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return currentInstruction;

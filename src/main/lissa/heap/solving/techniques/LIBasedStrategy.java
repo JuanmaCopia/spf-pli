@@ -2,7 +2,7 @@ package lissa.heap.solving.techniques;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
@@ -13,7 +13,7 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     public abstract Integer getBoundForClass(String fieldSimpleClassName);
 
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
         return nextInstruction;
     }
 

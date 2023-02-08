@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.canonicalizer.Canonicalizer;
 import lissa.heap.solving.solver.SymSolveHeapSolver;
@@ -21,8 +22,8 @@ public class LISSA extends LIBasedStrategy {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
-        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
+        SymSolveVector vector = canonicalizer.createVector((SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap());
         if (!heapSolver.isSatisfiable(vector)) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return currentInstruction;

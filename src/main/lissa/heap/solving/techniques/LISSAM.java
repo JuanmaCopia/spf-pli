@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveVector;
 
@@ -15,9 +16,9 @@ public class LISSAM extends LISSA {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, SymbolicInputHeapLISSA symInputHeap) {
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
 
-        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+        SymSolveVector vector = canonicalizer.createVector((SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap());
         String query = createIsSatQueryString(vector);
 
         Boolean isSAT = isSatCache.get(query);

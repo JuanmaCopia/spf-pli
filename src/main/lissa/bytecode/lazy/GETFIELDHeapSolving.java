@@ -166,7 +166,8 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             daIndex = candidateNode.getIndex();
             // ================ Modification Begin ================ //
             symRefInput.addReferenceField(objRef, fi, daIndex);
-            // ================ Modification End ================ //
+            // ================ Modification End ================ //SymSolveVector vector =
+            // canonicalizer.createVector(
         } else if (currentChoice == numSymRefs) { // null object
             pcHeap._addDet(Comparator.EQ, (SymbolicInteger) attr, new IntegerConstant(-1));
             daIndex = MJIEnv.NULL;
@@ -203,14 +204,15 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
         frame.pushRef(daIndex);
 
-        ((HeapChoiceGeneratorLISSA) thisHeapCG).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGeneratorLISSA) thisHeapCG).setCurrentSymInputHeap(symInputHeap);
+        HeapChoiceGeneratorLISSA heapCG = (HeapChoiceGeneratorLISSA) thisHeapCG;
+        heapCG.setCurrentPCheap(pcHeap);
+        heapCG.setCurrentSymInputHeap(symInputHeap);
         if (SymbolicInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 
         // ================ Modification Begin ================ //
 
-        return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), symInputHeap);
+        return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), heapCG);
 
     }
 }
