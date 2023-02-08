@@ -17,6 +17,8 @@ public class SolvingStrategy {
             return new LISSAM();
         case NT:
             return new NT();
+        case NTOPT:
+            return new NTOPT();
         case LISSANOSB:
             configParser.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
             return new LISSA();

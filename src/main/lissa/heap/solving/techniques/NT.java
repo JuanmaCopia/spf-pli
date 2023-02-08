@@ -26,14 +26,11 @@ import symsolve.vector.SymSolveVector;
 public class NT extends LISSA implements PCCheckStrategy {
 
     StaticRepOKCallInstruction repOKCallInstruction;
-
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
     int prunedBranches = 0;
     long repokExecTime = 0;
     long repOKStartTime = 0;
-
-    public int primitiveBranchingCacheHits = 0;
     public int primitiveBranches = 0;
 
     public NT() {

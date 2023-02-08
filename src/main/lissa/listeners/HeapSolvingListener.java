@@ -9,6 +9,7 @@ import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
 import lissa.heap.solving.techniques.NT;
+import lissa.heap.solving.techniques.NTOPT;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
@@ -92,9 +93,11 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (heapSolvingStrategy instanceof NT) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
             System.out.println(" - PC invalid branches  : " + prunedBranchesDueToPC);
-            NT lissaPC = (NT) heapSolvingStrategy;
-            System.out.println(" - Total branches seen  : " + lissaPC.primitiveBranches);
-            System.out.println(" - branches cache hits  : " + lissaPC.primitiveBranchingCacheHits);
+            NT nt = (NT) heapSolvingStrategy;
+            System.out.println(" - Total branches seen  : " + nt.primitiveBranches);
+            if (heapSolvingStrategy instanceof NTOPT) {
+                System.out.println(" - branches cache hits  : " + ((NTOPT) nt).primitiveBranchingCacheHits);
+            }
 
         }
         System.out.println("");
