@@ -61,7 +61,8 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         strategy.stopRepOKExecutionMode();
 
         if (pathReturningTrueFound) {
-
+            curHeapCG.setCurrentSolution(candidateHeapSolution);
+            curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
             setDone();
         }
 
