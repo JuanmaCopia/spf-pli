@@ -38,7 +38,9 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     public boolean hasNextSolution() {
         assert (candidateHeapSolution != null);
-        assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, symInputHeap));
+        if (currPCCG != null)
+            assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, currPCCG.getCurrentPC(),
+                    symInputHeap));
         if (repOKExecutions > 0) {
             candidateHeapSolution = strategy.getNextSolution(ti, candidateHeapSolution, symInputHeap);
             if (candidateHeapSolution == null) {
@@ -121,6 +123,10 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     public void setRepOKPathCondition(PathCondition pc) {
         repOKPathCondition = pc;
+    }
+
+    public PCChoiceGeneratorLISSA getPCChoiceGenerator() {
+        return currPCCG;
     }
 
 }

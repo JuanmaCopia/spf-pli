@@ -156,7 +156,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
             IntegerConstant constant = new IntegerConstant(value);
 
-            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(env.getVM());
+            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
             if (currPCCG != null) {
                 PathCondition pc = currPCCG.getCurrentPC();
                 if (pc != null)

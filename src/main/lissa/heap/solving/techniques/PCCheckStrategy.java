@@ -1,5 +1,6 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.PCChoiceGeneratorLISSA;
@@ -26,7 +27,7 @@ public interface PCCheckStrategy {
     SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap);
 
-    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
+    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution, PathCondition pc,
             SymbolicInputHeapLISSA symInputHeap);
 
 }

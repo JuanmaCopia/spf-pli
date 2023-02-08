@@ -19,7 +19,6 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -30,9 +29,9 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
-import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
 
@@ -46,17 +45,22 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     SymbolicInputHeapLISSA symInputHeap;
     SymSolveSolution solution;
 
+    PCChoiceGeneratorLISSA curPCCG;
+    HeapChoiceGeneratorLISSA curHeapCG;
+
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
     public void initialize(Instruction current, Instruction next, SymbolicInputHeapLISSA symInputHeap,
-            SymSolveSolution solution) {
+            SymSolveSolution solution, PCChoiceGeneratorLISSA curPCCG, HeapChoiceGeneratorLISSA curHeapCG) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;
         this.symInputHeap = symInputHeap;
         this.solution = solution;
+        this.curPCCG = curPCCG;
+        this.curHeapCG = curHeapCG;
     }
 
     protected ClassInfo getClassInfo() {
@@ -101,8 +105,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
-            repOKCG = new RepOKCallCG(cgID, symInputHeap, currPCCG, solution);
+            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, solution);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }
@@ -115,10 +118,8 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             ti.getVM().getSystemState().setIgnored(true);
         }
 
-        if (repOKCG.currPCCG != null) {
-            PathCondition currentPC = SymHeapHelper.getPathCondition(ti.getVM());
-            assert (repOKCG.programPC.equals(currentPC));
-        }
+        if (curPCCG != null)
+            assert (repOKCG.programPC.equals(curPCCG.getCurrentPC()));
 
         return next;
     }

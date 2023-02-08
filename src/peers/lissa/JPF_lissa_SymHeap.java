@@ -37,7 +37,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
 
         if (repOKResult) {
             RepOKCallCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
-            repOKChoiceGenerator.setRepOKPathCondition(SymHeapHelper.getPathCondition(env.getVM()));
+            repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
             repOKChoiceGenerator.pathReturningTrueFound();
         }
         ss.setIgnored(true);

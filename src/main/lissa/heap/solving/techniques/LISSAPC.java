@@ -25,6 +25,8 @@ import symsolve.vector.SymSolveVector;
 
 public class LISSAPC extends LISSA implements PCCheckStrategy {
 
+    StaticRepOKCallInstruction repOKCallInstruction;
+
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
     int prunedBranches = 0;
@@ -44,11 +46,15 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
-        while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
-                break;
+
+        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        if (pcCG != null) {
+            while (solution != null) {
+                if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+                    break;
+                }
+                solution = heapSolver.getNextSolution(solution);
             }
-            solution = heapSolver.getNextSolution(solution);
         }
 
         if (solution == null) {
@@ -56,22 +62,25 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
+                heapCG);
     }
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGeneratorLISSA cg) {
-        SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(ti.getVM());
-        if (symInputHeap == null)
+            PCChoiceGeneratorLISSA pcCG) {
+        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
+        if (heapCG == null)
             return nextInstruction;
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
+        assert (symInputHeap != null);
 
         primitiveBranches++;
 
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
+            if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
                 break;
             }
             solution = heapSolver.getNextSolution(solution);
@@ -83,15 +92,14 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
+                heapCG);
     }
 
     @Override
-    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution,
+    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution, PathCondition pc,
             SymbolicInputHeapLISSA symInputHeap) {
-        PathCondition pc = PathCondition.getPC(ti.getVM());
-        if (pc == null)
-            return true;
+        assert (pc != null);
 
         CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc, symInputHeap, candidateSolution);
         CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
@@ -104,17 +112,31 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-        while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, symInputHeap)) {
-                return solution;
+
+        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        if (pcCG != null) {
+            while (solution != null) {
+                if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+                    return solution;
+                }
+                solution = heapSolver.getNextSolution(solution);
             }
-            solution = heapSolver.getNextSolution(solution);
         }
         return null;
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution) {
+    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
+            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGeneratorLISSA pcCG,
+            HeapChoiceGeneratorLISSA heapCG) {
+        if (repOKCallInstruction == null)
+            initializeRepOKCallInstruction(symInputHeap);
+
+        repOKCallInstruction.initialize(current, next, symInputHeap, solution, pcCG, heapCG);
+        pushArguments(ti, null, null);
+        return repOKCallInstruction;
+    }
+
+    private void initializeRepOKCallInstruction(SymbolicInputHeapLISSA symInputHeap) {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
         ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
@@ -124,12 +146,7 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         String mthName = repokMI.getName();
         String signature = repokMI.getSignature();
 
-        StaticRepOKCallInstruction realInvoke = new StaticRepOKCallInstruction(clsName, mthName, signature);
-        realInvoke.initialize(currentInstruction, nextInstruction, symInputHeap, solution);
-
-        pushArguments(ti, null, null);
-
-        return realInvoke;
+        repOKCallInstruction = new StaticRepOKCallInstruction(clsName, mthName, signature);
     }
 
     void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
@@ -181,7 +198,9 @@ public class LISSAPC extends LISSA implements PCCheckStrategy {
         RepOKCallCG repOKCG = env.getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
-        assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, symInputHeap));
+        PCChoiceGeneratorLISSA pcCG = repOKCG.getPCChoiceGenerator();
+        if (pcCG != null)
+            assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, pcCG.getCurrentPC(), symInputHeap));
 
         builder.buildSolution(env, objRef, symInputHeap, solution);
     }
