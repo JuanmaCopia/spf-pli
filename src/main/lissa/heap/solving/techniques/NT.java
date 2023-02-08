@@ -60,7 +60,7 @@ public class NT extends LISSA implements PCCheckStrategy {
         }
 
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG);
+                heapCG, true);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class NT extends LISSA implements PCCheckStrategy {
         }
 
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG);
+                heapCG, false);
     }
 
     @Override
@@ -124,11 +124,11 @@ public class NT extends LISSA implements PCCheckStrategy {
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGeneratorLISSA pcCG,
-            HeapChoiceGeneratorLISSA heapCG) {
+            HeapChoiceGeneratorLISSA heapCG, boolean isLazyStep) {
         if (repOKCallInstruction == null)
             initializeRepOKCallInstruction(symInputHeap);
 
-        repOKCallInstruction.initialize(current, next, symInputHeap, solution, pcCG, heapCG);
+        repOKCallInstruction.initialize(current, next, symInputHeap, solution, pcCG, heapCG, isLazyStep);
         pushArguments(ti, null, null);
         return repOKCallInstruction;
     }

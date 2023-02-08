@@ -22,14 +22,17 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     SymbolicInputHeapLISSA symInputHeap;
     NT strategy;
 
+    boolean isLazyStep;
+
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGeneratorLISSA currPCCG,
-            HeapChoiceGeneratorLISSA curHeapCG, SymSolveSolution solution) {
+            HeapChoiceGeneratorLISSA curHeapCG, SymSolveSolution solution, boolean isLazyStep) {
         super(id);
         repOKExecutions = 0;
         strategy = (NT) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         candidateHeapSolution = solution;
         this.curHeapCG = curHeapCG;
+        this.isLazyStep = isLazyStep;
         if (currPCCG != null) {
             this.currPCCG = currPCCG;
             programPC = currPCCG.getCurrentPC();
@@ -61,9 +64,12 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         strategy.stopRepOKExecutionMode();
 
         if (pathReturningTrueFound) {
-            curHeapCG.setCurrentSolution(candidateHeapSolution);
-            curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
             setDone();
+            if (isLazyStep) {
+                // Cache Solution and repOK Path Condition
+                curHeapCG.setCurrentSolution(candidateHeapSolution);
+                curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
+            }
         }
 
         resetProgramPathCondition();

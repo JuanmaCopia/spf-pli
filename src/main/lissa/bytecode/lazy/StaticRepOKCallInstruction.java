@@ -48,12 +48,15 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     PCChoiceGeneratorLISSA curPCCG;
     HeapChoiceGeneratorLISSA curHeapCG;
 
+    boolean isLazyStep;
+
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
     public void initialize(Instruction current, Instruction next, SymbolicInputHeapLISSA symInputHeap,
-            SymSolveSolution solution, PCChoiceGeneratorLISSA curPCCG, HeapChoiceGeneratorLISSA curHeapCG) {
+            SymSolveSolution solution, PCChoiceGeneratorLISSA curPCCG, HeapChoiceGeneratorLISSA curHeapCG,
+            boolean isLazyStep) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;
@@ -61,6 +64,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         this.solution = solution;
         this.curPCCG = curPCCG;
         this.curHeapCG = curHeapCG;
+        this.isLazyStep = isLazyStep;
     }
 
     protected ClassInfo getClassInfo() {
@@ -106,7 +110,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, curHeapCG, solution);
+            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, curHeapCG, solution, isLazyStep);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }

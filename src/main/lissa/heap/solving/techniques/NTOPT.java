@@ -40,7 +40,7 @@ public class NTOPT extends NT {
         }
 
         return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG);
+                heapCG, false);
     }
 
 }
