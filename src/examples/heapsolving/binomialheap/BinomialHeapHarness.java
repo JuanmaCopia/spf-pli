@@ -13,7 +13,7 @@ public class BinomialHeapHarness {
         structure = (BinomialHeap) SymHeap.makeSymbolicRefThis("binomialheap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 

@@ -337,7 +337,25 @@ public class BinomialHeap {
      *         invariants
      */
 
-    public boolean repOK() {
+    public boolean repOKStructure() {
+        if (Nodes == null)
+            return true;
+        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
+        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+            /** checks that the list has no cycle */
+            if (!visited.add(current))
+                return false;
+            if (!current.isTree(visited, null))
+                return false;
+        }
+
+        /** checks that the degrees of all trees are binomial */
+        if (!checkDegrees())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
         if (Nodes == null)
             return size == 0;
         Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
@@ -389,29 +407,10 @@ public class BinomialHeap {
         return true;
     }
 
-    public boolean repOKStructure() {
-        if (Nodes == null)
-            return true;
-        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            /** checks that the list has no cycle */
-            if (!visited.add(current))
-                return false;
-            if (!current.isTree(visited, null))
-                return false;
-        }
-
-        /** checks that the degrees of all trees are binomial */
-        if (!checkDegrees())
-            return false;
-        return true;
-    }
-
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
-        // System.out.println("\nExecuting repok!");
-        SymHeap.handleRepOKResult(toBuild.repOK());
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finBinomialHeap(int nodesNum) {
