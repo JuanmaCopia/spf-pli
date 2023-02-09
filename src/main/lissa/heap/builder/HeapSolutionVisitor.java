@@ -24,7 +24,7 @@ import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
 import korat.utils.IntListAI;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -156,7 +156,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
             IntegerConstant constant = new IntegerConstant(value);
 
-            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
+            PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
             if (currPCCG != null) {
                 PathCondition pc = currPCCG.getCurrentPC();
                 if (pc != null)

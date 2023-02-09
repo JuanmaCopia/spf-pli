@@ -58,7 +58,7 @@ import gov.nasa.jpf.vm.MethodInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
@@ -134,7 +134,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("equals")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -144,7 +144,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("equalsIgnoreCase")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -154,7 +154,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("endsWith")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -164,7 +164,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("startsWith")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -174,7 +174,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("contains")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -193,7 +193,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("compareTo")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(-1, 1);
+                    cg = new PCChoiceGenerator(-1, 1);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -230,7 +230,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("parseInt")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -240,7 +240,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("parseFloat")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -250,7 +250,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("parseLong")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -260,7 +260,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("parseDouble")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -270,7 +270,7 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("parseBoolean")) {
                 ChoiceGenerator<?> cg;
                 if (!th.isFirstStepInsn()) { // first time around
-                    cg = new PCChoiceGeneratorLISSA(2);
+                    cg = new PCChoiceGenerator(2);
                     th.getVM().setNextChoiceGenerator(cg);
                     return invInst;
                 } else {
@@ -325,7 +325,7 @@ public class SymbolicStringHandler {
 
             ChoiceGenerator<?> cg = th.getVM().getChoiceGenerator();
             cg = th.getVM().getChoiceGenerator();
-            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
 
             int comparisonResult = (Integer) cg.getNextChoice();
 
@@ -340,14 +340,14 @@ public class SymbolicStringHandler {
             // previous choice generator of the same type
 
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null) {
                 pc = new PathCondition();
             } else {
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
             }
 
             assert pc != null;
@@ -370,8 +370,8 @@ public class SymbolicStringHandler {
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
                     // pc.solve();
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
-                    // System.out.println(((PCChoiceGeneratorLISSA) cg).getCurrentPC());
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                    // System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
                 }
             } else if (comparisonResult == 0) {
                 if (sym_v1 != null) {
@@ -391,7 +391,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                 }
             } else if (comparisonResult == 1) {
                 if (sym_v1 != null) {
@@ -411,7 +411,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                 }
             }
 
@@ -934,7 +934,7 @@ public class SymbolicStringHandler {
             boolean conditionValue;
 
             cg = th.getVM().getChoiceGenerator();
-            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
             // System.out.println("conditionValue: " + conditionValue);
@@ -948,14 +948,14 @@ public class SymbolicStringHandler {
             // previous choice generator of the same type
 
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null) {
                 pc = new PathCondition();
             } else {
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
             }
 
             assert pc != null;
@@ -978,8 +978,8 @@ public class SymbolicStringHandler {
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
                     // pc.solve();
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
-                    // System.out.println(((PCChoiceGeneratorLISSA) cg).getCurrentPC());
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                    // System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
                 }
             } else {
                 if (sym_v1 != null) {
@@ -999,7 +999,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                 }
             }
 
@@ -1326,7 +1326,7 @@ public class SymbolicStringHandler {
                 if (!(argTypes[0].equals("int"))) { // converting String to Integer
                     ChoiceGenerator<?> cg;
                     if (!th.isFirstStepInsn()) { // first time around
-                        cg = new PCChoiceGeneratorLISSA(2);
+                        cg = new PCChoiceGenerator(2);
                         th.getVM().setNextChoiceGenerator(cg);
                         return invInst;
                     } else {
@@ -1339,7 +1339,7 @@ public class SymbolicStringHandler {
                 if (!(argTypes[0].equals("float"))) { // converting String to Float
                     ChoiceGenerator<?> cg;
                     if (!th.isFirstStepInsn()) { // first time around
-                        cg = new PCChoiceGeneratorLISSA(2);
+                        cg = new PCChoiceGenerator(2);
                         th.getVM().setNextChoiceGenerator(cg);
                         return invInst;
                     } else {
@@ -1352,7 +1352,7 @@ public class SymbolicStringHandler {
                 if (!(argTypes[0].equals("long"))) { // converting String to Long
                     ChoiceGenerator<?> cg;
                     if (!th.isFirstStepInsn()) { // first time around
-                        cg = new PCChoiceGeneratorLISSA(2);
+                        cg = new PCChoiceGenerator(2);
                         th.getVM().setNextChoiceGenerator(cg);
                         return invInst;
                     } else {
@@ -1365,7 +1365,7 @@ public class SymbolicStringHandler {
                 if (!(argTypes[0].equals("double"))) { // converting String to Double
                     ChoiceGenerator<?> cg;
                     if (!th.isFirstStepInsn()) { // first time around
-                        cg = new PCChoiceGeneratorLISSA(2);
+                        cg = new PCChoiceGenerator(2);
                         th.getVM().getSystemState().setNextChoiceGenerator(cg);
                         return invInst;
                     } else {
@@ -1378,7 +1378,7 @@ public class SymbolicStringHandler {
                 if (!(argTypes[0].equals("boolean"))) { // converting String to Boolean
                     ChoiceGenerator<?> cg;
                     if (!th.isFirstStepInsn()) { // first time around
-                        cg = new PCChoiceGeneratorLISSA(2);
+                        cg = new PCChoiceGenerator(2);
                         th.getVM().setNextChoiceGenerator(cg);
                         return invInst;
                     } else {
@@ -1413,21 +1413,21 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
                 sf.pop();
                 PathCondition pc;
 
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1436,7 +1436,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         result = ((StringExpression) sym_v3)._IvalueOf();
                         sf = th.getModifiableTopFrame();
                         int objRef = getNewObjRef(invInst, th); /* dummy Long Object */
@@ -1476,21 +1476,21 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
                 sf.pop();
                 PathCondition pc;
 
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1499,7 +1499,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         result = ((StringExpression) sym_v3)._IvalueOf();
                         sf = th.getModifiableTopFrame();
                         int objRef = getNewObjRef(invInst, th); /* dummy Boolean Object */
@@ -1540,21 +1540,21 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
                 sf.pop();
                 PathCondition pc;
 
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1563,7 +1563,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         result = ((StringExpression) sym_v3)._IvalueOf();
                         sf = th.getModifiableTopFrame();
                         int objRef = getNewObjRef(invInst, th); /* dummy Integer Object */
@@ -1596,20 +1596,20 @@ public class SymbolicStringHandler {
             boolean conditionValue;
             cg = th.getVM().getChoiceGenerator();
 
-            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
             sf.pop();
             PathCondition pc;
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
 
@@ -1618,7 +1618,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                     result = ((StringExpression) sym_v3)._IvalueOf();
                     sf.push(0, false); /* Result is don't care and an int */
                     sf = th.getModifiableTopFrame();
@@ -1650,20 +1650,20 @@ public class SymbolicStringHandler {
             boolean conditionValue;
             cg = th.getVM().getChoiceGenerator();
 
-            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
             sf.pop();
             PathCondition pc;
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
             if (conditionValue) {
@@ -1671,7 +1671,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                     result = ((StringExpression) sym_v3)._RvalueOf();
                     sf.push(0, false); /* Result is don't care and a float */
                     sf = th.getModifiableTopFrame();
@@ -1710,20 +1710,20 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
                 sf.pop();
                 PathCondition pc;
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
                 if (conditionValue) {
@@ -1731,7 +1731,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         result = ((StringExpression) sym_v3)._RvalueOf();
                         int objRef = getNewObjRef(invInst, th); /* dummy Float Object */
                         sf.push(objRef, true);
@@ -1772,20 +1772,20 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
 
                 sf.pop();
                 PathCondition pc;
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1794,7 +1794,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         result = ((StringExpression) sym_v3)._RvalueOf();
                         int objRef = getNewObjRef(invInst, th); /* dummy Double Object */
                         sf.push(objRef, true);
@@ -1831,20 +1831,20 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
                 sf.pop();
                 PathCondition pc;
 
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1853,7 +1853,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         RealExpression sym_v2 = new SpecialRealExpression(sym_v1);
                         sf.pushLong((long) 0); /* Result is don't care and 0 */
                         // sf = th.getModifiableTopFrame(); ??
@@ -1887,20 +1887,20 @@ public class SymbolicStringHandler {
                 boolean conditionValue;
                 cg = th.getVM().getChoiceGenerator();
 
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
                 conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
                 sf.pop();
                 PathCondition pc;
 
                 ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+                while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                     prev_cg = prev_cg.getPreviousChoiceGenerator();
                 }
 
                 if (prev_cg == null)
                     pc = new PathCondition();
                 else
-                    pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                    pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
                 assert pc != null;
 
@@ -1909,7 +1909,7 @@ public class SymbolicStringHandler {
                     if (!pc.simplify()) {// not satisfiable
                         th.getVM().getSystemState().setIgnored(true);
                     } else {
-                        ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                        ((PCChoiceGenerator) cg).setCurrentPC(pc);
                         IntegerExpression sym_v2 = new SpecialIntegerExpression(sym_v1);
                         sf.pushLong((long) 0); /* result is don't care */
                         // sf = th.getModifiableTopFrame(); ??
@@ -1939,20 +1939,20 @@ public class SymbolicStringHandler {
             boolean conditionValue;
             cg = th.getVM().getChoiceGenerator();
 
-            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             conditionValue = (Integer) cg.getNextChoice() == 0 ? false : true;
             sf.pop();
             PathCondition pc;
 
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
 
@@ -1961,7 +1961,7 @@ public class SymbolicStringHandler {
                 if (!pc.simplify()) {// not satisfiable
                     th.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                     IntegerExpression sym_v2 = new SpecialIntegerExpression(sym_v1);
                     sf.push(0, false); /* result is don't care and 0 */
                     sf = th.getModifiableTopFrame();

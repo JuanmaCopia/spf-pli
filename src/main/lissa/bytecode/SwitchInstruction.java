@@ -45,7 +45,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 
 /**
  * common root class for LOOKUPSWITCH and TABLESWITCH insns
@@ -71,14 +71,14 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
             ChoiceGenerator<?> cg;
 
             if (!ti.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : matches.length + 1);
-                ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
-                ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getCompleteName());
+                cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : matches.length + 1);
+                ((PCChoiceGenerator) cg).setOffset(this.position);
+                ((PCChoiceGenerator) cg).setMethodName(this.getMethodInfo().getCompleteName());
                 ti.getVM().getSystemState().setNextChoiceGenerator(cg);
                 return this;
             } else { // this is what really returns results
                 cg = ti.getVM().getSystemState().getChoiceGenerator();
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             }
             int value = sf.pop();
             PathCondition pc;
@@ -87,12 +87,12 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
             // previous choice generator of the same type
 
             // TODO: could be optimized to not do this for each choice
-            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
 
             if (prev_cg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
 
             assert pc != null;
             int idx;
@@ -105,7 +105,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                         break;
                     }
                 }
-                ((PCChoiceGeneratorLISSA) cg).select(idx); // YN: set the choice correctly
+                ((PCChoiceGenerator) cg).select(idx); // YN: set the choice correctly
             } else {
                 idx = (Integer) cg.getNextChoice();
             }
@@ -116,7 +116,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                 if (!pc.simplify()) {// not satisfiable
                     ti.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                 }
                 return mi.getInstructionAt(target);
             } else {
@@ -125,7 +125,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
                 if (!pc.simplify()) {// not satisfiable
                     ti.getVM().getSystemState().setIgnored(true);
                 } else {
-                    ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
+                    ((PCChoiceGenerator) cg).setCurrentPC(pc);
                 }
                 return mi.getInstructionAt(targets[idx]);
             }

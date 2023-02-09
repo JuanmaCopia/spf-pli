@@ -30,7 +30,7 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
@@ -45,7 +45,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     SymbolicInputHeapLISSA symInputHeap;
     SymSolveSolution solution;
 
-    PCChoiceGeneratorLISSA curPCCG;
+    PCChoiceGenerator curPCCG;
     HeapChoiceGeneratorLISSA curHeapCG;
 
     boolean isLazyStep;
@@ -55,7 +55,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     }
 
     public void initialize(Instruction current, Instruction next, SymbolicInputHeapLISSA symInputHeap,
-            SymSolveSolution solution, PCChoiceGeneratorLISSA curPCCG, HeapChoiceGeneratorLISSA curHeapCG,
+            SymSolveSolution solution, PCChoiceGenerator curPCCG, HeapChoiceGeneratorLISSA curHeapCG,
             boolean isLazyStep) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());

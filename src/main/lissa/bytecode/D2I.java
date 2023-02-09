@@ -18,6 +18,7 @@
 package lissa.bytecode;
 
 import gov.nasa.jpf.symbc.numeric.Comparator;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.RealExpression;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
@@ -25,7 +26,6 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 /**
@@ -48,24 +48,24 @@ public class D2I extends gov.nasa.jpf.jvm.bytecode.D2I {
 
             ChoiceGenerator<?> cg;
             if (!th.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGeneratorLISSA(1); // only one choice
+                cg = new PCChoiceGenerator(1); // only one choice
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
                 return this;
             } else { // this is what really returns results
                 cg = th.getVM().getSystemState().getChoiceGenerator();
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             }
 
             // get the path condition from the
             // previous choice generator of the same type
 
             PathCondition pc;
-            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
 
             if (prev_cg == null)
                 pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
             assert pc != null;
             StackFrame sf = th.getModifiableTopFrame();
 
@@ -82,13 +82,13 @@ public class D2I extends gov.nasa.jpf.jvm.bytecode.D2I {
                 th.getVM().getSystemState().setIgnored(true);
             } else {
                 // pc.solve();
-                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
-                // System.out.println(((PCChoiceGeneratorLISSA) cg).getCurrentPC());
+                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                // System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
             }
 
             // System.out.println("Execute D2I: " + sf.getLongOperandAttr());
             Instruction nextInstruction = getNext(th);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
 
         }
     }

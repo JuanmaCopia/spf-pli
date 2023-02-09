@@ -7,7 +7,7 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
@@ -18,7 +18,7 @@ public class NTOPT extends NT {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGeneratorLISSA pcCG) {
+            PCChoiceGenerator pcCG) {
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         if (heapCG == null)
             return nextInstruction;
@@ -37,8 +37,6 @@ public class NTOPT extends NT {
             return nextInstruction;
         }
 
-//        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-//        SymSolveSolution solution = heapSolver.solve(vector);
         SymSolveSolution solution = heapCG.getCurrentSolution();
 
         // ==========

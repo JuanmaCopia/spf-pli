@@ -25,7 +25,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.heap.SymHeapHelper;
 
 /**
@@ -45,12 +45,12 @@ public class L2F extends gov.nasa.jpf.jvm.bytecode.L2F {
 
             ChoiceGenerator<?> cg;
             if (!th.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGeneratorLISSA(1); // only one choice
+                cg = new PCChoiceGenerator(1); // only one choice
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
                 return this;
             } else { // this is what really returns results
                 cg = th.getVM().getSystemState().getChoiceGenerator();
-                assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
+                assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
             }
 
             // get the path condition from the
@@ -58,14 +58,14 @@ public class L2F extends gov.nasa.jpf.jvm.bytecode.L2F {
 
             PathCondition pc;
             ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGenerator();
-            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGeneratorLISSA))) {
+            while (!((prev_cg == null) || (prev_cg instanceof PCChoiceGenerator))) {
                 prev_cg = prev_cg.getPreviousChoiceGenerator();
             }
 
             if (prev_cg == null)
                 pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
             else
-                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
             assert pc != null;
             StackFrame sf = th.getModifiableTopFrame();
             long v = sf.popLong();
@@ -80,13 +80,13 @@ public class L2F extends gov.nasa.jpf.jvm.bytecode.L2F {
                 th.getVM().getSystemState().setIgnored(true);
             } else {
                 // pc.solve();
-                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
-                // System.out.println(((PCChoiceGeneratorLISSA) cg).getCurrentPC());
+                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                // System.out.println(((PCChoiceGenerator) cg).getCurrentPC());
             }
 
             // System.out.println("Execute L2F: " + sf.getLongOperandAttr());
             Instruction nextInstruction = getNext(th);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
         }
     }
 

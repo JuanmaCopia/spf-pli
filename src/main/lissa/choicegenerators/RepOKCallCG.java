@@ -1,5 +1,6 @@
 package lissa.choicegenerators;
 
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import lissa.LISSAShell;
@@ -10,7 +11,7 @@ import symsolve.vector.SymSolveSolution;
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     HeapChoiceGeneratorLISSA curHeapCG;
-    public PCChoiceGeneratorLISSA currPCCG;
+    public PCChoiceGenerator currPCCG;
     public PathCondition programPC;
 
     boolean pathReturningTrueFound = false;
@@ -24,7 +25,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     boolean isLazyStep;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGeneratorLISSA currPCCG,
+    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGenerator currPCCG,
             HeapChoiceGeneratorLISSA curHeapCG, SymSolveSolution solution, boolean isLazyStep) {
         super(id);
         repOKExecutions = 0;
@@ -140,7 +141,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         repOKPathCondition = pc;
     }
 
-    public PCChoiceGeneratorLISSA getPCChoiceGenerator() {
+    public PCChoiceGenerator getPCChoiceGenerator() {
         return currPCCG;
     }
 
