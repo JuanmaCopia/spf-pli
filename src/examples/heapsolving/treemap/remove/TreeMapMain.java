@@ -19,12 +19,6 @@ public class TreeMapMain {
         TreeMap structure = TreeMapHarness.getStructure();
         if (structure != null) {
             structure.remove(key);
-//            try {
-//                // Call to method under analysis
-//                structure.remove(key);
-//            } catch (Exception e) {
-//            }
-
             SymHeap.countPath();
         }
     }

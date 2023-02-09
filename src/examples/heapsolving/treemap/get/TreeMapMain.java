@@ -7,10 +7,9 @@
 
 package heapsolving.treemap.get;
 
-import lissa.SymHeap;
-
 import heapsolving.treemap.TreeMap;
 import heapsolving.treemap.TreeMapHarness;
+import lissa.SymHeap;
 
 public class TreeMapMain {
 
@@ -19,11 +18,7 @@ public class TreeMapMain {
 
         TreeMap structure = TreeMapHarness.getStructure();
         if (structure != null) {
-            try {
-                structure.get(key); // Call to method under analysis
-            } catch (Exception e) {
-            }
-
+            structure.get(key);
             SymHeap.countPath();
         }
     }
