@@ -48,6 +48,19 @@ TERMINATION OF THIS AGREEMENT. */
 
 package lissa.bytecode;
 
+import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
+import gov.nasa.jpf.symbc.mixednumstrg.SpecialIntegerExpression;
+import gov.nasa.jpf.symbc.mixednumstrg.SpecialRealExpression;
+import gov.nasa.jpf.symbc.numeric.Expression;
+import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.IntegerExpression;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.RealExpression;
+import gov.nasa.jpf.symbc.string.StringComparator;
+import gov.nasa.jpf.symbc.string.StringConstant;
+import gov.nasa.jpf.symbc.string.StringExpression;
+import gov.nasa.jpf.symbc.string.SymbolicStringBuilder;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
@@ -55,21 +68,12 @@ import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MethodInfo;
+import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.SystemState;
+import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
-import gov.nasa.jpf.vm.StackFrame;
-import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.symbc.mixednumstrg.SpecialRealExpression;
-import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import gov.nasa.jpf.symbc.numeric.Expression;
-import gov.nasa.jpf.symbc.numeric.IntegerExpression;
-import gov.nasa.jpf.symbc.numeric.RealExpression;
-import gov.nasa.jpf.symbc.numeric.PathCondition;
-import gov.nasa.jpf.symbc.string.*;
-import gov.nasa.jpf.symbc.mixednumstrg.*;
+import lissa.heap.SymHeapHelper;
 
 public class SymbolicStringHandler {
     static int handlerStep = 0;
@@ -139,7 +143,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleObjectEquals(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("equalsIgnoreCase")) {
                 ChoiceGenerator<?> cg;
@@ -149,7 +155,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleEqualsIgnoreCase(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("endsWith")) {
                 ChoiceGenerator<?> cg;
@@ -159,7 +167,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleEndsWith(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("startsWith")) {
                 ChoiceGenerator<?> cg;
@@ -169,7 +179,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleStartsWith(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("contains")) {
                 ChoiceGenerator<?> cg;
@@ -179,7 +191,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleContains(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("append")) {
                 Instruction handled = handleAppend(invInst, th);
@@ -198,7 +212,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleCompareTo(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("lastIndexOf")) {
                 handleLastIndexOf(invInst, th);
@@ -225,7 +241,8 @@ public class SymbolicStringHandler {
             } else if (shortName.equals("valueOf")) {
                 Instruction handled = handleValueOf(invInst, th);
                 if (handled != null) {
-                    return handled;
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, handled,
+                            (PCChoiceGenerator) th.getVM().getChoiceGenerator());
                 }
             } else if (shortName.equals("parseInt")) {
                 ChoiceGenerator<?> cg;
@@ -235,7 +252,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleParseInt(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("parseFloat")) {
                 ChoiceGenerator<?> cg;
@@ -245,7 +264,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleParseFloat(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("parseLong")) {
                 ChoiceGenerator<?> cg;
@@ -255,7 +276,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleParseLong(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("parseDouble")) {
                 ChoiceGenerator<?> cg;
@@ -265,7 +288,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleParseDouble(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("parseBoolean")) {
                 ChoiceGenerator<?> cg;
@@ -275,7 +300,9 @@ public class SymbolicStringHandler {
                     return invInst;
                 } else {
                     handleParseBoolean(invInst, th);
-                    return invInst.getNext(th);
+                    cg = th.getVM().getChoiceGenerator();
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, invInst, invInst.getNext(th),
+                            (PCChoiceGenerator) cg);
                 }
             } else if (shortName.equals("toString")) {
                 Instruction handled = handletoString(invInst, th);
