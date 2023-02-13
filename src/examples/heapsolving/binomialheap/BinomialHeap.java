@@ -21,7 +21,6 @@ package heapsolving.binomialheap;
 import java.util.HashSet;
 import java.util.Set;
 
-import gov.nasa.jpf.symbc.Debug;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -411,7 +410,7 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
-        // System.out.println("\n===============  BinomialHeap Builded  ===============");
+        // System.out.println("\n=============== BinomialHeap Builded ===============");
         // System.out.println(toBuild.bhToString());
         // Debug.printPC(" ===== PATH CONDITION ==== \n");
         SymHeap.handleRepOKResult(toBuild.repOKComplete());
