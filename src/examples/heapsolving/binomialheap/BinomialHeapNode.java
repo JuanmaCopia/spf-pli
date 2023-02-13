@@ -129,4 +129,20 @@ public class BinomialHeapNode {
         return true;
     }
 
+    public String btToString(String indent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%skey == %d \n", indent, key));
+        sb.append(String.format("%sdegree == %d \n", indent, degree));
+        if (parent == null)
+            sb.append(indent + "parent == null \n");
+        else
+            sb.append(indent + "parent != null \n");
+        int childNum = 0;
+        for (BinomialHeapNode current = this.child; current != null; current = current.sibling) {
+            sb.append(String.format("%s ----- ChildNode%d  -----\n", indent, childNum));
+            sb.append(current.btToString(indent + "  "));
+        }
+        return sb.toString();
+    }
+
 }

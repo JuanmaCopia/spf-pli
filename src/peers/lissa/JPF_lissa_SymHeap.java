@@ -6,6 +6,7 @@ import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -30,6 +31,23 @@ import lissa.heap.solving.techniques.NT;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
+
+    @MJI
+    public static void initializePathCondition(MJIEnv env, int objRef) {
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+        ChoiceGenerator<?> cg;
+
+        if (!ti.isFirstStepInsn()) {
+            cg = new PCChoiceGenerator(1);
+            ss.setNextChoiceGenerator(cg);
+            env.repeatInvocation();
+        } else {
+            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            curCg.getNextChoice();
+            curCg.setCurrentPC(new PathCondition());
+        }
+    }
 
     @MJI
     public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {

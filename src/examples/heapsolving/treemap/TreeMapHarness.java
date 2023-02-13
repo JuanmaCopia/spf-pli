@@ -9,6 +9,7 @@ public class TreeMapHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         TreeMap structure = new TreeMap();
         structure = (TreeMap) SymHeap.makeSymbolicRefThis("treemap_0", structure);
 

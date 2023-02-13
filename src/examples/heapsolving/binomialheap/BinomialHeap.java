@@ -21,6 +21,7 @@ package heapsolving.binomialheap;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.nasa.jpf.symbc.Debug;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -410,6 +411,9 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
+        // System.out.println("\n===============  BinomialHeap Builded  ===============");
+        // System.out.println(toBuild.bhToString());
+        // Debug.printPC(" ===== PATH CONDITION ==== \n");
         SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
@@ -433,6 +437,24 @@ public class BinomialHeap {
         f.set(BinomialHeapNode.class, "sibling", nodes);
         f.set(BinomialHeapNode.class, "child", nodes);
         return f;
+    }
+
+    public String bhToString() {
+        if (Nodes == null)
+            return "Nodes -> null";
+
+        StringBuilder sb = new StringBuilder();
+        String indent = "  ";
+
+        sb.append(String.format("size == %d \n", size));
+
+        int btnum = 0;
+        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+            sb.append(String.format(" ---------- BinomialTree%d  ----------\n", btnum));
+            sb.append(current.btToString(indent));
+        }
+
+        return sb.toString();
     }
 
 }

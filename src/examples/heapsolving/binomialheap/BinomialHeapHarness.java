@@ -9,6 +9,7 @@ public class BinomialHeapHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         BinomialHeap structure = new BinomialHeap();
         structure = (BinomialHeap) SymHeap.makeSymbolicRefThis("binomialheap_0", structure);
 
