@@ -109,22 +109,22 @@ public class BinomialHeapNode {
         return (degree == 0);
     }
 
-//    public boolean checkDegreeShape(int degree) {
-//        if (degree < 0)
-//            return false;
-//        if (degree == 0) {
-//            return child == null;
-//        }
-//
-//        for (BinomialHeapNode current = this.child; current != null; current = current.sibling) {
-//            degree--;
-//            if (degree < 0)
-//                return false;
-//            if (!current.checkDegreeShape(degree))
-//                return false;
-//        }
-//        return (degree == 0);
-//    }
+    public boolean checkDegreeShape(int degree) {
+        if (degree < 0)
+            return false;
+        if (degree == 0) {
+            return child == null;
+        }
+
+        for (BinomialHeapNode current = this.child; current != null; current = current.sibling) {
+            degree--;
+            if (degree < 0)
+                return false;
+            if (!current.checkDegreeShape(degree))
+                return false;
+        }
+        return (degree == 0);
+    }
 
     public boolean isHeapified() {
         for (BinomialHeapNode current = this.child; current != null; current = current.sibling) {

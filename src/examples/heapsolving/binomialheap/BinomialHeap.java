@@ -350,8 +350,9 @@ public class BinomialHeap {
         }
 
         /** checks that the degrees of all trees are binomial */
-        if (!checkDegrees())
+        if (!checkDegreesShape(visited.size()))
             return false;
+
         return true;
     }
 
@@ -370,8 +371,11 @@ public class BinomialHeap {
         if (visited.size() != size)
             return false;
 
+        if (!checkDegreesShape(visited.size()))
+            return false;
+
         /** checks that the degrees of all trees are binomial */
-        if (!checkDegrees())
+        if (!checkDegrees(visited.size()))
             return false;
         /** checks that keys are heapified */
         if (!checkHeapified())
@@ -379,7 +383,7 @@ public class BinomialHeap {
         return true;
     }
 
-    boolean checkDegrees() {
+    boolean checkDegrees(int size) {
         int degree_ = size;
         int rightDegree = 0;
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
@@ -397,23 +401,23 @@ public class BinomialHeap {
         return (degree_ == 0);
     }
 
-//    boolean checkDegreesShape() {
-//        int degree_ = size;
-//        int rightDegree = 0;
-//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-//            if (degree_ == 0)
-//                return false;
-//            while ((degree_ & 1) == 0) {
-//                rightDegree++;
-//                degree_ /= 2;
-//            }
-//            if (!current.checkDegreeShape(rightDegree))
-//                return false;
-//            rightDegree++;
-//            degree_ /= 2;
-//        }
-//        return (degree_ == 0);
-//    }
+    boolean checkDegreesShape(int size) {
+        int degree_ = size;
+        int rightDegree = 0;
+        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+            if (degree_ == 0)
+                return false;
+            while ((degree_ & 1) == 0) {
+                rightDegree++;
+                degree_ /= 2;
+            }
+            if (!current.checkDegreeShape(rightDegree))
+                return false;
+            rightDegree++;
+            degree_ /= 2;
+        }
+        return (degree_ == 0);
+    }
 
     boolean checkHeapified() {
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
