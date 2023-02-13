@@ -5,6 +5,7 @@ import java.util.HashMap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -24,7 +25,6 @@ import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
 import korat.utils.IntListAI;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -157,14 +157,14 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
             IntegerConstant constant = new IntegerConstant(value);
 
             PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
-            if (currPCCG != null) {
-                PathCondition pc = currPCCG.getCurrentPC();
-                if (pc != null)
-                    pc._addDet(Comparator.EQ, symbolicVar, constant);
+            assert (currPCCG != null);
 
-                assert (pc.simplify());
-                currPCCG.setCurrentPC(pc);
-            }
+            PathCondition pc = currPCCG.getCurrentPC();
+            assert (pc != null);
+            pc._addDet(Comparator.EQ, symbolicVar, constant);
+
+            assert (pc.simplify());
+            currPCCG.setCurrentPC(pc);
         } else {
             Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
             assert (symbolicVar != null);

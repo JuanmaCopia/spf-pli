@@ -19,6 +19,7 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -30,7 +31,6 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
@@ -65,6 +65,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         this.curPCCG = curPCCG;
         this.curHeapCG = curHeapCG;
         this.isLazyStep = isLazyStep;
+        assert (curPCCG != null);
     }
 
     protected ClassInfo getClassInfo() {
@@ -123,8 +124,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
             ti.getVM().getSystemState().setIgnored(true);
         }
 
-        if (curPCCG != null)
-            assert (repOKCG.programPC.equals(curPCCG.getCurrentPC()));
+        assert (repOKCG.programPC.equals(curPCCG.getCurrentPC()));
 
         return next;
     }

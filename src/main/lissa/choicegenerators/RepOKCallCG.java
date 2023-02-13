@@ -34,19 +34,14 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         candidateHeapSolution = solution;
         this.curHeapCG = curHeapCG;
         this.isLazyStep = isLazyStep;
-        if (currPCCG != null) {
-            this.currPCCG = currPCCG;
-            programPC = currPCCG.getCurrentPC();
-        } else {
-            this.programPC = new PathCondition();
-        }
+        this.currPCCG = currPCCG;
+        programPC = currPCCG.getCurrentPC();
     }
 
     public boolean hasNextSolution() {
         assert (candidateHeapSolution != null);
-        if (currPCCG != null)
-            assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, currPCCG.getCurrentPC(),
-                    symInputHeap));
+        assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, currPCCG.getCurrentPC(),
+                symInputHeap));
         if (repOKExecutions > 0) {
             candidateHeapSolution = strategy.getNextSolution(ti, candidateHeapSolution, symInputHeap);
             if (candidateHeapSolution == null) {
@@ -81,8 +76,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
     }
 
     private void resetProgramPathCondition() {
-        if (currPCCG != null)
-            currPCCG.setCurrentPC(programPC);
+        currPCCG.setCurrentPC(programPC);
     }
 
     public void pathReturningTrueFound() {
