@@ -389,8 +389,6 @@ public class BinomialHeap {
                 rightDegree++;
                 degree_ /= 2;
             }
-            if (current.degree != rightDegree)
-                return false;
             if (!current.checkDegree(rightDegree))
                 return false;
             rightDegree++;
@@ -398,6 +396,24 @@ public class BinomialHeap {
         }
         return (degree_ == 0);
     }
+
+//    boolean checkDegreesShape() {
+//        int degree_ = size;
+//        int rightDegree = 0;
+//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+//            if (degree_ == 0)
+//                return false;
+//            while ((degree_ & 1) == 0) {
+//                rightDegree++;
+//                degree_ /= 2;
+//            }
+//            if (!current.checkDegreeShape(rightDegree))
+//                return false;
+//            rightDegree++;
+//            degree_ /= 2;
+//        }
+//        return (degree_ == 0);
+//    }
 
     boolean checkHeapified() {
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
