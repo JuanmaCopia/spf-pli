@@ -19,6 +19,7 @@
 package heapsolving.binomialheap;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import korat.finitization.IFinitization;
@@ -341,18 +342,10 @@ public class BinomialHeap {
         if (Nodes == null)
             return true;
         Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            /** checks that the list has no cycle */
-            if (!visited.add(current))
-                return false;
-            if (!current.isTree(visited, null))
-                return false;
-        }
-
-        /** checks that the degrees of all trees are binomial */
+        if (!isTreeWithParentReferencesStructure(visited))
+            return false;
         if (!checkDegreesShape(visited.size()))
             return false;
-
         return true;
     }
 
@@ -360,20 +353,14 @@ public class BinomialHeap {
         if (Nodes == null)
             return size == 0;
         Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            /** checks that the list has no cycle */
-            if (!visited.add(current))
-                return false;
-            if (!current.isTree(visited, null))
-                return false;
-        }
-        /** checks that the total size is consistent */
-        if (visited.size() != size)
+        if (!isTreeWithParentReferencesStructure(visited))
             return false;
-
         if (!checkDegreesShape(visited.size()))
             return false;
 
+        /** checks that the total size is consistent */
+        if (visited.size() != size)
+            return false;
         /** checks that the degrees of all trees are binomial */
         if (!checkDegrees(visited.size()))
             return false;
@@ -383,22 +370,35 @@ public class BinomialHeap {
         return true;
     }
 
-    boolean checkDegrees(int size) {
-        int degree_ = size;
-        int rightDegree = 0;
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            if (degree_ == 0)
-                return false;
-            while ((degree_ & 1) == 0) {
-                rightDegree++;
-                degree_ /= 2;
+    public boolean isTreeWithParentReferencesStructure(Set<BinomialHeapNode> visited) {
+        if (Nodes.parent != null)
+            return false;
+        LinkedList<BinomialHeapNode> worklist = new LinkedList<>();
+        visited.add(Nodes);
+        worklist.add(Nodes);
+
+        while (!worklist.isEmpty()) {
+            BinomialHeapNode current = worklist.removeFirst();
+
+            BinomialHeapNode sibling = current.sibling;
+            if (sibling != null) {
+                if (!visited.add(sibling))
+                    return false;
+                if (sibling.parent != current.parent)
+                    return false;
+                worklist.add(sibling);
             }
-            if (!current.checkDegree(rightDegree))
-                return false;
-            rightDegree++;
-            degree_ /= 2;
+
+            BinomialHeapNode child = current.child;
+            if (child != null) {
+                if (!visited.add(child))
+                    return false;
+                if (child.parent != current)
+                    return false;
+                worklist.add(child);
+            }
         }
-        return (degree_ == 0);
+        return true;
     }
 
     boolean checkDegreesShape(int size) {
@@ -419,6 +419,24 @@ public class BinomialHeap {
         return (degree_ == 0);
     }
 
+    boolean checkDegrees(int size) {
+        int degree_ = size;
+        int rightDegree = 0;
+        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+            if (degree_ == 0)
+                return false;
+            while ((degree_ & 1) == 0) {
+                rightDegree++;
+                degree_ /= 2;
+            }
+            if (!current.checkDegree(rightDegree))
+                return false;
+            rightDegree++;
+            degree_ /= 2;
+        }
+        return (degree_ == 0);
+    }
+
     boolean checkHeapified() {
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
             if (!current.isHeapified())
@@ -430,51 +448,83 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
-        // System.out.println("\n=============== BinomialHeap Builded ===============");
-        // System.out.println(toBuild.bhToString());
-        // Debug.printPC(" ===== PATH CONDITION ==== \n");
         SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
-    public static IFinitization finBinomialHeap(int nodesNum) {
+    public static IFinitization finBinomialHeap(int size) {
         IFinitization f = FinitizationFactory.create(BinomialHeap.class);
-        IObjSet nodes = f.createObjSet(BinomialHeapNode.class, nodesNum, true);
-
-        // Calculate Max degree
-        Double degree = Math.sqrt(nodesNum);
-        int maxDegree;
-        if (degree % 1 == 0.0)
-            maxDegree = degree.intValue();
-        else
-            maxDegree = degree.intValue() + 1;
+        IObjSet nodes = f.createObjSet(BinomialHeapNode.class, size, true);
 
         f.set(BinomialHeap.class, "Nodes", nodes);
-        f.set(BinomialHeap.class, "size", f.createIntSet(0, nodesNum));
-        f.set(BinomialHeapNode.class, "key", f.createIntSet(0, nodesNum - 1));
-        f.set(BinomialHeapNode.class, "degree", f.createIntSet(0, maxDegree));
+        f.set(BinomialHeap.class, "size", f.createIntSet(0, size));
+        f.set(BinomialHeapNode.class, "key", f.createIntSet(0, size - 1));
+        f.set(BinomialHeapNode.class, "degree", f.createIntSet(0, size));
         f.set(BinomialHeapNode.class, "parent", nodes);
         f.set(BinomialHeapNode.class, "sibling", nodes);
         f.set(BinomialHeapNode.class, "child", nodes);
         return f;
     }
 
-    public String bhToString() {
-        if (Nodes == null)
-            return "Nodes -> null";
+//    public String bhToString() {
+//        if (Nodes == null)
+//            return "Nodes -> null";
+//
+//        StringBuilder sb = new StringBuilder();
+//        String indent = "  ";
+//
+//        sb.append(String.format("size == %d \n", size));
+//
+//        int btnum = 0;
+//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+//            sb.append(String.format(" ---------- BinomialTree%d  ----------\n", btnum));
+//            sb.append(current.btToString(indent));
+//        }
+//
+//        return sb.toString();
+//    }
 
-        StringBuilder sb = new StringBuilder();
-        String indent = "  ";
+//    public boolean oldRepOKComplete() {
+//        if (Nodes == null)
+//            return size == 0;
+//        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
+//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+//            /** checks that the list has no cycle */
+//            if (!visited.add(current))
+//                return false;
+//            if (!current.isTree(visited, null))
+//                return false;
+//        }
+//        /** checks that the total size is consistent */
+//        if (visited.size() != size)
+//            return false;
+//
+//        /** checks that the degrees of all trees are binomial */
+//        if (!checkDegrees())
+//            return false;
+//        /** checks that keys are heapified */
+//        if (!checkHeapified())
+//            return false;
+//        return true;
+//    }
 
-        sb.append(String.format("size == %d \n", size));
 
-        int btnum = 0;
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            sb.append(String.format(" ---------- BinomialTree%d  ----------\n", btnum));
-            sb.append(current.btToString(indent));
-        }
-
-        return sb.toString();
-    }
+//    public boolean OldRepOKStructure() {
+//        if (Nodes == null)
+//            return true;
+//        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
+//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+//            /** checks that the list has no cycle */
+//            if (!visited.add(current))
+//                return false;
+//            if (!current.isTree(visited, null))
+//                return false;
+//        }
+//
+//        /** checks that the degrees of all trees are binomial */
+//        if (!checkDegrees())
+//            return false;
+//        return true;
+//    }
 
 }
 // end of class BinomialHeap

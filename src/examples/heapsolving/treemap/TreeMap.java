@@ -662,12 +662,13 @@ public class TreeMap {
     public boolean isBinTreeWithParentReferencesStructure() {
         if (root == null)
             return true;
+        if (root.parent != null)
+            return false;
+
         Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
-        if (root.parent != null)
-            return false;
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
@@ -694,12 +695,13 @@ public class TreeMap {
     public boolean isBinTreeWithParentReferences() {
         if (root == null)
             return size == 0;
+        if (root.parent != null)
+            return false;
+
         Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
-        if (root.parent != null)
-            return false;
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
