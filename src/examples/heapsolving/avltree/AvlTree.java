@@ -377,36 +377,32 @@ public class AvlTree {
 //    }
 
     public boolean repOKStructure() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isBalanced(root, new Height()))
-                return false;
-        }
+        if (!isBinTreeWithParentReferences())
+            return false;
+        if (!isBalanced(root, new Height()))
+            return false;
         return true;
     }
 
     public boolean repOKSEOnly() {
-        if (root != null) {
-            if (!isSorted())
-                return false;
-        }
+        if (!isSorted())
+            return false;
         return true;
     }
 
     public boolean repOKComplete() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isBalanced(root, new Height()))
-                return false;
-            if (!isSorted())
-                return false;
-        }
+        if (!isBinTreeWithParentReferences())
+            return false;
+        if (!isBalanced(root, new Height()))
+            return false;
+        if (!isSorted())
+            return false;
         return true;
     }
 
     public boolean isBinTreeWithParentReferences() {
+        if (root == null)
+            return true;
         Set<AvlNode> visited = new HashSet<AvlNode>();
         LinkedList<AvlNode> worklist = new LinkedList<AvlNode>();
         visited.add(root);
@@ -495,6 +491,8 @@ public class AvlTree {
     }
 
     private boolean isSorted() {
+        if (root == null)
+            return true;
         return isSorted(root, null, null);
     }
 
