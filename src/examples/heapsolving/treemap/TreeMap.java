@@ -638,67 +638,39 @@ public class TreeMap {
     }
 
     public boolean repOKStructure() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferencesStructure())
-                return false;
-            if (!isWellColored())
-                return false;
-        }
+        if (root == null)
+            return true;
+
+        Set<Entry> visited = new HashSet<Entry>();
+        if (!isBinTreeWithParentReferences(visited))
+            return false;
+        if (!isWellColored())
+            return false;
+
         return true;
     }
 
     public boolean repOKComplete() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isWellColored())
-                return false;
-            if (!isSorted())
-                return false;
-        }
-        return true;
-    }
-
-    public boolean isBinTreeWithParentReferencesStructure() {
-        if (root == null)
-            return true;
-        if (root.parent != null)
-            return false;
-
-        Set<Entry> visited = new HashSet<Entry>();
-        LinkedList<Entry> worklist = new LinkedList<Entry>();
-        visited.add(root);
-        worklist.add(root);
-
-        while (!worklist.isEmpty()) {
-            Entry node = worklist.removeFirst();
-            Entry left = node.left;
-            if (left != null) {
-                if (!visited.add(left))
-                    return false;
-                if (left.parent != node)
-                    return false;
-                worklist.add(left);
-            }
-            Entry right = node.right;
-            if (right != null) {
-                if (!visited.add(right))
-                    return false;
-                if (right.parent != node)
-                    return false;
-                worklist.add(right);
-            }
-        }
-        return true;
-    }
-
-    public boolean isBinTreeWithParentReferences() {
         if (root == null)
             return size == 0;
+
+        Set<Entry> visited = new HashSet<Entry>();
+        if (!isBinTreeWithParentReferences(visited))
+            return false;
+        if (visited.size() != size)
+            return false;
+        if (!isWellColored())
+            return false;
+        if (!isSorted())
+            return false;
+
+        return true;
+    }
+
+    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
         if (root.parent != null)
             return false;
 
-        Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
@@ -722,7 +694,7 @@ public class TreeMap {
                 worklist.add(right);
             }
         }
-        return visited.size() == size;
+        return true;
     }
 
     public boolean isWellColored() {
