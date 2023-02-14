@@ -1,8 +1,13 @@
-package heapsolving.avl;
+package heapsolving.avltree;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 // AvlTree class
 //
@@ -24,7 +29,7 @@ import java.util.Set;
 /**
  * Implements an AVL tree. Note that all "matching" is based on the compareTo
  * method.
- * 
+ *
  * @author Mark Allen Weiss
  */
 public class AvlTree {
@@ -37,7 +42,7 @@ public class AvlTree {
 
     /**
      * Insert into the tree; duplicates are ignored.
-     * 
+     *
      * @param x the item to insert.
      */
     public void insert(int x) {
@@ -46,7 +51,7 @@ public class AvlTree {
 
     /**
      * Remove from the tree. Nothing is done if x is not found.
-     * 
+     *
      * @param x the item to remove.
      */
     public void remove(int x) {
@@ -55,7 +60,7 @@ public class AvlTree {
 
     /**
      * Internal method to remove from a subtree.
-     * 
+     *
      * @param x the item to remove.
      * @param t the node that roots the subtree.
      * @return the new root of the subtree.
@@ -79,7 +84,7 @@ public class AvlTree {
 
     /**
      * Find the smallest item in the tree.
-     * 
+     *
      * @return smallest item or null if empty.
      */
     public int findMin() {
@@ -90,7 +95,7 @@ public class AvlTree {
 
     /**
      * Find the largest item in the tree.
-     * 
+     *
      * @return the largest item of null if empty.
      */
     public int findMax() {
@@ -101,7 +106,7 @@ public class AvlTree {
 
     /**
      * Find an item in the tree.
-     * 
+     *
      * @param x the item to search for.
      * @return true if x is found.
      */
@@ -118,7 +123,7 @@ public class AvlTree {
 
     /**
      * Test if the tree is logically empty.
-     * 
+     *
      * @return true if empty, false otherwise.
      */
     public boolean isEmpty() {
@@ -177,7 +182,7 @@ public class AvlTree {
 
     /**
      * Internal method to insert into a subtree.
-     * 
+     *
      * @param x the item to insert.
      * @param t the node that roots the subtree.
      * @return the new root of the subtree.
@@ -197,7 +202,7 @@ public class AvlTree {
 
     /**
      * Internal method to find the smallest item in a subtree.
-     * 
+     *
      * @param t the node that roots the tree.
      * @return node containing the smallest item.
      */
@@ -212,7 +217,7 @@ public class AvlTree {
 
     /**
      * Internal method to find the largest item in a subtree.
-     * 
+     *
      * @param t the node that roots the tree.
      * @return node containing the largest item.
      */
@@ -227,7 +232,7 @@ public class AvlTree {
 
     /**
      * Internal method to find an item in a subtree.
-     * 
+     *
      * @param x is item to search for.
      * @param t the node that roots the tree.
      * @return true if x is found in subtree.
@@ -248,7 +253,7 @@ public class AvlTree {
 
     /**
      * Internal method to print a subtree in sorted order.
-     * 
+     *
      * @param t the node that roots the tree.
      */
     private void printTree(AvlNode t) {
@@ -377,7 +382,14 @@ public class AvlTree {
 
         if (!isBinTreeWithParentReferences())
             return false;
-        if (!isBalancedShape(root, new Height()))
+        if (!isBalanced(root, new Height()))
+            return false;
+
+        return true;
+    }
+
+    public boolean repOKSEOnly() {
+        if (!isSorted())
             return false;
 
         return true;
@@ -388,8 +400,6 @@ public class AvlTree {
             return true;
 
         if (!isBinTreeWithParentReferences())
-            return false;
-        if (!isBalancedShape(root, new Height()))
             return false;
         if (!isBalanced(root, new Height()))
             return false;
@@ -427,31 +437,31 @@ public class AvlTree {
         int height = -1;
     }
 
-    public boolean isBalancedShape(AvlNode root, Height height) {
-        if (root == null)
-            return true;
-
-        Height leftHeight = new Height();
-        Height rightHeight = new Height();
-
-        if (!isBalancedShape(root.left, leftHeight))
-            return false;
-        int leftH = leftHeight.height;
-
-        if (!isBalancedShape(root.right, rightHeight))
-            return false;
-        int rightH = rightHeight.height;
-
-        int absoluteSum = leftH - rightH;
-        if (absoluteSum < 0)
-            absoluteSum = absoluteSum + -1;
-
-        if (absoluteSum > 1)
-            return false;
-
-        height.height = (leftH > rightH ? leftH : rightH) + 1;
-        return true;
-    }
+//    public boolean isBalancedShape(AvlNode root, Height height) {
+//        if (root == null)
+//            return true;
+//
+//        Height leftHeight = new Height();
+//        Height rightHeight = new Height();
+//
+//        if (!isBalancedShape(root.left, leftHeight))
+//            return false;
+//        int leftH = leftHeight.height;
+//
+//        if (!isBalancedShape(root.right, rightHeight))
+//            return false;
+//        int rightH = rightHeight.height;
+//
+//        int absoluteSum = leftH - rightH;
+//        if (absoluteSum < 0)
+//            absoluteSum = absoluteSum + -1;
+//
+//        if (absoluteSum > 1)
+//            return false;
+//
+//        height.height = (leftH > rightH ? leftH : rightH) + 1;
+//        return true;
+//    }
 
     public boolean isBalanced(AvlNode root, Height height) {
         if (root == null)
@@ -463,20 +473,20 @@ public class AvlTree {
         if (!isBalanced(root.left, leftHeight))
             return false;
         int leftH = leftHeight.height;
-        if (root.left.height != leftH)
+        if (root.left != null && root.left.height != leftH)
             return false;
 
         if (!isBalanced(root.right, rightHeight))
             return false;
         int rightH = rightHeight.height;
-        if (root.right.height != rightH)
+        if (root.right != null && root.right.height != rightH)
             return false;
 
         int absoluteSum = leftH - rightH;
         if (absoluteSum < 0)
             absoluteSum = absoluteSum + -1;
 
-        if (absoluteSum > 1)
+        if (absoluteSum > ALLOWED_IMBALANCE)
             return false;
 
         int rootH = (leftH > rightH ? leftH : rightH) + 1;
@@ -502,6 +512,23 @@ public class AvlTree {
             if (!isSorted(n.right, n.element, max))
                 return false;
         return true;
+    }
+
+    public static void runRepOK() {
+        AvlTree toBuild = new AvlTree();
+        toBuild = (AvlTree) SymHeap.buildHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
+    }
+
+    public static IFinitization finAvlTree(int size) {
+        IFinitization f = FinitizationFactory.create(AvlTree.class);
+        IObjSet nodes = f.createObjSet(AvlNode.class, size, true);
+        f.set(AvlTree.class, "root", nodes);
+        f.set(AvlNode.class, "element", f.createIntSet(0, size - 1));
+        f.set(AvlNode.class, "left", nodes);
+        f.set(AvlNode.class, "right", nodes);
+        f.set(AvlNode.class, "height", f.createIntSet(0, size));
+        return f;
     }
 
 }

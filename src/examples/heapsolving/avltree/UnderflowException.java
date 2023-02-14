@@ -1,4 +1,4 @@
-package heapsolving.avl;
+package heapsolving.avltree;
 
 /**
  * Exception class for access in empty containers such as stacks, queues, and
