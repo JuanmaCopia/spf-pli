@@ -377,35 +377,32 @@ public class AvlTree {
 //    }
 
     public boolean repOKStructure() {
-        if (root == null)
-            return true;
-
-        if (!isBinTreeWithParentReferences())
-            return false;
-        if (!isBalanced(root, new Height()))
-            return false;
-
+        if (root != null) {
+            if (!isBinTreeWithParentReferences())
+                return false;
+            if (!isBalanced(root, new Height()))
+                return false;
+        }
         return true;
     }
 
     public boolean repOKSEOnly() {
-        if (!isSorted())
-            return false;
-
+        if (root != null) {
+            if (!isSorted())
+                return false;
+        }
         return true;
     }
 
     public boolean repOKComplete() {
-        if (root == null)
-            return true;
-
-        if (!isBinTreeWithParentReferences())
-            return false;
-        if (!isBalanced(root, new Height()))
-            return false;
-        if (!isSorted())
-            return false;
-
+        if (root != null) {
+            if (!isBinTreeWithParentReferences())
+                return false;
+            if (!isBalanced(root, new Height()))
+                return false;
+            if (!isSorted())
+                return false;
+        }
         return true;
     }
 
