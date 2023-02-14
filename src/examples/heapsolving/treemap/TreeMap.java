@@ -638,39 +638,36 @@ public class TreeMap {
     }
 
     public boolean repOKStructure() {
-        if (root == null)
-            return true;
-
-        Set<Entry> visited = new HashSet<Entry>();
-        if (!isBinTreeWithParentReferences(visited))
+        if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
             return false;
+        return true;
+    }
 
+    public boolean repOKSEOnly() {
+        if (!isSorted())
+            return false;
         return true;
     }
 
     public boolean repOKComplete() {
-        if (root == null)
-            return size == 0;
-
-        Set<Entry> visited = new HashSet<Entry>();
-        if (!isBinTreeWithParentReferences(visited))
-            return false;
-        if (visited.size() != size)
+        if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
             return false;
         if (!isSorted())
             return false;
-
         return true;
     }
 
-    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+    public boolean isBinTreeWithParentReferences() {
+        if (root == null)
+            return size == 0;
         if (root.parent != null)
             return false;
 
+        Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
@@ -694,10 +691,12 @@ public class TreeMap {
                 worklist.add(right);
             }
         }
-        return true;
+        return visited.size() == size;
     }
 
     public boolean isWellColored() {
+        if (root == null)
+            return true;
         if (root.color != BLACK)
             return false;
         LinkedList<Entry> worklist = new LinkedList<Entry>();
@@ -740,6 +739,8 @@ public class TreeMap {
     }
 
     private boolean isSorted() {
+        if (root == null)
+            return true;
         return isSorted(root, null, null);
     }
 
@@ -860,7 +861,7 @@ public class TreeMap {
     public static void runRepOK() {
         TreeMap toBuild = new TreeMap();
         toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
     }
 
 //    public String treeToString() {
