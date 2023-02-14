@@ -183,6 +183,12 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
+    public static void countException(MJIEnv env, int objRef) {
+        SolvingStrategy strategy = LISSAShell.solvingStrategy;
+        strategy.countException();
+    }
+
+    @MJI
     public static int makeSymbolicInteger(MJIEnv env, int objRef, int stringRef) {
         String name = env.getStringObject(stringRef);
         env.setReturnAttribute(new SymbolicInteger(name, MinMax.getVarMinInt(name), MinMax.getVarMaxInt(name)));

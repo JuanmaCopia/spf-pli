@@ -8,6 +8,7 @@ import symsolve.explorers.impl.SymmetryBreakStrategy;
 public class SolvingStrategy {
 
     public int exploredPaths = 0;
+    public int exceptionsThrown = 0;
 
     public static SolvingStrategy makeSymbolicHeapSolvingTechnique(ConfigParser configParser) {
         switch (configParser.solvingStrategy) {
@@ -35,6 +36,10 @@ public class SolvingStrategy {
 
     public void pathFinished(VM vm, ThreadInfo terminatedThread) {
         exploredPaths++;
+    }
+
+    public void countException() {
+        exceptionsThrown++;
     }
 
 }

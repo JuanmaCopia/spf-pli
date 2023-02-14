@@ -33,6 +33,8 @@ public class SymHeap {
 
     native public static void countPath();
 
+    native public static void countException();
+
     native public static boolean usingDriverStrategy();
 
     native public static boolean usingIfRepOKStrategy();

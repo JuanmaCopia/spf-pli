@@ -16,7 +16,12 @@ public class BinomialHeapMain {
     public static void main(String[] args) {
         BinomialHeap structure = BinomialHeapHarness.getStructure();
         if (structure != null) {
-            structure.extractMinBugged();
+            try {
+                structure.extractMinBugged();
+            } catch (Exception e) {
+                SymHeap.countException();
+                System.out.println(e);
+            }
             SymHeap.countPath();
         }
     }

@@ -25,6 +25,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int cacheHits = 0;
 
     int exploredPaths = 0;
+    int exceptionsThrown = 0;
     int invalidPaths = 0;
 
     int prunedBranchesDueToPC = 0;
@@ -60,6 +61,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     void getStatistics() {
         totalTime = (System.currentTimeMillis() - totalTime);
         exploredPaths = heapSolvingStrategy.exploredPaths;
+        exceptionsThrown = heapSolvingStrategy.exceptionsThrown;
 
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
             solvingTime = ((LIBasedStrategy) heapSolvingStrategy).getSolvingTime();
@@ -83,6 +85,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         System.out.println("Scope:      " + configParser.finitizationArgs);
         System.out.println("\n------- Statistics -------\n");
         System.out.println(" - Executed Paths:        " + exploredPaths);
+        System.out.println(" - Exceptions thrown:        " + exceptionsThrown);
         if (heapSolvingStrategy instanceof LIHYBRID)
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
@@ -112,6 +115,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         results.add(Utils.calculateTimeInHHMMSS(solvingTime));
         results.add(Utils.calculateTimeInHHMMSS(repOKPCSolvingTime));
         results.add(Integer.toString(exploredPaths));
+        results.add(Integer.toString(exceptionsThrown));
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
     }
@@ -121,7 +125,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,ExecutedPaths";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,ExecutedPaths,ExceptionsThrown";
     }
 
 }

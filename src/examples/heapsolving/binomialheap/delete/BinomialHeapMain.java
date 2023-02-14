@@ -12,7 +12,12 @@ public class BinomialHeapMain {
 
         BinomialHeap structure = BinomialHeapHarness.getStructure();
         if (structure != null) {
-            structure.delete(key);
+            try {
+                structure.delete(key);
+            } catch (Exception e) {
+                SymHeap.countException();
+                System.out.println(e);
+            }
             SymHeap.countPath();
         }
     }

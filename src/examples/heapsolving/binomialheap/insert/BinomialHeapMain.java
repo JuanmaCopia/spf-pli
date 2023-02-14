@@ -18,7 +18,12 @@ public class BinomialHeapMain {
 
         BinomialHeap structure = BinomialHeapHarness.getStructure();
         if (structure != null) {
-            structure.insert(key);
+            try {
+                structure.insert(key);
+            } catch (Exception e) {
+                SymHeap.countException();
+                System.out.println(e);
+            }
             SymHeap.countPath();
         }
     }

@@ -19,7 +19,12 @@ public class TreeMapMain {
 
         TreeMap structure = TreeMapHarness.getStructure();
         if (structure != null) {
-            structure.put(key, value);
+            try {
+                structure.put(key, value);
+            } catch (Exception e) {
+                SymHeap.countException();
+                System.out.println(e);
+            }
             SymHeap.countPath();
         }
     }
