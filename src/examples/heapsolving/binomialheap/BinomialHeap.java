@@ -339,40 +339,36 @@ public class BinomialHeap {
      */
 
     public boolean repOKStructure() {
-        if (Nodes == null)
-            return true;
-        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-        if (!isTreeWithParentReferencesStructure(visited))
+        if (!isTreeWithParentReferencesStructure())
             return false;
-        if (!checkDegreesShape(visited.size()))
+        if (!checkDegrees(size))
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        if (Nodes == null)
-            return size == 0;
-        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-        if (!isTreeWithParentReferencesStructure(visited))
-            return false;
-        if (!checkDegreesShape(visited.size()))
-            return false;
-
-        /** checks that the total size is consistent */
-        if (visited.size() != size)
-            return false;
-        /** checks that the degrees of all trees are binomial */
-        if (!checkDegrees(visited.size()))
-            return false;
-        /** checks that keys are heapified */
+    public boolean repOKSEOnly() {
         if (!checkHeapified())
             return false;
         return true;
     }
 
-    public boolean isTreeWithParentReferencesStructure(Set<BinomialHeapNode> visited) {
+    public boolean repOKComplete() {
+        if (!isTreeWithParentReferencesStructure())
+            return false;
+        if (!checkDegrees(size))
+            return false;
+        if (!checkHeapified())
+            return false;
+        return true;
+    }
+
+    public boolean isTreeWithParentReferencesStructure() {
+        if (Nodes == null)
+            return size == 0;
         if (Nodes.parent != null)
             return false;
+
+        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
         LinkedList<BinomialHeapNode> worklist = new LinkedList<>();
         visited.add(Nodes);
         worklist.add(Nodes);
@@ -398,28 +394,32 @@ public class BinomialHeap {
                 worklist.add(child);
             }
         }
-        return true;
+        return visited.size() == size;
     }
 
-    boolean checkDegreesShape(int size) {
-        int degree_ = size;
-        int rightDegree = 0;
-        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-            if (degree_ == 0)
-                return false;
-            while ((degree_ & 1) == 0) {
-                rightDegree++;
-                degree_ /= 2;
-            }
-            if (!current.checkDegreeShape(rightDegree))
-                return false;
-            rightDegree++;
-            degree_ /= 2;
-        }
-        return (degree_ == 0);
-    }
+//    boolean checkDegreesShape(int size) {
+//        if (Nodes == null)
+//            return true;
+//        int degree_ = size;
+//        int rightDegree = 0;
+//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
+//            if (degree_ == 0)
+//                return false;
+//            while ((degree_ & 1) == 0) {
+//                rightDegree++;
+//                degree_ /= 2;
+//            }
+//            if (!current.checkDegreeShape(rightDegree))
+//                return false;
+//            rightDegree++;
+//            degree_ /= 2;
+//        }
+//        return (degree_ == 0);
+//    }
 
     boolean checkDegrees(int size) {
+        if (Nodes == null)
+            return true;
         int degree_ = size;
         int rightDegree = 0;
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
@@ -438,6 +438,8 @@ public class BinomialHeap {
     }
 
     boolean checkHeapified() {
+        if (Nodes == null)
+            return true;
         for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
             if (!current.isHeapified())
                 return false;
@@ -448,7 +450,7 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
     }
 
     public static IFinitization finBinomialHeap(int size) {
@@ -506,7 +508,6 @@ public class BinomialHeap {
 //            return false;
 //        return true;
 //    }
-
 
 //    public boolean OldRepOKStructure() {
 //        if (Nodes == null)
