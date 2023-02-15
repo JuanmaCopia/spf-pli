@@ -376,7 +376,7 @@ public class AvlTree {
 //        }
 //    }
 
-    public boolean repOKStructure() {
+    public boolean repOKSymSolve() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isBalanced(root, new Height()))
@@ -384,20 +384,14 @@ public class AvlTree {
         return true;
     }
 
-    public boolean repOKSEOnly() {
+    public boolean repOKSymbolicExecution() {
         if (!isSorted())
             return false;
         return true;
     }
 
     public boolean repOKComplete() {
-        if (!isBinTreeWithParentReferences())
-            return false;
-        if (!isBalanced(root, new Height()))
-            return false;
-        if (!isSorted())
-            return false;
-        return true;
+        return repOKSymSolve() && repOKSymbolicExecution();
     }
 
     public boolean isBinTreeWithParentReferences() {
@@ -512,7 +506,7 @@ public class AvlTree {
     public static void runRepOK() {
         AvlTree toBuild = new AvlTree();
         toBuild = (AvlTree) SymHeap.buildHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
     public static IFinitization finAvlTree(int size) {
