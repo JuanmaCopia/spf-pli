@@ -16,6 +16,7 @@ import java.util.Vector;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -414,7 +415,21 @@ public class LinkedList {
         return result;
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        return isCircularLinkedList();
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (header == null)
+            return false;
+        return isSizeOK();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public boolean isCircularLinkedList() {
         if (header == null)
             return false;
 
@@ -438,6 +453,21 @@ public class LinkedList {
         return true;
     }
 
+    public boolean isSizeOK() {
+        return size == countNodes();
+    }
+
+    public int countNodes() {
+        int count = 0;
+
+        Entry current = header.next;
+        while (current != header) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+
     public class Entry {
         public int element;
         public Entry next;
@@ -451,6 +481,12 @@ public class LinkedList {
             this.next = next;
             this.previous = previous;
         }
+    }
+
+    public static void runRepOK() {
+        LinkedList toBuild = new LinkedList();
+        toBuild = (LinkedList) SymHeap.buildHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
     public static IFinitization finLinkedList(int nodesNum) {

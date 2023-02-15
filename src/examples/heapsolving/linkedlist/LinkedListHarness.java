@@ -1,7 +1,7 @@
 package heapsolving.linkedlist;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class LinkedListHarness {
 
@@ -9,11 +9,12 @@ public class LinkedListHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         LinkedList structure = new LinkedList();
         structure = (LinkedList) SymHeap.makeSymbolicRefThis("linkedlist_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 
