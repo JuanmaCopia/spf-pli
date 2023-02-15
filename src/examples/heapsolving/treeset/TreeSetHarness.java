@@ -1,7 +1,7 @@
 package heapsolving.treeset;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class TreeSetHarness {
 
@@ -9,11 +9,12 @@ public class TreeSetHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         TreeSet structure = new TreeSet();
         structure = (TreeSet) SymHeap.makeSymbolicRefThis("treeset_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 

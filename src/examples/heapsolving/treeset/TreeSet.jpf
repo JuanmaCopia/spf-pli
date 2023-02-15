@@ -1,6 +1,3 @@
-classpath=${jpf-symbc}/build/examples
-sourcepath=${jpf-symbc}/src/examples
-
 @using=spf-lissa
 
 # ---------------   Arguments   ---------------
@@ -16,7 +13,7 @@ symbolic.dp = z3
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.symsolve.finitization.class = heapsolving.treeset.TreeSet
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOK
+heapsolving.symsolve.predicate = repOKSymSolve
 
 jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
