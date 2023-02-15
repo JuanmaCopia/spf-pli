@@ -7,10 +7,9 @@
 
 package heapsolving.treeset.contains;
 
-import lissa.SymHeap;
-
 import heapsolving.treeset.TreeSet;
 import heapsolving.treeset.TreeSetHarness;
+import lissa.SymHeap;
 
 public class TreeSetMain {
 
@@ -23,6 +22,7 @@ public class TreeSetMain {
                 // Call to method under analysis
                 structure.contains(key);
             } catch (Exception e) {
+                SymHeap.countException();
             }
 
             SymHeap.countPath();

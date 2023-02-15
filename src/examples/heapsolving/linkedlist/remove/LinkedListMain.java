@@ -7,10 +7,9 @@
 
 package heapsolving.linkedlist.remove;
 
-import lissa.SymHeap;
-
 import heapsolving.linkedlist.LinkedList;
 import heapsolving.linkedlist.LinkedListHarness;
+import lissa.SymHeap;
 
 public class LinkedListMain {
 
@@ -23,6 +22,7 @@ public class LinkedListMain {
                 // Call to method under analysis
                 structure.remove(key);
             } catch (Exception e) {
+                SymHeap.countException();
             }
 
             SymHeap.countPath();
