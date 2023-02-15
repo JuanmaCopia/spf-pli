@@ -637,7 +637,7 @@ public class TreeMap {
         setColor(x, BLACK);
     }
 
-    public boolean repOKStructure() {
+    public boolean repOKSymSolve() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
@@ -645,20 +645,14 @@ public class TreeMap {
         return true;
     }
 
-    public boolean repOKSEOnly() {
+    public boolean repOKSymbolicExecution() {
         if (!isSorted())
             return false;
         return true;
     }
 
     public boolean repOKComplete() {
-        if (!isBinTreeWithParentReferences())
-            return false;
-        if (!isWellColored())
-            return false;
-        if (!isSorted())
-            return false;
-        return true;
+        return repOKSymSolve() && repOKSymbolicExecution();
     }
 
     public boolean isBinTreeWithParentReferences() {
@@ -861,7 +855,7 @@ public class TreeMap {
     public static void runRepOK() {
         TreeMap toBuild = new TreeMap();
         toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
 //    public String treeToString() {

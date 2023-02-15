@@ -13,7 +13,7 @@ symbolic.dp = z3
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOKStructure
+heapsolving.symsolve.predicate = repOKSymSolve
 
 jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
