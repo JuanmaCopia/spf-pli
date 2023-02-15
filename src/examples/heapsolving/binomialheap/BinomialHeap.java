@@ -338,7 +338,7 @@ public class BinomialHeap {
      *         invariants
      */
 
-    public boolean repOKStructure() {
+    public boolean repOKSymSolve() {
         if (!isTreeWithParentReferencesStructure())
             return false;
         if (!checkDegrees(size))
@@ -346,20 +346,14 @@ public class BinomialHeap {
         return true;
     }
 
-    public boolean repOKSEOnly() {
+    public boolean repOKSymbolicExecution() {
         if (!checkHeapified())
             return false;
         return true;
     }
 
     public boolean repOKComplete() {
-        if (!isTreeWithParentReferencesStructure())
-            return false;
-        if (!checkDegrees(size))
-            return false;
-        if (!checkHeapified())
-            return false;
-        return true;
+        return repOKSymSolve() && repOKSymbolicExecution();
     }
 
     public boolean isTreeWithParentReferencesStructure() {
@@ -450,7 +444,7 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSEOnly());
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
     public static IFinitization finBinomialHeap(int size) {
