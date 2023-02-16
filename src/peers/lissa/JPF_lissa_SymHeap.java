@@ -27,8 +27,13 @@ import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.solving.solver.SymSolveHeapSolver;
+import lissa.heap.solving.techniques.LISSA;
 import lissa.heap.solving.techniques.NT;
+import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
+import symsolve.vector.SymSolveSolution;
+import symsolve.vector.SymSolveVector;
 
 public class JPF_lissa_SymHeap extends NativePeer {
 
@@ -148,8 +153,33 @@ public class JPF_lissa_SymHeap extends NativePeer {
         symRefInput.setRootHeapNode(rootHeapNode);
 
         pcHeap._addDet(Comparator.NE, newSymRef, new IntegerConstant(-1));
-        ((HeapChoiceGeneratorLISSA) cg).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGeneratorLISSA) cg).setCurrentSymInputHeap(symInputHeap);
+        HeapChoiceGeneratorLISSA heapCG = ((HeapChoiceGeneratorLISSA) cg);
+        heapCG.setCurrentPCheap(pcHeap);
+        heapCG.setCurrentSymInputHeap(symInputHeap);
+
+        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
+        if (solvingStrategy instanceof PCCheckStrategy) {
+            LISSA strategy = (LISSA) solvingStrategy;
+
+            SymSolveVector vector = strategy.getCanonicalizer().createVector(symInputHeap);
+            SymSolveHeapSolver heapSolver = strategy.getSolver();
+            SymSolveSolution solution = heapSolver.solve(vector);
+            assert (solution != null);
+
+            PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+            assert (pcCG != null);
+
+            while (solution != null) {
+                if (((PCCheckStrategy) solvingStrategy).isSatWithRespectToPathCondition(ti, solution,
+                        pcCG.getCurrentPC(), symInputHeap)) {
+                    break;
+                }
+                solution = heapSolver.getNextSolution(solution);
+            }
+
+            assert (solution != null);
+            heapCG.setCurrentSolution(solution);
+        }
 
         return;
     }

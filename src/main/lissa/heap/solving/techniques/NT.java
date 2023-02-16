@@ -40,6 +40,7 @@ public class NT extends LISSA implements PCCheckStrategy {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
+        assert (!isRepOKExecutionMode());
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
@@ -66,6 +67,7 @@ public class NT extends LISSA implements PCCheckStrategy {
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGenerator pcCG) {
+        assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
 

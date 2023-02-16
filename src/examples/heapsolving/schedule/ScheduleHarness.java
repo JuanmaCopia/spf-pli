@@ -1,7 +1,7 @@
 package heapsolving.schedule;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class ScheduleHarness {
 
@@ -9,11 +9,12 @@ public class ScheduleHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         Schedule structure = new Schedule();
         structure = (Schedule) SymHeap.makeSymbolicRefThis("schedule_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 

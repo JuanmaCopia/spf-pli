@@ -23,6 +23,7 @@ public class NTOPT extends NT {
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGenerator pcCG) {
+        assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
@@ -34,10 +35,12 @@ public class NTOPT extends NT {
 
         PathCondition currentProgramPC = pcCG.getCurrentPC();
         assert (currentProgramPC != null);
-        PathCondition repOKPC = heapCG.getCurrentRepOKPathCondition();
-        if (isConjunctionSAT(currentProgramPC, repOKPC)) {
-            primitiveBranchingCacheHits++;
-            return nextInstruction;
+        PathCondition cachedRepOKPC = heapCG.getCurrentRepOKPathCondition();
+        if (cachedRepOKPC != null) {
+            if (isConjunctionSAT(currentProgramPC, cachedRepOKPC)) {
+                primitiveBranchingCacheHits++;
+                return nextInstruction;
+            }
         }
 
         SymSolveSolution solution = heapCG.getCurrentSolution();

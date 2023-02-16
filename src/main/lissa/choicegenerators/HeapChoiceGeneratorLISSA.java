@@ -28,7 +28,10 @@ public class HeapChoiceGeneratorLISSA extends HeapChoiceGenerator {
     }
 
     public PathCondition getCurrentRepOKPathCondition() {
-        return repOKPathConditionCache[getNextChoice()].make_copy();
+        PathCondition pc = repOKPathConditionCache[getNextChoice()];
+        if (pc != null)
+            return pc.make_copy();
+        return null;
     }
 
 }

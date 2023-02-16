@@ -47,4 +47,12 @@ public class LISSA extends LIBasedStrategy {
         return heapSolver.getSolvingTime();
     }
 
+    public Canonicalizer getCanonicalizer() {
+        return canonicalizer;
+    }
+
+    public SymSolveHeapSolver getSolver() {
+        return heapSolver;
+    }
+
 }

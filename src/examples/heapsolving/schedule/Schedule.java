@@ -6,13 +6,18 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 public class Schedule {
 
     public final static int MAXPRIO = 3;
 
+    public int allocProcNum;
+    public int numProcesses;
+
     public Job curProc;
 
+    public List prio_0;
     public List prio_1;
     public List prio_2;
     public List prio_3;
@@ -86,13 +91,18 @@ public class Schedule {
 
     public void finishProcess() {
         schedule();
-        curProc = null;
+        if (curProc != null) {
+            curProc = null;
+            numProcesses--;
+        }
     }
 
     public void finishAllProcesses() {
-        schedule();
-        while (curProc != null)
+        int total;
+        total = numProcesses;
+        for (int i = 0; i < total; i++) {
             finishProcess();
+        }
     }
 
     private void schedule() {
@@ -100,9 +110,7 @@ public class Schedule {
         for (int i = MAXPRIO; i > 0; i--) {
             if (getPrioQueue(i).getMemCount() > 0) {
                 curProc = getPrioQueue(i).getFirst();
-                List list = delEle(getPrioQueue(i), curProc);
-                if (list != null)
-                    setPrioQueue(i, list);
+                setPrioQueue(i, delEle(getPrioQueue(i), curProc));
                 return;
             }
         }
@@ -178,8 +186,9 @@ public class Schedule {
     private Job newProcess(int prio) {
         if (prio < 1 || prio > MAXPRIO)
             throw new IllegalArgumentException();
-        Job proc = new Job();
+        Job proc = new Job(allocProcNum++);
         proc.setPriority(prio);
+        numProcesses++;
         return proc;
     }
 
@@ -209,6 +218,9 @@ public class Schedule {
 
     private void setPrioQueue(int prio, List queue) {
         switch (prio) {
+        case 0:
+            prio_0 = queue;
+            break;
         case 1:
             prio_1 = queue;
             break;
@@ -225,6 +237,8 @@ public class Schedule {
 
     private List getPrioQueue(int prio) {
         switch (prio) {
+        case 0:
+            return prio_0;
         case 1:
             return prio_1;
         case 2:
@@ -237,30 +251,38 @@ public class Schedule {
     }
 
     private void initialize() {
+        allocProcNum = 0;
+        numProcesses = 0;
         blockQueue = new List();
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("Schedule = {");
-        buf.append(" prioQueue = { ");
-        for (int i = 1; i <= MAXPRIO; i++) {
-            List proc = getPrioQueue(i);
-            buf.append(proc.toString());
+        if (numProcesses == 0) {
+            return "Schedule={}";
+        } else {
+            StringBuffer buf = new StringBuffer();
+            buf.append("Schedule = {");
+            buf.append(" prioQueue = { ");
+            for (int i = 1; i <= MAXPRIO; i++) {
+                List proc = getPrioQueue(i);
+                buf.append(proc.toString());
+            }
+            buf.append(" }");
+            buf.append(" , ");
+            buf.append(" blockQueue = { ");
+            buf.append(blockQueue.toString());
+            buf.append(" }");
+            buf.append(" currProc = { ");
+            buf.append(curProc == null ? "null" : curProc.toString());
+            buf.append(" }");
+            buf.append(" }");
+            return buf.toString();
         }
-        buf.append(" }");
-        buf.append(" , ");
-        buf.append(" blockQueue = { ");
-        buf.append(blockQueue.toString());
-        buf.append(" }");
-        buf.append(" currProc = { ");
-        buf.append(curProc == null ? "null" : curProc.toString());
-        buf.append(" }");
-        buf.append(" }");
-        return buf.toString();
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        if (prio_0 == null)
+            return false;
         if (prio_1 == null)
             return false;
         if (prio_2 == null)
@@ -292,6 +314,14 @@ public class Schedule {
         return true;
     }
 
+    public boolean repOKSymbolicExecution() {
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
     private boolean isDoublyLinkedList(List list, Set<Job> visited) {
         Job current = list.getFirst();
         Job last = list.getLast();
@@ -319,13 +349,68 @@ public class Schedule {
         return true;
     }
 
+//    private boolean primitivesOK() {
+//        TreeSet<Integer> visitedIds = new TreeSet<Integer>();
+//        for (int i = 1; i <= MAXPRIO; i++) {
+//            if (!isPriorityOfListOK(i, visitedIds))
+//                return false;
+//        }
+//
+//        if (!isBlockQueueOK(visitedIds))
+//            return false;
+//
+//        return true;
+//    }
+//
+//    private boolean isPriorityOfListOK(int priority, Set<Integer> visitedIds) {
+//        List list = getPrioQueue(priority);
+//        Job current = list.getFirst();
+//        int size = 0;
+//
+//        while (current != null) {
+//            if (current.val >= this.allocProcNum || current.val < 0)
+//                return false;
+//            if (!visitedIds.add(current.val))
+//                return false;
+//            if (current.priority != priority)
+//                return false;
+//            size++;
+//            current = current.getNext();
+//        }
+//        return size == list.getMemCount();
+//    }
+//
+//    private boolean isBlockQueueOK(Set<Integer> visitedIds) {
+//        Job current = blockQueue.getFirst();
+//        int size = 0;
+//
+//        while (current != null) {
+//            if (current.val >= this.allocProcNum || current.val < 0)
+//                return false;
+//            if (!visitedIds.add(current.val))
+//                return false;
+//            size++;
+//            current = current.getNext();
+//        }
+//        return size == blockQueue.getMemCount();
+//    }
+
+    public static void runRepOK() {
+        Schedule toBuild = new Schedule();
+        toBuild = (Schedule) SymHeap.buildHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
     public static IFinitization finSchedule(int jobsNum) {
         IFinitization f = FinitizationFactory.create(Schedule.class);
 
         IObjSet jobs = f.createObjSet(Job.class, jobsNum, true);
+        f.set(Schedule.class, "allocProcNum", f.createIntSet(0, jobsNum + 1));
+        f.set(Schedule.class, "numProcesses", f.createIntSet(0, jobsNum));
         f.set(Schedule.class, "curProc", jobs);
 
-        IObjSet lists = f.createObjSet(List.class, 4, true);
+        IObjSet lists = f.createObjSet(List.class, 5, true);
+        f.set(Schedule.class, "prio_0", lists);
         f.set(Schedule.class, "prio_1", lists);
         f.set(Schedule.class, "prio_2", lists);
         f.set(Schedule.class, "prio_3", lists);
