@@ -3,6 +3,7 @@ package heapsolving.schedule;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.nasa.jpf.symbc.Debug;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -193,6 +194,7 @@ public class Schedule {
     }
 
     public void addProcess(int prio) {
+        Debug.assume(prio >= 1 && prio <= MAXPRIO); // Method's precondition
         if (prio < 1 || prio > MAXPRIO)
             throw new IllegalArgumentException();
         Job proc;
