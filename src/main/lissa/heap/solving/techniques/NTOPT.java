@@ -15,6 +15,7 @@ import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
+import symsolve.vector.SymSolveVector;
 
 public class NTOPT extends NT {
 
@@ -31,8 +32,6 @@ public class NTOPT extends NT {
 
         primitiveBranches++;
 
-        // ========== cache check
-
         PathCondition currentProgramPC = pcCG.getCurrentPC();
         assert (currentProgramPC != null);
         PathCondition cachedRepOKPC = heapCG.getCurrentRepOKPathCondition();
@@ -44,8 +43,10 @@ public class NTOPT extends NT {
         }
 
         SymSolveSolution solution = heapCG.getCurrentSolution();
-
-        // ==========
+        if (solution == null) {
+            SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+            solution = heapSolver.solve(vector);
+        }
 
         while (solution != null) {
             if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
