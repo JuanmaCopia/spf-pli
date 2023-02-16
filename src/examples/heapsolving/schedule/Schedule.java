@@ -2,7 +2,6 @@ package heapsolving.schedule;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
@@ -314,12 +313,17 @@ public class Schedule {
         if (!isDoublyLinkedList(blockQueue, visitedJobs))
             return false;
 
-        return true;
+        return numProcesses == visitedJobs.size();
     }
 
     public boolean repOKSymbolicExecution() {
+        if (!checkCurrentProcess())
+            return false;
+        if (!checkPriorityQueues())
+            return false;
+        if (!checkBlockQueue())
+            return false;
         return true;
-        // return primitivesOK();
     }
 
     public boolean repOKComplete() {
@@ -352,55 +356,47 @@ public class Schedule {
         return last == current;
     }
 
-    private boolean primitivesOK() {
-        TreeSet<Integer> visitedIds = new TreeSet<Integer>();
-        if (curProc != null) {
-            if (curProc.val >= this.allocProcNum || curProc.val < 0)
-                return false;
-            visitedIds.add(curProc.val);
-        }
+    private boolean checkPriorityQueues() {
         for (int i = 1; i <= MAXPRIO; i++) {
-            if (!isPriorityOfListOK(i, visitedIds))
+            List prioQueue = getPrioQueue(i);
+            if (!isPriorityQueueOK(prioQueue, i))
                 return false;
         }
-
-        if (!isBlockQueueOK(visitedIds))
-            return false;
-
-        return visitedIds.size() == numProcesses;
+        return true;
     }
 
-    private boolean isPriorityOfListOK(int priority, Set<Integer> visitedIds) {
-        List list = getPrioQueue(priority);
-        Job current = list.getFirst();
+    private boolean isPriorityQueueOK(List prioQueue, int priority) {
+        Job current = prioQueue.getFirst();
         int size = 0;
 
         while (current != null) {
-            if (current.val >= this.allocProcNum || current.val < 0)
-                return false;
-            if (!visitedIds.add(current.val))
-                return false;
             if (current.priority != priority)
                 return false;
             size++;
             current = current.getNext();
         }
-        return size == list.getMemCount();
+        return size == prioQueue.getMemCount();
     }
 
-    private boolean isBlockQueueOK(Set<Integer> visitedIds) {
+    private boolean checkBlockQueue() {
         Job current = blockQueue.getFirst();
         int size = 0;
 
         while (current != null) {
-            if (current.val >= this.allocProcNum || current.val < 0)
-                return false;
-            if (!visitedIds.add(current.val))
+            if (current.priority < 1 || current.priority > MAXPRIO)
                 return false;
             size++;
             current = current.getNext();
         }
         return size == blockQueue.getMemCount();
+    }
+
+    private boolean checkCurrentProcess() {
+        if (curProc != null) {
+            if (curProc.priority < 1 || curProc.priority > MAXPRIO)
+                return false;
+        }
+        return true;
     }
 
     public static void runRepOK() {
