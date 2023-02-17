@@ -441,6 +441,33 @@ public class BinomialHeap {
         return true;
     }
 
+    public int countNodes() {
+        if (Nodes == null)
+            return 0;
+
+        int numberOfNodes = 0;
+        LinkedList<BinomialHeapNode> worklist = new LinkedList<>();
+        worklist.add(Nodes);
+
+        while (!worklist.isEmpty()) {
+            BinomialHeapNode current = worklist.removeFirst();
+            numberOfNodes++;
+
+            BinomialHeapNode sibling = current.sibling;
+            if (sibling != null)
+                worklist.add(sibling);
+
+            BinomialHeapNode child = current.child;
+            if (child != null)
+                worklist.add(child);
+        }
+        return numberOfNodes;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);

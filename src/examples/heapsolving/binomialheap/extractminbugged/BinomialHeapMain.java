@@ -23,6 +23,11 @@ public class BinomialHeapMain {
                 System.out.println(e);
             }
             SymHeap.countPath();
+
+//            if (structure.countNodes() != structure.getSize()) {
+//                SymHeap.countException();
+//                System.out.println("ERROR FOUND: POSTONDITION VIOLATED!!");
+//            }
         }
     }
 
