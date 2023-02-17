@@ -7,10 +7,9 @@
 
 package heapsolving.hashmap.put;
 
-import lissa.SymHeap;
-
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;
+import lissa.SymHeap;
 
 public class HashMapMain {
 
@@ -24,6 +23,8 @@ public class HashMapMain {
                 // Call to method under analysis
                 structure.put(key, value);
             } catch (Exception e) {
+                SymHeap.countException();
+                System.out.println(e);
             }
 
             SymHeap.countPath();

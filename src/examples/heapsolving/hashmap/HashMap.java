@@ -575,6 +575,24 @@ public class HashMap {
         return true;
     }
 
+    private boolean areKeysOK(int index, Set<Integer> visitedKeys) {
+        Entry current = getTable(index);
+        while (current != null) {
+            if (!visitedKeys.add(current.key))
+                return false;
+
+            int correctIndex = indexFor(hash(current.key), DEFAULT_INITIAL_CAPACITY);
+            if (index != correctIndex)
+                return false;
+
+            if (current.hash != hash(current.key))
+                return false;
+
+            current = current.next;
+        }
+        return true;
+    }
+
     public class Entry {
 
         public int key;
