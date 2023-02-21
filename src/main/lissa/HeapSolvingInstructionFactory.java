@@ -4,18 +4,30 @@ package lissa;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.vm.Instruction;
+import lissa.bytecode.AALOAD;
+import lissa.bytecode.AASTORE;
+import lissa.bytecode.BALOAD;
+import lissa.bytecode.BASTORE;
+import lissa.bytecode.CALOAD;
+import lissa.bytecode.CASTORE;
 import lissa.bytecode.D2I;
 import lissa.bytecode.D2L;
+import lissa.bytecode.DALOAD;
+import lissa.bytecode.DASTORE;
 import lissa.bytecode.DCMPG;
 import lissa.bytecode.DCMPL;
 import lissa.bytecode.DDIV;
 import lissa.bytecode.F2I;
 import lissa.bytecode.F2L;
+import lissa.bytecode.FALOAD;
+import lissa.bytecode.FASTORE;
 import lissa.bytecode.FCMPG;
 import lissa.bytecode.FCMPL;
 import lissa.bytecode.FDIV;
 import lissa.bytecode.I2D;
 import lissa.bytecode.I2F;
+import lissa.bytecode.IALOAD;
+import lissa.bytecode.IASTORE;
 import lissa.bytecode.IDIV;
 import lissa.bytecode.IFEQ;
 import lissa.bytecode.IFGE;
@@ -32,9 +44,13 @@ import lissa.bytecode.IF_ICMPNE;
 import lissa.bytecode.IREM;
 import lissa.bytecode.L2D;
 import lissa.bytecode.L2F;
+import lissa.bytecode.LALOAD;
+import lissa.bytecode.LASTORE;
 import lissa.bytecode.LCMP;
 import lissa.bytecode.LDIV;
 import lissa.bytecode.LREM;
+import lissa.bytecode.SALOAD;
+import lissa.bytecode.SASTORE;
 import lissa.bytecode.TABLESWITCH;
 import lissa.bytecode.lazy.ALOAD;
 import lissa.bytecode.lazy.GETFIELDHeapSolving;
@@ -249,6 +265,104 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     public Instruction tableswitch(int defaultTargetPc, int low, int high) {
         return new TABLESWITCH(defaultTargetPc, low, high);
     }
+
+    // array ops
+
+    public Instruction aaload() {
+        return new AALOAD();
+    }
+
+    public Instruction aastore() {
+        return new AASTORE();
+    }
+
+    public Instruction baload() {
+        return new BALOAD();
+    }
+
+    public Instruction bastore() {
+        return new BASTORE();
+    }
+
+    public Instruction caload() {
+        return new CALOAD();
+    }
+
+    public Instruction castore() {
+        return new CASTORE();
+    }
+
+    public Instruction daload() {
+        return new DALOAD();
+    }
+
+    public Instruction dastore() {
+        return new DASTORE();
+    }
+
+    public Instruction faload() {
+        return new FALOAD();
+    }
+
+    public Instruction fastore() {
+        return new FASTORE();
+    }
+
+    public Instruction iaload() {
+        return new IALOAD();
+    }
+
+    public Instruction iastore() {
+        return new IASTORE();
+    }
+
+    public Instruction laload() {
+        return new LALOAD();
+    }
+
+    public Instruction lastore() {
+        return new LASTORE();
+    }
+
+    public Instruction saload() {
+        return new SALOAD();
+    }
+
+    public Instruction sastore() {
+        return new SASTORE();
+    }
+
+    // TODO: to review
+    // From Fujitsu:
+
+//    public Instruction new_(String clsName) {
+//        return (filter.isPassing(ci) ? new NEW(clsName) : super.new_(clsName));
+//    }
+//
+//    public Instruction ifnonnull(int targetPc) {
+//        return (filter.isPassing(ci) ? new IFNONNULL(targetPc) : super.ifnonnull(targetPc));
+//    }
+//
+//    public Instruction ifnull(int targetPc) {
+//        return (filter.isPassing(ci) ? new IFNULL(targetPc) : super.ifnull(targetPc));
+//    }
+//
+//    public Instruction newarray(int typeCode) {
+//        return (filter.isPassing(ci)
+//                ? (symArrays) ? new gov.nasa.jpf.symbc.bytecode.symarrays.NEWARRAY(typeCode) : new NEWARRAY(typeCode)
+//                : super.newarray(typeCode));
+//    }
+//
+//    public Instruction anewarray(String typeDescriptor) {
+//        return (filter.isPassing(ci) && (symArrays)
+//                ? new gov.nasa.jpf.symbc.bytecode.symarrays.ANEWARRAY(typeDescriptor)
+//                : super.anewarray(typeDescriptor));
+//    }
+//
+//    public Instruction multianewarray(String clsName, int dimensions) {
+//        return (filter.isPassing(ci) ? new MULTIANEWARRAY(clsName, dimensions)
+//                : super.multianewarray(clsName, dimensions));
+//    }
 
     // ============ Constructor ============ //
 
