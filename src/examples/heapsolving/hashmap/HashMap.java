@@ -741,6 +741,9 @@ public class HashMap {
         f.set(HashMap.class, "e14", entries);
         f.set(HashMap.class, "e15", entries);
 
+        f.set(Entry.class, "key", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
+        // f.set(Entry.class, "value", );
+        f.set(Entry.class, "hash", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
         f.set(Entry.class, "next", entries);
         return f;
     }
