@@ -1,7 +1,7 @@
 package heapsolving.hashmap;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class HashMapHarness {
 
@@ -9,11 +9,12 @@ public class HashMapHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
+        SymHeap.initializePathCondition();
         HashMap structure = new HashMap();
         structure = (HashMap) SymHeap.makeSymbolicRefThis("hashmap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 
