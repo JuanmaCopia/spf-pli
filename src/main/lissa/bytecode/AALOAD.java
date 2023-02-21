@@ -31,14 +31,16 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.heap.SymHeapHelper;
 
 /**
  * Load reference from array ..., arrayref, index => ..., value
  * 
- * YN: fixed choice selection in symcrete support (Yannic Noller <nolleryc@gmail.com>)
+ * YN: fixed choice selection in symcrete support (Yannic Noller
+ * <nolleryc@gmail.com>)
  */
 public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
-    
+
     public static int lastLength = -1; // YN: helper variable for last known length
 
     @Override
@@ -67,7 +69,7 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
 
             arrayCG.setOffset(this.position);
             arrayCG.setMethodName(this.getMethodInfo().getFullName());
-            
+
             ti.getVM().getSystemState().setNextChoiceGenerator(arrayCG);
 
             if (SymbolicInstructionFactory.debugMode)
@@ -115,7 +117,10 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
                 pc._addDet(Comparator.LT, sym_index, 0);
                 if (pc.simplify()) { // satisfiable
                     ((PCChoiceGenerator) lastCG).setCurrentPC(pc);
-                    return ti.createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
+                    Instruction nextInstruction = ti
+                            .createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
+                            (PCChoiceGenerator) lastCG);
                 } else {
                     ti.getVM().getSystemState().setIgnored(true);// backtrack
                     return getNext(ti);
@@ -124,7 +129,10 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
                 pc._addDet(Comparator.GE, sym_index, len);
                 if (pc.simplify()) { // satisfiable
                     ((PCChoiceGenerator) lastCG).setCurrentPC(pc);
-                    return ti.createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
+                    Instruction nextInstruction = ti
+                            .createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
+                    return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
+                            (PCChoiceGenerator) lastCG);
                 } else {
                     ti.getVM().getSystemState().setIgnored(true);// backtrack
                     return getNext(ti);
@@ -137,8 +145,9 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
 
             // corina: Ignore POR for now
             /*
-             * Scheduler scheduler = ti.getScheduler(); if (scheduler.canHaveSharedArrayCG( ti, this, eiArray, index)){
-             * // don't modify the frame before this eiArray = scheduler.updateArraySharedness(ti, eiArray, index); if
+             * Scheduler scheduler = ti.getScheduler(); if (scheduler.canHaveSharedArrayCG(
+             * ti, this, eiArray, index)){ // don't modify the frame before this eiArray =
+             * scheduler.updateArraySharedness(ti, eiArray, index); if
              * (scheduler.setsSharedArrayCG( ti, this, eiArray, index)){ return this; } }
              */
 
@@ -157,10 +166,11 @@ public class AALOAD extends gov.nasa.jpf.jvm.bytecode.AALOAD {
                     }
                 }
 
-                return getNext(ti);
-
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, getNext(ti),
+                        (PCChoiceGenerator) lastCG);
             } catch (ArrayIndexOutOfBoundsExecutiveException ex) {
-                return ex.getInstruction();
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, ex.getInstruction(),
+                        (PCChoiceGenerator) lastCG);
             }
         }
     }
