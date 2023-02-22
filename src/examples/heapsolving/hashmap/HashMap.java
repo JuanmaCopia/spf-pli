@@ -581,14 +581,13 @@ public class HashMap {
             if (list != null && !isLinkedList(list, visited, threshold))
                 return false;
         }
-        return true;
+        return visited.size() == size;
     }
 
     public boolean repOKSymbolicExecution() {
-        Threshold threshold = new Threshold(THRESHOLD);
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
-            if (list != null && !areKeysOK(list, i, threshold))
+            if (list != null && !checkListKeys(list, i))
                 return false;
         }
         return true;
@@ -612,21 +611,15 @@ public class HashMap {
         return true;
     }
 
-    private boolean areKeysOK(Entry head, int index, Threshold threshold) {
-        Entry current = head;
-        int[] visitedKeys = new int[threshold.value];
+    private boolean checkListKeys(Entry head, int index) {
+        int[] visitedKeys = new int[THRESHOLD];
         int currentIndex = 0;
-
+        Entry current = head;
         while (current != null) {
-            threshold.value--;
-            if (threshold.value < 0)
-                return false;
-
             int currentKey = current.key;
             int correctIndex = currentKey & (DEFAULT_INITIAL_CAPACITY - 1);
             if (index != correctIndex)
                 return false;
-
             for (int i = 0; i < currentIndex; i++) {
                 if (visitedKeys[i] == currentKey)
                     return false;
