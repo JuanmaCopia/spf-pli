@@ -21,7 +21,7 @@ public class ConfigParser {
     public static final String STATISTICS_DIR = String.format("%s/%s", OUTPUT_DIR, "results");
     public static final String TESTCASE_DIR = String.format("%s/%s", OUTPUT_DIR, "testcases");
 
-    private static final int DEFAULT_GETFIELD_LIMIT = 2000;
+    private static final int DEFAULT_GETFIELD_LIMIT = 200;
 
     public Config conf;
 

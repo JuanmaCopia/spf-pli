@@ -71,13 +71,16 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         // if it is we need to do lazy initialization
 
         // ================ Modification Begin ================ //
-        if (heapSolvingStrategy instanceof LIHYBRID && ((LIHYBRID) heapSolvingStrategy).reachedGETFIELDLimit(objRef)) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return this;
-        }
 
         ClassInfo typeClassInfo = fi.getTypeClassInfo(); // use this instead of fullType
         String fullClassName = typeClassInfo.getName();
+
+        if (heapSolvingStrategy instanceof LIHYBRID && fi.isReference() && attr == null
+                && heapSolvingStrategy.isClassInBounds(fullClassName)
+                && ((LIHYBRID) heapSolvingStrategy).reachedGETFIELDLimit(objRef)) {
+            ti.getVM().getSystemState().setIgnored(true); // Backtrack
+            return this;
+        }
 
         if (!fi.isReference() || attr == null || attr instanceof StringExpression
                 || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fullClassName)
@@ -85,6 +88,9 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         ) {
             return super.execute(ti);
         }
+
+        if (heapSolvingStrategy instanceof LIHYBRID)
+            ((LIHYBRID) heapSolvingStrategy).resetGetFieldCount();
         // ================ Modification End ================ //
 
         // Lazy initialization:

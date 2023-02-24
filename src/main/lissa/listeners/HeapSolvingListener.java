@@ -74,9 +74,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 validityCheck = true;
             }
 
-            if (heapSolvingStrategy instanceof LIHYBRID) {
-                invalidPaths = ((LIHYBRID) heapSolvingStrategy).invalidPaths;
-            } else if (heapSolvingStrategy instanceof LISSAM) {
+            if (heapSolvingStrategy instanceof LISSAM) {
                 cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
             } else if (heapSolvingStrategy instanceof PCCheckStrategy) {
                 prunedBranchesDueToPC = ((PCCheckStrategy) heapSolvingStrategy).getPrunedBranchCount();

@@ -29,6 +29,8 @@ public class SolvingStrategy {
             return new SolvingStrategy();
         case IFREPOK:
             return new IFREPOK();
+        case PLAINLAZY:
+            return new PLAINLAZY(configParser.getFieldLimit);
         default:
             throw new IllegalArgumentException("Invalid symbolic heap solving technique");
         }
