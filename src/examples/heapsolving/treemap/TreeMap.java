@@ -858,6 +858,12 @@ public class TreeMap {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(TreeMap structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
 //    public String treeToString() {
 //        if (root == null)
 //            return "root -> null";

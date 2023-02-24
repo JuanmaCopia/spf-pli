@@ -9,6 +9,7 @@ import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -28,7 +29,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
@@ -38,10 +39,12 @@ public class SymHeapHelper {
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
             PCChoiceGenerator cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
-            PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-            if (!strategy.isRepOKExecutionMode()) {
-                return strategy.handlePrimitiveBranch(ti, current, next, cg);
+        if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isPathCheckingMode()) {
+            if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
+                if (!strategy.isRepOKExecutionMode()) {
+                    return strategy.handlePrimitiveBranch(ti, current, next, cg);
+                }
             }
         }
         return next;

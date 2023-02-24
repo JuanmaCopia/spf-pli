@@ -1,7 +1,5 @@
 package lissa.heap.visitors;
 
-import java.util.HashMap;
-
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
@@ -29,12 +27,6 @@ public interface SymbolicInputHeapVisitor {
 
     public void setCurrentOwner(ClassInfo ownerObjectClass, int currentObjID);
 
-    public void resetCurrentField();
-
-    public void resetCurrentOwner();
-
     public boolean isIgnoredField();
-
-    public void setMaxIdMap(HashMap<ClassInfo, Integer> maxIdMap);
 
 }

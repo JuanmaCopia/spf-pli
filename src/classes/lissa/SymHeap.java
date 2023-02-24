@@ -25,9 +25,13 @@ public class SymHeap {
 
     native public static void handleRepOKResult(boolean result);
 
+    native public static void handlePathCheckResult(boolean result);
+
     native public static void makeSymbolicImplicitInputThis(String name, Object v);
 
     native public static void buildSolutionHeap(Object v);
+
+    native public static void buildPartialHeapInput(Object v);
 
     native public static int getMaxScope();
 

@@ -1,7 +1,5 @@
 package lissa.heap.visitors;
 
-import java.util.HashMap;
-
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
@@ -36,16 +34,6 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
         String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName,
                 this.currentFieldClassName);
         return !vector.isTrackedField(fieldSignature);
-    }
-
-    @Override
-    public void resetCurrentField() {
-        this.currentFieldName = null;
-    }
-
-    @Override
-    public void resetCurrentOwner() {
-        this.currentOwnerObjClassName = null;
     }
 
     @Override
@@ -86,10 +74,6 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     @Override
     public void visitedSymbolicLongField(FieldInfo fi, SymbolicInteger symbolicLong) {
         this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicLong);
-    }
-
-    @Override
-    public void setMaxIdMap(HashMap<ClassInfo, Integer> maxIdMap) {
     }
 
 }

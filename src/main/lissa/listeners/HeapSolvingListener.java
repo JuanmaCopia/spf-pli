@@ -25,8 +25,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int cacheHits = 0;
 
     int exploredPaths = 0;
+    boolean validityCheck;
     int exceptionsThrown = 0;
     int invalidPaths = 0;
+    int validPaths = 0;
 
     int prunedBranchesDueToPC = 0;
     long repOKPCSolvingTime = 0;
@@ -64,7 +66,13 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         exceptionsThrown = heapSolvingStrategy.exceptionsThrown;
 
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
-            solvingTime = ((LIBasedStrategy) heapSolvingStrategy).getSolvingTime();
+            LIBasedStrategy stg = (LIBasedStrategy) heapSolvingStrategy;
+            solvingTime = stg.getSolvingTime();
+
+            if (stg.pathCheckEnabled) {
+                validPaths = stg.validPaths;
+                validityCheck = true;
+            }
 
             if (heapSolvingStrategy instanceof LIHYBRID) {
                 invalidPaths = ((LIHYBRID) heapSolvingStrategy).invalidPaths;
@@ -89,8 +97,11 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (heapSolvingStrategy instanceof LIHYBRID)
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
-        if (heapSolvingStrategy instanceof LIBasedStrategy)
+        if (heapSolvingStrategy instanceof LIBasedStrategy) {
+            if (validityCheck)
+                System.out.println(" - Valid Paths:           " + validPaths);
             System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
+        }
         if (heapSolvingStrategy instanceof LISSAM)
             System.out.println(" - Cache Hits:            " + cacheHits);
         if (heapSolvingStrategy instanceof NT) {
@@ -115,6 +126,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         results.add(Utils.calculateTimeInHHMMSS(solvingTime));
         results.add(Utils.calculateTimeInHHMMSS(repOKPCSolvingTime));
         results.add(Integer.toString(exploredPaths));
+        if (validityCheck)
+            results.add(Integer.toString(validPaths));
+        else
+            results.add("-");
         results.add(Integer.toString(exceptionsThrown));
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
@@ -125,7 +140,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,ExecutedPaths,ExceptionsThrown";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown";
     }
 
 }

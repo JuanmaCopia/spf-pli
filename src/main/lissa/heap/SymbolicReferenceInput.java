@@ -2,6 +2,7 @@ package lissa.heap;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -12,8 +13,10 @@ import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
+import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.heap.visitors.PartialHeapBuilderVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor;
 
 public class SymbolicReferenceInput {
@@ -151,11 +154,57 @@ public class SymbolicReferenceInput {
                         assert (false); // ERROR!
                     }
                 }
-                visitor.resetCurrentField();
             }
-            visitor.resetCurrentOwner();
         }
-        visitor.setMaxIdMap(maxIdMap);
+    }
+
+    public void buildPartialHeap(MJIEnv env) {
+        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env);
+        acceptBFSBuilder(visitor);
+    }
+
+    public void acceptBFSBuilder(PartialHeapBuilderVisitor visitor) {
+        ThreadInfo ti = VM.getVM().getCurrentThread();
+        Map<Integer, String> visited = new HashMap<>();
+        LinkedList<Integer> worklist = new LinkedList<Integer>();
+        Integer rootIndex = this.rootHeapNode.getIndex();
+        visited.put(rootIndex, "HEAP-ROOT");
+        worklist.add(rootIndex);
+
+        while (!worklist.isEmpty()) {
+            int currentOwnerRef = worklist.removeFirst();
+            String refChain = visited.get(currentOwnerRef);
+            ElementInfo owner = ti.getElementInfo(currentOwnerRef);
+            visitor.setCurrentOwner(currentOwnerRef, refChain);
+
+            ClassInfo ownerObjectClass = owner.getClassInfo();
+            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+
+            for (int i = 0; i < instanceFields.length; i++) {
+
+                FieldInfo field = instanceFields[i];
+                visitor.setCurrentField(field);
+
+                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+
+                    Integer fieldRef = getReferenceField(currentOwnerRef, field);
+                    if (fieldRef == SYMBOLIC) {
+                        visitor.visitedSymbolicReferenceField();
+                    } else if (fieldRef == NULL) {
+                        visitor.visitedNullReferenceField();
+                    } else if (visited.containsKey(fieldRef)) { // previously visited object
+                        visitor.visitedExistentReferenceField(fieldRef);
+                    } else { // first time visited
+                        visitor.visitedNewReferenceField(fieldRef);
+                        visited.put(fieldRef, refChain + "." + field.getName());
+                        worklist.add(fieldRef);
+                    }
+                } else {
+                    Expression symbolicPrimitive = getPrimitiveSymbolicField(currentOwnerRef, field);
+                    visitor.visitedSymbolicPrimitiveField(symbolicPrimitive);
+                }
+            }
+        }
     }
 
 }

@@ -21,12 +21,14 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.PartialHeapBuildCG;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.NT;
 import lissa.heap.solving.techniques.SolvingStrategy;
 
@@ -81,6 +83,50 @@ public class JPF_lissa_SymHeap extends NativePeer {
             throw new RuntimeException("## Error: null object");
 
         ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+    }
+
+    @MJI
+    public static void buildPartialHeapInput(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+        ChoiceGenerator<?> cg;
+
+        LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
+
+        if (!ti.isFirstStepInsn()) {
+            cg = new PartialHeapBuildCG("buildPartialHeapCG", stg);
+            ss.setNextChoiceGenerator(cg);
+            env.repeatInvocation();
+        } else {
+            stg.buildPartialHeap(env);
+        }
+    }
+
+    @MJI
+    public static void handlePathCheckResult(MJIEnv env, int objRef, boolean repOKResult) {
+        SystemState ss = env.getVM().getSystemState();
+        LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
+        if (repOKResult) {
+            removeAddedChoicesByPathCheck(ss);
+            stg.countValidPath();
+        }
+
+    }
+
+    private static void removeAddedChoicesByPathCheck(SystemState ss) {
+        String cgID = "buildPartialHeapCG";
+        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
+        assert (lastCG != null);
+        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cgID.equals(cg.getId())) {
+                return;
+            }
+            cg.setDone();
+        }
+
+        throw new RuntimeException("Error: BuildPartialHeap choice generator not found");
     }
 
     @MJI
