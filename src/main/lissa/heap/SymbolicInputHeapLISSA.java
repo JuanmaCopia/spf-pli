@@ -65,29 +65,8 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         sih_new.header = this.header;
         sih_new.count = this.count;
         sih_new.implicitInputThis = this.implicitInputThis.makeShallowCopy();
-//        if (this.repOKPC != null)
-//            sih_new.repOKPC = this.repOKPC.make_copy();
-//        sih_new.heapSolution = heapSolution;
         return sih_new;
     }
-
-//    public void setRepOKPC(PathCondition pc) {
-//        repOKPC = pc;
-//    }
-//
-//    public PathCondition getRepOKPC() {
-//        if (repOKPC != null)
-//            return repOKPC.make_copy();
-//        return null;
-//    }
-//
-//    public void setHeapSolution(SymSolveSolution solution) {
-//        heapSolution = solution;
-//    }
-//
-//    public SymSolveSolution getHeapSolution() {
-//        return heapSolution;
-//    }
 
     public ClassInfo getImplicitInputClassInfo() {
         return implicitInputThis.getRootHeapNode().getType();

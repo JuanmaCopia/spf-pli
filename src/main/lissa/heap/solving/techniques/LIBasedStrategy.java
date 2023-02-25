@@ -1,23 +1,37 @@
 package lissa.heap.solving.techniques;
 
+import java.util.HashMap;
+
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.canonicalizer.Canonicalizer;
+import lissa.heap.solving.solver.SymSolveHeapSolver;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
+    SymSolveHeapSolver heapSolver = new SymSolveHeapSolver();;
+    Canonicalizer canonicalizer = new Canonicalizer(heapSolver.getStructureList());
+
     public boolean pathCheckEnabled = false;
     public int validPaths = 0;
-    private boolean pathCheckingMode;
+    boolean pathCheckingMode;
 
-    public abstract long getSolvingTime();
+    public Integer getBoundForClass(String simpleClassName) {
+        HashMap<String, Integer> dataBounds = heapSolver.getDataBounds();
+        return dataBounds.get(simpleClassName);
+    }
 
-    public abstract boolean isClassInBounds(String fieldSimpleClassName);
+    public boolean isClassInBounds(String simpleClassName) {
+        return getBoundForClass(simpleClassName) != null;
+    }
 
-    public abstract Integer getBoundForClass(String fieldSimpleClassName);
+    public long getSolvingTime() {
+        return heapSolver.getSolvingTime();
+    }
 
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {

@@ -23,7 +23,7 @@ import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class NT extends LISSA implements PCCheckStrategy {
+public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
     StaticRepOKCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;

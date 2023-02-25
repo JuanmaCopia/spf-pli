@@ -9,7 +9,7 @@ import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveVector;
 
-public class LISSAM extends LISSA {
+public class LISSAM extends LIBasedStrategy {
 
     HashMap<String, Boolean> isSatCache = new HashMap<>();
     public int cacheHits = 0;
