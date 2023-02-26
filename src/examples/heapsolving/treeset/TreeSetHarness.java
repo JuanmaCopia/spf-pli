@@ -9,7 +9,6 @@ public class TreeSetHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        SymHeap.initializePathCondition();
         TreeSet structure = new TreeSet();
         structure = (TreeSet) SymHeap.makeSymbolicRefThis("treeset_0", structure);
 

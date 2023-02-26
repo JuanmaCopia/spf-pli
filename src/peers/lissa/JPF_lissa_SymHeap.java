@@ -35,23 +35,6 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
-    public static void initializePathCondition(MJIEnv env, int objRef) {
-        ThreadInfo ti = env.getVM().getCurrentThread();
-        SystemState ss = env.getVM().getSystemState();
-        ChoiceGenerator<?> cg;
-
-        if (!ti.isFirstStepInsn()) {
-            cg = new PCChoiceGenerator(1);
-            ss.setNextChoiceGenerator(cg);
-            env.repeatInvocation();
-        } else {
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
-            curCg.getNextChoice();
-            curCg.setCurrentPC(new PathCondition());
-        }
-    }
-
-    @MJI
     public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
 
@@ -160,14 +143,14 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new HeapChoiceGeneratorLISSA(1); // new
+            cg = new HeapChoiceGeneratorLISSA("makeSymbolic", 1); // new
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
             return; // not used anyways
         }
         // else this is what really returns results
 
-        cg = ss.getChoiceGenerator();
+        cg = ss.getCurrentChoiceGenerator("makeSymbolic", HeapChoiceGeneratorLISSA.class);
         assert (cg instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: " + cg;
 
         // see if there were more inputs added before
@@ -216,30 +199,6 @@ public class JPF_lissa_SymHeap extends NativePeer {
         HeapChoiceGeneratorLISSA heapCG = ((HeapChoiceGeneratorLISSA) cg);
         heapCG.setCurrentPCheap(pcHeap);
         heapCG.setCurrentSymInputHeap(symInputHeap);
-
-//        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-//        if (solvingStrategy instanceof PCCheckStrategy) {
-//            LISSA strategy = (LISSA) solvingStrategy;
-//
-//            SymSolveVector vector = strategy.getCanonicalizer().createVector(symInputHeap);
-//            SymSolveHeapSolver heapSolver = strategy.getSolver();
-//            SymSolveSolution solution = heapSolver.solve(vector);
-//            assert (solution != null);
-//
-//            PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
-//            assert (pcCG != null);
-//
-//            while (solution != null) {
-//                if (((PCCheckStrategy) solvingStrategy).isSatWithRespectToPathCondition(ti, solution,
-//                        pcCG.getCurrentPC(), symInputHeap)) {
-//                    break;
-//                }
-//                solution = heapSolver.getNextSolution(solution);
-//            }
-//
-//            assert (solution != null);
-//            heapCG.setCurrentSolution(solution);
-//        }
 
         return;
     }

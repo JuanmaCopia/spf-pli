@@ -3,7 +3,15 @@ package lissa.listeners;
 import java.util.LinkedList;
 
 import gov.nasa.jpf.PropertyListenerAdapter;
+import gov.nasa.jpf.jvm.bytecode.EXECUTENATIVE;
 import gov.nasa.jpf.search.Search;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.vm.ChoiceGenerator;
+import gov.nasa.jpf.vm.Instruction;
+import gov.nasa.jpf.vm.SystemState;
+import gov.nasa.jpf.vm.ThreadInfo;
+import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
@@ -52,6 +60,30 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 //        System.out.println("About to execute instruction: " + instructionToExecute + "   MI: "
 //                + instructionToExecute.getMethodInfo());
 //    }
+
+    @Override
+    public void instructionExecuted(VM vm, ThreadInfo ti, Instruction nextInsn, Instruction executedInsn) {
+        SystemState ss = vm.getSystemState();
+
+        if (executedInsn instanceof EXECUTENATIVE) { // break on method call
+            EXECUTENATIVE exec = (EXECUTENATIVE) executedInsn;
+
+            if (exec.getExecutedMethodName().equals("makeSymbolicImplicitInputThis")
+                    && heapSolvingStrategy instanceof PCCheckStrategy) {
+                ChoiceGenerator<?> cg;
+
+                if (!ti.isFirstStepInsn()) {
+                    cg = new PCChoiceGenerator("initializePathCondition", 1);
+                    ss.setNextChoiceGenerator(cg);
+                    ti.reExecuteInstruction();
+                } else {
+                    PCChoiceGenerator curCg = (PCChoiceGenerator) ss.getChoiceGenerator();
+                    curCg.getNextChoice();
+                    curCg.setCurrentPC(new PathCondition());
+                }
+            }
+        }
+    }
 
     @Override
     public void searchFinished(Search search) {

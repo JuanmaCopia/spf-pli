@@ -4,8 +4,6 @@ import gov.nasa.jpf.vm.Verify;
 
 public class SymHeap {
 
-    native public static void initializePathCondition();
-
     public static Object makeSymbolicRefThis(String name, Object thisObject) {
         assert (thisObject != null);
         makeSymbolicImplicitInputThis(name, thisObject);

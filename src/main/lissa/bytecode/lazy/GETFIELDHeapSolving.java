@@ -108,7 +108,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                 increment = 1; // only null
             }
 
-            thisHeapCG = new HeapChoiceGeneratorLISSA(numSymRefs + increment); // +null,new
+            thisHeapCG = new HeapChoiceGeneratorLISSA("lazyInit", numSymRefs + increment); // +null,new
             ti.getVM().getSystemState().setNextChoiceGenerator(thisHeapCG);
             // ti.reExecuteInstruction();
             if (SymbolicInstructionFactory.debugMode)
