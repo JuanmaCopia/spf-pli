@@ -112,9 +112,10 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
-        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-
         PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        assert isSatWithRespectToPathCondition(ti, previousSolution, pcCG.getCurrentPC(), symInputHeap);
+
+        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         if (pcCG != null) {
             while (solution != null) {
                 if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
@@ -195,11 +196,10 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
         assert (symInputHeap != null);
 
-        String cgID = "repOKCG";
-        RepOKCallCG repOKCG = env.getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+        RepOKCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(RepOKCallCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
-        PCChoiceGenerator pcCG = repOKCG.getPCChoiceGenerator();
+        PCChoiceGenerator pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
         assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, pcCG.getCurrentPC(), symInputHeap));
 
         builder.buildSolution(env, objRef, symInputHeap, solution);

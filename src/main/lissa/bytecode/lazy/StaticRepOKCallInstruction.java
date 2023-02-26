@@ -111,7 +111,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            repOKCG = new RepOKCallCG(cgID, symInputHeap, curPCCG, curHeapCG, solution, isLazyStep);
+            repOKCG = new RepOKCallCG(cgID, symInputHeap, curHeapCG, solution, isLazyStep);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }
@@ -123,8 +123,6 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
                 return executeInvokeRepOK(ti);
             ti.getVM().getSystemState().setIgnored(true);
         }
-
-        assert (repOKCG.programPC.equals(curPCCG.getCurrentPC()));
 
         return next;
     }

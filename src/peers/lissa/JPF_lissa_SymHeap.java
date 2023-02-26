@@ -82,7 +82,26 @@ public class JPF_lissa_SymHeap extends NativePeer {
         if (objvRef == MJIEnv.NULL)
             throw new RuntimeException("## Error: null object");
 
-        ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+        ChoiceGenerator<?> cg;
+
+        if (!ti.isFirstStepInsn()) {
+            cg = new PCChoiceGenerator(1);
+            ss.setNextChoiceGenerator(cg);
+            env.repeatInvocation();
+        } else {
+            cg = ss.getChoiceGenerator();
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PathCondition pc;
+            if (prev_cg == null)
+                pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
+            else
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            assert (pc != null);
+            ((PCChoiceGenerator) cg).setCurrentPC(pc);
+            ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+        }
     }
 
     @MJI

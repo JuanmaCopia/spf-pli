@@ -1,6 +1,5 @@
 package lissa.choicegenerators;
 
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import lissa.LISSAShell;
@@ -11,8 +10,6 @@ import symsolve.vector.SymSolveSolution;
 public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     HeapChoiceGeneratorLISSA curHeapCG;
-    public PCChoiceGenerator currPCCG;
-    public PathCondition programPC;
 
     boolean pathReturningTrueFound = false;
     int repOKExecutions = 0;
@@ -25,8 +22,8 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     boolean isLazyStep;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, PCChoiceGenerator currPCCG,
-            HeapChoiceGeneratorLISSA curHeapCG, SymSolveSolution solution, boolean isLazyStep) {
+    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, HeapChoiceGeneratorLISSA curHeapCG,
+            SymSolveSolution solution, boolean isLazyStep) {
         super(id);
         repOKExecutions = 0;
         strategy = (NT) LISSAShell.solvingStrategy;
@@ -34,14 +31,10 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         candidateHeapSolution = solution;
         this.curHeapCG = curHeapCG;
         this.isLazyStep = isLazyStep;
-        this.currPCCG = currPCCG;
-        programPC = currPCCG.getCurrentPC();
     }
 
     public boolean hasNextSolution() {
         assert (candidateHeapSolution != null);
-        assert (strategy.isSatWithRespectToPathCondition(ti, candidateHeapSolution, currPCCG.getCurrentPC(),
-                symInputHeap));
         if (repOKExecutions > 0) {
             candidateHeapSolution = strategy.getNextSolution(ti, candidateHeapSolution, symInputHeap);
             if (candidateHeapSolution == null) {
@@ -70,13 +63,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
             }
         }
 
-        resetProgramPathCondition();
-
         return !pathReturningTrueFound;
-    }
-
-    private void resetProgramPathCondition() {
-        currPCCG.setCurrentPC(programPC);
     }
 
     public void pathReturningTrueFound() {
@@ -133,10 +120,6 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         if (pc == null)
             pc = new PathCondition();
         repOKPathCondition = pc;
-    }
-
-    public PCChoiceGenerator getPCChoiceGenerator() {
-        return currPCCG;
     }
 
 }
