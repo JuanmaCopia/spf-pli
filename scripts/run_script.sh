@@ -16,6 +16,7 @@ TIMEOUT=$5
 INTERVAL=$6
 SRC_FOLDER=$7
 PACKAGE=$8
+CHECKPATH=$9
 
 
 CONFIG_FOLDER="$SCRIPT_DIR/$SRC_FOLDER"
@@ -29,6 +30,7 @@ STRATEGY=${STRATEGY^^} # To upper case
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = ${METHOD}/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = $STRATEGY/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.checkPathValidity.*/heapsolving\.checkPathValidity = $CHECKPATH/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = $SCOPE/g" $PATH_CONFIG_FILE
 
 
@@ -44,6 +46,7 @@ TARGET="${PACKAGE}.METHOD.${CLASS_NAME}Main"
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = METHOD/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = HEAP_SOLVING_STRATEGY/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.checkPathValidity.*/heapsolving\.checkPathValidity = BOOLEAN/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = MAX_SCOPE/g" $PATH_CONFIG_FILE
 
 
