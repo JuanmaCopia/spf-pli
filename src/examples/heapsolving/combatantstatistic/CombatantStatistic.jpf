@@ -14,6 +14,7 @@ symbolic.debug = false
 symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.combatantstatistic.CombatantStatistic
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
