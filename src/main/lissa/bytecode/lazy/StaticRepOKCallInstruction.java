@@ -19,7 +19,6 @@ package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.jvm.bytecode.JVMInstructionVisitor;
 import gov.nasa.jpf.jvm.bytecode.JVMInvokeInstruction;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ClassLoaderInfo;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -30,42 +29,25 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
-import lissa.heap.SymbolicInputHeapLISSA;
-import symsolve.vector.SymSolveSolution;
 
 // need to fix names
 
 public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
-
     Instruction next;
-    SymbolicInputHeapLISSA symInputHeap;
-    SymSolveSolution solution;
-
-    PCChoiceGenerator curPCCG;
-    HeapChoiceGeneratorLISSA curHeapCG;
-
-    boolean isLazyStep;
+    RepOKCallCG repOKCG;
 
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
-    public void initialize(Instruction current, Instruction next, SymbolicInputHeapLISSA symInputHeap,
-            SymSolveSolution solution, PCChoiceGenerator curPCCG, HeapChoiceGeneratorLISSA curHeapCG,
-            boolean isLazyStep) {
+    public void initialize(Instruction current, Instruction next, RepOKCallCG repOKCG) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;
-        this.symInputHeap = symInputHeap;
-        this.solution = solution;
-        this.curPCCG = curPCCG;
-        this.curHeapCG = curHeapCG;
-        this.isLazyStep = isLazyStep;
-        assert (curPCCG != null);
+        this.repOKCG = repOKCG;
     }
 
     protected ClassInfo getClassInfo() {
@@ -105,18 +87,12 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     @Override
     public Instruction execute(ThreadInfo ti) {
-        assert (curHeapCG != null);
-        RepOKCallCG repOKCG;
-        String cgID = "repOKCG";
         SystemState ss = ti.getVM().getSystemState();
 
         if (!ti.isFirstStepInsn()) {
-            repOKCG = new RepOKCallCG(cgID, symInputHeap, curHeapCG, solution, isLazyStep);
             ss.setNextChoiceGenerator(repOKCG);
             return this;
         }
-
-        repOKCG = ss.getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
 
         if (repOKCG.allRepOKPathsReturnedFalse()) {
             if (repOKCG.hasNextSolution())

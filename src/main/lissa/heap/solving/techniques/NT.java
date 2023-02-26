@@ -133,7 +133,9 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         if (repOKCallInstruction == null)
             initializeRepOKCallInstruction(symInputHeap);
 
-        repOKCallInstruction.initialize(current, next, symInputHeap, solution, pcCG, heapCG, isLazyStep);
+        assert (pcCG != null && heapCG != null);
+        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, heapCG, solution, isLazyStep);
+        repOKCallInstruction.initialize(current, next, rcg);
         pushArguments(ti, null, null);
         return repOKCallInstruction;
     }
