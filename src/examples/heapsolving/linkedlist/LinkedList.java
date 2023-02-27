@@ -489,6 +489,12 @@ public class LinkedList {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(LinkedList structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
     public static IFinitization finLinkedList(int nodesNum) {
         IFinitization f = FinitizationFactory.create(LinkedList.class);
         IObjSet nodes = f.createObjSet(Entry.class, nodesNum, true);

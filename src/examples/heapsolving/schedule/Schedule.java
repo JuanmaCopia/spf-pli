@@ -407,6 +407,12 @@ public class Schedule {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(Schedule structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
     public static IFinitization finSchedule(int jobsNum) {
         IFinitization f = FinitizationFactory.create(Schedule.class);
 

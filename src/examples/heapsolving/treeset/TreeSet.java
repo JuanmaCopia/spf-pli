@@ -198,6 +198,12 @@ public class TreeSet {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(TreeSet structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
     public static IFinitization finTreeSet(int nodesNum) {
         IFinitization f = FinitizationFactory.create(TreeSet.class);
         IObjSet treemap = f.createObjSet(TreeMap.class, 1, true);

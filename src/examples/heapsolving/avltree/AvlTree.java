@@ -509,6 +509,12 @@ public class AvlTree {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(AvlTree structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
     public static IFinitization finAvlTree(int size) {
         IFinitization f = FinitizationFactory.create(AvlTree.class);
         IObjSet nodes = f.createObjSet(AvlNode.class, size, true);

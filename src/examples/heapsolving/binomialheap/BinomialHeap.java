@@ -474,6 +474,12 @@ public class BinomialHeap {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
+    public static void checkPathValidity(BinomialHeap structure) {
+        SymHeap.buildPartialHeapInput(structure);
+        boolean result = structure.repOKComplete();
+        SymHeap.handlePathCheckResult(result);
+    }
+
     public static IFinitization finBinomialHeap(int size) {
         IFinitization f = FinitizationFactory.create(BinomialHeap.class);
         IObjSet nodes = f.createObjSet(BinomialHeapNode.class, size, true);

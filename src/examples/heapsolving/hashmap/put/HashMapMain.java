@@ -28,6 +28,8 @@ public class HashMapMain {
             }
 
             SymHeap.countPath();
+            if (SymHeap.isCheckPathValidityEnabled())
+                HashMap.checkPathValidity(structure);
         }
     }
 

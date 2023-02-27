@@ -73,4 +73,6 @@ public class SymHeap {
         return new String(str);
     }
 
+    native public static boolean isCheckPathValidityEnabled();
+
 }

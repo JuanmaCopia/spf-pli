@@ -26,6 +26,8 @@ public class LinkedListMain {
             }
 
             SymHeap.countPath();
+            if (SymHeap.isCheckPathValidityEnabled())
+                LinkedList.checkPathValidity(structure);
         }
     }
 

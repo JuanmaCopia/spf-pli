@@ -25,6 +25,8 @@ public class TreeMapMain {
                 System.out.println(e);
             }
             SymHeap.countPath();
+            if (SymHeap.isCheckPathValidityEnabled())
+                TreeMap.checkPathValidity(structure);
         }
     }
 

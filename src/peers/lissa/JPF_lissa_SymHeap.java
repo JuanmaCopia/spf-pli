@@ -35,6 +35,11 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
+    public static boolean isCheckPathValidityEnabled(MJIEnv env, int objRef) {
+        return LISSAShell.configParser.checkPathValidity;
+    }
+
+    @MJI
     public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
 

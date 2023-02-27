@@ -27,6 +27,8 @@ public class ScheduleMain {
             }
 
             SymHeap.countPath();
+            if (SymHeap.isCheckPathValidityEnabled())
+                Schedule.checkPathValidity(structure);
         }
     }
 
