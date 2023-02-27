@@ -60,7 +60,7 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
     }
 
     @Override
-    public SymbolicInputHeap make_copy() {
+    public SymbolicInputHeapLISSA make_copy() {
         SymbolicInputHeapLISSA sih_new = new SymbolicInputHeapLISSA();
         sih_new.header = this.header;
         sih_new.count = this.count;

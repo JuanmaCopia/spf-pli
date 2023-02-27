@@ -25,7 +25,7 @@ import lissa.utils.Utils;
 public class HeapSolvingListener extends PropertyListenerAdapter {
 
     SolvingStrategy heapSolvingStrategy;
-    ConfigParser configParser;
+    ConfigParser config;
 
     long totalTime = 0;
 
@@ -33,7 +33,6 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int cacheHits = 0;
 
     int exploredPaths = 0;
-    boolean validityCheck;
     int exceptionsThrown = 0;
     int invalidPaths = 0;
     int validPaths = 0;
@@ -41,16 +40,16 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int prunedBranchesDueToPC = 0;
     long repOKPCSolvingTime = 0;
 
-    public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser configParser) {
+    public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser config) {
         this.heapSolvingStrategy = solvingStrategy;
-        this.configParser = configParser;
+        this.config = config;
     }
 
     @Override
     public void searchStarted(Search search) {
-        if (!Utils.fileExist(configParser.resultsFileName)) {
-            Utils.createFileAndFolders(configParser.resultsFileName, false);
-            Utils.appendToFile(configParser.resultsFileName, getFileHeader());
+        if (!Utils.fileExist(config.resultsFileName)) {
+            Utils.createFileAndFolders(config.resultsFileName, false);
+            Utils.appendToFile(config.resultsFileName, getFileHeader());
         }
         this.totalTime = System.currentTimeMillis();
     }
@@ -101,10 +100,8 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             LIBasedStrategy stg = (LIBasedStrategy) heapSolvingStrategy;
             solvingTime = stg.getSolvingTime();
 
-            if (stg.pathCheckEnabled) {
+            if (config.checkPathValidity)
                 validPaths = stg.validPaths;
-                validityCheck = true;
-            }
 
             if (heapSolvingStrategy instanceof LISSAM) {
                 cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
@@ -117,10 +114,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     void printReport() {
-        System.out.println("\n\nTechnique:  " + configParser.solvingStrategy.name());
-        System.out.println(String.format("Method:     %s.%s", configParser.symSolveSimpleClassName,
-                configParser.targetMethodName));
-        System.out.println("Scope:      " + configParser.finitizationArgs);
+        System.out.println("\n\nTechnique:  " + config.solvingStrategy.name());
+        System.out.println(String.format("Method:     %s.%s", config.symSolveSimpleClassName, config.targetMethodName));
+        System.out.println("Scope:      " + config.finitizationArgs);
         System.out.println("\n------- Statistics -------\n");
         System.out.println(" - Executed Paths:        " + exploredPaths);
         System.out.println(" - Exceptions thrown:        " + exceptionsThrown);
@@ -128,7 +124,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
-            if (validityCheck)
+            if (config.checkPathValidity)
                 System.out.println(" - Valid Paths:           " + validPaths);
             System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
         }
@@ -149,14 +145,14 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
     String createStringData() {
         LinkedList<String> results = new LinkedList<String>();
-        results.add(configParser.targetMethodName);
-        results.add(configParser.solvingStrategy.name());
-        results.add(configParser.finitizationArgs);
+        results.add(config.targetMethodName);
+        results.add(config.solvingStrategy.name());
+        results.add(config.finitizationArgs);
         results.add(Utils.calculateTimeInHHMMSS(totalTime));
         results.add(Utils.calculateTimeInHHMMSS(solvingTime));
         results.add(Utils.calculateTimeInHHMMSS(repOKPCSolvingTime));
         results.add(Integer.toString(exploredPaths));
-        if (validityCheck)
+        if (config.checkPathValidity)
             results.add(Integer.toString(validPaths));
         else
             results.add("-");
@@ -166,7 +162,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     void writeDataToFile(String data) {
-        Utils.appendToFile(configParser.resultsFileName, data);
+        Utils.appendToFile(config.resultsFileName, data);
     }
 
     String getFileHeader() {

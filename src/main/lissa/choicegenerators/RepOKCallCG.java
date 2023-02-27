@@ -31,6 +31,7 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         candidateHeapSolution = solution;
         this.curHeapCG = curHeapCG;
         this.isLazyStep = isLazyStep;
+        strategy.startRepOKExecutionMode();
     }
 
     public boolean hasNextSolution() {
@@ -45,13 +46,10 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
         }
 
         repOKExecutions++;
-        strategy.startRepOKExecutionMode();
         return true;
     }
 
     public boolean allRepOKPathsReturnedFalse() {
-        strategy.stopRepOKExecutionMode();
-
         if (pathReturningTrueFound) {
             setDone();
             if (isLazyStep) {
@@ -85,7 +83,16 @@ public class RepOKCallCG extends ChoiceGeneratorBase<Integer> {
 
     @Override
     public boolean hasMoreChoices() {
+        if (isDone) {
+            strategy.stopRepOKExecutionMode();
+        }
         return !isDone;
+    }
+
+    @Override
+    public void setDone() {
+        super.setDone();
+        strategy.stopRepOKExecutionMode();
     }
 
     @Override

@@ -16,7 +16,6 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     SymSolveHeapSolver heapSolver = new SymSolveHeapSolver();;
     Canonicalizer canonicalizer = new Canonicalizer(heapSolver.getStructureList());
 
-    public boolean pathCheckEnabled = false;
     public int validPaths = 0;
     boolean pathCheckingMode;
 
@@ -53,7 +52,6 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     }
 
     public void startPathCheckingMode() {
-        pathCheckEnabled = true;
         pathCheckingMode = true;
     }
 
