@@ -859,9 +859,9 @@ public class TreeMap {
     }
 
     public static void checkPathValidity(TreeMap structure) {
-        SymHeap.buildPartialHeapInput(structure);
-        boolean result = structure.repOKComplete();
-        SymHeap.handlePathCheckResult(result);
+        TreeMap toBuild = new TreeMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handlePathCheckResult(toBuild.repOKComplete());
     }
 
 //    public String treeToString() {

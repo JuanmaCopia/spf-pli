@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
@@ -32,6 +31,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
+import lissa.bytecode.lazy.StaticCompleteRepOKCallInstruction;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.solving.techniques.LIBasedStrategy;
@@ -60,6 +60,26 @@ public class SymHeapHelper {
         return new StaticRepOKCallInstruction(clsName, mthName, signature);
     }
 
+    public static StaticCompleteRepOKCallInstruction createStaticCompleteRepOKCallInstruction(
+            String staticMethodSignature) {
+        HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+        return createStaticCompleteRepOKCallInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature);
+    }
+
+    public static StaticCompleteRepOKCallInstruction createStaticCompleteRepOKCallInstruction(
+            SymbolicInputHeapLISSA symInputHeap, String staticMethodSignature) {
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+
+        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+        MethodInfo repokMI = rootClassInfo.getMethod(staticMethodSignature, false);
+
+        String clsName = repokMI.getClassInfo().getName();
+        String mthName = repokMI.getName();
+        String signature = repokMI.getSignature();
+
+        return new StaticCompleteRepOKCallInstruction(clsName, mthName, signature);
+    }
+
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
             PCChoiceGenerator cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
@@ -75,7 +95,7 @@ public class SymHeapHelper {
     }
 
     public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
-            SymbolicInputHeap symInputHeap) {
+            SymbolicInputHeapLISSA symInputHeap) {
         Expression sym_v = null;
         String name = "";
 
@@ -98,7 +118,7 @@ public class SymHeapHelper {
 
         // ==== ADDED:
 
-        SymbolicReferenceInput symRefInput = ((SymbolicInputHeapLISSA) symInputHeap).getImplicitInputThis();
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         if (!(field instanceof ReferenceFieldInfo) || field.getType().equals("java.lang.String")) {
             symRefInput.addPrimitiveSymbolicField(eiRef.getObjectRef(), field, sym_v);
         } else {
@@ -108,13 +128,13 @@ public class SymHeapHelper {
     }
 
     public static void initializeInstanceFields(FieldInfo[] fields, ElementInfo eiRef, String refChain,
-            SymbolicInputHeap symInputHeap) {
+            SymbolicInputHeapLISSA symInputHeap) {
         for (int i = 0; i < fields.length; i++)
             initializeInstanceField(fields[i], eiRef, refChain, "", symInputHeap);
     }
 
     public static int addNewHeapNode(ClassInfo typeClassInfo, ThreadInfo ti, Object attr, PathCondition pcHeap,
-            SymbolicInputHeap symInputHeap, int numSymRefs, HeapNode[] prevSymRefs, boolean setShared) {
+            SymbolicInputHeapLISSA symInputHeap, int numSymRefs, HeapNode[] prevSymRefs, boolean setShared) {
         int daIndex = ti.getHeap().newObject(typeClassInfo, ti).getObjectRef();
         ti.getHeap().registerPinDown(daIndex);
         String refChain = ((SymbolicInteger) attr).getName(); // + "[" + daIndex + "]"; // do we really need to add

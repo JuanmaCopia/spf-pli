@@ -67,8 +67,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (executedInsn instanceof EXECUTENATIVE) { // break on method call
             EXECUTENATIVE exec = (EXECUTENATIVE) executedInsn;
 
-            if (exec.getExecutedMethodName().equals("makeSymbolicImplicitInputThis")
-                    && heapSolvingStrategy instanceof PCCheckStrategy) {
+            if (exec.getExecutedMethodName().equals("makeSymbolicImplicitInputThis")) {
                 ChoiceGenerator<?> cg;
 
                 if (!ti.isFirstStepInsn()) {

@@ -98,16 +98,34 @@ public class JPF_lissa_SymHeap extends NativePeer {
             throw new RuntimeException("## Error: null object");
         ThreadInfo ti = env.getVM().getCurrentThread();
         SystemState ss = env.getVM().getSystemState();
-        ChoiceGenerator<?> cg;
 
         LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new PartialHeapBuildCG("buildPartialHeapCG", stg);
-            ss.setNextChoiceGenerator(cg);
+
+            ss.setNextChoiceGenerator(new HeapChoiceGeneratorLISSA("HeapCGBuildPartialHeap", 1));
+            ss.setNextChoiceGenerator(new PCChoiceGenerator("PCCGBuildPartialHeap", 1));
+            ss.setNextChoiceGenerator(new PartialHeapBuildCG("buildPartialHeapCG", stg));
             env.repeatInvocation();
         } else {
-            stg.buildPartialHeap(env);
+
+            HeapChoiceGeneratorLISSA newHeapCG = ss.getCurrentChoiceGenerator("HeapCGBuildPartialHeap",
+                    HeapChoiceGeneratorLISSA.class);
+            assert (newHeapCG != null);
+            HeapChoiceGeneratorLISSA prevHeapCG = newHeapCG
+                    .getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+            assert (prevHeapCG != null);
+
+            PCChoiceGenerator newPCCG = ss.getCurrentChoiceGenerator("PCCGBuildPartialHeap", PCChoiceGenerator.class);
+            assert (newPCCG != null);
+            PCChoiceGenerator prevPCCG = newPCCG.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            assert (prevPCCG != null);
+            newPCCG.setCurrentPC(prevPCCG.getCurrentPC());
+
+            SymbolicInputHeapLISSA symInputHeap = prevHeapCG.getCurrentSymInputHeap();
+            assert (symInputHeap != null);
+
+            symInputHeap.getImplicitInputThis().buildPartialHeap(env, objvRef, newHeapCG);
         }
     }
 

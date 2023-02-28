@@ -1,8 +1,9 @@
 package lissa.heap;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -16,6 +17,7 @@ import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.visitors.PartialHeapBuilderVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor;
 
@@ -158,24 +160,27 @@ public class SymbolicReferenceInput {
         }
     }
 
-    public void buildPartialHeap(MJIEnv env) {
-        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env);
+    public void buildPartialHeap(MJIEnv env, int newRootRef, HeapChoiceGeneratorLISSA heapCG) {
+        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env, newRootRef);
         acceptBFSBuilder(visitor);
+
+        heapCG.setCurrentSymInputHeap(visitor.getNewSymbolicInputHeap());
+        heapCG.setCurrentPCheap(visitor.getHeapPathCondition());
     }
 
     public void acceptBFSBuilder(PartialHeapBuilderVisitor visitor) {
         ThreadInfo ti = VM.getVM().getCurrentThread();
-        Map<Integer, String> visited = new HashMap<>();
+        Set<Integer> visited = new HashSet<>();
         LinkedList<Integer> worklist = new LinkedList<Integer>();
         Integer rootIndex = this.rootHeapNode.getIndex();
-        visited.put(rootIndex, "HEAP-ROOT");
+        visited.add(rootIndex);
         worklist.add(rootIndex);
+        visitor.setRoot(rootIndex);
 
         while (!worklist.isEmpty()) {
             int currentOwnerRef = worklist.removeFirst();
-            String refChain = visited.get(currentOwnerRef);
             ElementInfo owner = ti.getElementInfo(currentOwnerRef);
-            visitor.setCurrentOwner(currentOwnerRef, refChain);
+            visitor.setCurrentOwner(currentOwnerRef);
 
             ClassInfo ownerObjectClass = owner.getClassInfo();
             FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
@@ -192,11 +197,10 @@ public class SymbolicReferenceInput {
                         visitor.visitedSymbolicReferenceField();
                     } else if (fieldRef == NULL) {
                         visitor.visitedNullReferenceField();
-                    } else if (visited.containsKey(fieldRef)) { // previously visited object
+                    } else if (!visited.add(fieldRef)) { // previously visited object
                         visitor.visitedExistentReferenceField(fieldRef);
                     } else { // first time visited
                         visitor.visitedNewReferenceField(fieldRef);
-                        visited.put(fieldRef, refChain + "." + field.getName());
                         worklist.add(fieldRef);
                     }
                 } else {
