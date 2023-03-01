@@ -251,7 +251,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void countException(MJIEnv env, int objRef) {
+    public static void exceptionThrown(MJIEnv env, int objRef) {
     }
 
     @MJI

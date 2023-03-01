@@ -21,7 +21,7 @@ public class AvlTreeMain {
             try {
                 structure.remove(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
             SymHeap.pathFinished();

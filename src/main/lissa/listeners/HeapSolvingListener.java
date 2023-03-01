@@ -85,7 +85,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 if (config.checkPathValidity)
                     ti.setNextPC(SymHeapHelper.createINVOKESTATICInstruction("checkPathValidity()V", executedInsn));
 
-            } else if (exec.getExecutedMethodName().equals("countException")) {
+            } else if (exec.getExecutedMethodName().equals("exceptionThrown")) {
                 heapSolvingStrategy.countException();
             }
         }

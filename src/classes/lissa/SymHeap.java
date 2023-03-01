@@ -35,7 +35,7 @@ public class SymHeap {
 
     native public static void pathFinished();
 
-    native public static void countException();
+    native public static void exceptionThrown();
 
     native public static boolean usingDriverStrategy();
 

@@ -23,7 +23,7 @@ public class HashMapMain {
                 // Call to method under analysis
                 structure.put(key, value);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
             SymHeap.pathFinished();

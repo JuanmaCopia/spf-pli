@@ -21,7 +21,7 @@ public class TreeMapMain {
             try {
                 structure.containsValue(value);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
             SymHeap.pathFinished();

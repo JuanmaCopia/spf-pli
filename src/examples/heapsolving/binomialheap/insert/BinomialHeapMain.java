@@ -21,7 +21,7 @@ public class BinomialHeapMain {
             try {
                 structure.insert(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
             SymHeap.pathFinished();

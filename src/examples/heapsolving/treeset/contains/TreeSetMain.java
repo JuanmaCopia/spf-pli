@@ -22,7 +22,7 @@ public class TreeSetMain {
                 // Call to method under analysis
                 structure.contains(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
             }
 
             SymHeap.pathFinished();

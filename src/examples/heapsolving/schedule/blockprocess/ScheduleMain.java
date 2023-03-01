@@ -21,7 +21,7 @@ public class ScheduleMain {
                 // Call to method under analysis
                 structure.blockProcess();
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
 
