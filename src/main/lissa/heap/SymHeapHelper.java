@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
-import gov.nasa.jpf.symbc.bytecode.INVOKESTATIC;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
@@ -32,7 +31,6 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
-import lissa.bytecode.lazy.StaticCompleteRepOKCallInstruction;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.solving.techniques.LIBasedStrategy;
@@ -41,28 +39,6 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
-
-    public static INVOKESTATIC createINVOKESTATICInstruction(String staticMethodSignature, Instruction currentIns) {
-        HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
-        return createINVOKESTATICInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature, currentIns);
-    }
-
-    public static INVOKESTATIC createINVOKESTATICInstruction(SymbolicInputHeapLISSA symInputHeap,
-            String staticMethodSignature, Instruction currentIns) {
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
-        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
-        MethodInfo repokMI = rootClassInfo.getMethod(staticMethodSignature, false);
-
-        String clsName = repokMI.getClassInfo().getName();
-        String mthName = repokMI.getName();
-        String signature = repokMI.getSignature();
-
-        INVOKESTATIC newInstruction = new INVOKESTATIC(clsName, mthName, signature);
-        newInstruction.setMethodInfo(currentIns.getMethodInfo());
-        newInstruction.setLocation(currentIns.getInstructionIndex(), currentIns.getPosition());
-        return newInstruction;
-    }
 
     public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(String staticMethodSignature) {
         HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
@@ -81,26 +57,6 @@ public class SymHeapHelper {
         String signature = repokMI.getSignature();
 
         return new StaticRepOKCallInstruction(clsName, mthName, signature);
-    }
-
-    public static StaticCompleteRepOKCallInstruction createStaticCompleteRepOKCallInstruction(
-            String staticMethodSignature) {
-        HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
-        return createStaticCompleteRepOKCallInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature);
-    }
-
-    public static StaticCompleteRepOKCallInstruction createStaticCompleteRepOKCallInstruction(
-            SymbolicInputHeapLISSA symInputHeap, String staticMethodSignature) {
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
-        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
-        MethodInfo repokMI = rootClassInfo.getMethod(staticMethodSignature, false);
-
-        String clsName = repokMI.getClassInfo().getName();
-        String mthName = repokMI.getName();
-        String signature = repokMI.getSignature();
-
-        return new StaticCompleteRepOKCallInstruction(clsName, mthName, signature);
     }
 
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,

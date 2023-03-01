@@ -509,10 +509,10 @@ public class AvlTree {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity(AvlTree structure) {
-        SymHeap.buildPartialHeapInput(structure);
-        boolean result = structure.repOKComplete();
-        SymHeap.handlePathCheckResult(result);
+    public static void runRepOKComplete() {
+        AvlTree toBuild = new AvlTree();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finAvlTree(int size) {

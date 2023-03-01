@@ -21,14 +21,12 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import lissa.choicegenerators.PartialHeapBuildCG;
-import lissa.choicegenerators.RepOKCallCG;
+import lissa.choicegenerators.RepOKCallChoiceGenerator;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.NT;
 
 public class JPF_lissa_SymHeap extends NativePeer {
@@ -38,30 +36,18 @@ public class JPF_lissa_SymHeap extends NativePeer {
         return LISSAShell.configParser.checkPathValidity;
     }
 
-    @MJI
-    public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
-        SystemState ss = env.getVM().getSystemState();
-
-        if (repOKResult) {
-            RepOKCallCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
-            repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
-            repOKChoiceGenerator.pathReturningTrueFound();
-        }
-        ss.setIgnored(true);
-    }
-
-    private static RepOKCallCG removeAddedChoicesByRepOK(SystemState ss) {
-        String cgID = "repOKCG";
+    private static RepOKCallChoiceGenerator removeAddedChoicesByRepOK(SystemState ss) {
+        // String cgID = "repOKCG";
         ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
         assert (lastCG != null);
         for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cgID.equals(cg.getId())) {
-                return (RepOKCallCG) cg;
+            if (cg instanceof RepOKCallChoiceGenerator) {
+                return (RepOKCallChoiceGenerator) cg;
             }
             cg.setDone();
         }
 
-        throw new RuntimeException("Error: RepOKCall choice generator not found");
+        throw new RuntimeException("Error: RepOKCallChoiceGenerator not found");
     }
 
     @MJI
@@ -98,13 +84,10 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ThreadInfo ti = env.getVM().getCurrentThread();
         SystemState ss = env.getVM().getSystemState();
 
-        LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
-
         if (!ti.isFirstStepInsn()) {
 
             ss.setNextChoiceGenerator(new HeapChoiceGeneratorLISSA("HeapCGBuildPartialHeap", 1));
             ss.setNextChoiceGenerator(new PCChoiceGenerator("PCCGBuildPartialHeap", 1));
-            ss.setNextChoiceGenerator(new PartialHeapBuildCG("buildPartialHeapCG", stg));
             env.repeatInvocation();
         } else {
 
@@ -129,28 +112,15 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void handlePathCheckResult(MJIEnv env, int objRef, boolean repOKResult) {
+    public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
-        LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
+
         if (repOKResult) {
-            removeAddedChoicesByPathCheck(ss);
-            stg.countValidPath();
+            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
+            repOKChoiceGenerator.pathReturningTrueFound();
         }
-
-    }
-
-    private static void removeAddedChoicesByPathCheck(SystemState ss) {
-        String cgID = "buildPartialHeapCG";
-        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
-        assert (lastCG != null);
-        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cgID.equals(cg.getId())) {
-                return;
-            }
-            cg.setDone();
-        }
-
-        throw new RuntimeException("Error: BuildPartialHeap choice generator not found");
+        ss.setIgnored(true);
     }
 
     @MJI

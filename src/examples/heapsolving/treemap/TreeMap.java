@@ -858,10 +858,10 @@ public class TreeMap {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity() {
+    public static void runRepOKComplete() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handlePathCheckResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
 //    public String treeToString() {

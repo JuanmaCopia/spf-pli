@@ -489,10 +489,10 @@ public class LinkedList {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity(LinkedList structure) {
-        SymHeap.buildPartialHeapInput(structure);
-        boolean result = structure.repOKComplete();
-        SymHeap.handlePathCheckResult(result);
+    public static void runRepOKComplete() {
+        LinkedList toBuild = new LinkedList();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finLinkedList(int nodesNum) {

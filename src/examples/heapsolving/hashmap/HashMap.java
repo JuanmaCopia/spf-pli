@@ -641,10 +641,10 @@ public class HashMap {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity(HashMap structure) {
-        SymHeap.buildPartialHeapInput(structure);
-        boolean result = structure.repOKComplete();
-        SymHeap.handlePathCheckResult(result);
+    public static void runRepOKComplete() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public class Entry {

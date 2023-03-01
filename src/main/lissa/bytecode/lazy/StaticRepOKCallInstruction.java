@@ -29,7 +29,7 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import lissa.choicegenerators.RepOKCallCG;
+import lissa.choicegenerators.RepOKCallChoiceGenerator;
 
 // need to fix names
 
@@ -37,13 +37,13 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
     Instruction next;
-    RepOKCallCG repOKCG;
+    RepOKCallChoiceGenerator repOKCG;
 
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
-    public void initialize(Instruction current, Instruction next, RepOKCallCG repOKCG) {
+    public void initialize(Instruction current, Instruction next, RepOKCallChoiceGenerator repOKCG) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;
@@ -92,6 +92,11 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         if (!ti.isFirstStepInsn()) {
             ss.setNextChoiceGenerator(repOKCG);
             return this;
+        }
+
+        if (!repOKCG.executed()) {
+            repOKCG.setExecuted();
+            return executeInvokeRepOK(ti);
         }
 
         if (repOKCG.allRepOKPathsReturnedFalse()) {

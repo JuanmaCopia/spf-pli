@@ -198,10 +198,10 @@ public class TreeSet {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity(TreeSet structure) {
-        SymHeap.buildPartialHeapInput(structure);
-        boolean result = structure.repOKComplete();
-        SymHeap.handlePathCheckResult(result);
+    public static void runRepOKComplete() {
+        TreeSet toBuild = new TreeSet();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finTreeSet(int nodesNum) {
