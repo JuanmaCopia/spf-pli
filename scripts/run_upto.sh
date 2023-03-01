@@ -6,7 +6,6 @@ TIMEOUT=7210 # 2 hours and 10 seconds
 # Time between timeout checks
 INTERVAL=60 # 1 minutes
 
-CHECKPATH="false"
 
 # Arguments
 CLASS_NAME=$1
@@ -16,6 +15,7 @@ MINSCOPE=$4
 MAXSCOPE=$5
 SRC_FOLDER=$6
 PACKAGE=$7
+CHECKPATH=$8
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 TARGET_SCRIPT="${SCRIPT_DIR}/run_script.sh"
