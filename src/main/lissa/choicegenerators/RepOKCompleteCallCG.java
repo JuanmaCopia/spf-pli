@@ -13,25 +13,11 @@ public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
     @Override
     public boolean allRepOKPathsReturnedFalse() {
         if (pathReturningTrueFound) {
-            setDone();
+            if (isPathValidityCheck)
+                strategy.countValidPath();
         }
+        setDone();
         return !pathReturningTrueFound;
-    }
-
-    @Override
-    public boolean hasMoreChoices() {
-        if (executed()) {
-            strategy.stopRepOKExecutionMode();
-            return false;
-        }
-        return !isDone;
-    }
-
-    @Override
-    public void pathReturningTrueFound() {
-        super.pathReturningTrueFound();
-        if (isPathValidityCheck)
-            strategy.countValidPath();
     }
 
     @Override
