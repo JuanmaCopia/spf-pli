@@ -9,7 +9,6 @@ public class AvlTreeHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        SymHeap.initializePathCondition();
         AvlTree structure = new AvlTree();
         structure = (AvlTree) SymHeap.makeSymbolicRefThis("avltree_0", structure);
 

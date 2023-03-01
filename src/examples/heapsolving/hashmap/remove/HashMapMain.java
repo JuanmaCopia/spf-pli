@@ -22,11 +22,10 @@ public class HashMapMain {
                 // Call to method under analysis
                 structure.remove(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
-
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

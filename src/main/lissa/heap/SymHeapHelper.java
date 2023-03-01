@@ -5,10 +5,10 @@ import java.util.LinkedList;
 
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -23,24 +23,48 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.IntegerFieldInfo;
 import gov.nasa.jpf.vm.LongFieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
+import gov.nasa.jpf.vm.MethodInfo;
+import gov.nasa.jpf.vm.ObjRef;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
+import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
+import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
+import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
 
+    public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(String staticMethodSignature) {
+        HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+        return createStaticRepOKCallInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature);
+    }
+
+    public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(SymbolicInputHeapLISSA symInputHeap,
+            String staticMethodSignature) {
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+
+        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+        MethodInfo repokMI = rootClassInfo.getMethod(staticMethodSignature, false);
+
+        String clsName = repokMI.getClassInfo().getName();
+        String mthName = repokMI.getName();
+        String signature = repokMI.getSignature();
+
+        return new StaticRepOKCallInstruction(clsName, mthName, signature);
+    }
+
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
             PCChoiceGenerator cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
-            PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-            if (!strategy.isRepOKExecutionMode()) {
+        if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isRepOKExecutionMode()) {
+            if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
+                PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
                 return strategy.handlePrimitiveBranch(ti, current, next, cg);
             }
         }
@@ -48,7 +72,7 @@ public class SymHeapHelper {
     }
 
     public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
-            SymbolicInputHeap symInputHeap) {
+            SymbolicInputHeapLISSA symInputHeap) {
         Expression sym_v = null;
         String name = "";
 
@@ -71,7 +95,7 @@ public class SymHeapHelper {
 
         // ==== ADDED:
 
-        SymbolicReferenceInput symRefInput = ((SymbolicInputHeapLISSA) symInputHeap).getImplicitInputThis();
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         if (!(field instanceof ReferenceFieldInfo) || field.getType().equals("java.lang.String")) {
             symRefInput.addPrimitiveSymbolicField(eiRef.getObjectRef(), field, sym_v);
         } else {
@@ -81,13 +105,13 @@ public class SymHeapHelper {
     }
 
     public static void initializeInstanceFields(FieldInfo[] fields, ElementInfo eiRef, String refChain,
-            SymbolicInputHeap symInputHeap) {
+            SymbolicInputHeapLISSA symInputHeap) {
         for (int i = 0; i < fields.length; i++)
             initializeInstanceField(fields[i], eiRef, refChain, "", symInputHeap);
     }
 
     public static int addNewHeapNode(ClassInfo typeClassInfo, ThreadInfo ti, Object attr, PathCondition pcHeap,
-            SymbolicInputHeap symInputHeap, int numSymRefs, HeapNode[] prevSymRefs, boolean setShared) {
+            SymbolicInputHeapLISSA symInputHeap, int numSymRefs, HeapNode[] prevSymRefs, boolean setShared) {
         int daIndex = ti.getHeap().newObject(typeClassInfo, ti).getObjectRef();
         ti.getHeap().registerPinDown(daIndex);
         String refChain = ((SymbolicInteger) attr).getName(); // + "[" + daIndex + "]"; // do we really need to add
@@ -215,6 +239,47 @@ public class SymHeapHelper {
                 visitor.resetCurrentField();
             }
             visitor.resetCurrentOwner();
+        }
+    }
+
+    public static void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
+        StackFrame frame = ti.getModifiableTopFrame();
+
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Object a = args[i];
+                boolean isLong = false;
+
+                if (a != null) {
+                    if (a instanceof ObjRef) {
+                        frame.pushRef(((ObjRef) a).getReference());
+                    } else if (a instanceof Boolean) {
+                        frame.push((Boolean) a ? 1 : 0, false);
+                    } else if (a instanceof Integer) {
+                        frame.push((Integer) a, false);
+                    } else if (a instanceof Long) {
+                        frame.pushLong((Long) a);
+                        isLong = true;
+                    } else if (a instanceof Double) {
+                        frame.pushLong(Types.doubleToLong((Double) a));
+                        isLong = true;
+                    } else if (a instanceof Byte) {
+                        frame.push((Byte) a, false);
+                    } else if (a instanceof Short) {
+                        frame.push((Short) a, false);
+                    } else if (a instanceof Float) {
+                        frame.push(Types.floatToInt((Float) a), false);
+                    }
+                }
+
+                if (attrs != null && attrs[i] != null) {
+                    if (isLong) {
+                        frame.setLongOperandAttr(attrs[i]);
+                    } else {
+                        frame.setOperandAttr(attrs[i]);
+                    }
+                }
+            }
         }
     }
 

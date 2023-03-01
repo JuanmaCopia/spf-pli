@@ -22,10 +22,10 @@ public class TreeSetMain {
                 // Call to method under analysis
                 structure.add(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

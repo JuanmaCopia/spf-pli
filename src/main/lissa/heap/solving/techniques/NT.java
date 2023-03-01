@@ -2,20 +2,14 @@ package lissa.heap.solving.techniques;
 
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
-import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
-import gov.nasa.jpf.vm.MethodInfo;
-import gov.nasa.jpf.vm.ObjRef;
-import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.vm.Types;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.CheckPathConditionVisitor;
 import lissa.heap.builder.HeapSolutionBuilder;
 import symsolve.candidates.traversals.BFSCandidateTraversal;
@@ -23,14 +17,13 @@ import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class NT extends LISSA implements PCCheckStrategy {
+public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
     StaticRepOKCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
     int prunedBranches = 0;
-    long repokExecTime = 0;
-    long repOKStartTime = 0;
+
     public int primitiveBranches = 0;
 
     public NT() {
@@ -112,9 +105,10 @@ public class NT extends LISSA implements PCCheckStrategy {
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
-        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-
         PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        assert isSatWithRespectToPathCondition(ti, previousSolution, pcCG.getCurrentPC(), symInputHeap);
+
+        SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         if (pcCG != null) {
             while (solution != null) {
                 if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
@@ -130,102 +124,26 @@ public class NT extends LISSA implements PCCheckStrategy {
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGenerator pcCG,
             HeapChoiceGeneratorLISSA heapCG, boolean isLazyStep) {
         if (repOKCallInstruction == null)
-            initializeRepOKCallInstruction(symInputHeap);
+            repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
 
-        repOKCallInstruction.initialize(current, next, symInputHeap, solution, pcCG, heapCG, isLazyStep);
-        pushArguments(ti, null, null);
+        assert (pcCG != null && heapCG != null);
+        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, heapCG, solution, isLazyStep);
+        repOKCallInstruction.initialize(current, next, rcg);
+        SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;
-    }
-
-    private void initializeRepOKCallInstruction(SymbolicInputHeapLISSA symInputHeap) {
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
-        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
-        MethodInfo repokMI = rootClassInfo.getMethod("runRepOK()V", false);
-
-        String clsName = repokMI.getClassInfo().getName();
-        String mthName = repokMI.getName();
-        String signature = repokMI.getSignature();
-
-        repOKCallInstruction = new StaticRepOKCallInstruction(clsName, mthName, signature);
-    }
-
-    void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
-        StackFrame frame = ti.getModifiableTopFrame();
-
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                Object a = args[i];
-                boolean isLong = false;
-
-                if (a != null) {
-                    if (a instanceof ObjRef) {
-                        frame.pushRef(((ObjRef) a).getReference());
-                    } else if (a instanceof Boolean) {
-                        frame.push((Boolean) a ? 1 : 0, false);
-                    } else if (a instanceof Integer) {
-                        frame.push((Integer) a, false);
-                    } else if (a instanceof Long) {
-                        frame.pushLong((Long) a);
-                        isLong = true;
-                    } else if (a instanceof Double) {
-                        frame.pushLong(Types.doubleToLong((Double) a));
-                        isLong = true;
-                    } else if (a instanceof Byte) {
-                        frame.push((Byte) a, false);
-                    } else if (a instanceof Short) {
-                        frame.push((Short) a, false);
-                    } else if (a instanceof Float) {
-                        frame.push(Types.floatToInt((Float) a), false);
-                    }
-                }
-
-                if (attrs != null && attrs[i] != null) {
-                    if (isLong) {
-                        frame.setLongOperandAttr(attrs[i]);
-                    } else {
-                        frame.setOperandAttr(attrs[i]);
-                    }
-                }
-            }
-        }
     }
 
     public void buildSolutionHeap(MJIEnv env, int objRef) {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
         assert (symInputHeap != null);
 
-        String cgID = "repOKCG";
-        RepOKCallCG repOKCG = env.getSystemState().getCurrentChoiceGenerator(cgID, RepOKCallCG.class);
+        RepOKCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(RepOKCallCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
-        PCChoiceGenerator pcCG = repOKCG.getPCChoiceGenerator();
+        PCChoiceGenerator pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
         assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, pcCG.getCurrentPC(), symInputHeap));
 
         builder.buildSolution(env, objRef, symInputHeap, solution);
-    }
-
-    @Override
-    public boolean isRepOKExecutionMode() {
-        return executingRepOK;
-    }
-
-    public void startRepOKExecutionMode() {
-        if (!executingRepOK) {
-            executingRepOK = true;
-            repOKStartTime = System.currentTimeMillis();
-        }
-    }
-
-    public void stopRepOKExecutionMode() {
-        if (executingRepOK) {
-            executingRepOK = false;
-            repokExecTime += System.currentTimeMillis() - repOKStartTime;
-        }
-    }
-
-    public long getRepOKSolvingTime() {
-        return repokExecTime;
     }
 
     public void countPrunedBranch() {

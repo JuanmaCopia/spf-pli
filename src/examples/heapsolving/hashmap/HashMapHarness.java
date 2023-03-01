@@ -9,7 +9,6 @@ public class HashMapHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        SymHeap.initializePathCondition();
         HashMap structure = new HashMap();
         structure = (HashMap) SymHeap.makeSymbolicRefThis("hashmap_0", structure);
 

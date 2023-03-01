@@ -19,13 +19,13 @@ public class BinomialHeapMain {
             try {
                 structure.extractMinBugged();
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
-            SymHeap.countPath();
+            SymHeap.pathFinished();
 
 //            if (structure.countNodes() != structure.getSize()) {
-//                SymHeap.countException();
+//                SymHeap.exceptionThrown();
 //                System.out.println("ERROR FOUND: POSTONDITION VIOLATED!!");
 //            }
         }

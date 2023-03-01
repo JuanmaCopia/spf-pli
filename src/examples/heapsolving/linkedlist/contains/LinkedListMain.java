@@ -22,10 +22,10 @@ public class LinkedListMain {
                 // Call to method under analysis
                 structure.contains(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

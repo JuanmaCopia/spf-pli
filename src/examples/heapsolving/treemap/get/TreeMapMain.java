@@ -21,10 +21,10 @@ public class TreeMapMain {
             try {
                 structure.get(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

@@ -637,8 +637,14 @@ public class HashMap {
 
     public static void runRepOK() {
         HashMap toBuild = new HashMap();
-        toBuild = (HashMap) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public class Entry {

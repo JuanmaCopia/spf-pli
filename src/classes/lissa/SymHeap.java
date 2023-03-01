@@ -4,17 +4,9 @@ import gov.nasa.jpf.vm.Verify;
 
 public class SymHeap {
 
-    native public static void initializePathCondition();
-
     public static Object makeSymbolicRefThis(String name, Object thisObject) {
         assert (thisObject != null);
         makeSymbolicImplicitInputThis(name, thisObject);
-        return thisObject;
-    }
-
-    public static Object buildHeap(Object thisObject) {
-        assert (thisObject != null);
-        buildSolutionHeap(thisObject);
         return thisObject;
     }
 
@@ -29,11 +21,13 @@ public class SymHeap {
 
     native public static void buildSolutionHeap(Object v);
 
+    native public static void buildPartialHeapInput(Object v);
+
     native public static int getMaxScope();
 
-    native public static void countPath();
+    native public static void pathFinished();
 
-    native public static void countException();
+    native public static void exceptionThrown();
 
     native public static boolean usingDriverStrategy();
 
@@ -70,5 +64,7 @@ public class SymHeap {
         }
         return new String(str);
     }
+
+    native public static boolean isCheckPathValidityEnabled();
 
 }

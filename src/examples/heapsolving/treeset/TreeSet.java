@@ -50,7 +50,7 @@ import lissa.SymHeap;
  * object exists, the set should be "wrapped" using the
  * <tt>Collections.synchronizedSet</tt> method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the set:
- * 
+ *
  * <pre>
  *     SortedSet s = Collections.synchronizedSortedSet(new TreeSet(...));
  * </pre>
@@ -194,8 +194,14 @@ public class TreeSet {
 
     public static void runRepOK() {
         TreeSet toBuild = new TreeSet();
-        toBuild = (TreeSet) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        TreeSet toBuild = new TreeSet();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finTreeSet(int nodesNum) {

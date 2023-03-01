@@ -21,19 +21,40 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import lissa.choicegenerators.RepOKCallCG;
+import lissa.choicegenerators.RepOKCallChoiceGenerator;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.NT;
-import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
-    public static void initializePathCondition(MJIEnv env, int objRef) {
+    public static boolean isCheckPathValidityEnabled(MJIEnv env, int objRef) {
+        return LISSAShell.configParser.checkPathValidity;
+    }
+
+    private static RepOKCallChoiceGenerator removeAddedChoicesByRepOK(SystemState ss) {
+        // String cgID = "repOKCG";
+        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
+        assert (lastCG != null);
+        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof RepOKCallChoiceGenerator) {
+                return (RepOKCallChoiceGenerator) cg;
+            }
+            cg.setDone();
+        }
+
+        throw new RuntimeException("Error: RepOKCallChoiceGenerator not found");
+    }
+
+    @MJI
+    public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+
         ThreadInfo ti = env.getVM().getCurrentThread();
         SystemState ss = env.getVM().getSystemState();
         ChoiceGenerator<?> cg;
@@ -43,9 +64,50 @@ public class JPF_lissa_SymHeap extends NativePeer {
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
         } else {
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
-            curCg.getNextChoice();
-            curCg.setCurrentPC(new PathCondition());
+            cg = ss.getChoiceGenerator();
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PathCondition pc;
+            if (prev_cg == null)
+                pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
+            else
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            assert (pc != null);
+            ((PCChoiceGenerator) cg).setCurrentPC(pc);
+            ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+        }
+    }
+
+    @MJI
+    public static void buildPartialHeapInput(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+
+        if (!ti.isFirstStepInsn()) {
+
+            ss.setNextChoiceGenerator(new HeapChoiceGeneratorLISSA("HeapCGBuildPartialHeap", 1));
+            ss.setNextChoiceGenerator(new PCChoiceGenerator("PCCGBuildPartialHeap", 1));
+            env.repeatInvocation();
+        } else {
+
+            HeapChoiceGeneratorLISSA newHeapCG = ss.getCurrentChoiceGenerator("HeapCGBuildPartialHeap",
+                    HeapChoiceGeneratorLISSA.class);
+            assert (newHeapCG != null);
+            HeapChoiceGeneratorLISSA prevHeapCG = newHeapCG
+                    .getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+            assert (prevHeapCG != null);
+
+            PCChoiceGenerator newPCCG = ss.getCurrentChoiceGenerator("PCCGBuildPartialHeap", PCChoiceGenerator.class);
+            assert (newPCCG != null);
+            PCChoiceGenerator prevPCCG = newPCCG.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            assert (prevPCCG != null);
+            newPCCG.setCurrentPC(prevPCCG.getCurrentPC());
+
+            SymbolicInputHeapLISSA symInputHeap = prevHeapCG.getCurrentSymInputHeap();
+            assert (symInputHeap != null);
+
+            symInputHeap.getImplicitInputThis().buildPartialHeap(env, objvRef, newHeapCG);
         }
     }
 
@@ -54,33 +116,11 @@ public class JPF_lissa_SymHeap extends NativePeer {
         SystemState ss = env.getVM().getSystemState();
 
         if (repOKResult) {
-            RepOKCallCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
             repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
             repOKChoiceGenerator.pathReturningTrueFound();
         }
         ss.setIgnored(true);
-    }
-
-    private static RepOKCallCG removeAddedChoicesByRepOK(SystemState ss) {
-        String cgID = "repOKCG";
-        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
-        assert (lastCG != null);
-        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cgID.equals(cg.getId())) {
-                return (RepOKCallCG) cg;
-            }
-            cg.setDone();
-        }
-
-        throw new RuntimeException("Error: RepOKCall choice generator not found");
-    }
-
-    @MJI
-    public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {
-        if (objvRef == MJIEnv.NULL)
-            throw new RuntimeException("## Error: null object");
-
-        ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
     }
 
     @MJI
@@ -95,14 +135,14 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new HeapChoiceGeneratorLISSA(1); // new
+            cg = new HeapChoiceGeneratorLISSA("makeSymbolic", 1); // new
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
             return; // not used anyways
         }
         // else this is what really returns results
 
-        cg = ss.getChoiceGenerator();
+        cg = ss.getCurrentChoiceGenerator("makeSymbolic", HeapChoiceGeneratorLISSA.class);
         assert (cg instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: " + cg;
 
         // see if there were more inputs added before
@@ -152,30 +192,6 @@ public class JPF_lissa_SymHeap extends NativePeer {
         heapCG.setCurrentPCheap(pcHeap);
         heapCG.setCurrentSymInputHeap(symInputHeap);
 
-//        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-//        if (solvingStrategy instanceof PCCheckStrategy) {
-//            LISSA strategy = (LISSA) solvingStrategy;
-//
-//            SymSolveVector vector = strategy.getCanonicalizer().createVector(symInputHeap);
-//            SymSolveHeapSolver heapSolver = strategy.getSolver();
-//            SymSolveSolution solution = heapSolver.solve(vector);
-//            assert (solution != null);
-//
-//            PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
-//            assert (pcCG != null);
-//
-//            while (solution != null) {
-//                if (((PCCheckStrategy) solvingStrategy).isSatWithRespectToPathCondition(ti, solution,
-//                        pcCG.getCurrentPC(), symInputHeap)) {
-//                    break;
-//                }
-//                solution = heapSolver.getNextSolution(solution);
-//            }
-//
-//            assert (solution != null);
-//            heapCG.setCurrentSolution(solution);
-//        }
-
         return;
     }
 
@@ -201,16 +217,11 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void countPath(MJIEnv env, int objRef) {
-        VM vm = env.getVM();
-        SolvingStrategy strategy = LISSAShell.solvingStrategy;
-        strategy.pathFinished(vm, vm.getCurrentThread());
+    public static void pathFinished(MJIEnv env, int objRef) {
     }
 
     @MJI
-    public static void countException(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = LISSAShell.solvingStrategy;
-        strategy.countException();
+    public static void exceptionThrown(MJIEnv env, int objRef) {
     }
 
     @MJI

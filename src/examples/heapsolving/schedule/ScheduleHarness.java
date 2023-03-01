@@ -9,7 +9,6 @@ public class ScheduleHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        SymHeap.initializePathCondition();
         Schedule structure = new Schedule();
         structure = (Schedule) SymHeap.makeSymbolicRefThis("schedule_0", structure);
 

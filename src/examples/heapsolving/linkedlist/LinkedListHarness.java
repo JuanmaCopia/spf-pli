@@ -9,7 +9,6 @@ public class LinkedListHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        SymHeap.initializePathCondition();
         LinkedList structure = new LinkedList();
         structure = (LinkedList) SymHeap.makeSymbolicRefThis("linkedlist_0", structure);
 

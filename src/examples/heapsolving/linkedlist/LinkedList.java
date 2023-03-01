@@ -485,8 +485,14 @@ public class LinkedList {
 
     public static void runRepOK() {
         LinkedList toBuild = new LinkedList();
-        toBuild = (LinkedList) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        LinkedList toBuild = new LinkedList();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finLinkedList(int nodesNum) {

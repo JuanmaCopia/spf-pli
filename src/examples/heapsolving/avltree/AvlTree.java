@@ -505,8 +505,14 @@ public class AvlTree {
 
     public static void runRepOK() {
         AvlTree toBuild = new AvlTree();
-        toBuild = (AvlTree) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        AvlTree toBuild = new AvlTree();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finAvlTree(int size) {

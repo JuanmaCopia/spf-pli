@@ -29,7 +29,7 @@ public class TemplateMain {
             } catch (Exception e) {
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

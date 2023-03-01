@@ -30,7 +30,7 @@ public class DictionaryInfoMain {
             } catch (Exception e) {
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

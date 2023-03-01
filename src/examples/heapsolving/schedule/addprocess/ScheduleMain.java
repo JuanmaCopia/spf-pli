@@ -22,11 +22,11 @@ public class ScheduleMain {
                 // Call to method under analysis
                 structure.addProcess(key);
             } catch (Exception e) {
-                SymHeap.countException();
+                SymHeap.exceptionThrown();
                 System.out.println(e);
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 
