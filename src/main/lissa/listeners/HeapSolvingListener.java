@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.jvm.bytecode.EXECUTENATIVE;
 import gov.nasa.jpf.search.Search;
-import gov.nasa.jpf.symbc.bytecode.INVOKESTATIC;
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
@@ -81,13 +80,13 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                     curCg.getNextChoice();
                     curCg.setCurrentPC(new PathCondition());
                 }
-            } else if (config.checkPathValidity && exec.getExecutedMethodName().equals("countPath")) {
-                System.out.println("E1");
-                if (!ti.isFirstStepInsn()) {
-                    INVOKESTATIC pathCheckCall = SymHeapHelper.createINVOKESTATICInstruction("checkPathValidity()V",
-                            executedInsn);
-                    ti.setNextPC(pathCheckCall);
-                }
+            } else if (exec.getExecutedMethodName().equals("pathFinished")) {
+                heapSolvingStrategy.pathFinished(vm, vm.getCurrentThread());
+                if (config.checkPathValidity)
+                    ti.setNextPC(SymHeapHelper.createINVOKESTATICInstruction("checkPathValidity()V", executedInsn));
+
+            } else if (exec.getExecutedMethodName().equals("countException")) {
+                heapSolvingStrategy.countException();
             }
         }
     }

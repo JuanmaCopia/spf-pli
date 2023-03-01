@@ -30,7 +30,6 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.NT;
-import lissa.heap.solving.techniques.SolvingStrategy;
 
 public class JPF_lissa_SymHeap extends NativePeer {
 
@@ -248,16 +247,11 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void countPath(MJIEnv env, int objRef) {
-        VM vm = env.getVM();
-        SolvingStrategy strategy = LISSAShell.solvingStrategy;
-        strategy.pathFinished(vm, vm.getCurrentThread());
+    public static void pathFinished(MJIEnv env, int objRef) {
     }
 
     @MJI
     public static void countException(MJIEnv env, int objRef) {
-        SolvingStrategy strategy = LISSAShell.solvingStrategy;
-        strategy.countException();
     }
 
     @MJI

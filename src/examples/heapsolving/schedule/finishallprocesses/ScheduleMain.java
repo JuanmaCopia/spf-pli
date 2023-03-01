@@ -25,7 +25,7 @@ public class ScheduleMain {
                 System.out.println(e);
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

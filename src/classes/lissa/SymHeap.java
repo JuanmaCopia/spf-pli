@@ -33,7 +33,7 @@ public class SymHeap {
 
     native public static int getMaxScope();
 
-    native public static void countPath();
+    native public static void pathFinished();
 
     native public static void countException();
 

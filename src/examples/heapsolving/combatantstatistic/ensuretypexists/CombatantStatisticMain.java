@@ -26,7 +26,7 @@ public class CombatantStatisticMain {
             } catch (Exception e) {
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

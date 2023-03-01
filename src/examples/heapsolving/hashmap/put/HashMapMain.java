@@ -26,10 +26,7 @@ public class HashMapMain {
                 SymHeap.countException();
                 System.out.println(e);
             }
-
-            SymHeap.countPath();
-            if (SymHeap.isCheckPathValidityEnabled())
-                HashMap.checkPathValidity(structure);
+            SymHeap.pathFinished();
         }
     }
 

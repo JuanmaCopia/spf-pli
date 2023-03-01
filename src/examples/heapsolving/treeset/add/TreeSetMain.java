@@ -25,7 +25,7 @@ public class TreeSetMain {
                 SymHeap.countException();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

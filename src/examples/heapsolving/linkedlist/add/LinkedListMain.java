@@ -25,7 +25,7 @@ public class LinkedListMain {
                 SymHeap.countException();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

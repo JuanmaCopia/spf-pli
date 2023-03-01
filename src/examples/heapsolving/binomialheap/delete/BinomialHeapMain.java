@@ -18,7 +18,7 @@ public class BinomialHeapMain {
                 SymHeap.countException();
                 System.out.println(e);
             }
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 
