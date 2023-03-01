@@ -403,7 +403,7 @@ public class Schedule {
 
     public static void runRepOK() {
         Schedule toBuild = new Schedule();
-        toBuild = (Schedule) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 

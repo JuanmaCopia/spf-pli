@@ -470,7 +470,7 @@ public class BinomialHeap {
 
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
-        toBuild = (BinomialHeap) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 

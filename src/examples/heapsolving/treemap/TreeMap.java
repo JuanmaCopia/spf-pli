@@ -854,7 +854,7 @@ public class TreeMap {
 
     public static void runRepOK() {
         TreeMap toBuild = new TreeMap();
-        toBuild = (TreeMap) SymHeap.buildHeap(toBuild);
+        SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 

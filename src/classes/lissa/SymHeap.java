@@ -10,12 +10,6 @@ public class SymHeap {
         return thisObject;
     }
 
-    public static Object buildHeap(Object thisObject) {
-        assert (thisObject != null);
-        buildSolutionHeap(thisObject);
-        return thisObject;
-    }
-
     public static void assume(boolean c) {
         if (!c)
             Verify.ignoreIf(true);
