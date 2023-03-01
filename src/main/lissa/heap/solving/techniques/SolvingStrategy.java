@@ -33,6 +33,8 @@ public class SolvingStrategy {
             return new IFREPOK();
         case PLAINLAZY:
             return new PLAINLAZY();
+        case REPOKSOLVER:
+            return new REPOKSOLVER();
         default:
             throw new IllegalArgumentException("Invalid symbolic heap solving technique");
         }
