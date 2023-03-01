@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gov.nasa.jpf.symbc.arrays.ArrayExpression;
+import gov.nasa.jpf.symbc.bytecode.INVOKESTATIC;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
@@ -40,6 +41,28 @@ import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.heap.visitors.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
+
+    public static INVOKESTATIC createINVOKESTATICInstruction(String staticMethodSignature, Instruction currentIns) {
+        HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+        return createINVOKESTATICInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature, currentIns);
+    }
+
+    public static INVOKESTATIC createINVOKESTATICInstruction(SymbolicInputHeapLISSA symInputHeap,
+            String staticMethodSignature, Instruction currentIns) {
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+
+        ClassInfo rootClassInfo = symRefInput.getRootHeapNode().getType();
+        MethodInfo repokMI = rootClassInfo.getMethod(staticMethodSignature, false);
+
+        String clsName = repokMI.getClassInfo().getName();
+        String mthName = repokMI.getName();
+        String signature = repokMI.getSignature();
+
+        INVOKESTATIC newInstruction = new INVOKESTATIC(clsName, mthName, signature);
+        newInstruction.setMethodInfo(currentIns.getMethodInfo());
+        newInstruction.setLocation(currentIns.getInstructionIndex(), currentIns.getPosition());
+        return newInstruction;
+    }
 
     public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(String staticMethodSignature) {
         HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
@@ -83,12 +106,10 @@ public class SymHeapHelper {
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
             PCChoiceGenerator cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isPathCheckingMode()) {
+        if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isRepOKExecutionMode()) {
             if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
                 PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                if (!strategy.isRepOKExecutionMode()) {
-                    return strategy.handlePrimitiveBranch(ti, current, next, cg);
-                }
+                return strategy.handlePrimitiveBranch(ti, current, next, cg);
             }
         }
         return next;

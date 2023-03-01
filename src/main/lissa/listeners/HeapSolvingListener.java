@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.jvm.bytecode.EXECUTENATIVE;
 import gov.nasa.jpf.search.Search;
+import gov.nasa.jpf.symbc.bytecode.INVOKESTATIC;
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
@@ -13,6 +14,7 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
+import lissa.heap.SymHeapHelper;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
@@ -79,6 +81,13 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                     curCg.getNextChoice();
                     curCg.setCurrentPC(new PathCondition());
                 }
+            } else if (config.checkPathValidity && exec.getExecutedMethodName().equals("countPath")) {
+                System.out.println("E1");
+                if (!ti.isFirstStepInsn()) {
+                    INVOKESTATIC pathCheckCall = SymHeapHelper.createINVOKESTATICInstruction("checkPathValidity()V",
+                            executedInsn);
+                    ti.setNextPC(pathCheckCall);
+                }
             }
         }
     }
@@ -102,11 +111,11 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             if (config.checkPathValidity)
                 validPaths = stg.validPaths;
 
-            if (heapSolvingStrategy instanceof LISSAM) {
-                cacheHits = ((LISSAM) heapSolvingStrategy).cacheHits;
-            } else if (heapSolvingStrategy instanceof PCCheckStrategy) {
-                prunedBranchesDueToPC = ((PCCheckStrategy) heapSolvingStrategy).getPrunedBranchCount();
-                repOKPCSolvingTime = ((PCCheckStrategy) heapSolvingStrategy).getRepOKSolvingTime();
+            if (stg instanceof LISSAM) {
+                cacheHits = ((LISSAM) stg).cacheHits;
+            } else if (stg instanceof PCCheckStrategy) {
+                prunedBranchesDueToPC = ((PCCheckStrategy) stg).getPrunedBranchCount();
+                repOKPCSolvingTime = stg.getRepOKSolvingTime();
             }
 
         }

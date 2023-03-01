@@ -25,8 +25,6 @@ public class AvlTreeMain {
                 System.out.println(e);
             }
             SymHeap.countPath();
-            if (SymHeap.isCheckPathValidityEnabled())
-                AvlTree.checkPathValidity(structure);
         }
     }
 

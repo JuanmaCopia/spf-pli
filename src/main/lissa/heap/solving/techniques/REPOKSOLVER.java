@@ -13,7 +13,7 @@ public class REPOKSOLVER extends NT {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
-        assert (!isRepOKExecutionMode() && !isPathCheckingMode());
+        assert (!isRepOKExecutionMode());
 
         return createInvokeCompleteRepOKInstruction(ti, currentInstruction, nextInstruction);
     }
@@ -21,7 +21,7 @@ public class REPOKSOLVER extends NT {
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGenerator pcCG) {
-        assert (!isRepOKExecutionMode() && !isPathCheckingMode());
+        assert (!isRepOKExecutionMode());
 
         return createInvokeCompleteRepOKInstruction(ti, currentInstruction, nextInstruction);
     }

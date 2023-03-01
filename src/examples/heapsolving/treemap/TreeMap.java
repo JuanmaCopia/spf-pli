@@ -858,7 +858,7 @@ public class TreeMap {
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
-    public static void checkPathValidity(TreeMap structure) {
+    public static void checkPathValidity() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handlePathCheckResult(toBuild.repOKComplete());

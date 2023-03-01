@@ -23,8 +23,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
     int prunedBranches = 0;
-    long repokExecTime = 0;
-    long repOKStartTime = 0;
+
     public int primitiveBranches = 0;
 
     public NT() {
@@ -34,7 +33,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
-        assert (!isRepOKExecutionMode() && !isPathCheckingMode());
+        assert (!isRepOKExecutionMode());
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
@@ -61,7 +60,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGenerator pcCG) {
-        assert (!isRepOKExecutionMode() && !isPathCheckingMode());
+        assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
 
@@ -145,29 +144,6 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, pcCG.getCurrentPC(), symInputHeap));
 
         builder.buildSolution(env, objRef, symInputHeap, solution);
-    }
-
-    @Override
-    public boolean isRepOKExecutionMode() {
-        return executingRepOK;
-    }
-
-    public void startRepOKExecutionMode() {
-        if (!executingRepOK) {
-            executingRepOK = true;
-            repOKStartTime = System.currentTimeMillis();
-        }
-    }
-
-    public void stopRepOKExecutionMode() {
-        if (executingRepOK) {
-            executingRepOK = false;
-            repokExecTime += System.currentTimeMillis() - repOKStartTime;
-        }
-    }
-
-    public long getRepOKSolvingTime() {
-        return repokExecTime;
     }
 
     public void countPrunedBranch() {

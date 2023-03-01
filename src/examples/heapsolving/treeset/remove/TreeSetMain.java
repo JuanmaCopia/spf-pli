@@ -26,8 +26,6 @@ public class TreeSetMain {
             }
 
             SymHeap.countPath();
-            if (SymHeap.isCheckPathValidityEnabled())
-                TreeSet.checkPathValidity(structure);
         }
     }
 

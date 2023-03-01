@@ -23,8 +23,6 @@ public class BinomialHeapMain {
                 System.out.println(e);
             }
             SymHeap.countPath();
-            if (SymHeap.isCheckPathValidityEnabled())
-                BinomialHeap.checkPathValidity(structure);
 
             //assert (structure.countNodes() == structure.getSize());
 

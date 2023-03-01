@@ -14,7 +14,10 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     Canonicalizer canonicalizer = new Canonicalizer(heapSolver.getStructureList());
 
     public int validPaths = 0;
-    boolean pathCheckingMode;
+
+    boolean executingRepOK = false;
+    long repokExecTime = 0;
+    long repOKStartTime = 0;
 
     public Integer getBoundForClass(String simpleClassName) {
         HashMap<String, Integer> dataBounds = heapSolver.getDataBounds();
@@ -38,16 +41,26 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         validPaths++;
     }
 
-    public boolean isPathCheckingMode() {
-        return pathCheckingMode;
+    public boolean isRepOKExecutionMode() {
+        return executingRepOK;
     }
 
-    public void startPathCheckingMode() {
-        pathCheckingMode = true;
+    public void startRepOKExecutionMode() {
+        if (!executingRepOK) {
+            executingRepOK = true;
+            repOKStartTime = System.currentTimeMillis();
+        }
     }
 
-    public void stopPathCheckingMode() {
-        pathCheckingMode = false;
+    public void stopRepOKExecutionMode() {
+        if (executingRepOK) {
+            executingRepOK = false;
+            repokExecTime += System.currentTimeMillis() - repOKStartTime;
+        }
+    }
+
+    public long getRepOKSolvingTime() {
+        return repokExecTime;
     }
 
 }

@@ -11,14 +11,14 @@ public class PartialHeapBuildCG extends IntIntervalGenerator {
     public PartialHeapBuildCG(String id, LIBasedStrategy strategy) {
         super(id, 0, 0);
         this.strategy = strategy;
-        this.strategy.startPathCheckingMode();
+        this.strategy.startRepOKExecutionMode();
     }
 
     @Override
     public boolean hasMoreChoices() {
         boolean hasMoreChoices = super.hasMoreChoices();
         if (!hasMoreChoices) {
-            strategy.stopPathCheckingMode();
+            strategy.stopRepOKExecutionMode();
         }
         return hasMoreChoices;
     }
@@ -26,7 +26,7 @@ public class PartialHeapBuildCG extends IntIntervalGenerator {
     @Override
     public void setDone() {
         super.setDone();
-        strategy.stopPathCheckingMode();
+        strategy.stopRepOKExecutionMode();
     }
 
 }
