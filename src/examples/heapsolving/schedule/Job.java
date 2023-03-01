@@ -9,9 +9,6 @@ public class Job {
 
     public int priority;
 
-    public Job() {
-    }
-
     public Job(int newNum) {
         next = null;
         prev = null;

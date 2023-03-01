@@ -12,6 +12,7 @@ CLASS_NAME=$1
 METHOD=$2
 SCOPE=$3
 STRATEGY=$4
+CHECKPATH=$5
 
 
 SRC_FOLDER="src/examples/heapsolving/${CLASS_NAME,,}"
@@ -27,6 +28,7 @@ STRATEGY=${STRATEGY^^} # To upper case
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = ${METHOD}/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = $STRATEGY/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.checkPathValidity.*/heapsolving\.checkPathValidity = $CHECKPATH/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = $SCOPE/g" $PATH_CONFIG_FILE
 
 # Run JPF:
@@ -37,4 +39,5 @@ TARGET="${PACKAGE}.METHOD.${CLASS_NAME}Main"
 sed -i -E "s/target.*/target = $TARGET/g" $PATH_CONFIG_FILE
 sed -i -E "s/method.*/method = METHOD/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.strategy.*/heapsolving\.strategy = HEAP_SOLVING_STRATEGY/g" $PATH_CONFIG_FILE
+sed -i -E "s/heapsolving\.checkPathValidity.*/heapsolving\.checkPathValidity = BOOLEAN/g" $PATH_CONFIG_FILE
 sed -i -E "s/heapsolving\.symsolve\.finitization\.args.*/heapsolving\.symsolve\.finitization\.args = MAX_SCOPE/g" $PATH_CONFIG_FILE

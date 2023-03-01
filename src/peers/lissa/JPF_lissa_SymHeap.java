@@ -1,12 +1,12 @@
 package lissa;
 
 import gov.nasa.jpf.annotation.MJI;
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -20,14 +20,108 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.RepOKCallChoiceGenerator;
 import lissa.config.ConfigParser;
 import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.solving.techniques.NT;
 
 public class JPF_lissa_SymHeap extends NativePeer {
+
+    @MJI
+    public static boolean isCheckPathValidityEnabled(MJIEnv env, int objRef) {
+        return LISSAShell.configParser.checkPathValidity;
+    }
+
+    private static RepOKCallChoiceGenerator removeAddedChoicesByRepOK(SystemState ss) {
+        // String cgID = "repOKCG";
+        ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
+        assert (lastCG != null);
+        for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof RepOKCallChoiceGenerator) {
+                return (RepOKCallChoiceGenerator) cg;
+            }
+            cg.setDone();
+        }
+
+        throw new RuntimeException("Error: RepOKCallChoiceGenerator not found");
+    }
+
+    @MJI
+    public static void buildSolutionHeap(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+        ChoiceGenerator<?> cg;
+
+        if (!ti.isFirstStepInsn()) {
+            cg = new PCChoiceGenerator(1);
+            ss.setNextChoiceGenerator(cg);
+            env.repeatInvocation();
+        } else {
+            cg = ss.getChoiceGenerator();
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PathCondition pc;
+            if (prev_cg == null)
+                pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
+            else
+                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            assert (pc != null);
+            ((PCChoiceGenerator) cg).setCurrentPC(pc);
+            ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+        }
+    }
+
+    @MJI
+    public static void buildPartialHeapInput(MJIEnv env, int objRef, int objvRef) {
+        if (objvRef == MJIEnv.NULL)
+            throw new RuntimeException("## Error: null object");
+        ThreadInfo ti = env.getVM().getCurrentThread();
+        SystemState ss = env.getVM().getSystemState();
+
+        if (!ti.isFirstStepInsn()) {
+
+            ss.setNextChoiceGenerator(new HeapChoiceGeneratorLISSA("HeapCGBuildPartialHeap", 1));
+            ss.setNextChoiceGenerator(new PCChoiceGenerator("PCCGBuildPartialHeap", 1));
+            env.repeatInvocation();
+        } else {
+
+            HeapChoiceGeneratorLISSA newHeapCG = ss.getCurrentChoiceGenerator("HeapCGBuildPartialHeap",
+                    HeapChoiceGeneratorLISSA.class);
+            assert (newHeapCG != null);
+            HeapChoiceGeneratorLISSA prevHeapCG = newHeapCG
+                    .getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+            assert (prevHeapCG != null);
+
+            PCChoiceGenerator newPCCG = ss.getCurrentChoiceGenerator("PCCGBuildPartialHeap", PCChoiceGenerator.class);
+            assert (newPCCG != null);
+            PCChoiceGenerator prevPCCG = newPCCG.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            assert (prevPCCG != null);
+            newPCCG.setCurrentPC(prevPCCG.getCurrentPC());
+
+            SymbolicInputHeapLISSA symInputHeap = prevHeapCG.getCurrentSymInputHeap();
+            assert (symInputHeap != null);
+
+            symInputHeap.getImplicitInputThis().buildPartialHeap(env, objvRef, newHeapCG);
+        }
+    }
+
+    @MJI
+    public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
+        SystemState ss = env.getVM().getSystemState();
+
+        if (repOKResult) {
+            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
+            repOKChoiceGenerator.pathReturningTrueFound();
+        }
+        ss.setIgnored(true);
+    }
 
     @MJI
     public static void makeSymbolicImplicitInputThis(MJIEnv env, int objRef, int stringRef, int objvRef) {
@@ -41,19 +135,19 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new HeapChoiceGenerator(1); // new
+            cg = new HeapChoiceGeneratorLISSA("makeSymbolic", 1); // new
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
             return; // not used anyways
         }
         // else this is what really returns results
 
-        cg = ss.getChoiceGenerator();
-        assert (cg instanceof HeapChoiceGenerator) : "expected HeapChoiceGenerator, got: " + cg;
+        cg = ss.getCurrentChoiceGenerator("makeSymbolic", HeapChoiceGeneratorLISSA.class);
+        assert (cg instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: " + cg;
 
         // see if there were more inputs added before
         ChoiceGenerator<?> prevHeapCG = cg.getPreviousChoiceGenerator();
-        while (!((prevHeapCG == null) || (prevHeapCG instanceof HeapChoiceGenerator))) {
+        while (!((prevHeapCG == null) || (prevHeapCG instanceof HeapChoiceGeneratorLISSA))) {
             prevHeapCG = prevHeapCG.getPreviousChoiceGenerator();
         }
 
@@ -64,8 +158,8 @@ public class JPF_lissa_SymHeap extends NativePeer {
             pcHeap = new PathCondition();
             symInputHeap = new SymbolicInputHeapLISSA();
         } else {
-            pcHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentPCheap();
-            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+            pcHeap = ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentPCheap();
+            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentSymInputHeap();
         }
 
         // set all the fields to be symbolic
@@ -94,8 +188,9 @@ public class JPF_lissa_SymHeap extends NativePeer {
         symRefInput.setRootHeapNode(rootHeapNode);
 
         pcHeap._addDet(Comparator.NE, newSymRef, new IntegerConstant(-1));
-        ((HeapChoiceGenerator) cg).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGenerator) cg).setCurrentSymInputHeap(symInputHeap);
+        HeapChoiceGeneratorLISSA heapCG = ((HeapChoiceGeneratorLISSA) cg);
+        heapCG.setCurrentPCheap(pcHeap);
+        heapCG.setCurrentSymInputHeap(symInputHeap);
 
         return;
     }
@@ -122,10 +217,11 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void countPath(MJIEnv env, int objRef) {
-        VM vm = env.getVM();
-        SolvingStrategy strategy = LISSAShell.solvingStrategy;
-        strategy.pathFinished(vm, vm.getCurrentThread());
+    public static void pathFinished(MJIEnv env, int objRef) {
+    }
+
+    @MJI
+    public static void exceptionThrown(MJIEnv env, int objRef) {
     }
 
     @MJI

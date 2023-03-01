@@ -1,6 +1,3 @@
-classpath=${spf-lissa}/build/examples
-sourcepath=${spf-lissa}/src/examples
-
 @using=spf-lissa
 
 # ---------------   Arguments   ---------------
@@ -14,11 +11,12 @@ symbolic.debug = false
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOK
+heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

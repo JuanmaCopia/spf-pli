@@ -18,11 +18,12 @@ symbolic.string_dp=z3-str
 symbolic.string_dp_timeout_ms=3000
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.dictionaryinfo.DictionaryInfo
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOK
 
-jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

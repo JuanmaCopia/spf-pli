@@ -1,4 +1,4 @@
-package lissa.bytecode;
+package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;

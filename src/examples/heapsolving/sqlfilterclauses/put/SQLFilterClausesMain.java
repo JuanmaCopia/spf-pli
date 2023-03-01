@@ -26,7 +26,7 @@ public class SQLFilterClausesMain {
             } catch (Exception e) {
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

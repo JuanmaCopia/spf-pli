@@ -1,7 +1,9 @@
 package lissa.heap;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -12,30 +14,33 @@ import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
+import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.heap.visitors.PartialHeapBuilderVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor;
 
 public class SymbolicReferenceInput {
 
-    public static final int NULL = -1;
-    public static final int SYMBOLIC = -2;
+    public static final int NULL = 0;
+    public static final int SYMBOLIC = -1;
 
     private HeapNode rootHeapNode;
 
-    private HashMap<ImmutablePair<Integer, String>, Integer> fieldToReferenceIndex;
+    private HashMap<ImmutablePair<Integer, FieldInfo>, Integer> fieldToReferenceIndex;
 
-    private HashMap<ImmutablePair<Integer, String>, Expression> fieldToPrimitiveTypeExpression;
+    private HashMap<ImmutablePair<Integer, FieldInfo>, Expression> fieldToPrimitiveTypeExpression;
 
     public SymbolicReferenceInput() {
-        this.fieldToReferenceIndex = new HashMap<ImmutablePair<Integer, String>, Integer>();
-        this.fieldToPrimitiveTypeExpression = new HashMap<ImmutablePair<Integer, String>, Expression>();
+        this.fieldToReferenceIndex = new HashMap<>();
+        this.fieldToPrimitiveTypeExpression = new HashMap<>();
     }
 
-    public SymbolicReferenceInput(HashMap<ImmutablePair<Integer, String>, Integer> fieldToRefIndex,
-            HashMap<ImmutablePair<Integer, String>, Expression> fieldToPrimExpr, HeapNode rootHeapNode) {
-        this.fieldToReferenceIndex = new HashMap<ImmutablePair<Integer, String>, Integer>(fieldToRefIndex);
-        this.fieldToPrimitiveTypeExpression = new HashMap<ImmutablePair<Integer, String>, Expression>(fieldToPrimExpr);
+    public SymbolicReferenceInput(HashMap<ImmutablePair<Integer, FieldInfo>, Integer> fieldToRefIndex,
+            HashMap<ImmutablePair<Integer, FieldInfo>, Expression> fieldToPrimExpr, HeapNode rootHeapNode) {
+        this.fieldToReferenceIndex = new HashMap<>(fieldToRefIndex);
+        this.fieldToPrimitiveTypeExpression = new HashMap<>(fieldToPrimExpr);
         this.rootHeapNode = rootHeapNode;
     }
 
@@ -45,24 +50,22 @@ public class SymbolicReferenceInput {
     }
 
     public Integer getReferenceField(Integer ownerIndex, FieldInfo field) {
-        String fieldName = field.getName();
-        ImmutablePair<Integer, String> fieldDescriptor = new ImmutablePair<Integer, String>(ownerIndex, fieldName);
+        ImmutablePair<Integer, FieldInfo> fieldDescriptor = new ImmutablePair<>(ownerIndex, field);
         return fieldToReferenceIndex.get(fieldDescriptor);
     }
 
-    public void addReferenceField(Integer ownerIndex, String fieldName, Integer valueIndex) {
-        ImmutablePair<Integer, String> fieldDescriptor = new ImmutablePair<Integer, String>(ownerIndex, fieldName);
+    public void addReferenceField(Integer ownerIndex, FieldInfo field, Integer valueIndex) {
+        ImmutablePair<Integer, FieldInfo> fieldDescriptor = new ImmutablePair<>(ownerIndex, field);
         fieldToReferenceIndex.put(fieldDescriptor, valueIndex);
     }
 
     public Expression getPrimitiveSymbolicField(Integer ObjIndex, FieldInfo field) {
-        String fieldName = field.getName();
-        ImmutablePair<Integer, String> fieldDescriptor = new ImmutablePair<Integer, String>(ObjIndex, fieldName);
+        ImmutablePair<Integer, FieldInfo> fieldDescriptor = new ImmutablePair<>(ObjIndex, field);
         return fieldToPrimitiveTypeExpression.get(fieldDescriptor);
     }
 
-    public void addPrimitiveSymbolicField(Integer ObjIndex, String fieldName, Expression symbolicVar) {
-        ImmutablePair<Integer, String> fieldDescriptor = new ImmutablePair<Integer, String>(ObjIndex, fieldName);
+    public void addPrimitiveSymbolicField(Integer ObjIndex, FieldInfo field, Expression symbolicVar) {
+        ImmutablePair<Integer, FieldInfo> fieldDescriptor = new ImmutablePair<>(ObjIndex, field);
         fieldToPrimitiveTypeExpression.put(fieldDescriptor, symbolicVar);
     }
 
@@ -153,11 +156,59 @@ public class SymbolicReferenceInput {
                         assert (false); // ERROR!
                     }
                 }
-                visitor.resetCurrentField();
             }
-            visitor.resetCurrentOwner();
         }
-        visitor.setMaxIdMap(maxIdMap);
+    }
+
+    public void buildPartialHeap(MJIEnv env, int newRootRef, HeapChoiceGeneratorLISSA heapCG) {
+        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env, newRootRef);
+        acceptBFSBuilder(visitor);
+
+        heapCG.setCurrentSymInputHeap(visitor.getNewSymbolicInputHeap());
+        heapCG.setCurrentPCheap(visitor.getHeapPathCondition());
+    }
+
+    public void acceptBFSBuilder(PartialHeapBuilderVisitor visitor) {
+        ThreadInfo ti = VM.getVM().getCurrentThread();
+        Set<Integer> visited = new HashSet<>();
+        LinkedList<Integer> worklist = new LinkedList<Integer>();
+        Integer rootIndex = this.rootHeapNode.getIndex();
+        visited.add(rootIndex);
+        worklist.add(rootIndex);
+        visitor.setRoot(rootIndex);
+
+        while (!worklist.isEmpty()) {
+            int currentOwnerRef = worklist.removeFirst();
+            ElementInfo owner = ti.getElementInfo(currentOwnerRef);
+            visitor.setCurrentOwner(currentOwnerRef);
+
+            ClassInfo ownerObjectClass = owner.getClassInfo();
+            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+
+            for (int i = 0; i < instanceFields.length; i++) {
+
+                FieldInfo field = instanceFields[i];
+                visitor.setCurrentField(field);
+
+                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+
+                    Integer fieldRef = getReferenceField(currentOwnerRef, field);
+                    if (fieldRef == SYMBOLIC) {
+                        visitor.visitedSymbolicReferenceField();
+                    } else if (fieldRef == NULL) {
+                        visitor.visitedNullReferenceField();
+                    } else if (!visited.add(fieldRef)) { // previously visited object
+                        visitor.visitedExistentReferenceField(fieldRef);
+                    } else { // first time visited
+                        visitor.visitedNewReferenceField(fieldRef);
+                        worklist.add(fieldRef);
+                    }
+                } else {
+                    Expression symbolicPrimitive = getPrimitiveSymbolicField(currentOwnerRef, field);
+                    visitor.visitedSymbolicPrimitiveField(symbolicPrimitive);
+                }
+            }
+        }
     }
 
 }

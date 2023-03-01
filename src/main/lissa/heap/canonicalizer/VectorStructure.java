@@ -6,12 +6,15 @@ import java.util.Set;
 
 import gov.nasa.jpf.symbc.numeric.Expression;
 import korat.finitization.impl.CVElem;
+import korat.utils.IntListAI;
 
 public class VectorStructure {
 
     VectorField[] vector;
 
-    HashSet<Integer> fixedIndices = new HashSet<Integer>();
+    IntListAI fixedIndices;
+
+    int length;
 
     HashMap<String, Integer> currentIndexMap = new HashMap<String, Integer>();
 
@@ -23,8 +26,10 @@ public class VectorStructure {
     // Expression>();
 
     public VectorStructure(CVElem[] structureList) {
-        this.vector = new VectorField[structureList.length];
-        for (int i = 0; i < structureList.length; i++) {
+        length = structureList.length;
+        vector = new VectorField[length];
+        fixedIndices = new IntListAI(length);
+        for (int i = 0; i < length; i++) {
             CVElem elem = structureList[i];
             VectorField vectorField = new VectorField(elem, i);
             vector[i] = vectorField;
@@ -114,8 +119,8 @@ public class VectorStructure {
         return array;
     }
 
-    public Set<Integer> getFixedIndices() {
-        return this.fixedIndices;
+    public IntListAI getFixedIndices() {
+        return fixedIndices;
     }
 //
 //    public HashMap<Integer, Expression> getPrimitiveIndices() {

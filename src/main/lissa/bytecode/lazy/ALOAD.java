@@ -1,4 +1,4 @@
-package lissa.bytecode;
+package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
@@ -10,8 +10,8 @@ public class ALOAD extends gov.nasa.jpf.jvm.bytecode.ALOAD {
     }
 
     @Override
-    public Instruction execute(ThreadInfo th) {
-        return super.execute(th);
+    public Instruction execute(ThreadInfo ti) {
+        return super.execute(ti);
     }
 
 }

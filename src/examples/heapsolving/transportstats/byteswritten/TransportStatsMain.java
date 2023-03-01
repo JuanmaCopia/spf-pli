@@ -25,7 +25,7 @@ public class TransportStatsMain {
             } catch (Exception e) {
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

@@ -1,7 +1,6 @@
-package lissa.bytecode;
+package lissa.bytecode.lazy;
 
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
-import gov.nasa.jpf.symbc.heap.HeapChoiceGenerator;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
@@ -18,12 +17,12 @@ import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.LISSAShell;
+import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
-import lissa.heap.solving.techniques.LIHYBRID;
-import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.solving.techniques.PLAINLAZY;
 
 public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
     public GETFIELDHeapSolving(String fieldName, String clsName, String fieldDescriptor) {
@@ -37,12 +36,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
     @Override
     public Instruction execute(ThreadInfo ti) {
-
-        // ================ Modification Begin ================ //
-        SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
-        assert (solvingStrategy instanceof LIBasedStrategy);
-        LIBasedStrategy heapSolvingStrategy = (LIBasedStrategy) solvingStrategy;
-        // ==================================================== //
+        LIBasedStrategy heapSolvingStrategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
 
         HeapNode[] prevSymRefs = null; // previously initialized objects of same type: candidates for lazy init
         int numSymRefs = 0; // # of prev. initialized objects
@@ -64,20 +58,20 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                     "referencing field '" + fname + "' in " + ei);
         }
 
-        // System.out.println("\nFIELD: " + ei.toString() + "." + fi.getName());
-
         Object attr = ei.getFieldAttr(fi);
         // check if the field is of ref type & it is symbolic (i.e. it has an attribute)
         // if it is we need to do lazy initialization
 
-        // ================ Modification Begin ================ //
-        if (heapSolvingStrategy instanceof LIHYBRID && ((LIHYBRID) heapSolvingStrategy).reachedGETFIELDLimit(objRef)) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return this;
-        }
-
         ClassInfo typeClassInfo = fi.getTypeClassInfo(); // use this instead of fullType
         String fullClassName = typeClassInfo.getName();
+
+        if (heapSolvingStrategy instanceof PLAINLAZY) {
+            PLAINLAZY lazySTG = (PLAINLAZY) heapSolvingStrategy;
+            if (lazySTG.isInfiniteLoopHeuristic(fi, attr, objRef)) {
+                ti.getVM().getSystemState().setIgnored(true); // Backtrack
+                return this;
+            }
+        }
 
         if (!fi.isReference() || attr == null || attr instanceof StringExpression
                 || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fullClassName)
@@ -85,7 +79,9 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         ) {
             return super.execute(ti);
         }
-        // ================ Modification End ================ //
+
+        if (heapSolvingStrategy instanceof PLAINLAZY)
+            ((PLAINLAZY) heapSolvingStrategy).resetGetFieldCount();
 
         // Lazy initialization:
 
@@ -96,12 +92,12 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             prevSymRefs = null;
             numSymRefs = 0;
 
-            prevHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+            prevHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
             // to check if this still works in the case of cascaded choices...
 
             if (prevHeapCG != null) {
                 // determine # of candidates for lazy initialization
-                SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG)
+                SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG)
                         .getCurrentSymInputHeap();
                 prevSymRefs = symInputHeap.getNodesOfType(typeClassInfo);
                 numSymRefs = prevSymRefs.length;
@@ -112,7 +108,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
                 increment = 1; // only null
             }
 
-            thisHeapCG = new HeapChoiceGenerator(numSymRefs + increment); // +null,new
+            thisHeapCG = new HeapChoiceGeneratorLISSA("lazyInit", numSymRefs + increment); // +null,new
             ti.getVM().getSystemState().setNextChoiceGenerator(thisHeapCG);
             // ti.reExecuteInstruction();
             if (SymbolicInstructionFactory.debugMode)
@@ -124,10 +120,11 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
             frame.pop(); // Ok, now we can remove the object ref from the stack
 
-            thisHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGenerator.class);
+            thisHeapCG = ti.getVM().getSystemState().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
             assert (thisHeapCG != null
-                    && thisHeapCG instanceof HeapChoiceGenerator) : "expected HeapChoiceGenerator, got: " + thisHeapCG;
-            currentChoice = ((HeapChoiceGenerator) thisHeapCG).getNextChoice();
+                    && thisHeapCG instanceof HeapChoiceGeneratorLISSA) : "expected HeapChoiceGeneratorLISSA, got: "
+                            + thisHeapCG;
+            currentChoice = ((HeapChoiceGeneratorLISSA) thisHeapCG).getNextChoice();
         }
 
         PathCondition pcHeap; // this pc contains only the constraints on the heap
@@ -139,14 +136,14 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         // where we set all its
         // fields to be symbolic
 
-        prevHeapCG = thisHeapCG.getPreviousChoiceGeneratorOfType(HeapChoiceGenerator.class);
+        prevHeapCG = thisHeapCG.getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
 
         if (prevHeapCG == null) {
             pcHeap = new PathCondition();
             symInputHeap = new SymbolicInputHeapLISSA();
         } else {
-            pcHeap = ((HeapChoiceGenerator) prevHeapCG).getCurrentPCheap();
-            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGenerator) prevHeapCG).getCurrentSymInputHeap();
+            pcHeap = ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentPCheap();
+            symInputHeap = (SymbolicInputHeapLISSA) ((HeapChoiceGeneratorLISSA) prevHeapCG).getCurrentSymInputHeap();
         }
 
         assert pcHeap != null;
@@ -160,39 +157,30 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         int daIndex = 0; // index into JPF's dynamic area
         if (currentChoice < numSymRefs) { // lazy initialization using a previously lazily initialized object
             HeapNode candidateNode = prevSymRefs[currentChoice];
-            // here we should update pcHeap with the constraint attr == candidateNode.sym_v
             pcHeap._addDet(Comparator.EQ, (SymbolicInteger) attr, candidateNode.getSymbolic());
             daIndex = candidateNode.getIndex();
-            // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), daIndex);
-            // ================ Modification End ================ //
+            symRefInput.addReferenceField(objRef, fi, daIndex);
+
         } else if (currentChoice == numSymRefs) { // null object
             pcHeap._addDet(Comparator.EQ, (SymbolicInteger) attr, new IntegerConstant(-1));
             daIndex = MJIEnv.NULL;
+            symRefInput.addReferenceField(objRef, fi, SymbolicReferenceInput.NULL);
 
-            // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), SymbolicReferenceInput.NULL);
-            // ================ Modification End ================ //
         } else if (currentChoice == (numSymRefs + 1) && !abstractClass) {
             // creates a new object with all fields symbolic and adds the object to
             // SymbolicHeap
 
-            // ================ Modification Begin ================ //
             Integer bound = heapSolvingStrategy.getBoundForClass(fullClassName);
-
             // backtrack if the max bound of nodes has been reached
             if (numSymRefs == bound) {
                 ti.getVM().getSystemState().setIgnored(true);
                 return this;
             }
-            // ================ Modification End ================ //
 
             daIndex = SymHeapHelper.addNewHeapNode(typeClassInfo, ti, attr, pcHeap, symInputHeap, numSymRefs,
                     prevSymRefs, ei.isShared());
 
-            // ================ Modification Begin ================ //
-            symRefInput.addReferenceField(objRef, fi.getName(), daIndex);
-            // ================ Modification End ================ //
+            symRefInput.addReferenceField(objRef, fi, daIndex);
         } else {
             System.err.println("subtyping not handled");
         }
@@ -202,17 +190,14 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
 
         frame.pushRef(daIndex);
 
-        ((HeapChoiceGenerator) thisHeapCG).setCurrentPCheap(pcHeap);
-        ((HeapChoiceGenerator) thisHeapCG).setCurrentSymInputHeap(symInputHeap);
+        HeapChoiceGeneratorLISSA heapCG = (HeapChoiceGeneratorLISSA) thisHeapCG;
+        heapCG.setCurrentPCheap(pcHeap);
+        heapCG.setCurrentSymInputHeap(symInputHeap);
         if (SymbolicInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 
-        // ================ Modification End ================ //
-        if (!heapSolvingStrategy.checkHeapSatisfiability(ti, symInputHeap)) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return this;
-        }
-        // ================ Modification End ================ //
+        if (!heapSolvingStrategy.isRepOKExecutionMode())
+            return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), heapCG);
         return getNext(ti);
     }
 }

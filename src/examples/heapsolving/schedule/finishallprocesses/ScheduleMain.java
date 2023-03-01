@@ -7,10 +7,9 @@
 
 package heapsolving.schedule.finishallprocesses;
 
-import lissa.SymHeap;
-
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
+import lissa.SymHeap;
 
 public class ScheduleMain {
 
@@ -22,9 +21,11 @@ public class ScheduleMain {
                 // Call to method under analysis
                 structure.finishAllProcesses();
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                System.out.println(e);
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

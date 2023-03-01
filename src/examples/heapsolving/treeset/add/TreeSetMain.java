@@ -7,10 +7,9 @@
 
 package heapsolving.treeset.add;
 
-import lissa.SymHeap;
-
 import heapsolving.treeset.TreeSet;
 import heapsolving.treeset.TreeSetHarness;
+import lissa.SymHeap;
 
 public class TreeSetMain {
 
@@ -23,9 +22,10 @@ public class TreeSetMain {
                 // Call to method under analysis
                 structure.add(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

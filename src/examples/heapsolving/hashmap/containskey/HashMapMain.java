@@ -7,10 +7,9 @@
 
 package heapsolving.hashmap.containskey;
 
-import lissa.SymHeap;
-
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;
+import lissa.SymHeap;
 
 public class HashMapMain {
 
@@ -23,9 +22,10 @@ public class HashMapMain {
                 // Call to method under analysis
                 structure.containsKey(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                System.out.println(e);
             }
-
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 
