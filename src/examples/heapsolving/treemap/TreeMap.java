@@ -656,12 +656,15 @@ public class TreeMap {
     }
 
     public boolean isBinTreeWithParentReferences() {
+        return isBinTreeWithParentReferences(new HashSet<>());
+    }
+
+    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
         if (root == null)
             return size == 0;
         if (root.parent != null)
             return false;
 
-        Set<Entry> visited = new HashSet<Entry>();
         LinkedList<Entry> worklist = new LinkedList<Entry>();
         visited.add(root);
         worklist.add(root);
@@ -732,7 +735,7 @@ public class TreeMap {
         return true;
     }
 
-    private boolean isSorted() {
+    public boolean isSorted() {
         if (root == null)
             return true;
         return isSorted(root, null, null);

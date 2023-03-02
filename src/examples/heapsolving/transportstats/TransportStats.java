@@ -25,9 +25,11 @@ package heapsolving.transportstats;
 import java.util.HashSet;
 import java.util.Set;
 
+import heapsolving.treemap.TreeMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 public class TransportStats {
 
@@ -80,41 +82,43 @@ public class TransportStats {
         }
     }
 
-    public boolean repOK() {
-        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-        if (read_sizes != null)
-            visited_tm.add(read_sizes);
-
-        if (write_sizes != null && !visited_tm.add(write_sizes))
+    public boolean repOKSymSolve() {
+        if (read_sizes == write_sizes)
             return false;
-
-        Set<TreeMap.Entry> visited = new HashSet<TreeMap.Entry>();
-
-        if (read_sizes != null && !read_sizes.repOK(visited))
+        Set<TreeMap.Entry> visited = new HashSet<>();
+        if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences(visited))
             return false;
-        if (write_sizes != null && !write_sizes.repOK(visited))
+        if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences(visited))
             return false;
-
+        if (read_sizes != null && !read_sizes.isWellColored())
+            return false;
+        if (write_sizes != null && !write_sizes.isWellColored())
+            return false;
         return true;
     }
 
-    public boolean areTreesOK() {
-        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-        if (read_sizes != null)
-            visited_tm.add(read_sizes);
-
-        if (write_sizes != null && !visited_tm.add(write_sizes)) {
+    public boolean repOKSymbolicExecution() {
+        if (read_sizes != null && !read_sizes.isSorted())
             return false;
-        }
-
-        if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences()) {
+        if (write_sizes != null && !write_sizes.isSorted())
             return false;
-        }
-        if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences()) {
-            return false;
-        }
-
         return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finTransportStats(int nodesNum) {
@@ -126,6 +130,8 @@ public class TransportStats {
 
         IObjSet nodes = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
         f.set(TreeMap.class, "root", nodes);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
         f.set(TreeMap.Entry.class, "left", nodes);
         f.set(TreeMap.Entry.class, "right", nodes);
         f.set(TreeMap.Entry.class, "parent", nodes);
