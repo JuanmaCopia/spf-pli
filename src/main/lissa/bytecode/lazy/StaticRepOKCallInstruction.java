@@ -50,6 +50,10 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         this.repOKCG = repOKCG;
     }
 
+    public void setAsPashValidityCheck() {
+        repOKCG.markAsPathValidityCheck();
+    }
+
     protected ClassInfo getClassInfo() {
         if (ci == null) {
             ci = ClassLoaderInfo.getCurrentResolvedClassInfo(cname);

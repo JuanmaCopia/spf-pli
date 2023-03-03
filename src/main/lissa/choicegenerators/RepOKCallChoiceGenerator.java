@@ -10,6 +10,7 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
     LIBasedStrategy strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
     int repOKExecutions = 0;
     boolean pathReturningTrueFound = false;
+    boolean isPathValidityCheck = false;
     PathCondition repOKPathCondition;
 
     public RepOKCallChoiceGenerator(String id) {
@@ -17,12 +18,7 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
         strategy.startRepOKExecutionMode();
     }
 
-    public boolean allRepOKPathsReturnedFalse() {
-        if (pathReturningTrueFound) {
-            setDone();
-        }
-        return !pathReturningTrueFound;
-    }
+    public abstract boolean allRepOKPathsReturnedFalse();
 
     public abstract boolean hasNextSolution();
 
@@ -54,6 +50,10 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
 
     public PathCondition getRepOKPathCondition() {
         return repOKPathCondition;
+    }
+
+    public void markAsPathValidityCheck() {
+        isPathValidityCheck = true;
     }
 
     public void setRepOKPathCondition(PathCondition pc) {

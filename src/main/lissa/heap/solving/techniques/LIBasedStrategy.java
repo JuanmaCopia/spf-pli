@@ -4,7 +4,10 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
+import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.RepOKCompleteCallCG;
+import lissa.heap.SymHeapHelper;
 import lissa.heap.canonicalizer.Canonicalizer;
 import lissa.heap.solving.solver.SymSolveHeapSolver;
 
@@ -61,6 +64,17 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     public long getRepOKSolvingTime() {
         return repokExecTime;
+    }
+
+    public void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
+        StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
+                .createStaticRepOKCallInstruction("runRepOKComplete()V");
+
+        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity");
+        rcg.markAsPathValidityCheck();
+        repOKCallInstruction.initialize(current, next, rcg);
+        SymHeapHelper.pushArguments(ti, null, null);
+        ti.setNextPC(repOKCallInstruction);
     }
 
 }

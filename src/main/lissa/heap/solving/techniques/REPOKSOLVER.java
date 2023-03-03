@@ -31,7 +31,7 @@ public class REPOKSOLVER extends NT {
         StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runRepOKComplete()V");
 
-        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("runRepOKComplete", false);
+        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("runRepOKComplete");
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;

@@ -120,6 +120,16 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         return null;
     }
 
+    @Override
+    public void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
+        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
+        assert (heapCG != null);
+        StaticRepOKCallInstruction ins = (StaticRepOKCallInstruction) handleLazyInitializationStep(ti, current, next,
+                heapCG);
+        ins.setAsPashValidityCheck();
+        ti.setNextPC(ins);
+    }
+
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGenerator pcCG,
             HeapChoiceGeneratorLISSA heapCG, boolean isLazyStep) {

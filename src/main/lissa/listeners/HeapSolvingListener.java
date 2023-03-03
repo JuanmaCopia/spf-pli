@@ -12,10 +12,7 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import lissa.bytecode.lazy.StaticRepOKCallInstruction;
-import lissa.choicegenerators.RepOKCompleteCallCG;
 import lissa.config.ConfigParser;
-import lissa.heap.SymHeapHelper;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
@@ -86,14 +83,8 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
                 heapSolvingStrategy.pathFinished(vm, vm.getCurrentThread());
 
-                if (config.checkPathValidity) {
-                    StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
-                            .createStaticRepOKCallInstruction("runRepOKComplete()V");
-
-                    RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity", true);
-                    repOKCallInstruction.initialize(executedInsn, nextInsn, rcg);
-                    SymHeapHelper.pushArguments(ti, null, null);
-                    ti.setNextPC(repOKCallInstruction);
+                if (heapSolvingStrategy instanceof LIBasedStrategy && config.checkPathValidity) {
+                    ((LIBasedStrategy) heapSolvingStrategy).checkPathValidity(ti, executedInsn, nextInsn);
                 }
 
             } else if (exec.getExecutedMethodName().equals("exceptionThrown")) {
