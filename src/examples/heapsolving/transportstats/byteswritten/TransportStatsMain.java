@@ -7,10 +7,9 @@
 
 package heapsolving.transportstats.byteswritten;
 
-import lissa.SymHeap;
-
 import heapsolving.transportstats.TransportStats;
 import heapsolving.transportstats.TransportStatsHarness;
+import lissa.SymHeap;
 
 public class TransportStatsMain {
 
@@ -23,6 +22,7 @@ public class TransportStatsMain {
                 // Call to method under analysis
                 structure.bytesWritten(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
             }
 
             SymHeap.pathFinished();
