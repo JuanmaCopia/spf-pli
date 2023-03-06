@@ -23,6 +23,7 @@ public class TransportStatsMain {
                 structure.bytesWritten(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

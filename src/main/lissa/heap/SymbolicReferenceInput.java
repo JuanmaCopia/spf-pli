@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Expression;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
@@ -209,6 +210,66 @@ public class SymbolicReferenceInput {
                 }
             }
         }
+    }
+
+    public String symbolicInputToString() {
+        ThreadInfo ti = VM.getVM().getCurrentThread();
+        Set<Integer> visited = new HashSet<>();
+        LinkedList<Integer> worklist = new LinkedList<Integer>();
+        Integer rootIndex = this.rootHeapNode.getIndex();
+        visited.add(rootIndex);
+        worklist.add(rootIndex);
+
+        StringBuilder sb = new StringBuilder();
+        String indent = "";
+
+        while (!worklist.isEmpty()) {
+            int currentOwnerRef = worklist.removeFirst();
+            ElementInfo owner = ti.getElementInfo(currentOwnerRef);
+
+            ClassInfo ownerObjectClass = owner.getClassInfo();
+            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+
+            String ownerString = "[" + owner.getObjectRef() + "]";
+
+            for (int i = 0; i < instanceFields.length; i++) {
+
+                FieldInfo field = instanceFields[i];
+
+                String fieldString = indent + ownerString + field.getName();
+
+                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+
+                    Integer fieldRef = getReferenceField(currentOwnerRef, field);
+                    if (fieldRef == SYMBOLIC) {
+                        sb.append(String.format("%s -> SYMBOLIC\n", fieldString));
+                    } else if (fieldRef == NULL) {
+                        sb.append(String.format("%s -> null\n", fieldString));
+                    } else if (!visited.add(fieldRef)) { // previously visited object
+                        sb.append(String.format("%s -> *%d*\n", fieldString, fieldRef));
+                    } else { // first time visited
+                        sb.append(String.format("%s -> %d\n", fieldString, fieldRef));
+                        worklist.add(fieldRef);
+                    }
+                } else {
+                    Expression symbolicPrimitive = getPrimitiveSymbolicField(currentOwnerRef, field);
+                    if (symbolicPrimitive instanceof SymbolicInteger) {
+                        SymbolicInteger symbolicInteger = (SymbolicInteger) symbolicPrimitive;
+                        sb.append(String.format("%s -> %s\n", fieldString, symbolicInteger.toString()));
+                    } else if (symbolicPrimitive instanceof StringSymbolic) {
+                        StringSymbolic symbolicString = (StringSymbolic) symbolicPrimitive;
+                        sb.append(String.format("%s -> %s\n", fieldString, symbolicString.toString()));
+                    } else {
+                        assert (false); // ERROR!
+                    }
+                }
+            }
+            indent = indent + "  ";
+        }
+        PathCondition pc = PathCondition.getPC(ti.getVM());
+        String pcString = pc.stringPC();
+        sb.append("\n" + pcString);
+        return sb.toString();
     }
 
 }

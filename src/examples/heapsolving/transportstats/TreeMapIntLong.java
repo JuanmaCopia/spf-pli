@@ -5,7 +5,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package heapsolving.treemap;
+package heapsolving.transportstats;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -96,7 +96,7 @@ import lissa.SymHeap;
  * @see Collections#synchronizedMap(Map)
  * @since 1.2
  */
-public class TreeMap {
+public class TreeMapIntLong {
 
     public transient Entry root = null;
 
@@ -126,7 +126,7 @@ public class TreeMap {
      *
      * @see Comparable
      */
-    public TreeMap() {
+    public TreeMapIntLong() {
     }
 
     // Query Operations
@@ -168,22 +168,13 @@ public class TreeMap {
      *         otherwise.
      * @since 1.2
      */
-    public boolean containsValue(Object value) {
-        return (root == null ? false : (value == null ? valueSearchNull(root) : valueSearchNonNull(root, value)));
+    public boolean containsValue(long value) {
+        return (root == null ? false : valueSearchNonNull(root, value));
     }
 
-    private boolean valueSearchNull(Entry n) {
-        if (n.value == null) {
-            return true;
-        }
-
-        // Check left and right subtrees for value
-        return (n.left != null && valueSearchNull(n.left)) || (n.right != null && valueSearchNull(n.right));
-    }
-
-    private boolean valueSearchNonNull(Entry n, Object value) {
+    private boolean valueSearchNonNull(Entry n, long value) {
         // Check this node for the value
-        if (value.equals(n.value)) {
+        if (value == n.value) {
             return true;
         }
 
@@ -211,7 +202,7 @@ public class TreeMap {
      *
      * @see #containsKey(Object)
      */
-    public Object get(int key) {
+    public Long get(int key) {
         Entry p = getEntry(key);
         return (p == null ? null : p.value);
     }
@@ -289,7 +280,7 @@ public class TreeMap {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object put(int key, Object value) {
+    public Object put(int key, long value) {
         Entry t = root;
 
         if (t == null) {
@@ -339,13 +330,13 @@ public class TreeMap {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object remove(int key) {
+    public Long remove(int key) {
         Entry p = getEntry(key);
         if (p == null) {
             return null;
         }
 
-        Object oldValue = p.value;
+        long oldValue = p.value;
         deleteEntry(p);
         return oldValue;
     }
@@ -666,6 +657,7 @@ public class TreeMap {
             return false;
 
         LinkedList<Entry> worklist = new LinkedList<Entry>();
+
         if (!visited.add(root))
             return false;
         worklist.add(root);
@@ -776,11 +768,11 @@ public class TreeMap {
     public class Entry {
 
         public int key;
-        public Object value;
+        public long value;
         public Entry left = null;
         public Entry right = null;
         public Entry parent;
-        public boolean color = TreeMap.BLACK;
+        public boolean color = TreeMapIntLong.BLACK;
 
         /**
          * Test two values for equality. Differs from o1.equals(o2) only in that it
@@ -794,7 +786,7 @@ public class TreeMap {
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
          * child links, and BLACK color.
          */
-        public Entry(int key, Object value, Entry parent) {
+        public Entry(int key, long value, Entry parent) {
             this.key = key;
             this.value = value;
             this.parent = parent;
@@ -823,7 +815,7 @@ public class TreeMap {
          *
          * @return the value associated with the key before this method was called.
          */
-        public Object setValue(Object value) {
+        public Object setValue(long value) {
             Object oldValue = this.value;
             this.value = value;
             return oldValue;
@@ -844,10 +836,10 @@ public class TreeMap {
     }
 
     public static IFinitization finTreeMap(int nodesNum) {
-        IFinitization f = FinitizationFactory.create(TreeMap.class);
+        IFinitization f = FinitizationFactory.create(TreeMapIntLong.class);
         IObjSet nodes = f.createObjSet(Entry.class, nodesNum, true);
-        f.set(TreeMap.class, "root", nodes);
-        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMapIntLong.class, "root", nodes);
+        f.set(TreeMapIntLong.class, "size", f.createIntSet(0, nodesNum));
         f.set(Entry.class, "key", f.createIntSet(0, nodesNum - 1));
         f.set(Entry.class, "left", nodes);
         f.set(Entry.class, "right", nodes);
@@ -857,96 +849,96 @@ public class TreeMap {
     }
 
     public static void runRepOK() {
-        TreeMap toBuild = new TreeMap();
+        TreeMapIntLong toBuild = new TreeMapIntLong();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
-        TreeMap toBuild = new TreeMap();
+        TreeMapIntLong toBuild = new TreeMapIntLong();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
-//    public String treeToString() {
-//        if (root == null)
-//            return "root -> null";
-//
-//        StringBuilder sb = new StringBuilder();
-//        String indent = "  ";
-//        sb.append("root\n");
-//
-//        if (root.color)
-//            sb.append("root.color: BLACK\n");
-//        else
-//            sb.append("root.color: RED\n");
-//
-//        sb.append("root.color -> " + root.color + "\n");
-//
-//        Set<Entry> visited = new HashSet<Entry>();
-//        LinkedList<Entry> worklist = new LinkedList<Entry>();
-//        visited.add(root);
-//        worklist.add(root);
-//        if (root.parent != null)
-//            sb.append("root.parent != null (WRONG!)\n");
-//
-//        sb.append("root.parent -> null (OK)\n");
-//
-//        while (!worklist.isEmpty()) {
-//            Entry node = worklist.removeFirst();
-//
-//            sb.append(indent + "color -> " + node.color + "\n");
-//            sb.append(indent + "key -> " + node.key + "\n");
-//
-//            Entry left = node.left;
-//
-//            if (left != null) {
-//                boolean add = true;
-//                if (!visited.add(left)) {
-//                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "left -> NewObject (OK)\n");
-//                }
-//                if (left.parent != node) {
-//                    sb.append(indent + "left.parent -> (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "left.parent -> OK\n");
-//                }
-//                if (add) {
-//                    worklist.add(left);
-//                }
-//            } else {
-//                sb.append(indent + "left -> null (OK)\n");
-//            }
-//
-//            Entry right = node.right;
-//
-//            if (right != null) {
-//                boolean add = true;
-//                if (!visited.add(right)) {
-//                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
-//                    add = false;
-//                } else
-//                    sb.append(indent + "rigth -> NewObject (OK)\n");
-//
-//                if (right.parent != node) {
-//                    sb.append(indent + "right.parent -> (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "right.parent -> OK\n");
-//                }
-//                if (add) {
-//                    worklist.add(right);
-//                }
-//            } else {
-//                sb.append(indent + "right -> null (OK)\n");
-//            }
-//
-//            indent = indent + "  ";
-//        }
-//        return sb.toString();
-//    }
+    public String treeToString() {
+        if (root == null)
+            return "root -> null";
+
+        StringBuilder sb = new StringBuilder();
+        String indent = "  ";
+        sb.append("root\n");
+
+        if (root.color)
+            sb.append("root.color: BLACK\n");
+        else
+            sb.append("root.color: RED\n");
+
+        sb.append("root.color -> " + root.color + "\n");
+
+        Set<Entry> visited = new HashSet<Entry>();
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
+        visited.add(root);
+        worklist.add(root);
+        if (root.parent != null)
+            sb.append("root.parent != null (WRONG!)\n");
+
+        sb.append("root.parent -> null (OK)\n");
+
+        while (!worklist.isEmpty()) {
+            Entry node = worklist.removeFirst();
+
+            sb.append(indent + "color -> " + node.color + "\n");
+            sb.append(indent + "key -> " + node.key + "\n");
+
+            Entry left = node.left;
+
+            if (left != null) {
+                boolean add = true;
+                if (!visited.add(left)) {
+                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "left -> NewObject (OK)\n");
+                }
+                if (left.parent != node) {
+                    sb.append(indent + "left.parent -> (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "left.parent -> OK\n");
+                }
+                if (add) {
+                    worklist.add(left);
+                }
+            } else {
+                sb.append(indent + "left -> null (OK)\n");
+            }
+
+            Entry right = node.right;
+
+            if (right != null) {
+                boolean add = true;
+                if (!visited.add(right)) {
+                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
+                    add = false;
+                } else
+                    sb.append(indent + "rigth -> NewObject (OK)\n");
+
+                if (right.parent != node) {
+                    sb.append(indent + "right.parent -> (WRONG!)\n");
+                    add = false;
+                } else {
+                    sb.append(indent + "right.parent -> OK\n");
+                }
+                if (add) {
+                    worklist.add(right);
+                }
+            } else {
+                sb.append(indent + "right -> null (OK)\n");
+            }
+
+            indent = indent + "  ";
+        }
+        return sb.toString();
+    }
 
 }

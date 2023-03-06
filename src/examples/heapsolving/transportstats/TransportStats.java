@@ -25,7 +25,6 @@ package heapsolving.transportstats;
 import java.util.HashSet;
 import java.util.Set;
 
-import heapsolving.treemap.TreeMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -36,8 +35,8 @@ public class TransportStats {
     // private static final int PRINT_INTERVAL = 60 * 1000;
     private static final int GRANULARITY = 10; // bytes
 
-    public TreeMap read_sizes = new TreeMap();
-    public TreeMap write_sizes = new TreeMap();
+    public TreeMapIntLong read_sizes = new TreeMapIntLong();
+    public TreeMapIntLong write_sizes = new TreeMapIntLong();
 
     public long total_reads = 0;
     public long total_writes = 0;
@@ -64,7 +63,7 @@ public class TransportStats {
         updateSizes(write_sizes, num_bytes_written);
     }
 
-    private void updateSizes(TreeMap io_sizes, int num_bytes) {
+    private void updateSizes(TreeMapIntLong io_sizes, int num_bytes) {
         int size_key;
 
         if (num_bytes == 0) {
@@ -83,24 +82,26 @@ public class TransportStats {
     }
 
     public boolean repOKSymSolve() {
+        if (read_sizes == null || write_sizes == null)
+            return false;
         if (read_sizes == write_sizes)
             return false;
-        Set<TreeMap.Entry> visited = new HashSet<>();
-        if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences(visited))
+        Set<TreeMapIntLong.Entry> visited = new HashSet<>();
+        if (!read_sizes.isBinTreeWithParentReferences(visited))
             return false;
-        if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences(visited))
+        if (!write_sizes.isBinTreeWithParentReferences(visited))
             return false;
-        if (read_sizes != null && !read_sizes.isWellColored())
+        if (!read_sizes.isWellColored())
             return false;
-        if (write_sizes != null && !write_sizes.isWellColored())
+        if (!write_sizes.isWellColored())
             return false;
         return true;
     }
 
     public boolean repOKSymbolicExecution() {
-        if (read_sizes != null && !read_sizes.isSorted())
+        if (!read_sizes.isSorted())
             return false;
-        if (write_sizes != null && !write_sizes.isSorted())
+        if (!write_sizes.isSorted())
             return false;
         return true;
     }
@@ -124,18 +125,19 @@ public class TransportStats {
     public static IFinitization finTransportStats(int nodesNum) {
         IFinitization f = FinitizationFactory.create(TransportStats.class);
 
-        IObjSet treemaps = f.createObjSet(TreeMap.class, 2, true);
+        IObjSet treemaps = f.createObjSet(TreeMapIntLong.class, 2, true);
         f.set(TransportStats.class, "read_sizes", treemaps);
         f.set(TransportStats.class, "write_sizes", treemaps);
 
-        IObjSet nodes = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
-        f.set(TreeMap.class, "root", nodes);
-        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
-        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
-        f.set(TreeMap.Entry.class, "left", nodes);
-        f.set(TreeMap.Entry.class, "right", nodes);
-        f.set(TreeMap.Entry.class, "parent", nodes);
-        f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
+        IObjSet nodes = f.createObjSet(TreeMapIntLong.Entry.class, nodesNum, true);
+        f.set(TreeMapIntLong.class, "root", nodes);
+        f.set(TreeMapIntLong.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMapIntLong.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        f.set(TreeMapIntLong.Entry.class, "value", f.createLongSet(0, nodesNum));
+        f.set(TreeMapIntLong.Entry.class, "left", nodes);
+        f.set(TreeMapIntLong.Entry.class, "right", nodes);
+        f.set(TreeMapIntLong.Entry.class, "parent", nodes);
+        f.set(TreeMapIntLong.Entry.class, "color", f.createBooleanSet());
 
         return f;
     }
@@ -152,7 +154,7 @@ public class TransportStats {
 //  
 // 
 //  
-//  private void printSizes( TreeMap size_map, long num_total ) {
+//  private void printSizes( TreeMapIntLong size_map, long num_total ) {
 //    int prev_high = 1;
 //    
 //    for( Iterator it = size_map.entrySet().iterator(); it.hasNext(); ) {
