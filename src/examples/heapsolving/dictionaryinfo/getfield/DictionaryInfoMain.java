@@ -7,9 +7,9 @@
 
 package heapsolving.dictionaryinfo.getfield;
 
-import lissa.SymHeap;
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
+import lissa.SymHeap;
 
 public class DictionaryInfoMain {
 
@@ -22,6 +22,8 @@ public class DictionaryInfoMain {
                 // Call to method under analysis
                 structure.getField(tagNumber);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

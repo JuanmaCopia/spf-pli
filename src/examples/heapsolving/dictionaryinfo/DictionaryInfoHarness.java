@@ -1,7 +1,7 @@
 package heapsolving.dictionaryinfo;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class DictionaryInfoHarness {
 
@@ -9,11 +9,11 @@ public class DictionaryInfoHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        DictionaryInfo structure = new DictionaryInfo(SymHeap.makeSymbolicString("version"));
+        DictionaryInfo structure = new DictionaryInfo();
         structure = (DictionaryInfo) SymHeap.makeSymbolicRefThis("dictionaryinfo_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 
@@ -22,7 +22,7 @@ public class DictionaryInfoHarness {
 
     public static DictionaryInfo generateDriverStructure() {
         int maxScope = SymHeap.getMaxScope();
-        DictionaryInfo structure = new DictionaryInfo(SymHeap.makeSymbolicString("version"));
+        DictionaryInfo structure = new DictionaryInfo();
 
         int numNodes = Verify.getInt(0, maxScope);
         for (int i = 1; i <= numNodes; i++) {

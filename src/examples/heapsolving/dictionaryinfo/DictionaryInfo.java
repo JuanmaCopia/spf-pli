@@ -30,9 +30,11 @@
 
 package heapsolving.dictionaryinfo;
 
+import heapsolving.treemap.TreeMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Represents a FIX version specification. DictionaryInfo acts as a central
@@ -42,9 +44,9 @@ import korat.finitization.impl.FinitizationFactory;
  */
 public class DictionaryInfo {
 
-    private String version;
+    // private String version;
 
-    private int loadCount;
+    // private int loadCount;
 
     // Default collection
 //    private TreeMap<String, MessageInfo> messagesByName;
@@ -71,8 +73,10 @@ public class DictionaryInfo {
      *
      * @param version - a version
      */
-    public DictionaryInfo(String version) {
-        this.version = version;
+//    public DictionaryInfo(String version) {
+//        this.version = version;
+//    }
+    public DictionaryInfo() {
     }
 
     /**
@@ -239,60 +243,76 @@ public class DictionaryInfo {
 //        messagesByName.put(message.getName(), message);
 //    }
 
-    /**
-     * Returns the version
-     *
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
+//    /**
+//     * Returns the version
+//     *
+//     * @return the version
+//     */
+//    public String getVersion() {
+//        return version;
+//    }
+//
+//    /**
+//     * Modifies the version
+//     *
+//     * @param version - the version to set
+//     */
+//    public void setVersion(String version) {
+//        this.version = version;
+//    }
+//
+//    /**
+//     * Increments the loadCount
+//     */
+//    public void incrementLoadCount() {
+//        loadCount++;
+//    }
+//
+//    /**
+//     * Returns whether the dictionary is loaded
+//     *
+//     * @return whether the dictionary is loaded
+//     */
+//    public boolean isLoaded() {
+//        return loadCount == 5;
+//    }
 
-    /**
-     * Modifies the version
-     *
-     * @param version - the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
-     * Increments the loadCount
-     */
-    public void incrementLoadCount() {
-        loadCount++;
-    }
-
-    /**
-     * Returns whether the dictionary is loaded
-     *
-     * @return whether the dictionary is loaded
-     */
-    public boolean isLoaded() {
-        return loadCount == 5;
-    }
-
-    public boolean repOK() {
-        if (fieldsByTagNumber == null)
+    public boolean repOKSymSolve() {
+        if (fieldsByTagNumber == null || fieldsByName == null)
             return false;
-        if (fieldsByName == null)
+        if (!fieldsByTagNumber.isBinTreeWithParentReferences())
             return false;
-        return fieldsByTagNumber.repOK() && fieldsByName.repOK();
-    }
-
-    public boolean areTreesOK() {
-        if (fieldsByTagNumber == null)
+        if (!fieldsByName.isBinTreeWithParentReferences())
             return false;
-        if (fieldsByName == null)
+        if (!fieldsByTagNumber.isWellColored())
             return false;
-        if (!fieldsByTagNumber.isBinTreeWithParentReferences()) {
+        if (!fieldsByName.isWellColored())
             return false;
-        }
-        if (!fieldsByName.isBinTreeWithParentReferences()) {
-            return false;
-        }
         return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (!fieldsByTagNumber.isSorted())
+            return false;
+        if (!fieldsByName.isSorted())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        DictionaryInfo toBuild = new DictionaryInfo();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        DictionaryInfo toBuild = new DictionaryInfo();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finDictionaryInfo(int nodesNum) {
@@ -306,6 +326,8 @@ public class DictionaryInfo {
         IObjSet entries = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
 
         f.set(TreeMap.class, "root", entries);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
         f.set(TreeMap.Entry.class, "left", entries);
         f.set(TreeMap.Entry.class, "right", entries);
         f.set(TreeMap.Entry.class, "parent", entries);
@@ -313,6 +335,7 @@ public class DictionaryInfo {
 
         IObjSet entriesB = f.createObjSet(TreeMapStrR.Entry.class, nodesNum, true);
         f.set(TreeMapStrR.class, "root", entriesB);
+        f.set(TreeMapStrR.class, "size", f.createIntSet(0, nodesNum));
         f.set(TreeMapStrR.Entry.class, "left", entriesB);
         f.set(TreeMapStrR.Entry.class, "right", entriesB);
         f.set(TreeMapStrR.Entry.class, "parent", entriesB);

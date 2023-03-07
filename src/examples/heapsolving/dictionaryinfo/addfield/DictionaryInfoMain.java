@@ -7,11 +7,10 @@
 
 package heapsolving.dictionaryinfo.addfield;
 
-import lissa.SymHeap;
-
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
 import heapsolving.dictionaryinfo.FieldInfo;
+import lissa.SymHeap;
 
 public class DictionaryInfoMain {
 
@@ -28,6 +27,8 @@ public class DictionaryInfoMain {
                 // Call to method under analysis
                 structure.addField(field);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();
