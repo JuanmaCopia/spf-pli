@@ -9,6 +9,7 @@ import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
+import gov.nasa.jpf.symbc.string.StringExpression;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.BooleanFieldInfo;
 import gov.nasa.jpf.vm.ClassInfo;
@@ -168,6 +169,11 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         } else {
             Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
             assert (symbolicVar != null);
+            if (symbolicVar instanceof StringExpression) {
+                int val = env.newString("WWWWW's Birthday is 12-17-77");
+                currentObjectElementInfo.set1SlotField(currentField, val);
+            }
+
             currentObjectElementInfo.setFieldAttr(currentField, symbolicVar);
         }
     }
@@ -181,10 +187,13 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         } else if (currentField instanceof FloatFieldInfo || currentField instanceof DoubleFieldInfo) {
             symbolicValue = new SymbolicReal(name);
         } else if (currentField instanceof ReferenceFieldInfo) {
-            if (currentField.getType().equals("java.lang.String"))
+            if (currentField.getType().equals("java.lang.String")) {
                 symbolicValue = new StringSymbolic(name);
-            else
+                int val = env.newString("WWWWW's Birthday is 12-17-77");
+                currentObjectElementInfo.set1SlotField(currentField, val);
+            } else {
                 symbolicValue = new SymbolicInteger(name);
+            }
         } else if (currentField instanceof BooleanFieldInfo) {
             // treat boolean as an integer with range [0,1]
             symbolicValue = new SymbolicInteger(name, 0, 1);

@@ -110,7 +110,7 @@ public class PartialHeapBuilderVisitor {
         ElementInfo eiRef = JPFHeap.getModifiable(newRootRef);
         FieldInfo[] fields = ci.getDeclaredInstanceFields();
         String refChain = "SYMBOLIC_ROOT" + "[" + newRootRef + "]";
-        SymHeapHelper.initializeInstanceFields(fields, eiRef, refChain, newSymbolicHeap);
+        SymHeapHelper.initializeInstanceFields(env, fields, eiRef, refChain, newSymbolicHeap);
 
         ClassInfo typeClassInfo = eiRef.getClassInfo();
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);

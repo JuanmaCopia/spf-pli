@@ -174,7 +174,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);
         ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
-        SymHeapHelper.initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
+        SymHeapHelper.initializeInstanceFields(env, fields, eiRef, refChain, symInputHeap);
         Helper.initializeStaticFields(staticFields, ci, ti);
 
         // create new HeapNode based on above info

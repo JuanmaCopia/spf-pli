@@ -336,6 +336,7 @@ public class DictionaryInfo {
         IObjSet entriesB = f.createObjSet(TreeMapStrR.Entry.class, nodesNum, true);
         f.set(TreeMapStrR.class, "root", entriesB);
         f.set(TreeMapStrR.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMapStrR.Entry.class, "key", f.createRandomStringSet(nodesNum, 1, 2));
         f.set(TreeMapStrR.Entry.class, "left", entriesB);
         f.set(TreeMapStrR.Entry.class, "right", entriesB);
         f.set(TreeMapStrR.Entry.class, "parent", entriesB);

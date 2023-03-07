@@ -71,8 +71,8 @@ public class SymHeapHelper {
         return next;
     }
 
-    public static Expression initializeInstanceField(FieldInfo field, ElementInfo eiRef, String refChain, String suffix,
-            SymbolicInputHeapLISSA symInputHeap) {
+    public static Expression initializeInstanceField(MJIEnv env, FieldInfo field, ElementInfo eiRef, String refChain,
+            String suffix, SymbolicInputHeapLISSA symInputHeap) {
         Expression sym_v = null;
         String name = "";
 
@@ -83,10 +83,13 @@ public class SymHeapHelper {
         } else if (field instanceof FloatFieldInfo || field instanceof DoubleFieldInfo) {
             sym_v = new SymbolicReal(fullName);
         } else if (field instanceof ReferenceFieldInfo) {
-            if (field.getType().equals("java.lang.String"))
+            if (field.getType().equals("java.lang.String")) {
                 sym_v = new StringSymbolic(fullName);
-            else
+                int val = env.newString("WWWWW's Birthday is 12-17-77");
+                eiRef.set1SlotField(field, val);
+            } else {
                 sym_v = new SymbolicInteger(fullName);
+            }
         } else if (field instanceof BooleanFieldInfo) {
             // treat boolean as an integer with range [0,1]
             sym_v = new SymbolicInteger(fullName, 0, 1);
@@ -104,10 +107,10 @@ public class SymHeapHelper {
         return sym_v;
     }
 
-    public static void initializeInstanceFields(FieldInfo[] fields, ElementInfo eiRef, String refChain,
+    public static void initializeInstanceFields(MJIEnv env, FieldInfo[] fields, ElementInfo eiRef, String refChain,
             SymbolicInputHeapLISSA symInputHeap) {
         for (int i = 0; i < fields.length; i++)
-            initializeInstanceField(fields[i], eiRef, refChain, "", symInputHeap);
+            initializeInstanceField(env, fields[i], eiRef, refChain, "", symInputHeap);
     }
 
     public static int addNewHeapNode(ClassInfo typeClassInfo, ThreadInfo ti, Object attr, PathCondition pcHeap,
@@ -132,7 +135,7 @@ public class SymHeapHelper {
             fields[fieldIndex] = eiRef.getFieldInfo(fieldIndex);
         }
 
-        initializeInstanceFields(fields, eiRef, refChain, symInputHeap);
+        initializeInstanceFields(ti.getEnv(), fields, eiRef, refChain, symInputHeap);
 
         // Put symbolic array in PC if we create a new array.
         if (typeClassInfo.isArray()) {
