@@ -7,16 +7,16 @@
 
 package heapsolving.template.addparameter;
 
-import lissa.SymHeap;
 import heapsolving.template.Parameter;
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;
+import lissa.SymHeap;
 
 public class TemplateMain {
 
     public static void main(String[] args) {
         Parameter p = new Parameter();
-        p.setName(SymHeap.makeSymbolicString("paramName"));
+        p.setName(SymHeap.makeSymbolicInteger("paramName"));
         p.setIndex(SymHeap.makeSymbolicInteger("paramIndex"));
         p.setRow(SymHeap.makeSymbolicInteger("paramRow"));
         p.setColumn(SymHeap.makeSymbolicInteger("paramCol"));
@@ -27,6 +27,8 @@ public class TemplateMain {
                 // Call to method under analysis
                 structure.addParameter(p);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

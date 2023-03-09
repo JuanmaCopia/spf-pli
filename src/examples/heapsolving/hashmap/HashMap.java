@@ -118,7 +118,7 @@ public class HashMap {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 16;
+    public static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified by

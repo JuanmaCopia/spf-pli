@@ -40,7 +40,7 @@ import java.util.Set;
  * encapsulates the list. If no such object exists, the list should be "wrapped"
  * using the Collections.synchronizedList method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the list:
- * 
+ *
  * <pre>
  *     List list = Collections.synchronizedList(new LinkedList(...));
  * </pre>
@@ -405,7 +405,21 @@ public class LinkedList {
         size--;
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        return isCircularLinkedList();
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (header == null)
+            return false;
+        return isSizeOK();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public boolean isCircularLinkedList() {
         if (header == null)
             return false;
 
@@ -429,4 +443,18 @@ public class LinkedList {
         return true;
     }
 
+    public boolean isSizeOK() {
+        return size == countNodes();
+    }
+
+    public int countNodes() {
+        int count = 0;
+
+        Entry current = header.next;
+        while (current != header) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }

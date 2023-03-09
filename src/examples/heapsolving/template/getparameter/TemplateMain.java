@@ -7,14 +7,14 @@
 
 package heapsolving.template.getparameter;
 
-import lissa.SymHeap;
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;
+import lissa.SymHeap;
 
 public class TemplateMain {
 
     public static void main(String[] args) {
-        String key = SymHeap.makeSymbolicString("INPUT_KEY");
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
 
         Template structure = TemplateHarness.getStructure();
         if (structure != null) {
@@ -22,6 +22,8 @@ public class TemplateMain {
                 // Call to method under analysis
                 structure.getParameter(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

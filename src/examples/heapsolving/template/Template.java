@@ -16,9 +16,11 @@
 
 package heapsolving.template;
 
+import heapsolving.hashmap.HashMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 //import java.util.List;
 //import java.util.Map;
@@ -29,14 +31,17 @@ import korat.finitization.impl.FinitizationFactory;
 
 public class Template {
 //	private static final Logger logger = Logger.getLogger(Template.class);
-    protected final String name;
+    // protected final String name;
 //	protected final HSSFSheet sheet;
     public LinkedList parameters = new LinkedList();
-    public HashMapStrPar parametersByName = new HashMapStrPar();
+    public HashMap parametersByName = new HashMap();
 //	private final Map<Integer,Map<Integer,Parameter>> paramsByRowCol = new HashMap<Integer,Map<Integer,Parameter>>();
 
-    public Template(String name) {
-        this.name = name;
+//    public Template(String name) {
+//        this.name = name;
+//    }
+
+    public Template() {
     }
 
 //	public Template(String name,HSSFSheet sheet)
@@ -45,12 +50,12 @@ public class Template {
 //		this.sheet = sheet;
 //	}
 
-    public String getName() {
-        return name;
-    }
+//    public String getName() {
+//        return name;
+//    }
 
-    public Parameter getParameter(String name) {
-        return parametersByName.get(name);
+    public Parameter getParameter(Integer name) {
+        return (Parameter) parametersByName.get(name);
     }
 
     public void setParameters(Parameter[] parameters) {
@@ -117,7 +122,7 @@ public class Template {
 
     public void addParameter(Parameter parameter) {
         parameters.add(parameter);
-        String name = parameter.getName();
+        Integer name = parameter.getName();
         // Parameter name is optional
         if (name != null) {
             if (!parametersByName.containsKey(name)) {
@@ -128,9 +133,9 @@ public class Template {
         }
     }
 
-    public Parameter getParameter(int idx) {
-        return idx >= 1 && idx <= parameters.size() ? (Parameter) parameters.get(idx - 1) : null;
-    }
+//    public Parameter getParameter(int idx) {
+//        return idx >= 1 && idx <= parameters.size() ? (Parameter) parameters.get(idx - 1) : null;
+//    }
 
 //	public abstract int height();
 //
@@ -157,16 +162,38 @@ public class Template {
 //		return idx;
 //	}
 
-    public boolean repOK() {
-        if (parameters == null)
+    public boolean repOKSymSolve() {
+        if (parameters == null || parametersByName == null)
             return false;
-        if (!parameters.repOK())
+        if (!parameters.repOKSymSolve())
             return false;
-        if (parametersByName == null)
-            return false;
-        if (!parametersByName.repOK())
+        if (!parametersByName.repOKSymSolve())
             return false;
         return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (!parameters.repOKSymbolicExecution())
+            return false;
+        if (!parametersByName.repOKSymbolicExecution())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        Template toBuild = new Template();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        Template toBuild = new Template();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild.repOKComplete());
     }
 
     public static IFinitization finTemplate(int nodesNum) {
@@ -175,33 +202,39 @@ public class Template {
         IObjSet ll = f.createObjSet(LinkedList.class, 1, true);
         f.set(Template.class, "parameters", ll);
 
-        IObjSet hmap = f.createObjSet(HashMapStrPar.class, 1, true);
+        IObjSet hmap = f.createObjSet(HashMap.class, 1, true);
         f.set(Template.class, "parametersByName", hmap);
 
         IObjSet nodes = f.createObjSet(LinkedList.Entry.class, nodesNum, true);
         f.set(LinkedList.class, "header", nodes);
+        f.set(LinkedList.class, "size", f.createIntSet(0, nodesNum));
+        f.set(LinkedList.Entry.class, "element", f.createObjSet(Parameter.class, nodesNum, true));
         f.set(LinkedList.Entry.class, "next", nodes);
         f.set(LinkedList.Entry.class, "previous", nodes);
 
-        IObjSet entries = f.createObjSet(HashMapStrPar.Entry.class, nodesNum, true);
-        f.set(HashMapStrPar.class, "e0", entries);
-        f.set(HashMapStrPar.class, "e1", entries);
-        f.set(HashMapStrPar.class, "e2", entries);
-        f.set(HashMapStrPar.class, "e3", entries);
-        f.set(HashMapStrPar.class, "e4", entries);
-        f.set(HashMapStrPar.class, "e5", entries);
-        f.set(HashMapStrPar.class, "e6", entries);
-        f.set(HashMapStrPar.class, "e7", entries);
-        f.set(HashMapStrPar.class, "e8", entries);
-        f.set(HashMapStrPar.class, "e9", entries);
-        f.set(HashMapStrPar.class, "e10", entries);
-        f.set(HashMapStrPar.class, "e11", entries);
-        f.set(HashMapStrPar.class, "e12", entries);
-        f.set(HashMapStrPar.class, "e13", entries);
-        f.set(HashMapStrPar.class, "e14", entries);
-        f.set(HashMapStrPar.class, "e15", entries);
+        f.set(HashMap.class, "size", f.createIntSet(0, nodesNum));
+        IObjSet entries = f.createObjSet(HashMap.Entry.class, nodesNum, true);
+        f.set(HashMap.class, "e0", entries);
+        f.set(HashMap.class, "e1", entries);
+        f.set(HashMap.class, "e2", entries);
+        f.set(HashMap.class, "e3", entries);
+        f.set(HashMap.class, "e4", entries);
+        f.set(HashMap.class, "e5", entries);
+        f.set(HashMap.class, "e6", entries);
+        f.set(HashMap.class, "e7", entries);
+        f.set(HashMap.class, "e8", entries);
+        f.set(HashMap.class, "e9", entries);
+        f.set(HashMap.class, "e10", entries);
+        f.set(HashMap.class, "e11", entries);
+        f.set(HashMap.class, "e12", entries);
+        f.set(HashMap.class, "e13", entries);
+        f.set(HashMap.class, "e14", entries);
+        f.set(HashMap.class, "e15", entries);
 
-        f.set(HashMapStrPar.Entry.class, "next", entries);
+        f.set(HashMap.Entry.class, "key", f.createIntSet(0, nodesNum * HashMap.DEFAULT_INITIAL_CAPACITY));
+        f.set(HashMap.Entry.class, "value", f.createObjSet(Parameter.class, nodesNum, true));
+        f.set(HashMap.Entry.class, "hash", f.createIntSet(0, nodesNum * HashMap.DEFAULT_INITIAL_CAPACITY));
+        f.set(HashMap.Entry.class, "next", entries);
 
         return f;
     }
