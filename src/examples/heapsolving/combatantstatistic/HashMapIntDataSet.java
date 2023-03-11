@@ -7,7 +7,10 @@
 
 package heapsolving.combatantstatistic;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -110,7 +113,7 @@ public class HashMapIntDataSet {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 8;
+    static final int DEFAULT_INITIAL_CAPACITY = 32;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified by
@@ -128,50 +131,49 @@ public class HashMapIntDataSet {
      */
     // transient Entry[] table;
 
-    Entry e0;
-    Entry e1;
-    Entry e2;
-    Entry e3;
-    Entry e4;
-    Entry e5;
-    Entry e6;
-    Entry e7;
+    public Entry e0;
+    public Entry e1;
+    public Entry e2;
+    public Entry e3;
+    public Entry e4;
+    public Entry e5;
+    public Entry e6;
+    public Entry e7;
+    public Entry e8;
+    public Entry e9;
+    public Entry e10;
+    public Entry e11;
+    public Entry e12;
+    public Entry e13;
+    public Entry e14;
+    public Entry e15;
+    public Entry e16;
+    public Entry e17;
+    public Entry e18;
+    public Entry e19;
+    public Entry e20;
+    public Entry e21;
+    public Entry e22;
+    public Entry e23;
+    public Entry e24;
+    public Entry e25;
+    public Entry e26;
+    public Entry e27;
+    public Entry e28;
+    public Entry e29;
+    public Entry e30;
+    public Entry e31;
 
     /**
      * The number of key-value mappings contained in this identity hash map.
      */
-    transient int size;
-
-    /**
-     * The next size value at which to resize (capacity * load factor).
-     *
-     * @serial
-     */
-    int threshold;
-
-    /**
-     * The load factor for the hash table.
-     *
-     * @serial
-     */
-    final float loadFactor;
-
-    /**
-     * The number of times this HashMap has been structurally modified Structural
-     * modifications are those that change the number of mappings in the HashMap or
-     * otherwise modify its internal structure (e.g., rehash). This field is used to
-     * make iterators on Collection-views of the HashMap fail-fast. (See
-     * ConcurrentModificationException).
-     */
-    transient volatile int modCount;
+    public transient int size;
 
     /**
      * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
      * and the default load factor (0.75).
      */
     public HashMapIntDataSet() {
-        this.loadFactor = DEFAULT_LOAD_FACTOR;
-        threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
 //    table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
@@ -205,6 +207,54 @@ public class HashMapIntDataSet {
             return e6;
         case 7:
             return e7;
+        case 8:
+            return e8;
+        case 9:
+            return e9;
+        case 10:
+            return e10;
+        case 11:
+            return e11;
+        case 12:
+            return e12;
+        case 13:
+            return e13;
+        case 14:
+            return e14;
+        case 15:
+            return e15;
+        case 16:
+            return e16;
+        case 17:
+            return e17;
+        case 18:
+            return e18;
+        case 19:
+            return e19;
+        case 20:
+            return e20;
+        case 21:
+            return e21;
+        case 22:
+            return e22;
+        case 23:
+            return e23;
+        case 24:
+            return e24;
+        case 25:
+            return e25;
+        case 26:
+            return e26;
+        case 27:
+            return e27;
+        case 28:
+            return e28;
+        case 29:
+            return e29;
+        case 30:
+            return e30;
+        case 31:
+            return e31;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
@@ -235,6 +285,78 @@ public class HashMapIntDataSet {
             break;
         case 7:
             e7 = entry;
+            break;
+        case 8:
+            e8 = entry;
+            break;
+        case 9:
+            e9 = entry;
+            break;
+        case 10:
+            e10 = entry;
+            break;
+        case 11:
+            e11 = entry;
+            break;
+        case 12:
+            e12 = entry;
+            break;
+        case 13:
+            e13 = entry;
+            break;
+        case 14:
+            e14 = entry;
+            break;
+        case 15:
+            e15 = entry;
+            break;
+        case 16:
+            e16 = entry;
+            break;
+        case 17:
+            e17 = entry;
+            break;
+        case 18:
+            e18 = entry;
+            break;
+        case 19:
+            e19 = entry;
+            break;
+        case 20:
+            e20 = entry;
+            break;
+        case 21:
+            e21 = entry;
+            break;
+        case 22:
+            e22 = entry;
+            break;
+        case 23:
+            e23 = entry;
+            break;
+        case 24:
+            e24 = entry;
+            break;
+        case 25:
+            e25 = entry;
+            break;
+        case 26:
+            e26 = entry;
+            break;
+        case 27:
+            e27 = entry;
+            break;
+        case 28:
+            e28 = entry;
+            break;
+        case 29:
+            e29 = entry;
+            break;
+        case 30:
+            e30 = entry;
+            break;
+        case 31:
+            e31 = entry;
             break;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
@@ -372,7 +494,6 @@ public class HashMapIntDataSet {
             }
         }
 
-        modCount++;
         addEntry(hash, key, value, i);
         return null;
     }
@@ -404,7 +525,6 @@ public class HashMapIntDataSet {
         while (e != null) {
             Entry next = e.next;
             if (e.hash == hash && eq(key, e.key)) {
-                modCount++;
                 size--;
                 if (prev == e)
                     setTable(i, next);
@@ -438,7 +558,6 @@ public class HashMapIntDataSet {
         while (e != null) {
             Entry next = e.next;
             if (e.hash == hash && e.equals(entry)) {
-                modCount++;
                 size--;
                 if (prev == e)
                     setTable(i, next);
@@ -458,7 +577,6 @@ public class HashMapIntDataSet {
      * Removes all mappings from this map.
      */
     public void clear() {
-        modCount++;
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
             setTable(i, null);
         size = 0;
@@ -496,10 +614,10 @@ public class HashMapIntDataSet {
     }
 
     public static class Entry {
-        final int key;
-        DataSet value;
-        final int hash;
-        Entry next;
+        public int key;
+        public DataSet value;
+        public int hash;
+        public Entry next;
 
         /**
          * Create new entry.
@@ -575,9 +693,9 @@ public class HashMapIntDataSet {
     }
 
     /**
-     * Like addEntry except that this version is used when creating entries as
-     * part of Map construction or "pseudo-construction" (cloning, deserialization).
-     * This version needn't worry about resizing the table.
+     * Like addEntry except that this version is used when creating entries as part
+     * of Map construction or "pseudo-construction" (cloning, deserialization). This
+     * version needn't worry about resizing the table.
      *
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
@@ -604,22 +722,109 @@ public class HashMapIntDataSet {
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    private boolean isLL(Entry e, HashSet<Entry> visited) {
-        Entry current = e;
-        while (current != null) {
-            if (!visited.add(current))
-                return false;
-            current = current.next;
+    public boolean repOKSymSolve() {
+        if (!checkEntries())
+            return false;
+        if (!checkListsHasJustOneElement())
+            return false;
+        if (!checkValuesAreDifferentAndNonNull())
+            return false;
+        if (!checkValuesRepOK())
+            return false;
+        if (!checkKeys())
+            return false;
+
+        return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (!checkValuesRepOKSymbolicExecution())
+            return false;
+        if (!checkHashes())
+            return false;
+        return true;
+    }
+
+    public boolean checkEntries() {
+        Set<Entry> visited = new HashSet<>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (i >= 14)
+                    return false;
+                else if (!visited.add(e))
+                    return false;
+            }
         }
         return true;
     }
 
-    public boolean repOK() {
-        HashSet<Entry> visited = new HashSet<Entry>();
-        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            if (!isLL(getTable(i), visited))
-                return false;
+    public boolean checkListsHasJustOneElement() {
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (e.next != null)
+                    return false;
+            }
+        }
+        return true;
+    }
 
+    public boolean checkValuesAreDifferentAndNonNull() {
+        Set<DataSet> visited = new HashSet<>();
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (e.value == null)
+                    return false;
+                if (!visited.add(e.value))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkValuesRepOK() {
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (!e.value.repOKSymSolve())
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkValuesRepOKSymbolicExecution() {
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (!e.value.repOKSymbolicExecution())
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkKeys() {
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (e.key != i)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkHashes() {
+        for (int i = 0; i < 14; i++) {
+            Entry e = getTable(i);
+            if (e != null) {
+                if (e.hash != i)
+                    return false;
+            }
+        }
         return true;
     }
 

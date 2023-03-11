@@ -7,10 +7,9 @@
 
 package heapsolving.combatantstatistic.adddata;
 
-import lissa.SymHeap;
-
 import heapsolving.combatantstatistic.CombatantStatistic;
 import heapsolving.combatantstatistic.CombatantStatisticHarness;
+import lissa.SymHeap;
 
 public class CombatantStatisticMain {
 
@@ -27,6 +26,8 @@ public class CombatantStatisticMain {
                 // Call to method under analysis
                 structure.addData(type, side, value);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

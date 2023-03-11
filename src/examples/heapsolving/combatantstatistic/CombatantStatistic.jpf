@@ -1,6 +1,3 @@
-classpath=${jpf-symbc}/build/examples
-sourcepath=${jpf-symbc}/src/examples
-
 @using=spf-lissa
 
 # ---------------   Arguments   ---------------

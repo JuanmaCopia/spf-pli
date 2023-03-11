@@ -1,5 +1,7 @@
 package heapsolving.combatantstatistic;
 
+import heapsolving.linkedlist.LinkedList;
+
 /*
  Copyright (c) 2010 Daniel Raap
 
@@ -25,7 +27,7 @@ package heapsolving.combatantstatistic;
 /**
  * All the data about one aspect of a participant of a fortbattle for each
  * {@link CombatantSide}.
- * 
+ *
  * @author daniel
  */
 public class DataSet {
@@ -35,7 +37,7 @@ public class DataSet {
     // (CombatantSide.ATTACKER) or 1 (CombatantSide.DEFENDER)
     // the domain of the map is 0 (CombatantSide.ATTACKER) or 1
     // (CombatantSide.DEFENDER)
-    private final HashMapIntList valuesPerSide = new HashMapIntList();
+    public HashMapIntList valuesPerSide = new HashMapIntList();
 
     /**
      * initialize a new DataSet
@@ -45,28 +47,45 @@ public class DataSet {
         valuesPerSide.put(1, new LinkedList());
     }
 
+    public void init() {
+        if (!valuesPerSide.containsKey(0))
+            valuesPerSide.put(0, new LinkedList());
+        if (!valuesPerSide.containsKey(1))
+            valuesPerSide.put(1, new LinkedList());
+    }
+
     /**
      * Add an additional value to this set of data
-     * 
+     *
      * @param side
      * @param value not <code>null</code>!
      */
     public void addData(int side, int value) {
+        init();
         if (side < 0 || side > 1)
             throw new IllegalArgumentException("wrong side!");
-
         valuesPerSide.get(side).add(value);
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
         if (valuesPerSide == null)
             return false;
-        return valuesPerSide.repOK();
+        if (!valuesPerSide.repOKSymSolve())
+            return false;
+
+        return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (!valuesPerSide.repOKSymbolicExecution())
+            return false;
+
+        return true;
     }
 
     /**
      * use the given operation to calculate an aggregated value for this dataset
-     * 
+     *
      * @param side
      * @param type
      * @return
@@ -74,7 +93,7 @@ public class DataSet {
 //	double aggregate(final Integer side, final DataAggregationType type) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final List<Integer> data = getSideData(side);
 //		return type.aggregate(data);
 //	}
@@ -86,7 +105,7 @@ public class DataSet {
 //	List<Integer> getSideData(final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final List<Integer> data;
 //		if (side == null) {
 //			data = getAll();
@@ -116,7 +135,7 @@ public class DataSet {
 //	int countOfValuesWith(final Integer value, final Integer side) {
 //		if (side < 0 || side > 1)
 //			throw new IllegalArgumentException("wrong side!");
-//		
+//
 //		final List<Integer> data = getSideData(side);
 //		int count = 0;
 //		for (final Integer v : data) {

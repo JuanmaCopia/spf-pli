@@ -7,10 +7,9 @@
 
 package heapsolving.combatantstatistic.ensuretypexists;
 
-import lissa.SymHeap;
-
 import heapsolving.combatantstatistic.CombatantStatistic;
 import heapsolving.combatantstatistic.CombatantStatisticHarness;
+import lissa.SymHeap;
 
 public class CombatantStatisticMain {
 
@@ -24,6 +23,8 @@ public class CombatantStatisticMain {
                 // Call to method under analysis
                 structure.ensureTypExists(type);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();
