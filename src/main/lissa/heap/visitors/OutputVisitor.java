@@ -31,9 +31,7 @@ public class OutputVisitor implements SymbolicOutputHeapVisitor {
 
     @Override
     public boolean isIgnoredField() {
-        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName,
-                this.currentFieldClassName);
-        return !vector.isTrackedField(fieldSignature);
+        throw new RuntimeException("Unimplemented method");
     }
 
     @Override

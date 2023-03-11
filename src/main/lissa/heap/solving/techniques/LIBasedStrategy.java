@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
+import korat.finitization.impl.Finitization;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCompleteCallCG;
@@ -13,8 +14,15 @@ import lissa.heap.solving.solver.SymSolveHeapSolver;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
-    SymSolveHeapSolver heapSolver = new SymSolveHeapSolver();
-    Canonicalizer canonicalizer = new Canonicalizer(heapSolver.getStructureList());
+    SymSolveHeapSolver heapSolver;
+    Finitization finitization;
+    Canonicalizer canonicalizer;
+
+    public LIBasedStrategy() {
+        heapSolver = new SymSolveHeapSolver();
+        finitization = heapSolver.getFinitization();
+        canonicalizer = new Canonicalizer(heapSolver.getStructureList());
+    }
 
     public int validPaths = 0;
 
@@ -75,6 +83,10 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         ti.setNextPC(repOKCallInstruction);
+    }
+
+    public boolean isFieldTracked(String ownerClassName, String fieldName) {
+        return finitization.isFieldTracked(ownerClassName, fieldName);
     }
 
 }

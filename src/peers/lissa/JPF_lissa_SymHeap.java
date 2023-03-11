@@ -2,7 +2,6 @@ package lissa;
 
 import gov.nasa.jpf.annotation.MJI;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.Helper;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
@@ -165,7 +164,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         // set all the fields to be symbolic
         ClassInfo ci = env.getClassInfo(objvRef);
         FieldInfo[] fields = ci.getDeclaredInstanceFields();
-        FieldInfo[] staticFields = ci.getDeclaredStaticFields();
+        // FieldInfo[] staticFields = ci.getDeclaredStaticFields();
 
         String name = env.getStringObject(stringRef);
         String refChain = name + "[" + objvRef + "]"; // why is the type used here? should use the name of the field
@@ -175,7 +174,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);
         ElementInfo eiRef = VM.getVM().getHeap().getModifiable(objvRef);
         SymHeapHelper.initializeInstanceFields(env, fields, eiRef, refChain, symInputHeap);
-        Helper.initializeStaticFields(staticFields, ci, ti);
+        // Helper.initializeStaticFields(staticFields, ci, ti);
 
         // create new HeapNode based on above info
         // update associated symbolic input heap

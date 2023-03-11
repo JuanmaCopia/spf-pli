@@ -14,11 +14,15 @@ import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.Heap;
 import gov.nasa.jpf.vm.MJIEnv;
+import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 
 public class PartialHeapBuilderVisitor {
+
+    LIBasedStrategy strategy;
 
     MJIEnv env;
     Heap JPFHeap;
@@ -50,6 +54,7 @@ public class PartialHeapBuilderVisitor {
         this.newSymbolicHeap = new SymbolicInputHeapLISSA();
         this.newSymRefInput = this.newSymbolicHeap.getImplicitInputThis();
         this.pcHeap = new PathCondition();
+        this.strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
     }
 
     public void setRoot(int rootRef) {
@@ -127,5 +132,10 @@ public class PartialHeapBuilderVisitor {
 
     public PathCondition getHeapPathCondition() {
         return pcHeap;
+    }
+
+    public boolean isIgnoredField() {
+        String currentOwnerClassName = currentOwner.getClassInfo().getName();
+        return !strategy.isFieldTracked(currentOwnerClassName, currentField.getName());
     }
 }

@@ -109,8 +109,15 @@ public class SymHeapHelper {
 
     public static void initializeInstanceFields(MJIEnv env, FieldInfo[] fields, ElementInfo eiRef, String refChain,
             SymbolicInputHeapLISSA symInputHeap) {
-        for (int i = 0; i < fields.length; i++)
-            initializeInstanceField(env, fields[i], eiRef, refChain, "", symInputHeap);
+        LIBasedStrategy stg = (LIBasedStrategy) LISSAShell.solvingStrategy;
+        for (int i = 0; i < fields.length; i++) {
+            FieldInfo field = fields[i];
+            String fieldName = field.getName();
+            String ownerClassName = eiRef.getClassInfo().getName();
+            if (stg.isFieldTracked(ownerClassName, fieldName)) {
+                initializeInstanceField(env, fields[i], eiRef, refChain, "", symInputHeap);
+            }
+        }
     }
 
     public static int addNewHeapNode(ClassInfo typeClassInfo, ThreadInfo ti, Object attr, PathCondition pcHeap,

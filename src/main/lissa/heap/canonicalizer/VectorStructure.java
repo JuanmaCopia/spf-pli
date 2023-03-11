@@ -20,8 +20,6 @@ public class VectorStructure {
 
     HashMap<String, Integer> indexMap = new HashMap<String, Integer>();
 
-    private HashSet<String> fieldSignatures = new HashSet<String>();
-
     // private HashMap<Integer, Expression> primitiveIndices = new HashMap<Integer,
     // Expression>();
 
@@ -37,7 +35,6 @@ public class VectorStructure {
             if (!indexMap.containsKey(ownerClassName))
                 indexMap.put(ownerClassName, i);
             this.currentIndexMap = new HashMap<String, Integer>(this.indexMap);
-            this.fieldSignatures.add(vectorField.getFieldSignature());
         }
     }
 
@@ -68,18 +65,6 @@ public class VectorStructure {
         assert (vectorField.matchesField(ownerClassName, fieldName));
         currentIndexMap.put(ownerClassName, vectorIndex + 1);
         return vectorField;
-    }
-
-    public boolean isTrackedField(String signature) {
-        boolean result = fieldSignatures.contains(signature);
-
-        // if (!result) {
-        // System.out.println(String.format("Signature %s not tracked. Tracked
-        // signatures: \n", signature));
-        // System.out.println(fieldSignatures.toString());
-        // }
-
-        return result;
     }
 
     public void resetVector() {
@@ -127,8 +112,5 @@ public class VectorStructure {
 //        return this.primitiveIndices;
 //    }
 
-    public Set<String> getFieldSignatures() {
-        return this.fieldSignatures;
-    }
 
 }

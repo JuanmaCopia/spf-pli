@@ -4,18 +4,22 @@ import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.FieldInfo;
+import lissa.LISSAShell;
 import lissa.heap.canonicalizer.VectorField;
 import lissa.heap.canonicalizer.VectorStructure;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 
 public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
 
-    protected String currentOwnerObjClassName;
-    protected String currentFieldName;
-    protected String currentFieldClassName;
-    protected VectorStructure vector;
+    String currentOwnerObjClassName;
+    String currentFieldName;
+    String currentFieldClassName;
+    VectorStructure vector;
+    LIBasedStrategy strategy;
 
     public ReferenceFieldOnlyVisitor(VectorStructure vector) {
         this.vector = vector;
+        this.strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
     }
 
     @Override
@@ -31,9 +35,7 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
 
     @Override
     public boolean isIgnoredField() {
-        String fieldSignature = VectorField.createFieldSignature(currentOwnerObjClassName, currentFieldName,
-                this.currentFieldClassName);
-        return !vector.isTrackedField(fieldSignature);
+        return !strategy.isFieldTracked(currentOwnerObjClassName, currentFieldName);
     }
 
     @Override

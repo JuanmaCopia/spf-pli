@@ -73,6 +73,12 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             }
         }
 
+        String ownerClassName = ei.getClassInfo().getName();
+        String fieldName = fi.getName();
+        if (!heapSolvingStrategy.isFieldTracked(ownerClassName, fieldName)) {
+            return super.execute(ti);
+        }
+
         if (!fi.isReference() || attr == null || attr instanceof StringExpression
                 || attr instanceof SymbolicStringBuilder || !heapSolvingStrategy.isClassInBounds(fullClassName)
 

@@ -191,6 +191,12 @@ public class SymbolicReferenceInput {
                 FieldInfo field = instanceFields[i];
                 visitor.setCurrentField(field);
 
+                if (visitor.isIgnoredField()) {
+                    // System.out.println("Ignored field: " + field.getName());
+                    // System.out.println("type: " + fieldClass.getSimpleName());
+                    continue;
+                }
+
                 if (field.isReference() && !field.getType().equals("java.lang.String")) {
 
                     Integer fieldRef = getReferenceField(currentOwnerRef, field);
