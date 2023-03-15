@@ -14,6 +14,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
+import lissa.heap.SymbolicReferenceInput;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
@@ -29,6 +30,7 @@ public class NTOPT extends NT {
         assert (heapCG != null);
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         assert (symInputHeap != null);
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
         primitiveBranches++;
 
@@ -49,7 +51,7 @@ public class NTOPT extends NT {
         }
 
         while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
             solution = heapSolver.getNextSolution(solution);

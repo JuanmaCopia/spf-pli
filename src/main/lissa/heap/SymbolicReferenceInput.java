@@ -18,9 +18,13 @@ import gov.nasa.jpf.vm.FieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import korat.finitization.impl.StateSpace;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.heap.visitors.CheckPCVisitor;
 import lissa.heap.visitors.PartialHeapBuilderVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor;
+import lissa.heap.visitors.SymbolicInputHeapVisitor2;
+import symsolve.vector.SymSolveSolution;
 
 public class SymbolicReferenceInput {
 
@@ -163,13 +167,24 @@ public class SymbolicReferenceInput {
 
     public void buildPartialHeap(MJIEnv env, int newRootRef, HeapChoiceGeneratorLISSA heapCG) {
         PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env, newRootRef);
-        acceptBFSBuilder(visitor);
+        acceptBFS2(visitor);
 
         heapCG.setCurrentSymInputHeap(visitor.getNewSymbolicInputHeap());
         heapCG.setCurrentPCheap(visitor.getHeapPathCondition());
     }
 
-    public void acceptBFSBuilder(PartialHeapBuilderVisitor visitor) {
+    public boolean isSolutionSATWithPathCondition(StateSpace stateSpace, SymSolveSolution solution, PathCondition pc) {
+        assert (pc != null);
+        if (pc.count() == 0)
+            return true;
+
+        CheckPCVisitor visitor = new CheckPCVisitor(stateSpace, solution, pc);
+        acceptBFS2(visitor);
+
+        return !visitor.isAborted();
+    }
+
+    public void acceptBFS2(SymbolicInputHeapVisitor2 visitor) {
         ThreadInfo ti = VM.getVM().getCurrentThread();
         Set<Integer> visited = new HashSet<>();
         LinkedList<Integer> worklist = new LinkedList<Integer>();
@@ -187,6 +202,9 @@ public class SymbolicReferenceInput {
             FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
 
             for (int i = 0; i < instanceFields.length; i++) {
+
+                if (visitor.isAborted())
+                    return;
 
                 FieldInfo field = instanceFields[i];
                 visitor.setCurrentField(field);

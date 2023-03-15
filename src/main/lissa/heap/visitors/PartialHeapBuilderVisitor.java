@@ -20,7 +20,7 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 
-public class PartialHeapBuilderVisitor {
+public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
 
     LIBasedStrategy strategy;
 
@@ -137,5 +137,10 @@ public class PartialHeapBuilderVisitor {
     public boolean isIgnoredField() {
         String currentOwnerClassName = currentOwner.getClassInfo().getName();
         return !strategy.isFieldTracked(currentOwnerClassName, currentField.getName());
+    }
+
+    @Override
+    public boolean isAborted() {
+        return false;
     }
 }

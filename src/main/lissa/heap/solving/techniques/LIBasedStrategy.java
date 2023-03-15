@@ -5,6 +5,7 @@ import java.util.HashMap;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import korat.finitization.impl.Finitization;
+import korat.finitization.impl.StateSpace;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCompleteCallCG;
@@ -16,11 +17,13 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     SymSolveHeapSolver heapSolver;
     Finitization finitization;
+    StateSpace stateSpace;
     Canonicalizer canonicalizer;
 
     public LIBasedStrategy() {
         heapSolver = new SymSolveHeapSolver();
         finitization = heapSolver.getFinitization();
+        stateSpace = finitization.getStateSpace();
         canonicalizer = new Canonicalizer(heapSolver.getStructureList());
     }
 

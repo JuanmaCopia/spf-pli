@@ -19,7 +19,4 @@ public interface PCCheckStrategy {
     SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap);
 
-    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution, PathCondition pc,
-            SymbolicInputHeapLISSA symInputHeap);
-
 }

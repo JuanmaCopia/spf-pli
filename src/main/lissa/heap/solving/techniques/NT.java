@@ -1,7 +1,6 @@
 package lissa.heap.solving.techniques;
 
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
-import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
@@ -10,10 +9,8 @@ import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.builder.CheckPathConditionVisitor;
+import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.builder.HeapSolutionBuilder;
-import symsolve.candidates.traversals.BFSCandidateTraversal;
-import symsolve.candidates.traversals.CandidateTraversal;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
@@ -35,6 +32,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
         assert (!isRepOKExecutionMode());
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
 
@@ -42,7 +40,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         assert (pcCG != null);
 
         while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
             solution = heapSolver.getNextSolution(solution);
@@ -66,13 +64,14 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         assert (symInputHeap != null);
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
         primitiveBranches++;
 
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {
-            if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
             solution = heapSolver.getNextSolution(solution);
@@ -89,29 +88,17 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     }
 
     @Override
-    public boolean isSatWithRespectToPathCondition(ThreadInfo ti, SymSolveSolution candidateSolution, PathCondition pc,
-            SymbolicInputHeapLISSA symInputHeap) {
-        assert (pc != null);
-        if (pc.count() == 0)
-            return true;
-
-        CheckPathConditionVisitor visitor = new CheckPathConditionVisitor(ti, pc, symInputHeap, candidateSolution);
-        CandidateTraversal traverser = new BFSCandidateTraversal(heapSolver.getFinitization().getStateSpace());
-        traverser.traverse(candidateSolution.getSolutionVector(), visitor);
-        return visitor.isSolutionSAT();
-    }
-
-    @Override
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
         PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
-        assert isSatWithRespectToPathCondition(ti, previousSolution, pcCG.getCurrentPC(), symInputHeap);
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+        assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         if (pcCG != null) {
             while (solution != null) {
-                if (isSatWithRespectToPathCondition(ti, solution, pcCG.getCurrentPC(), symInputHeap)) {
+                if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                     return solution;
                 }
                 solution = heapSolver.getNextSolution(solution);
@@ -119,16 +106,6 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         }
         return null;
     }
-
-//    @Override
-//    public void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
-//        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
-//        assert (heapCG != null);
-//        StaticRepOKCallInstruction ins = (StaticRepOKCallInstruction) handleLazyInitializationStep(ti, current, next,
-//                heapCG);
-//        ins.setAsPashValidityCheck();
-//        ti.setNextPC(ins);
-//    }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGenerator pcCG,
@@ -151,7 +128,9 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
         PCChoiceGenerator pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
-        assert (isSatWithRespectToPathCondition(env.getThreadInfo(), solution, pcCG.getCurrentPC(), symInputHeap));
+
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+        assert symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC());
 
         builder.buildSolution(env, objRef, symInputHeap, solution);
     }
