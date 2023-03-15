@@ -1,5 +1,7 @@
 package lissa.heap.builder;
 
+import java.util.Map;
+
 import gov.nasa.jpf.vm.MJIEnv;
 import korat.finitization.impl.StateSpace;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -20,7 +22,11 @@ public class HeapSolutionBuilder {
 
     public void buildSolution(MJIEnv env, int objRef, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution) {
         CandidateTraversal traverser = new BFSCandidateTraversal(stateSpace);
-        HeapSolutionVisitor visitor = new HeapSolutionVisitor(env, objRef, symInputHeap, solution);
+
+        Map<Object, Integer> symSolveToSymbolic = symInputHeap.getImplicitInputThis()
+                .getSymSolveToSymbolicMap(stateSpace, solution);
+
+        HeapSolutionVisitor visitor = new HeapSolutionVisitor(env, objRef, symInputHeap, solution, symSolveToSymbolic);
         traverser.traverse(solution.getSolutionVector(), visitor);
     }
 }

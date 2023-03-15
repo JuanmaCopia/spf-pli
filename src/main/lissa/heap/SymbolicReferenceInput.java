@@ -3,6 +3,7 @@ package lissa.heap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -21,6 +22,7 @@ import gov.nasa.jpf.vm.VM;
 import korat.finitization.impl.StateSpace;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.visitors.CheckPCVisitor;
+import lissa.heap.visitors.ObjectMapCreatorVisitor;
 import lissa.heap.visitors.PartialHeapBuilderVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor;
 import lissa.heap.visitors.SymbolicInputHeapVisitor2;
@@ -182,6 +184,12 @@ public class SymbolicReferenceInput {
         acceptBFS2(visitor);
 
         return !visitor.isAborted();
+    }
+
+    public Map<Object, Integer> getSymSolveToSymbolicMap(StateSpace stateSpace, SymSolveSolution solution) {
+        ObjectMapCreatorVisitor visitor = new ObjectMapCreatorVisitor(stateSpace, solution);
+        acceptBFS2(visitor);
+        return visitor.getConcreteToSymbolicMap();
     }
 
     public void acceptBFS2(SymbolicInputHeapVisitor2 visitor) {

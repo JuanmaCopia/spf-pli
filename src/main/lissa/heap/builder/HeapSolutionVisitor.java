@@ -1,6 +1,7 @@
 package lissa.heap.builder;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
@@ -41,90 +42,75 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     ElementInfo newObjectRootElementInfo;
     Integer rootSymbolicInputIndex;
 
-    ElementInfo currentObjectElementInfo;
-    Integer currentObjectInSymRefInput;
+    // Owner
+    ElementInfo currentOwnerEI;
+    ClassInfo currentOwnerClass;
 
-    ClassInfo currentObjectClass;
+    Integer equivalentOwnerInSymHeap;
 
+    // Field
     FieldInfo currentField;
 
-    HashMap<Object, ElementInfo> symSolveToNewJPFObjects = new HashMap<>();
-    HashMap<Object, Integer> symSolveToSymbolicInputObjects = new HashMap<>();
+    Map<Object, ElementInfo> symSolveToNewJPFObjects = new HashMap<>();
+    Map<Object, Integer> symSolveToSymbolic;
 
     int symbolicID = 0;
 
     public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicInputHeapLISSA symInputHeap,
-            SymSolveSolution solution) {
+            SymSolveSolution solution, Map<Object, Integer> symSolveToSymbolic) {
         this.env = env;
         this.newObjectRootElementInfo = VM.getVM().getHeap().getModifiable(newObjectRootRef);
         this.symRefInput = symInputHeap.getImplicitInputThis();
         this.rootSymbolicInputIndex = symRefInput.getRootHeapNode().getIndex();
         this.accessedIndices = solution.getAccessedIndices();
+        this.symSolveToSymbolic = symSolveToSymbolic;
     }
 
     @Override
     public void setRoot(Object rootObject, int rootID) {
         super.setRoot(rootObject, rootID);
         symSolveToNewJPFObjects.put(rootObject, newObjectRootElementInfo);
-        symSolveToSymbolicInputObjects.put(rootObject, rootSymbolicInputIndex);
     }
 
     @Override
     public void setCurrentOwner(Object currentOwnerObject, int currentOwnerID) {
         super.setCurrentOwner(currentOwnerObject, currentOwnerID);
-        currentObjectElementInfo = symSolveToNewJPFObjects.get(currentOwnerObject);
-        assert (currentObjectElementInfo != null);
-        currentObjectClass = currentObjectElementInfo.getClassInfo();
-
-        // check
-        currentObjectInSymRefInput = symSolveToSymbolicInputObjects.get(currentOwnerObject);
-        assert (currentObjectInSymRefInput != null);
+        currentOwnerEI = symSolveToNewJPFObjects.get(currentOwnerObject);
+        currentOwnerClass = currentOwnerEI.getClassInfo();
+        equivalentOwnerInSymHeap = symSolveToSymbolic.get(currentOwnerObject);
     }
 
     @Override
     public void setCurrentField(FieldDomain fieldDomain, String fieldName, int fieldIndexInVector,
             int fieldIndexInFieldDomain) {
         super.setCurrentField(fieldDomain, fieldName, fieldIndexInVector, fieldIndexInFieldDomain);
-        currentField = currentObjectClass.getInstanceField(currentFieldName);
+        currentField = currentOwnerClass.getInstanceField(currentFieldName);
+    }
+
+    @Override
+    public void accessedNullReferenceField(int fieldObjectID) {
+        currentOwnerEI.setReferenceField(currentField, MJIEnv.NULL);
+        currentOwnerEI.setFieldAttr(currentField, null);
+    }
+
+    @Override
+    public void accessedNewReferenceField(Object fieldObject, int fieldObjectID) {
+        ElementInfo newObjectElementInfo = env.newElementInfo(currentField.getType());
+        currentOwnerEI.setReferenceField(currentField, newObjectElementInfo.getObjectRef());
+        currentOwnerEI.setFieldAttr(currentField, null);
+        symSolveToNewJPFObjects.put(fieldObject, newObjectElementInfo);
     }
 
     @Override
     public void accessedVisitedReferenceField(Object fieldObject, int fieldObjectID) {
         ElementInfo mirrorFieldObject = symSolveToNewJPFObjects.get(fieldObject);
-        currentObjectElementInfo.setReferenceField(currentField, mirrorFieldObject.getObjectRef());
-        currentObjectElementInfo.setFieldAttr(currentField, null);
-    }
-
-    @Override
-    public void accessedNullReferenceField(int fieldObjectID) {
-        currentObjectElementInfo.setReferenceField(currentField, MJIEnv.NULL);
-        currentObjectElementInfo.setFieldAttr(currentField, null);
-    }
-
-    @Override
-    public void accessedNewReferenceField(Object fieldObject, int fieldObjectID) {
-//        System.out.println("Accesed new reference field: " + currentFieldName);
-        ElementInfo newObjectElementInfo = env.newElementInfo(currentField.getType());
-        currentObjectElementInfo.setReferenceField(currentField, newObjectElementInfo.getObjectRef());
-        currentObjectElementInfo.setFieldAttr(currentField, null);
-        symSolveToNewJPFObjects.put(fieldObject, newObjectElementInfo);
-
-        Integer equivalentObjectInSymInput;
-        if (currentObjectInSymRefInput == SymbolicReferenceInput.SYMBOLIC) {
-            equivalentObjectInSymInput = SymbolicReferenceInput.SYMBOLIC;
-        } else {
-            equivalentObjectInSymInput = symRefInput.getReferenceField(currentObjectInSymRefInput, currentField);
-            assert (equivalentObjectInSymInput != null);
-            assert (equivalentObjectInSymInput != SymbolicReferenceInput.NULL);
-        }
-        symSolveToSymbolicInputObjects.put(fieldObject, equivalentObjectInSymInput);
+        currentOwnerEI.setReferenceField(currentField, mirrorFieldObject.getObjectRef());
+        currentOwnerEI.setFieldAttr(currentField, null);
     }
 
     @Override
     public void accessedPrimitiveField(int fieldObjectID) {
-        assert (currentObjectInSymRefInput != SymbolicReferenceInput.NULL);
-
-        if (currentObjectInSymRefInput != SymbolicReferenceInput.SYMBOLIC) {
+        if (equivalentOwnerInSymHeap != null) {
             setValueForExistingPrimitiveField();
         } else {
             setValueForNonExistingPrimitiveField();
@@ -136,21 +122,21 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         if (accessedIndices.contains(currentFieldIndexInVector)) {
             int value = 0;
             Class<?> clsOfField = currentFieldDomain.getClassOfField();
-             if (clsOfField == int.class) {
+            if (clsOfField == int.class) {
                 value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
-                currentObjectElementInfo.setIntField(currentField, value);
+                currentOwnerEI.setIntField(currentField, value);
             } else if (clsOfField == boolean.class) {
                 boolean boolValue = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
-                currentObjectElementInfo.setBooleanField(currentField, boolValue);
+                currentOwnerEI.setBooleanField(currentField, boolValue);
                 if (boolValue)
                     value = 1;
             } else {
                 assert (false); // TODO: add support for other types, String, Long, etc.
             }
 
-            currentObjectElementInfo.setFieldAttr(currentField, null);
+            currentOwnerEI.setFieldAttr(currentField, null);
 
-            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
+            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(equivalentOwnerInSymHeap, currentField);
             assert (symbolicVar != null);
 
             IntegerConstant constant = new IntegerConstant(value);
@@ -165,14 +151,14 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
             assert (pc.simplify());
             currPCCG.setCurrentPC(pc);
         } else {
-            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
+            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(equivalentOwnerInSymHeap, currentField);
             assert (symbolicVar != null);
             if (symbolicVar instanceof StringExpression) {
                 int val = env.newString("WWWWW's Birthday is 12-17-77");
-                currentObjectElementInfo.set1SlotField(currentField, val);
+                currentOwnerEI.set1SlotField(currentField, val);
             }
 
-            currentObjectElementInfo.setFieldAttr(currentField, symbolicVar);
+            currentOwnerEI.setFieldAttr(currentField, symbolicVar);
         }
     }
 
@@ -188,7 +174,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
             if (currentField.getType().equals("java.lang.String")) {
                 symbolicValue = new StringSymbolic(name);
                 int val = env.newString("WWWWW's Birthday is 12-17-77");
-                currentObjectElementInfo.set1SlotField(currentField, val);
+                currentOwnerEI.set1SlotField(currentField, val);
             } else {
                 symbolicValue = new SymbolicInteger(name);
             }
@@ -198,6 +184,6 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         } else {
             throw new RuntimeException("symbolicValue is null !!!!");
         }
-        currentObjectElementInfo.setFieldAttr(currentField, symbolicValue);
+        currentOwnerEI.setFieldAttr(currentField, symbolicValue);
     }
 }
