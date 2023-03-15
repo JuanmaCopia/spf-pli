@@ -218,7 +218,8 @@ public class SymbolicReferenceInput {
         }
     }
 
-    public String symbolicInputToString() {
+    @Override
+    public String toString() {
         ThreadInfo ti = VM.getVM().getCurrentThread();
         Set<Integer> visited = new HashSet<>();
         LinkedList<Integer> worklist = new LinkedList<Integer>();
@@ -242,7 +243,7 @@ public class SymbolicReferenceInput {
 
                 FieldInfo field = instanceFields[i];
 
-                String fieldString = indent + ownerString + field.getName();
+                String fieldString = indent + ownerString + "." + field.getName();
 
                 if (field.isReference() && !field.getType().equals("java.lang.String")) {
 
@@ -273,7 +274,7 @@ public class SymbolicReferenceInput {
             indent = indent + "  ";
         }
         PathCondition pc = PathCondition.getPC(ti.getVM());
-        String pcString = pc.stringPC();
+        String pcString = pc.toString();
         sb.append("\n" + pcString);
         return sb.toString();
     }

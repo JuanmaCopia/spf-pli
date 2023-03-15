@@ -61,7 +61,6 @@ public class DataSet {
      * @param value not <code>null</code>!
      */
     public void addData(int side, int value) {
-        init();
         if (side < 0 || side > 1)
             throw new IllegalArgumentException("wrong side!");
         valuesPerSide.get(side).add(value);

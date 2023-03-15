@@ -14,6 +14,12 @@ public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
                 strategy.countValidPath();
         }
         setDone();
+
+        if (!pathReturningTrueFound) {
+//            String str = SymHeapHelper.getSymbolicInputHeap(VM.getVM()).getImplicitInputThis().toString();
+//            System.out.println(" ==============  Invalid Path!!!!!!!  =============");
+//            System.out.println(" Symbolic Heap:\n" + str);
+        }
         return !pathReturningTrueFound;
     }
 

@@ -1,8 +1,6 @@
 package lissa.heap.canonicalizer;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import gov.nasa.jpf.symbc.numeric.Expression;
 import korat.finitization.impl.CVElem;
@@ -111,6 +109,5 @@ public class VectorStructure {
 //    public HashMap<Integer, Expression> getPrimitiveIndices() {
 //        return this.primitiveIndices;
 //    }
-
 
 }

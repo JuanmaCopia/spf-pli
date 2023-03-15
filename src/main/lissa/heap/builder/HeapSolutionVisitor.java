@@ -92,36 +92,32 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     public void accessedVisitedReferenceField(Object fieldObject, int fieldObjectID) {
         ElementInfo mirrorFieldObject = symSolveToNewJPFObjects.get(fieldObject);
         currentObjectElementInfo.setReferenceField(currentField, mirrorFieldObject.getObjectRef());
+        currentObjectElementInfo.setFieldAttr(currentField, null);
     }
 
     @Override
     public void accessedNullReferenceField(int fieldObjectID) {
         currentObjectElementInfo.setReferenceField(currentField, MJIEnv.NULL);
+        currentObjectElementInfo.setFieldAttr(currentField, null);
     }
 
     @Override
     public void accessedNewReferenceField(Object fieldObject, int fieldObjectID) {
 //        System.out.println("Accesed new reference field: " + currentFieldName);
-        ElementInfo newObjectElementInfo = env.newElementInfo(currentFieldDomain.getClassOfField().getName());
+        ElementInfo newObjectElementInfo = env.newElementInfo(currentField.getType());
         currentObjectElementInfo.setReferenceField(currentField, newObjectElementInfo.getObjectRef());
+        currentObjectElementInfo.setFieldAttr(currentField, null);
         symSolveToNewJPFObjects.put(fieldObject, newObjectElementInfo);
 
         Integer equivalentObjectInSymInput;
-
         if (currentObjectInSymRefInput == SymbolicReferenceInput.SYMBOLIC) {
             equivalentObjectInSymInput = SymbolicReferenceInput.SYMBOLIC;
         } else {
             equivalentObjectInSymInput = symRefInput.getReferenceField(currentObjectInSymRefInput, currentField);
             assert (equivalentObjectInSymInput != null);
-
-            // if it is null there is an inconsistency: If the solution has a new object,
-            // either it was
-            // concrete on the symheap and had an object, or it was symbolic
             assert (equivalentObjectInSymInput != SymbolicReferenceInput.NULL);
         }
-
         symSolveToSymbolicInputObjects.put(fieldObject, equivalentObjectInSymInput);
-
     }
 
     @Override
@@ -140,7 +136,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         if (accessedIndices.contains(currentFieldIndexInVector)) {
             int value = 0;
             Class<?> clsOfField = currentFieldDomain.getClassOfField();
-            if (clsOfField == int.class) {
+             if (clsOfField == int.class) {
                 value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
                 currentObjectElementInfo.setIntField(currentField, value);
             } else if (clsOfField == boolean.class) {
@@ -151,6 +147,8 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
             } else {
                 assert (false); // TODO: add support for other types, String, Long, etc.
             }
+
+            currentObjectElementInfo.setFieldAttr(currentField, null);
 
             Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(currentObjectInSymRefInput, currentField);
             assert (symbolicVar != null);
