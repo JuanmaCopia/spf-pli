@@ -1,7 +1,7 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.vm.VM;
 import lissa.config.ConfigParser;
 import symsolve.explorers.impl.SymmetryBreakStrategy;
 
@@ -40,7 +40,7 @@ public class SolvingStrategy {
         }
     }
 
-    public void pathFinished(VM vm, ThreadInfo terminatedThread) {
+    public void pathFinished(ThreadInfo ti, Instruction current, Instruction next) {
         exploredPaths++;
     }
 

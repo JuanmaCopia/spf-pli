@@ -83,11 +83,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 }
             } else if (exec.getExecutedMethodName().equals("pathFinished")) {
 
-                heapSolvingStrategy.pathFinished(vm, vm.getCurrentThread());
-
-                if (heapSolvingStrategy instanceof LIBasedStrategy && config.checkPathValidity) {
-                    ((LIBasedStrategy) heapSolvingStrategy).checkPathValidity(ti, executedInsn, nextInsn);
-                }
+                heapSolvingStrategy.pathFinished(ti, executedInsn, nextInsn);
 
             } else if (exec.getExecutedMethodName().equals("exceptionThrown")) {
                 heapSolvingStrategy.countException();
