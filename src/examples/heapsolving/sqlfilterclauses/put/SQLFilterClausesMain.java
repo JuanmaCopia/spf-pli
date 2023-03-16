@@ -7,15 +7,15 @@
 
 package heapsolving.sqlfilterclauses.put;
 
-import lissa.SymHeap;
 import heapsolving.sqlfilterclauses.SQLFilterClauses;
 import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
+import lissa.SymHeap;
 
 public class SQLFilterClausesMain {
 
     public static void main(String[] args) {
-        String clauseName = SymHeap.makeSymbolicString("INPUT_KEY");
-        String tableName = SymHeap.makeSymbolicString("INPUT_KEY2");
+        int clauseName = SymHeap.makeSymbolicInteger("INPUTclauseName");
+        int tableName = SymHeap.makeSymbolicInteger("INPUTtableName");
         String clauseInformation = SymHeap.makeSymbolicString("INPUT_KEY3");
 
         SQLFilterClauses structure = SQLFilterClausesHarness.getStructure();
@@ -24,6 +24,8 @@ public class SQLFilterClausesMain {
                 // Call to method under analysis
                 structure.put(clauseName, tableName, clauseInformation);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

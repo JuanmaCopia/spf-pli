@@ -1,6 +1,3 @@
-classpath=${jpf-symbc}/build/examples
-sourcepath=${jpf-symbc}/src/examples
-
 @using=spf-lissa
 
 # ---------------   Arguments   ---------------
@@ -11,17 +8,13 @@ target = heapsolving.sqlfilterclauses.METHOD.SQLFilterClausesMain
 method = METHOD
 
 symbolic.debug = false
-symbolic.dp = z3
-
-symbolic.strings = true
-symbolic.string_dp=z3-str
-symbolic.string_dp_timeout_ms=3000
+symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.checkPathValidity = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.sqlfilterclauses.SQLFilterClauses
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOK
+heapsolving.symsolve.predicate = repOKSymSolve
 
 jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
