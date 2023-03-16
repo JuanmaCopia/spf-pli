@@ -20,7 +20,7 @@ public class BinomialHeapMain {
                 structure.extractMinFixed();
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
             SymHeap.pathFinished();
 

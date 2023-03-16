@@ -16,7 +16,7 @@ public class BinomialHeapMain {
                 structure.delete(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
             SymHeap.pathFinished();
         }

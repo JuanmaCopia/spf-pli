@@ -21,7 +21,7 @@ public class ScheduleMain {
                 structure.quantumExpire();
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

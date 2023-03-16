@@ -24,7 +24,7 @@ public class HashMapMain {
                 structure.put(key, value);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
             SymHeap.pathFinished();
         }

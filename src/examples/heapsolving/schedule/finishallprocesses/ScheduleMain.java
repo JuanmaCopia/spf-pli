@@ -22,7 +22,7 @@ public class ScheduleMain {
                 structure.finishAllProcesses();
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

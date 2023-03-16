@@ -23,6 +23,7 @@ public class LinkedListMain {
                 structure.add(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

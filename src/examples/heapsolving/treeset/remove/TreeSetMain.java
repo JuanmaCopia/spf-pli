@@ -23,6 +23,7 @@ public class TreeSetMain {
                 structure.remove(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
             SymHeap.pathFinished();

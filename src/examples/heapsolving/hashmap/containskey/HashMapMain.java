@@ -23,7 +23,7 @@ public class HashMapMain {
                 structure.containsKey(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
             SymHeap.pathFinished();
         }

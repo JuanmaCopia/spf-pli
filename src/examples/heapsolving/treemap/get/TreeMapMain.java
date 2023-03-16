@@ -22,7 +22,7 @@ public class TreeMapMain {
                 structure.get(key);
             } catch (Exception e) {
                 SymHeap.exceptionThrown();
-                System.out.println(e);
+                e.printStackTrace();
             }
             SymHeap.pathFinished();
         }
