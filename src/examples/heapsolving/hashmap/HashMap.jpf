@@ -15,6 +15,7 @@ symbolic.dp = z3bitvector
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
 heapsolving.checkPathValidity = BOOLEAN
+heapsolving.generateTests = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.hashmap.HashMap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOKSymSolve

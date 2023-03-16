@@ -12,6 +12,7 @@ public class ConfigParser {
     private static final String SYMSOLVE_FINITIZATION_ARGS_CONFIG = "heapsolving.symsolve.finitization.args";
     private static final String HEAP_SOLVING_TECHNIQUE_CONFIG = "heapsolving.strategy";
     private static final String CHECK_PATH_VALIDITY_CONFIG = "heapsolving.checkPathValidity";
+    private static final String GENERATE_TESTS_CONFIG = "heapsolving.generateTests";
     private static final String HEAP_GETFIELD_LIMIT_CONFIG = "heap.getFieldLimit";
 
     public static final String DEFAULT_PREDICATE_NAME = "repOK";
@@ -37,6 +38,7 @@ public class ConfigParser {
     public SymmetryBreakStrategy symmetryBreakingStrategy = SymmetryBreakStrategy.SYMMETRY_BREAK;
     public int getFieldLimit;
     public boolean checkPathValidity;
+    public boolean generateTests;
 
     public ConfigParser(Config conf) {
         this.conf = conf;
@@ -51,6 +53,7 @@ public class ConfigParser {
         this.resultsFileName = String.format("%s/%s", STATISTICS_DIR, resFileName);
         this.predicateName = getConfigValueString(SYMSOLVE_PREDICATE_CONFIG, DEFAULT_PREDICATE_NAME);
         this.checkPathValidity = getConfigValueBoolean(CHECK_PATH_VALIDITY_CONFIG, "false");
+        this.generateTests = getConfigValueBoolean(GENERATE_TESTS_CONFIG, "false");
     }
 
     public String getConfigValueString(String settingName) {
