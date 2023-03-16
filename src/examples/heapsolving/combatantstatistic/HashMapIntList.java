@@ -557,21 +557,8 @@ public class HashMapIntList {
     // private static final long serialVersionUID = 362498820763181265L;
 
     public boolean repOKSymSolve() {
-        if (!checkEntries())
-            return false;
-        if (!checkListsHasJustOneElement())
-            return false;
-        if (!checkValuesAreDifferentAndNonNull())
-            return false;
-        if (!checkValuesRepOK())
-            return false;
         if (!checkKeys())
             return false;
-
-        return true;
-    }
-
-    public boolean repOKSymbolicExecution() {
         if (!checkHashes())
             return false;
         return true;

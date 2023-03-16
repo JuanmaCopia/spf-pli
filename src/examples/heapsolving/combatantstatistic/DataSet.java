@@ -75,12 +75,6 @@ public class DataSet {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
-        if (!valuesPerSide.repOKSymbolicExecution())
-            return false;
-
-        return true;
-    }
 
     /**
      * use the given operation to calculate an aggregated value for this dataset

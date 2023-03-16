@@ -13,6 +13,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import heapsolving.linkedlist.LinkedList;
+
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
  * implementation provides all of the optional map operations, and permits
@@ -723,22 +725,11 @@ public class HashMapIntDataSet {
     // private static final long serialVersionUID = 362498820763181265L;
 
     public boolean repOKSymSolve() {
-        if (!checkEntries())
-            return false;
-        if (!checkListsHasJustOneElement())
-            return false;
-        if (!checkValuesAreDifferentAndNonNull())
+        if (!checkStructure())
             return false;
         if (!checkValuesRepOK())
             return false;
         if (!checkKeys())
-            return false;
-
-        return true;
-    }
-
-    public boolean repOKSymbolicExecution() {
-        if (!checkValuesRepOKSymbolicExecution())
             return false;
         if (!checkHashes())
             return false;
@@ -770,17 +761,67 @@ public class HashMapIntDataSet {
         return true;
     }
 
-    public boolean checkValuesAreDifferentAndNonNull() {
-        Set<DataSet> visited = new HashSet<>();
-        for (int i = 0; i < 14; i++) {
+    public boolean checkStructure() {
+        Set<Entry> visitedE = new HashSet<>();
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry e = getTable(i);
             if (e != null) {
-                if (e.value == null)
+                if (i >= 14)
                     return false;
-                if (!visited.add(e.value))
+                else if (!visitedE.add(e))
                     return false;
             }
         }
+
+        Set<DataSet> visited = new HashSet<>();
+        for (Entry e : visitedE) {
+            if (e.next != null)
+                return false;
+            if (e.value == null)
+                return false;
+            if (!visited.add(e.value))
+                return false;
+        }
+
+        Set<HashMapIntList> visitedHashMaps = new HashSet<>();
+        for (DataSet ds : visited) {
+            HashMapIntList valuesPerSide = ds.valuesPerSide;
+            if (valuesPerSide == null)
+                return false;
+            if (!visitedHashMaps.add(ds.valuesPerSide))
+                return false;
+        }
+
+        Set<HashMapIntList.Entry> visitedEntries = new HashSet<>();
+        for (HashMapIntList hashmap : visitedHashMaps) {
+            if (hashmap.e0 == null)
+                return false;
+            if (hashmap.e1 == null)
+                return false;
+            if (!visitedEntries.add(hashmap.e0))
+                return false;
+            if (!visitedEntries.add(hashmap.e1))
+                return false;
+            if (hashmap.e2 != null || hashmap.e3 != null)
+                return false;
+        }
+
+        Set<LinkedList> visitedLists = new HashSet<>();
+        for (HashMapIntList.Entry e : visitedEntries) {
+            if (e.next != null)
+                return false;
+            if (e.value == null)
+                return false;
+            if (!visitedLists.add(e.value))
+                return false;
+        }
+
+        Set<LinkedList.Entry> visitedListEntries = new HashSet<>();
+        for (LinkedList ll : visitedLists) {
+            if (!ll.isCircularLinkedList(visitedListEntries))
+                return false;
+        }
+
         return true;
     }
 
@@ -795,16 +836,6 @@ public class HashMapIntDataSet {
         return true;
     }
 
-    public boolean checkValuesRepOKSymbolicExecution() {
-        for (int i = 0; i < 14; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (!e.value.repOKSymbolicExecution())
-                    return false;
-            }
-        }
-        return true;
-    }
 
     public boolean checkKeys() {
         for (int i = 0; i < 14; i++) {

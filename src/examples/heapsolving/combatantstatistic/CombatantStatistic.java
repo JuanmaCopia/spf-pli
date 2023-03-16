@@ -114,13 +114,10 @@ public class CombatantStatistic {
             return false;
         if (!allData.repOKSymSolve())
             return false;
-
         return true;
     }
 
     public boolean repOKSymbolicExecution() {
-        if (!allData.repOKSymbolicExecution())
-            return false;
         return true;
     }
 
