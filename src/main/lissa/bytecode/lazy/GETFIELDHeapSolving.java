@@ -202,8 +202,10 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         if (SymbolicInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 
-        if (!heapSolvingStrategy.isRepOKExecutionMode())
+        if (!heapSolvingStrategy.isRepOKExecutionMode()) {
+            heapSolvingStrategy.lazyChoices++;
             return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), heapCG);
+        }
         return getNext(ti);
     }
 }

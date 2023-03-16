@@ -37,6 +37,8 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int invalidPaths = 0;
     int validPaths = 0;
 
+    int solvingProcedureCalls = 0;
+
     int prunedBranchesDueToPC = 0;
     long repOKPCSolvingTime = 0;
 
@@ -108,6 +110,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
             LIBasedStrategy stg = (LIBasedStrategy) heapSolvingStrategy;
             solvingTime = stg.getSolvingTime();
+            solvingProcedureCalls = stg.lazyChoices + stg.primitiveBranchChoices - stg.primitiveBranchCacheHits;
 
             if (config.checkPathValidity)
                 validPaths = stg.validPaths;
@@ -128,7 +131,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         System.out.println("Scope:      " + config.finitizationArgs);
         System.out.println("\n------- Statistics -------\n");
         System.out.println(" - Executed Paths:        " + exploredPaths);
-        System.out.println(" - Exceptions thrown:        " + exceptionsThrown);
+        System.out.println(" - Exceptions thrown:     " + exceptionsThrown);
         if (heapSolvingStrategy instanceof LIHYBRID)
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
@@ -141,11 +144,13 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             System.out.println(" - Cache Hits:            " + cacheHits);
         if (heapSolvingStrategy instanceof NT) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
-            System.out.println(" - PC invalid branches  : " + prunedBranchesDueToPC);
+            System.out.println(" - PC invalid branches:   " + prunedBranchesDueToPC);
             NT nt = (NT) heapSolvingStrategy;
-            System.out.println(" - Total branches seen  : " + nt.primitiveBranches);
+            System.out.println(" - Total branches seen:   " + nt.primitiveBranchChoices);
+            System.out.println(" - Solving procedure calls:   " + solvingProcedureCalls);
+
             if (heapSolvingStrategy instanceof NTOPT) {
-                System.out.println(" - branches cache hits  : " + ((NTOPT) nt).primitiveBranchingCacheHits);
+                System.out.println(" - branches cache hits:   " + ((NTOPT) nt).primitiveBranchCacheHits);
             }
 
         }
@@ -166,6 +171,10 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         else
             results.add("-");
         results.add(Integer.toString(exceptionsThrown));
+        if (heapSolvingStrategy instanceof NT)
+            results.add(Integer.toString(solvingProcedureCalls));
+        else
+            results.add("-");
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
     }
@@ -175,7 +184,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls";
     }
 
 }

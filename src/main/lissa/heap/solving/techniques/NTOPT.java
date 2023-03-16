@@ -20,8 +20,6 @@ import symsolve.vector.SymSolveVector;
 
 public class NTOPT extends NT {
 
-    public int primitiveBranchingCacheHits = 0;
-
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGenerator pcCG) {
@@ -39,7 +37,7 @@ public class NTOPT extends NT {
         PathCondition cachedRepOKPC = heapCG.getCurrentRepOKPathCondition();
         if (cachedRepOKPC != null) {
             if (isConjunctionSAT(currentProgramPC, cachedRepOKPC)) {
-                primitiveBranchingCacheHits++;
+                primitiveBranchCacheHits++;
                 return nextInstruction;
             }
         }

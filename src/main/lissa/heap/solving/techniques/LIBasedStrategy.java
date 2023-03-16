@@ -20,18 +20,22 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     StateSpace stateSpace;
     Canonicalizer canonicalizer;
 
+    public int validPaths = 0;
+
+    public int lazyChoices = 0;
+    public int primitiveBranchChoices = 0;
+    public int primitiveBranchCacheHits = 0;
+
+    boolean executingRepOK = false;
+    long repokExecTime = 0;
+    long repOKStartTime = 0;
+
     public LIBasedStrategy() {
         heapSolver = new SymSolveHeapSolver();
         finitization = heapSolver.getFinitization();
         stateSpace = finitization.getStateSpace();
         canonicalizer = new Canonicalizer(heapSolver.getStructureList());
     }
-
-    public int validPaths = 0;
-
-    boolean executingRepOK = false;
-    long repokExecTime = 0;
-    long repOKStartTime = 0;
 
     public Integer getBoundForClass(String simpleClassName) {
         HashMap<String, Integer> dataBounds = heapSolver.getDataBounds();
