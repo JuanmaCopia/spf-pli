@@ -18,6 +18,7 @@ import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
+import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 
 public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
@@ -62,8 +63,8 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
         initializeSymbolicRoot();
     }
 
-    public void setCurrentOwner(int symbolicOwnerRef, ElementInfo ownerEI, ClassInfo ownerClass, int id) {
-        currentOwnerRef = objectMap.get(symbolicOwnerRef);
+    public void setCurrentOwner(ObjectData symbolicOwnerData) {
+        currentOwnerRef = objectMap.get(symbolicOwnerData.objRef);
         currentOwner = JPFHeap.getModifiable(currentOwnerRef);
         assert (currentOwner != null);
     }
@@ -87,7 +88,8 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
         currentOwner.setFieldAttr(currentField, null);
     }
 
-    public void visitedExistentReferenceField(int fieldRef, int id) {
+    public void visitedExistentReferenceField(ObjectData ownerData) {
+        int fieldRef = ownerData.objRef;
         Integer objRef = objectMap.get(fieldRef);
         pcHeap._addDet(Comparator.EQ, (SymbolicInteger) fieldAttr, newSymbolicHeap.getNode(fieldRef));
         newSymRefInput.addReferenceField(currentOwnerRef, currentField, objRef);
@@ -95,7 +97,8 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
         currentOwner.setFieldAttr(currentField, null);
     }
 
-    public void visitedNewReferenceField(int fieldRef, int id) {
+    public void visitedNewReferenceField(ObjectData ownerData) {
+        int fieldRef = ownerData.objRef;
         int objRef = SymHeapHelper.addNewHeapNode(currentFieldType, env.getVM().getCurrentThread(), fieldAttr, pcHeap,
                 newSymbolicHeap, numPrevSymRefs, prevSymRefs, currentOwner.isShared());
 

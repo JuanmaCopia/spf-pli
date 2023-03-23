@@ -2,9 +2,9 @@ package lissa.heap.visitors.symbolicinput;
 
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.vm.ClassInfo;
-import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import lissa.LISSAShell;
+import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.canonicalizer.VectorField;
 import lissa.heap.canonicalizer.VectorStructure;
 import lissa.heap.solving.techniques.LIBasedStrategy;
@@ -23,8 +23,8 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void setCurrentOwner(int symbolicOwnerRef, ElementInfo ownerEI, ClassInfo ownerClass, int id) {
-        this.currentOwnerObjClassName = ownerClass.getName();
+    public void setCurrentOwner(ObjectData ownerData) {
+        this.currentOwnerObjClassName = ownerData.type.getName();
     }
 
     @Override
@@ -44,13 +44,13 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void visitedNewReferenceField(int symbolicFieldRef, int id) {
-        this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, id);
+    public void visitedNewReferenceField(ObjectData ownerData) {
+        this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, ownerData.id + 1);
     }
 
     @Override
-    public void visitedExistentReferenceField(int symbolicFieldRef, int id) {
-        this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, id);
+    public void visitedExistentReferenceField(ObjectData ownerData) {
+        this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, ownerData.id + 1);
     }
 
     @Override

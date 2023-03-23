@@ -20,6 +20,7 @@ import korat.finitization.impl.ObjSet;
 import korat.finitization.impl.StateSpace;
 import korat.utils.IIntList;
 import lissa.LISSAShell;
+import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import symsolve.vector.SymSolveSolution;
 
@@ -70,11 +71,11 @@ public class CheckPCVisitor implements SymbolicInputHeapVisitor {
         symbolicToConcrete.put(symbolicRootRef, solutionRoot);
     }
 
-    public void setCurrentOwner(int symbolicOwnerRef, ElementInfo ownerEI, ClassInfo ownerClass, int id) {
-        symbolicOwnerEI = ownerEI;
-        currentSolutionOwner = symbolicToConcrete.get(symbolicOwnerRef);
+    public void setCurrentOwner(ObjectData ownerData) {
+        symbolicOwnerEI = ownerData.objEI;
+        currentSolutionOwner = symbolicToConcrete.get(ownerData.objRef);
         assert (currentSolutionOwner != null);
-        currentOwnerClass = ownerClass;
+        currentOwnerClass = ownerData.type;
     }
 
     public void setCurrentField(FieldInfo field, ClassInfo fieldClass) {
@@ -84,10 +85,10 @@ public class CheckPCVisitor implements SymbolicInputHeapVisitor {
         fieldAttr = symbolicOwnerEI.getFieldAttr(currentField);
     }
 
-    public void visitedNewReferenceField(int symbolicFieldRef, int id) {
+    public void visitedNewReferenceField(ObjectData ownerData) {
         Object solutionFieldValue = getSolutionFieldValue();
         assert (solutionFieldValue != null);
-        symbolicToConcrete.put(symbolicFieldRef, solutionFieldValue);
+        symbolicToConcrete.put(ownerData.objRef, solutionFieldValue);
     }
 
     private Object getSolutionFieldValue() {
@@ -150,7 +151,7 @@ public class CheckPCVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void visitedExistentReferenceField(int symbolicFieldRef, int id) {
+    public void visitedExistentReferenceField(ObjectData ownerData) {
     }
 
     @Override

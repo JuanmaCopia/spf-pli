@@ -108,29 +108,46 @@ public class SymbolicReferenceInput {
         return visitor.getConcreteToSymbolicMap();
     }
 
-    public void acceptBFS(SymbolicInputHeapVisitor visitor) {
-        HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
-        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
-
+    public class ObjectData {
+        public int objRef;
+        public int id;
+        public ClassInfo type;
+        public String chainRef;
+        public ElementInfo objEI;
         ThreadInfo ti = VM.getVM().getCurrentThread();
-        ClassInfo rootClass = this.rootHeapNode.getType();
-        Integer rootIndex = this.rootHeapNode.getIndex();
 
-        idMap.put(rootIndex, 0);
+        public ObjectData(int objRef, int id, ClassInfo type, String chainRef) {
+            this.objRef = objRef;
+            this.id = id;
+            this.type = type;
+            this.chainRef = chainRef;
+            this.objEI = ti.getModifiableElementInfo(objRef);
+        }
+
+    }
+
+    public void acceptBFS(SymbolicInputHeapVisitor visitor) {
+        HashMap<Integer, ObjectData> idMap = new HashMap<>();
+        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<>();
+
+        ClassInfo rootClass = this.rootHeapNode.getType();
+        int rootRef = this.rootHeapNode.getIndex();
+
+        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName() + "_0");
+
+        idMap.put(rootRef, rootData);
         maxIdMap.put(rootClass, 0);
 
         LinkedList<Integer> worklist = new LinkedList<Integer>();
-        worklist.add(rootIndex);
-        visitor.setRoot(rootIndex);
+        worklist.add(rootRef);
+        visitor.setRoot(rootRef);
 
         while (!worklist.isEmpty()) {
             int currentOwnerRef = worklist.removeFirst();
-            int currentOwnerID = idMap.get(currentOwnerRef);
+            ObjectData currentOwnerData = idMap.get(currentOwnerRef);
+            ClassInfo ownerClass = currentOwnerData.type;
 
-            ElementInfo ownerEI = ti.getModifiableElementInfo(currentOwnerRef);
-            ClassInfo ownerClass = ownerEI.getClassInfo();
-
-            visitor.setCurrentOwner(currentOwnerRef, ownerEI, ownerClass, currentOwnerID);
+            visitor.setCurrentOwner(currentOwnerData);
 
             FieldInfo[] instanceFields = ownerClass.getDeclaredInstanceFields();
             for (int i = 0; i < instanceFields.length; i++) {
@@ -154,15 +171,17 @@ public class SymbolicReferenceInput {
                     } else if (fieldRef == NULL) {
                         visitor.visitedNullReferenceField();
                     } else if (idMap.containsKey(fieldRef)) { // previously visited object
-                        visitor.visitedExistentReferenceField(fieldRef, idMap.get(fieldRef) + 1);
+                        visitor.visitedExistentReferenceField(idMap.get(fieldRef));
                     } else { // first time visited
                         int id = 0;
                         if (maxIdMap.containsKey(fieldClass))
                             id = maxIdMap.get(fieldClass) + 1;
 
-                        idMap.put(fieldRef, id);
+                        ObjectData newObject = new ObjectData(fieldRef, id, fieldClass,
+                                currentOwnerData.chainRef + "." + field.getName());
+                        idMap.put(fieldRef, newObject);
                         maxIdMap.put(fieldClass, id);
-                        visitor.visitedNewReferenceField(fieldRef, id + 1);
+                        visitor.visitedNewReferenceField(newObject);
                         worklist.add(fieldRef);
                     }
                 } else {
