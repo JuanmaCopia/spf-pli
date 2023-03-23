@@ -36,7 +36,7 @@ import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
-import lissa.heap.visitors.SymbolicOutputHeapVisitor;
+import lissa.heap.visitors.output.SymbolicOutputHeapVisitor;
 
 public class SymHeapHelper {
 

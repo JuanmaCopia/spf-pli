@@ -1,8 +1,8 @@
-package lissa.heap.visitors;
+package lissa.heap.visitors.symbolicinput;
 
-import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
-import gov.nasa.jpf.symbc.string.StringSymbolic;
+import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.vm.ClassInfo;
+import gov.nasa.jpf.vm.ElementInfo;
 import gov.nasa.jpf.vm.FieldInfo;
 import lissa.LISSAShell;
 import lissa.heap.canonicalizer.VectorField;
@@ -23,12 +23,12 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void setCurrentOwner(ClassInfo ownerObjectClass, int currentObjID) {
-        this.currentOwnerObjClassName = ownerObjectClass.getName();
+    public void setCurrentOwner(int symbolicOwnerRef, ElementInfo ownerEI, ClassInfo ownerClass, int id) {
+        this.currentOwnerObjClassName = ownerClass.getName();
     }
 
     @Override
-    public void setCurrentField(ClassInfo fieldClass, FieldInfo field) {
+    public void setCurrentField(FieldInfo field, ClassInfo fieldClass) {
         this.currentFieldName = field.getName();
         this.currentFieldClassName = fieldClass.getName();
     }
@@ -44,12 +44,12 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void visitedNewReferenceField(int id) {
+    public void visitedNewReferenceField(int symbolicFieldRef, int id) {
         this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, id);
     }
 
     @Override
-    public void visitedExistentReferenceField(int id) {
+    public void visitedExistentReferenceField(int symbolicFieldRef, int id) {
         this.vector.setFieldAsConcrete(currentOwnerObjClassName, currentFieldName, id);
     }
 
@@ -59,23 +59,16 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     }
 
     @Override
-    public void visitedSymbolicBooleanField(FieldInfo fi, SymbolicInteger symbolicBoolean) {
-        this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicBoolean);
+    public void visitedSymbolicPrimitiveField(Expression symbolicVar) {
+        this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicVar);
     }
 
     @Override
-    public void visitedSymbolicIntegerField(FieldInfo fi, SymbolicInteger symbolicInteger) {
-        this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicInteger);
+    public void setRoot(int symbolicRootRef) {
     }
 
     @Override
-    public void visitedSymbolicStringField(FieldInfo fi, StringSymbolic symbolicString) {
-        this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicString);
+    public boolean isAborted() {
+        return false;
     }
-
-    @Override
-    public void visitedSymbolicLongField(FieldInfo fi, SymbolicInteger symbolicLong) {
-        this.vector.setPrimitiveFieldAsSymbolic(currentOwnerObjClassName, currentFieldName, symbolicLong);
-    }
-
 }

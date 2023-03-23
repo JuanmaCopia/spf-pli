@@ -21,11 +21,10 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import korat.finitization.impl.StateSpace;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
-import lissa.heap.visitors.CheckPCVisitor;
-import lissa.heap.visitors.ObjectMapCreatorVisitor;
-import lissa.heap.visitors.PartialHeapBuilderVisitor;
-import lissa.heap.visitors.SymbolicInputHeapVisitor;
-import lissa.heap.visitors.SymbolicInputHeapVisitor2;
+import lissa.heap.visitors.symbolicinput.CheckPCVisitor;
+import lissa.heap.visitors.symbolicinput.ObjectMapCreatorVisitor;
+import lissa.heap.visitors.symbolicinput.PartialHeapBuilderVisitor;
+import lissa.heap.visitors.symbolicinput.SymbolicInputHeapVisitor;
 import symsolve.vector.SymSolveSolution;
 
 public class SymbolicReferenceInput {
@@ -84,6 +83,31 @@ public class SymbolicReferenceInput {
         return this.rootHeapNode;
     }
 
+    public void buildPartialHeap(MJIEnv env, int newRootRef, HeapChoiceGeneratorLISSA heapCG) {
+        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env, newRootRef);
+        acceptBFS(visitor);
+
+        heapCG.setCurrentSymInputHeap(visitor.getNewSymbolicInputHeap());
+        heapCG.setCurrentPCheap(visitor.getHeapPathCondition());
+    }
+
+    public boolean isSolutionSATWithPathCondition(StateSpace stateSpace, SymSolveSolution solution, PathCondition pc) {
+        assert (pc != null);
+        if (pc.count() == 0)
+            return true;
+
+        CheckPCVisitor visitor = new CheckPCVisitor(stateSpace, solution, pc);
+        acceptBFS(visitor);
+
+        return !visitor.isAborted();
+    }
+
+    public Map<Object, Integer> getSymSolveToSymbolicMap(StateSpace stateSpace, SymSolveSolution solution) {
+        ObjectMapCreatorVisitor visitor = new ObjectMapCreatorVisitor(stateSpace, solution);
+        acceptBFS(visitor);
+        return visitor.getConcreteToSymbolicMap();
+    }
+
     public void acceptBFS(SymbolicInputHeapVisitor visitor) {
         HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
         HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
@@ -97,129 +121,28 @@ public class SymbolicReferenceInput {
 
         LinkedList<Integer> worklist = new LinkedList<Integer>();
         worklist.add(rootIndex);
-
-        while (!worklist.isEmpty()) {
-            int currentObjRef = worklist.removeFirst();
-            int currentObjID = idMap.get(currentObjRef);
-            ElementInfo eiRef = ti.getElementInfo(currentObjRef);
-            ClassInfo ownerObjectClass = eiRef.getClassInfo();
-
-            visitor.setCurrentOwner(ownerObjectClass, currentObjID);
-
-            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
-            for (int i = 0; i < instanceFields.length; i++) {
-                FieldInfo field = instanceFields[i];
-                ClassInfo fieldClass = field.getTypeClassInfo();
-
-                visitor.setCurrentField(fieldClass, field);
-
-                // System.out.println("BFS: class of current obj: " +
-                // ownerObjectClass.getSimpleName());
-                // System.out.println("BFS: current field: " + field.getName());
-                // System.out.println("BFS: current type: " + fieldClass.getSimpleName());
-                // System.out.println("\n");
-
-                if (visitor.isIgnoredField()) {
-                    // System.out.println("Ignored field: " + field.getName());
-                    // System.out.println("type: " + fieldClass.getSimpleName());
-                    continue;
-                }
-
-                if (field.isReference() && !field.getType().equals("java.lang.String")) {
-
-                    Integer fieldIndex = getReferenceField(currentObjRef, field);
-                    if (fieldIndex == SYMBOLIC) {
-                        visitor.visitedSymbolicReferenceField();
-                    } else if (fieldIndex == NULL) {
-                        visitor.visitedNullReferenceField();
-                    } else if (idMap.containsKey(fieldIndex)) { // previously visited object
-                        visitor.visitedExistentReferenceField(idMap.get(fieldIndex) + 1);
-                    } else { // first time visited
-                        int id = 0;
-                        if (maxIdMap.containsKey(fieldClass))
-                            id = maxIdMap.get(fieldClass) + 1;
-
-                        idMap.put(fieldIndex, id);
-                        maxIdMap.put(fieldClass, id);
-                        visitor.visitedNewReferenceField(id + 1);
-                        worklist.add(fieldIndex);
-                    }
-                } else {
-                    Expression symbolicPrimitive = getPrimitiveSymbolicField(currentObjRef, field);
-                    if (symbolicPrimitive instanceof SymbolicInteger) {
-                        SymbolicInteger symbolicInteger = (SymbolicInteger) symbolicPrimitive;
-                        if (field.isBooleanField()) {
-                            visitor.visitedSymbolicBooleanField(field, symbolicInteger);
-                        } else if (field.isLongField()) {
-                            visitor.visitedSymbolicLongField(field, symbolicInteger);
-                        } else if (field.isIntField()) {
-                            visitor.visitedSymbolicIntegerField(field, symbolicInteger);
-                        } else {
-                            assert (false); // ERROR!
-                        }
-                    } else if (symbolicPrimitive instanceof StringSymbolic) {
-                        visitor.visitedSymbolicStringField(field, (StringSymbolic) symbolicPrimitive);
-                    } else {
-                        assert (false); // ERROR!
-                    }
-                }
-            }
-        }
-    }
-
-    public void buildPartialHeap(MJIEnv env, int newRootRef, HeapChoiceGeneratorLISSA heapCG) {
-        PartialHeapBuilderVisitor visitor = new PartialHeapBuilderVisitor(env, newRootRef);
-        acceptBFS2(visitor);
-
-        heapCG.setCurrentSymInputHeap(visitor.getNewSymbolicInputHeap());
-        heapCG.setCurrentPCheap(visitor.getHeapPathCondition());
-    }
-
-    public boolean isSolutionSATWithPathCondition(StateSpace stateSpace, SymSolveSolution solution, PathCondition pc) {
-        assert (pc != null);
-        if (pc.count() == 0)
-            return true;
-
-        CheckPCVisitor visitor = new CheckPCVisitor(stateSpace, solution, pc);
-        acceptBFS2(visitor);
-
-        return !visitor.isAborted();
-    }
-
-    public Map<Object, Integer> getSymSolveToSymbolicMap(StateSpace stateSpace, SymSolveSolution solution) {
-        ObjectMapCreatorVisitor visitor = new ObjectMapCreatorVisitor(stateSpace, solution);
-        acceptBFS2(visitor);
-        return visitor.getConcreteToSymbolicMap();
-    }
-
-    public void acceptBFS2(SymbolicInputHeapVisitor2 visitor) {
-        ThreadInfo ti = VM.getVM().getCurrentThread();
-        Set<Integer> visited = new HashSet<>();
-        LinkedList<Integer> worklist = new LinkedList<Integer>();
-        Integer rootIndex = this.rootHeapNode.getIndex();
-        visited.add(rootIndex);
-        worklist.add(rootIndex);
         visitor.setRoot(rootIndex);
 
         while (!worklist.isEmpty()) {
             int currentOwnerRef = worklist.removeFirst();
-            ElementInfo owner = ti.getElementInfo(currentOwnerRef);
-            visitor.setCurrentOwner(currentOwnerRef);
+            int currentOwnerID = idMap.get(currentOwnerRef);
 
-            ClassInfo ownerObjectClass = owner.getClassInfo();
-            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+            ElementInfo ownerEI = ti.getModifiableElementInfo(currentOwnerRef);
+            ClassInfo ownerClass = ownerEI.getClassInfo();
 
+            visitor.setCurrentOwner(currentOwnerRef, ownerEI, ownerClass, currentOwnerID);
+
+            FieldInfo[] instanceFields = ownerClass.getDeclaredInstanceFields();
             for (int i = 0; i < instanceFields.length; i++) {
-
                 if (visitor.isAborted())
                     return;
 
                 FieldInfo field = instanceFields[i];
-                visitor.setCurrentField(field);
+                ClassInfo fieldClass = field.getTypeClassInfo();
+
+                visitor.setCurrentField(field, fieldClass);
 
                 if (visitor.isIgnoredField()) {
-                    // System.out.println("Ignored field: " + field.getName());
-                    // System.out.println("type: " + fieldClass.getSimpleName());
                     continue;
                 }
 
@@ -230,10 +153,16 @@ public class SymbolicReferenceInput {
                         visitor.visitedSymbolicReferenceField();
                     } else if (fieldRef == NULL) {
                         visitor.visitedNullReferenceField();
-                    } else if (!visited.add(fieldRef)) { // previously visited object
-                        visitor.visitedExistentReferenceField(fieldRef);
+                    } else if (idMap.containsKey(fieldRef)) { // previously visited object
+                        visitor.visitedExistentReferenceField(fieldRef, idMap.get(fieldRef) + 1);
                     } else { // first time visited
-                        visitor.visitedNewReferenceField(fieldRef);
+                        int id = 0;
+                        if (maxIdMap.containsKey(fieldClass))
+                            id = maxIdMap.get(fieldClass) + 1;
+
+                        idMap.put(fieldRef, id);
+                        maxIdMap.put(fieldClass, id);
+                        visitor.visitedNewReferenceField(fieldRef, id + 1);
                         worklist.add(fieldRef);
                     }
                 } else {

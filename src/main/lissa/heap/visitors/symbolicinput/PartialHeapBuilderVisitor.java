@@ -1,4 +1,4 @@
-package lissa.heap.visitors;
+package lissa.heap.visitors.symbolicinput;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 
-public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
+public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
 
     LIBasedStrategy strategy;
 
@@ -62,15 +62,15 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
         initializeSymbolicRoot();
     }
 
-    public void setCurrentOwner(int ownerRef) {
-        currentOwnerRef = objectMap.get(ownerRef);
+    public void setCurrentOwner(int symbolicOwnerRef, ElementInfo ownerEI, ClassInfo ownerClass, int id) {
+        currentOwnerRef = objectMap.get(symbolicOwnerRef);
         currentOwner = JPFHeap.getModifiable(currentOwnerRef);
         assert (currentOwner != null);
     }
 
-    public void setCurrentField(FieldInfo field) {
+    public void setCurrentField(FieldInfo field, ClassInfo fieldClass) {
         currentField = field;
-        currentFieldType = field.getTypeClassInfo();
+        currentFieldType = fieldClass;
         fieldAttr = currentOwner.getFieldAttr(currentField);
 
         prevSymRefs = newSymbolicHeap.getNodesOfType(currentFieldType);
@@ -87,7 +87,7 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
         currentOwner.setFieldAttr(currentField, null);
     }
 
-    public void visitedExistentReferenceField(int fieldRef) {
+    public void visitedExistentReferenceField(int fieldRef, int id) {
         Integer objRef = objectMap.get(fieldRef);
         pcHeap._addDet(Comparator.EQ, (SymbolicInteger) fieldAttr, newSymbolicHeap.getNode(fieldRef));
         newSymRefInput.addReferenceField(currentOwnerRef, currentField, objRef);
@@ -95,7 +95,7 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
         currentOwner.setFieldAttr(currentField, null);
     }
 
-    public void visitedNewReferenceField(int fieldRef) {
+    public void visitedNewReferenceField(int fieldRef, int id) {
         int objRef = SymHeapHelper.addNewHeapNode(currentFieldType, env.getVM().getCurrentThread(), fieldAttr, pcHeap,
                 newSymbolicHeap, numPrevSymRefs, prevSymRefs, currentOwner.isShared());
 
@@ -143,4 +143,5 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor2 {
     public boolean isAborted() {
         return false;
     }
+
 }

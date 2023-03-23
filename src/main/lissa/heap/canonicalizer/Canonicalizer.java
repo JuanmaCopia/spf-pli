@@ -3,7 +3,7 @@ package lissa.heap.canonicalizer;
 import korat.finitization.impl.CVElem;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.visitors.ReferenceFieldOnlyVisitor;
+import lissa.heap.visitors.symbolicinput.ReferenceFieldOnlyVisitor;
 import symsolve.vector.SymSolveVector;
 
 public class Canonicalizer {
