@@ -3,15 +3,16 @@ package lissa.heap.solving.techniques;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Constraint;
 import gov.nasa.jpf.symbc.numeric.Expression;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.string.StringComparator;
 import gov.nasa.jpf.symbc.string.StringConstraint;
 import gov.nasa.jpf.symbc.string.StringExpression;
 import gov.nasa.jpf.symbc.string.StringPathCondition;
+import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -22,7 +23,7 @@ public class NTOPT extends NT {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGenerator pcCG) {
+            PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
@@ -34,7 +35,7 @@ public class NTOPT extends NT {
 
         PathCondition currentProgramPC = pcCG.getCurrentPC();
         assert (currentProgramPC != null);
-        PathCondition cachedRepOKPC = heapCG.getCurrentRepOKPathCondition();
+        PathCondition cachedRepOKPC = getCachedPathCondition(pcCG);
         if (cachedRepOKPC != null) {
             if (isConjunctionSAT(currentProgramPC, cachedRepOKPC)) {
                 primitiveBranchCacheHits++;
@@ -42,7 +43,7 @@ public class NTOPT extends NT {
             }
         }
 
-        SymSolveSolution solution = heapCG.getCurrentSolution();
+        SymSolveSolution solution = getCachedSolution(pcCG);
         if (solution == null) {
             SymSolveVector vector = canonicalizer.createVector(symInputHeap);
             solution = heapSolver.solve(vector);
@@ -107,6 +108,34 @@ public class NTOPT extends NT {
         }
 
         return spc_conjunction.simplify();
+    }
+
+    SymSolveSolution getCachedSolution(ChoiceGenerator<?> lastCG) {
+        assert (lastCG != null);
+        ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
+        for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof HeapChoiceGeneratorLISSA) {
+                return ((HeapChoiceGeneratorLISSA) cg).getCurrentSolution();
+            }
+            if (cg instanceof PCChoiceGeneratorLISSA) {
+                return ((PCChoiceGeneratorLISSA) cg).getCurrentSolution();
+            }
+        }
+        return null;
+    }
+
+    PathCondition getCachedPathCondition(ChoiceGenerator<?> lastCG) {
+        assert (lastCG != null);
+        ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
+        for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof HeapChoiceGeneratorLISSA) {
+                return ((HeapChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+            }
+            if (cg instanceof PCChoiceGeneratorLISSA) {
+                return ((PCChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+            }
+        }
+        return null;
     }
 
 //    PathCondition makeConjunction(PathCondition pc1, PathCondition pc2) {

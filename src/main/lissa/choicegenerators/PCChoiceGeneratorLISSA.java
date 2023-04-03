@@ -1,0 +1,61 @@
+package lissa.choicegenerators;
+
+import java.util.HashMap;
+
+import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import symsolve.vector.SymSolveSolution;
+
+public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
+
+    protected HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
+    protected HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();
+
+    public PCChoiceGeneratorLISSA(String id, int size) {
+        super(id, size);
+    }
+
+    public PCChoiceGeneratorLISSA(int size) {
+        super(size);
+    }
+
+    public PCChoiceGeneratorLISSA(String id, int min, int max) {
+        super(id, min, max);
+    }
+
+    public PCChoiceGeneratorLISSA(int min, int max) {
+        super(min, max);
+    }
+
+    public PCChoiceGeneratorLISSA(String id, int min, int max, int delta) {
+        super(id, min, max, delta);
+    }
+
+    public PCChoiceGeneratorLISSA(int min, int max, int delta) {
+        super(min, max, delta);
+    }
+
+    public void setCurrentRepOKPathCondition(PathCondition pc) {
+        repOKPathConditionCache.put(getNextChoice(), pc.make_copy());
+    }
+
+    public PathCondition getCurrentRepOKPathCondition() {
+        PathCondition pc;
+
+        pc = repOKPathConditionCache.get(getNextChoice());
+        if (pc != null) {
+            return pc.make_copy();
+        } else {
+            return null;
+        }
+    }
+
+    public void setCurrentSolution(SymSolveSolution candidateHeapSolution) {
+        solutionsCache.put(getNextChoice(), candidateHeapSolution);
+    }
+
+    public SymSolveSolution getCurrentSolution() {
+        return solutionsCache.get(getNextChoice());
+    }
+
+}

@@ -31,7 +31,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 public class IFInstrSymbHelper {
@@ -41,12 +41,12 @@ public class IFInstrSymbHelper {
             Comparator thirdComparator) {
         int conditionValue = -3; // bogus value
         if (!ti.isFirstStepInsn()) { // first time around
-            PCChoiceGenerator prevPcGen;
+            PCChoiceGeneratorLISSA prevPcGen;
             ChoiceGenerator<?> cg = ti.getVM().getChoiceGenerator();
-            if (cg instanceof PCChoiceGenerator)
-                prevPcGen = (PCChoiceGenerator) cg;
+            if (cg instanceof PCChoiceGeneratorLISSA)
+                prevPcGen = (PCChoiceGeneratorLISSA) cg;
             else
-                prevPcGen = (PCChoiceGenerator) cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+                prevPcGen = (PCChoiceGeneratorLISSA) cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             PathCondition pc;
             if (prevPcGen != null)
@@ -83,12 +83,12 @@ public class IFInstrSymbHelper {
 
             if (firstSat) {
                 if (secSat) {
-                    PCChoiceGenerator newPCChoice;
+                    PCChoiceGeneratorLISSA newPCChoice;
                     if (thirdSat) {
-                        newPCChoice = new PCChoiceGenerator(3);
+                        newPCChoice = new PCChoiceGeneratorLISSA(3);
                     } else {
                         // LE (choice 0) == true, EQ (choice 1)== true
-                        newPCChoice = new PCChoiceGenerator(2);
+                        newPCChoice = new PCChoiceGeneratorLISSA(2);
                     }
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
@@ -96,7 +96,7 @@ public class IFInstrSymbHelper {
                     return instr;
                 } else if (thirdSat) {
                     // LE (choice 0) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(0, 2, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(0, 2, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -108,7 +108,7 @@ public class IFInstrSymbHelper {
             } else if (secSat) {
                 if (thirdSat) {
                     // EQ (choice 1) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(1, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(1, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -133,16 +133,16 @@ public class IFInstrSymbHelper {
             long v1 = ti.getModifiableTopFrame().peekLong();
             long v2 = ti.getModifiableTopFrame().peekLong(2);
             PathCondition pc;
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ti.getVM().getSystemState().getChoiceGenerator();
 
-            PCChoiceGenerator prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prevCg == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGenerator) prevCg).getCurrentPC();
+                pc = ((PCChoiceGeneratorLISSA) prevCg).getCurrentPC();
 
-            conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() - 1;
+            conditionValue = ((PCChoiceGeneratorLISSA) curCg).getNextChoice() - 1;
             if (conditionValue == -1) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -151,7 +151,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(firstComparator, v2, sym_v1);
                 } else
                     pc._addDet(firstComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else if (conditionValue == 0) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -160,7 +160,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(secondComparator, sym_v1, v2);
                 } else
                     pc._addDet(secondComparator, v1, sym_v2);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else {// 1
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -169,7 +169,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(thirdComparator, v2, sym_v1);
                 } else
                     pc._addDet(thirdComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             }
 
             ti.getModifiableTopFrame().popLong();
@@ -186,12 +186,12 @@ public class IFInstrSymbHelper {
             Comparator thirdComparator) {
         int conditionValue = -3; // bogus value
         if (!ti.isFirstStepInsn()) { // first time around
-            PCChoiceGenerator prevPcGen;
+            PCChoiceGeneratorLISSA prevPcGen;
             ChoiceGenerator<?> cg = ti.getVM().getChoiceGenerator();
-            if (cg instanceof PCChoiceGenerator)
-                prevPcGen = (PCChoiceGenerator) cg;
+            if (cg instanceof PCChoiceGeneratorLISSA)
+                prevPcGen = (PCChoiceGeneratorLISSA) cg;
             else
-                prevPcGen = (PCChoiceGenerator) cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+                prevPcGen = (PCChoiceGeneratorLISSA) cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             PathCondition pc;
             if (prevPcGen != null)
@@ -228,12 +228,12 @@ public class IFInstrSymbHelper {
 
             if (firstSat) {
                 if (secSat) {
-                    PCChoiceGenerator newPCChoice;
+                    PCChoiceGeneratorLISSA newPCChoice;
                     if (thirdSat) {
-                        newPCChoice = new PCChoiceGenerator(3);
+                        newPCChoice = new PCChoiceGeneratorLISSA(3);
                     } else {
                         // LE (choice 0) == true, EQ (choice 1)== true
-                        newPCChoice = new PCChoiceGenerator(2);
+                        newPCChoice = new PCChoiceGeneratorLISSA(2);
                     }
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
@@ -241,7 +241,7 @@ public class IFInstrSymbHelper {
                     return instr;
                 } else if (thirdSat) {
                     // LE (choice 0) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(0, 2, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(0, 2, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -253,7 +253,7 @@ public class IFInstrSymbHelper {
             } else if (secSat) {
                 if (thirdSat) {
                     // EQ (choice 1) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(1, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(1, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -277,16 +277,16 @@ public class IFInstrSymbHelper {
             float v1 = Types.intToFloat(ti.getModifiableTopFrame().peek());
             float v2 = Types.intToFloat(ti.getModifiableTopFrame().peek(1));
             PathCondition pc;
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ti.getVM().getSystemState().getChoiceGenerator();
 
-            PCChoiceGenerator prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prevCg == null)
                 pc = new PathCondition();
             else
                 pc = prevCg.getCurrentPC();
 
-            conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() - 1;
+            conditionValue = ((PCChoiceGeneratorLISSA) curCg).getNextChoice() - 1;
             if (conditionValue == -1) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -295,7 +295,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(firstComparator, v2, sym_v1);
                 } else
                     pc._addDet(firstComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else if (conditionValue == 0) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -304,7 +304,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(secondComparator, sym_v1, v2);
                 } else
                     pc._addDet(secondComparator, v1, sym_v2);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else {// 1
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -313,7 +313,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(thirdComparator, v2, sym_v1);
                 } else
                     pc._addDet(thirdComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             }
 
             ti.getModifiableTopFrame().pop();
@@ -332,12 +332,12 @@ public class IFInstrSymbHelper {
         int conditionValue = -3; // bogus value
 
         if (!ti.isFirstStepInsn()) { // first time around
-            PCChoiceGenerator prevPcGen;
+            PCChoiceGeneratorLISSA prevPcGen;
             ChoiceGenerator<?> cg = ti.getVM().getChoiceGenerator();
-            if (cg instanceof PCChoiceGenerator)
-                prevPcGen = (PCChoiceGenerator) cg;
+            if (cg instanceof PCChoiceGeneratorLISSA)
+                prevPcGen = (PCChoiceGeneratorLISSA) cg;
             else
-                prevPcGen = (PCChoiceGenerator) cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+                prevPcGen = (PCChoiceGeneratorLISSA) cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             PathCondition pc;
             if (prevPcGen != null)
@@ -374,12 +374,12 @@ public class IFInstrSymbHelper {
 
             if (firstSat) {
                 if (secSat) {
-                    PCChoiceGenerator newPCChoice;
+                    PCChoiceGeneratorLISSA newPCChoice;
                     if (thirdSat) {
-                        newPCChoice = new PCChoiceGenerator(3);
+                        newPCChoice = new PCChoiceGeneratorLISSA(3);
                     } else {
                         // LE (choice 0) == true, EQ (choice 1)== true
-                        newPCChoice = new PCChoiceGenerator(2);
+                        newPCChoice = new PCChoiceGeneratorLISSA(2);
                     }
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
@@ -387,7 +387,7 @@ public class IFInstrSymbHelper {
                     return instr;
                 } else if (thirdSat) {
                     // LE (choice 0) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(0, 2, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(0, 2, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -398,7 +398,7 @@ public class IFInstrSymbHelper {
             } else if (secSat) {
                 if (thirdSat) {
                     // EQ (choice 1) == true, GT (choice 2)== true
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(1, 2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(1, 2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -423,16 +423,16 @@ public class IFInstrSymbHelper {
             double v2 = Types.longToDouble(ti.getModifiableTopFrame().peekLong(2));
 
             PathCondition pc;
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ti.getVM().getSystemState().getChoiceGenerator();
 
-            PCChoiceGenerator prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prevCg == null)
                 pc = new PathCondition();
             else
                 pc = prevCg.getCurrentPC();
 
-            conditionValue = ((PCChoiceGenerator) curCg).getNextChoice() - 1;
+            conditionValue = ((PCChoiceGeneratorLISSA) curCg).getNextChoice() - 1;
             if (conditionValue == -1) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -441,7 +441,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(firstComparator, v2, sym_v1);
                 } else
                     pc._addDet(firstComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else if (conditionValue == 0) {
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -450,7 +450,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(secondComparator, sym_v1, v2);
                 } else
                     pc._addDet(secondComparator, v1, sym_v2);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             } else {// 1
                 if (sym_v1 != null) {
                     if (sym_v2 != null) { // both are symbolic values
@@ -459,7 +459,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(thirdComparator, v2, sym_v1);
                 } else
                     pc._addDet(thirdComparator, sym_v2, v1);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
             }
 
             ti.getModifiableTopFrame().popLong();
@@ -476,12 +476,12 @@ public class IFInstrSymbHelper {
 
         // TODO: fix conditionValue
         if (!ti.isFirstStepInsn()) { // first time around
-            PCChoiceGenerator prevPcGen;
+            PCChoiceGeneratorLISSA prevPcGen;
             ChoiceGenerator<?> cg = ti.getVM().getChoiceGenerator();
-            if (cg instanceof PCChoiceGenerator)
-                prevPcGen = (PCChoiceGenerator) cg;
+            if (cg instanceof PCChoiceGeneratorLISSA)
+                prevPcGen = (PCChoiceGeneratorLISSA) cg;
             else
-                prevPcGen = (PCChoiceGenerator) cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+                prevPcGen = (PCChoiceGeneratorLISSA) cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             PathCondition pc;
             if (prevPcGen != null)
@@ -499,8 +499,8 @@ public class IFInstrSymbHelper {
 
             if (eqSat) {
                 if (neSat) {
-                    PCChoiceGenerator newPCChoice;
-                    newPCChoice = new PCChoiceGenerator(2);
+                    PCChoiceGeneratorLISSA newPCChoice;
+                    newPCChoice = new PCChoiceGeneratorLISSA(2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -516,9 +516,9 @@ public class IFInstrSymbHelper {
         } else {
             ti.getModifiableTopFrame().pop();
             PathCondition pc;
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ti.getVM().getSystemState().getChoiceGenerator();
 
-            PCChoiceGenerator prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prevCg == null)
                 pc = new PathCondition();
@@ -528,11 +528,11 @@ public class IFInstrSymbHelper {
             Instruction nextInstruction;
             if (conditionValue) {
                 pc._addDet(trueComparator, sym_v, 0);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
                 nextInstruction = instr.getTarget();
             } else {
                 pc._addDet(falseComparator, sym_v, 0);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
                 nextInstruction = instr.getNext(ti);
             }
 
@@ -545,12 +545,12 @@ public class IFInstrSymbHelper {
 
         // TODO: fix conditionValue
         if (!ti.isFirstStepInsn()) { // first time around
-            PCChoiceGenerator prevPcGen;
+            PCChoiceGeneratorLISSA prevPcGen;
             ChoiceGenerator<?> cg = ti.getVM().getChoiceGenerator();
-            if (cg instanceof PCChoiceGenerator)
-                prevPcGen = (PCChoiceGenerator) cg;
+            if (cg instanceof PCChoiceGeneratorLISSA)
+                prevPcGen = (PCChoiceGeneratorLISSA) cg;
             else
-                prevPcGen = (PCChoiceGenerator) cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+                prevPcGen = (PCChoiceGeneratorLISSA) cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             PathCondition pc;
             if (prevPcGen != null)
@@ -582,7 +582,7 @@ public class IFInstrSymbHelper {
 
             if (eqSat) {
                 if (neSat) {
-                    PCChoiceGenerator newPCChoice = new PCChoiceGenerator(2);
+                    PCChoiceGeneratorLISSA newPCChoice = new PCChoiceGeneratorLISSA(2);
                     newPCChoice.setOffset(instr.getPosition());
                     newPCChoice.setMethodName(instr.getMethodInfo().getFullName());
                     ti.getVM().getSystemState().setNextChoiceGenerator(newPCChoice);
@@ -604,9 +604,9 @@ public class IFInstrSymbHelper {
             int v2 = ti.getModifiableTopFrame().pop();
             int v1 = ti.getModifiableTopFrame().pop();
             PathCondition pc;
-            PCChoiceGenerator curCg = (PCChoiceGenerator) ti.getVM().getSystemState().getChoiceGenerator();
+            PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ti.getVM().getSystemState().getChoiceGenerator();
 
-            PCChoiceGenerator prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCg = curCg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (prevCg == null)
                 pc = new PathCondition();
@@ -622,7 +622,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(trueComparator, sym_v1, v2);
                 } else
                     pc._addDet(trueComparator, v1, sym_v2);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
                 nextInstruction = instr.getTarget();
             } else {
                 if (sym_v1 != null) {
@@ -632,7 +632,7 @@ public class IFInstrSymbHelper {
                         pc._addDet(falseComparator, sym_v1, v2);
                 } else
                     pc._addDet(falseComparator, v1, sym_v2);
-                ((PCChoiceGenerator) curCg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) curCg).setCurrentPC(pc);
                 nextInstruction = instr.getNext(ti);
             }
 

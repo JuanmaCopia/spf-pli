@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.jvm.bytecode.EXECUTENATIVE;
 import gov.nasa.jpf.search.Search;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
@@ -73,11 +73,11 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 ChoiceGenerator<?> cg;
 
                 if (!ti.isFirstStepInsn()) {
-                    cg = new PCChoiceGenerator("initializePathCondition", 1);
+                    cg = new PCChoiceGeneratorLISSA("initializePathCondition", 1);
                     ss.setNextChoiceGenerator(cg);
                     ti.reExecuteInstruction();
                 } else {
-                    PCChoiceGenerator curCg = (PCChoiceGenerator) ss.getChoiceGenerator();
+                    PCChoiceGeneratorLISSA curCg = (PCChoiceGeneratorLISSA) ss.getChoiceGenerator();
                     curCg.getNextChoice();
                     curCg.setCurrentPC(new PathCondition());
                 }

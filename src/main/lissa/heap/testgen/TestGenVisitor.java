@@ -6,7 +6,7 @@ import java.util.Map;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -142,7 +142,7 @@ public class TestGenVisitor extends GenericCandidateVisitor {
 
             IntegerConstant constant = new IntegerConstant(value);
 
-            PCChoiceGenerator currPCCG = SymHeapHelper.getCurrentPCChoiceGenerator(env.getVM());
+            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(env.getVM());
             assert (currPCCG != null);
 
             PathCondition pc = currPCCG.getCurrentPC();

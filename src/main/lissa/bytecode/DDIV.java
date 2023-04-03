@@ -44,7 +44,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 /**
@@ -80,18 +80,18 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
         boolean condition;
 
         if (!th.isFirstStepInsn()) { // first time around
-            cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
-            ((PCChoiceGenerator) cg).setOffset(this.position);
-            ((PCChoiceGenerator) cg).setMethodName(this.getMethodInfo().getFullName());
+            cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
+            ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
+            ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
             th.getVM().setNextChoiceGenerator(cg);
             return this;
         } else { // this is what really returns results
             cg = th.getVM().getChoiceGenerator();
-            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
 
             if (SymbolicInstructionFactory.collect_constraints) {
                 condition = v1 == 0; // i.e. false
-                ((PCChoiceGenerator) cg).select(condition ? 1 : 0); // YN: set the choice correctly
+                ((PCChoiceGeneratorLISSA) cg).select(condition ? 1 : 0); // YN: set the choice correctly
             } else {
                 condition = (Integer) cg.getNextChoice() == 0 ? false : true;
             }
@@ -106,12 +106,12 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
             sf.pushDouble(v2 / v1);
 
         PathCondition pc;
-        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
         if (prev_cg == null)
             pc = new PathCondition();
         else
-            pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
 
         assert pc != null;
 
@@ -119,11 +119,11 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
 
             pc._addDet(Comparator.EQ, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
 
                 Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException",
                         "!!!div by 0");
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -131,7 +131,7 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
         } else {
             pc._addDet(Comparator.NE, sym_v1, 0);
             if (pc.simplify()) { // satisfiable
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
 
                 // set the result
                 RealExpression result;
@@ -144,7 +144,7 @@ public class DDIV extends gov.nasa.jpf.jvm.bytecode.DDIV {
                 sf.setLongOperandAttr(result);
 
                 Instruction nextInstruction = getNext(th);
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGenerator) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

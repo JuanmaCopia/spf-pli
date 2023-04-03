@@ -1,6 +1,6 @@
 package lissa.heap.solving.techniques;
 
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
@@ -20,7 +20,7 @@ public class REPOKSOLVER extends NT {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGenerator pcCG) {
+            PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
 
         return createInvokeCompleteRepOKInstruction(ti, currentInstruction, nextInstruction);

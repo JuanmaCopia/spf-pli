@@ -8,7 +8,7 @@ import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -60,7 +60,7 @@ public class SymHeapHelper {
     }
 
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,
-            PCChoiceGenerator cg) {
+            PCChoiceGeneratorLISSA cg) {
         SolvingStrategy solvingStrategy = LISSAShell.solvingStrategy;
         if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isRepOKExecutionMode()) {
             if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
@@ -154,7 +154,7 @@ public class SymHeapHelper {
             } else {
                 arrayAttr = new ArrayExpression(eiRef.toString(), typeClass.substring(2, typeClass.length() - 1));
             }
-            ti.getVM().getLastChoiceGeneratorOfType(PCChoiceGenerator.class).getCurrentPC().arrayExpressions
+            ti.getVM().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class).getCurrentPC().arrayExpressions
                     .put(eiRef.toString(), arrayAttr);
         }
 
@@ -176,8 +176,8 @@ public class SymHeapHelper {
         return null;
     }
 
-    public static PCChoiceGenerator getCurrentPCChoiceGenerator(VM vm) {
-        return vm.getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
+    public static PCChoiceGeneratorLISSA getCurrentPCChoiceGeneratorLISSA(VM vm) {
+        return vm.getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
     }
 
     public static HeapChoiceGeneratorLISSA getCurrentHeapChoiceGenerator(VM vm) {

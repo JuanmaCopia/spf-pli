@@ -1,11 +1,11 @@
 package lissa.heap.solving.techniques;
 
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -36,7 +36,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
 
-        PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
         assert (pcCG != null);
 
         while (solution != null) {
@@ -57,7 +57,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGenerator pcCG) {
+            PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
@@ -91,7 +91,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
         assert (previousSolution != null);
-        PCChoiceGenerator pcCG = SymHeapHelper.getCurrentPCChoiceGenerator(ti.getVM());
+        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
@@ -108,13 +108,13 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
-            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGenerator pcCG,
+            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGeneratorLISSA pcCG,
             HeapChoiceGeneratorLISSA heapCG, boolean isLazyStep) {
         if (repOKCallInstruction == null)
             repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
 
         assert (pcCG != null && heapCG != null);
-        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, heapCG, solution, isLazyStep);
+        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, heapCG, pcCG, solution, isLazyStep);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;
@@ -127,7 +127,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         RepOKCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(RepOKCallCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
-        PCChoiceGenerator pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
+        PCChoiceGeneratorLISSA pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC());

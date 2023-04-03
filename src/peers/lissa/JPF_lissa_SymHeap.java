@@ -5,7 +5,7 @@ import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.MinMax;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -59,19 +59,19 @@ public class JPF_lissa_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            cg = new PCChoiceGenerator(1);
+            cg = new PCChoiceGeneratorLISSA(1);
             ss.setNextChoiceGenerator(cg);
             env.repeatInvocation();
         } else {
             cg = ss.getChoiceGenerator();
-            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
             PathCondition pc;
             if (prev_cg == null)
                 pc = new PathCondition(); // TODO: handling of preconditions needs to be changed
             else
-                pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+                pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
             assert (pc != null);
-            ((PCChoiceGenerator) cg).setCurrentPC(pc);
+            ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
             ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
         }
     }
@@ -86,7 +86,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
         if (!ti.isFirstStepInsn()) {
 
             ss.setNextChoiceGenerator(new HeapChoiceGeneratorLISSA("HeapCGBuildPartialHeap", 1));
-            ss.setNextChoiceGenerator(new PCChoiceGenerator("PCCGBuildPartialHeap", 1));
+            ss.setNextChoiceGenerator(new PCChoiceGeneratorLISSA("PCCGBuildPartialHeap", 1));
             env.repeatInvocation();
         } else {
 
@@ -97,9 +97,9 @@ public class JPF_lissa_SymHeap extends NativePeer {
                     .getPreviousChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
             assert (prevHeapCG != null);
 
-            PCChoiceGenerator newPCCG = ss.getCurrentChoiceGenerator("PCCGBuildPartialHeap", PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA newPCCG = ss.getCurrentChoiceGenerator("PCCGBuildPartialHeap", PCChoiceGeneratorLISSA.class);
             assert (newPCCG != null);
-            PCChoiceGenerator prevPCCG = newPCCG.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevPCCG = newPCCG.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
             assert (prevPCCG != null);
             newPCCG.setCurrentPC(prevPCCG.getCurrentPC());
 

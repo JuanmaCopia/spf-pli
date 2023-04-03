@@ -8,6 +8,7 @@ import symsolve.vector.SymSolveSolution;
 public class RepOKCallCG extends RepOKCallChoiceGenerator {
 
     HeapChoiceGeneratorLISSA curHeapCG;
+    PCChoiceGeneratorLISSA curPCCG;
     SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
     boolean isLazyStep;
@@ -15,12 +16,13 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
     NT stg;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, HeapChoiceGeneratorLISSA curHeapCG,
-            SymSolveSolution solution, boolean isLazyStep) {
+            PCChoiceGeneratorLISSA pcCG, SymSolveSolution solution, boolean isLazyStep) {
         super(id);
         this.stg = (NT) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         this.candidateHeapSolution = solution;
         this.curHeapCG = curHeapCG;
+        this.curPCCG = pcCG;
         this.isLazyStep = isLazyStep;
     }
 
@@ -41,12 +43,15 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
     public boolean allRepOKPathsReturnedFalse() {
         if (pathReturningTrueFound) {
             setDone();
+            assert (candidateHeapSolution != null);
+            assert (repOKPathCondition != null);
             if (isLazyStep) {
                 // Cache Solution and repOK Path Condition
-                assert (candidateHeapSolution != null);
-                assert (repOKPathCondition != null);
                 curHeapCG.setCurrentSolution(candidateHeapSolution);
                 curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
+            } else {
+                curPCCG.setCurrentSolution(candidateHeapSolution);
+                curPCCG.setCurrentRepOKPathCondition(repOKPathCondition);
             }
         }
 

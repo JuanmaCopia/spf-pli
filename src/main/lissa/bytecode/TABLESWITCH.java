@@ -26,7 +26,7 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 
 /**
@@ -57,15 +57,15 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
 
         if (!ti.isFirstStepInsn()) { // first time around
             /* YN: added symcrete mode */
-            // cg = new PCChoiceGenerator(targets.length+1);
-            cg = new PCChoiceGenerator(SymbolicInstructionFactory.collect_constraints ? 1 : targets.length + 1);
-            ((PCChoiceGenerator) cg).setOffset(this.position);
-            ((PCChoiceGenerator) cg).setMethodName(this.getMethodInfo().getFullName());
+            // cg = new PCChoiceGeneratorLISSA(targets.length+1);
+            cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : targets.length + 1);
+            ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
+            ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
             ti.getVM().getSystemState().setNextChoiceGenerator(cg);
             return this;
         } else { // this is what really returns results
             cg = ti.getVM().getSystemState().getChoiceGenerator();
-            assert (cg instanceof PCChoiceGenerator) : "expected PCChoiceGenerator, got: " + cg;
+            assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
         }
         sym_v = (IntegerExpression) sf.getOperandAttr();
         int value = sf.pop();
@@ -75,12 +75,12 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
         // previous choice generator of the same type
 
         // TODO: could be optimized to not do this for each choice
-        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+        ChoiceGenerator<?> prev_cg = cg.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
         if (prev_cg == null)
             pc = new PathCondition();
         else
-            pc = ((PCChoiceGenerator) prev_cg).getCurrentPC();
+            pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
 
         assert pc != null;
 
@@ -96,7 +96,7 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             } else {
                 idx = value;
             }
-            ((PCChoiceGenerator) cg).select(idx);
+            ((PCChoiceGeneratorLISSA) cg).select(idx);
         } else {
             idx = (Integer) cg.getNextChoice();
         }
@@ -112,22 +112,22 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             if (!pc.simplify()) {// not satisfiable
                 ti.getVM().getSystemState().setIgnored(true);
             } else {
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
             }
 
             Instruction nextInstruction = mi.getInstructionAt(target);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGenerator) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
         } else {
             lastIdx = idx;
             pc._addDet(Comparator.EQ, sym_v._minus(min), idx);
             if (!pc.simplify()) {// not satisfiable
                 ti.getVM().getSystemState().setIgnored(true);
             } else {
-                ((PCChoiceGenerator) cg).setCurrentPC(pc);
+                ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
             }
 
             Instruction nextInstruction = mi.getInstructionAt(targets[idx]);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGenerator) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
         }
 
     }

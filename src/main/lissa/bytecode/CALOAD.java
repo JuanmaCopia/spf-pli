@@ -23,7 +23,7 @@ package lissa.bytecode;
 import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
-import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ArrayIndexOutOfBoundsExecutiveException;
 import gov.nasa.jpf.vm.ElementInfo;
@@ -58,12 +58,12 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
         lastLength = len; // YN: store last length
 
         if (!ti.isFirstStepInsn()) {
-            PCChoiceGenerator arrayCG;
+            PCChoiceGeneratorLISSA arrayCG;
 
             if (SymbolicInstructionFactory.collect_constraints) {
-                arrayCG = new PCChoiceGenerator(1); // YN: symcrete mode
+                arrayCG = new PCChoiceGeneratorLISSA(1); // YN: symcrete mode
             } else {
-                arrayCG = new PCChoiceGenerator(0, len + 1); // add 2 error cases: <0, >=len
+                arrayCG = new PCChoiceGeneratorLISSA(0, len + 1); // add 2 error cases: <0, >=len
             }
 
             arrayCG.setOffset(this.position);
@@ -78,15 +78,15 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
         } else { // this is what really returns results
 
             // index = frame.peek();
-            PCChoiceGenerator lastCG = ti.getVM().getSystemState()
-                    .getLastChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA lastCG = ti.getVM().getSystemState()
+                    .getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
             assert (lastCG != null);
-            PCChoiceGenerator prevCG = lastCG.getPreviousChoiceGeneratorOfType(PCChoiceGenerator.class);
+            PCChoiceGeneratorLISSA prevCG = lastCG.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
             if (SymbolicInstructionFactory.collect_constraints) {
                 // YN: reuse index written from concrete exec + set choice correctly
                 index = peekIndex(ti);
-                ((PCChoiceGenerator) lastCG).select(index);
+                ((PCChoiceGeneratorLISSA) lastCG).select(index);
             } else {
                 index = lastCG.getNextChoice();
             }
@@ -100,14 +100,14 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
             if (prevCG == null)
                 pc = new PathCondition();
             else
-                pc = ((PCChoiceGenerator) prevCG).getCurrentPC();
+                pc = ((PCChoiceGeneratorLISSA) prevCG).getCurrentPC();
 
             assert pc != null;
 
             if (index < len) {
                 pc._addDet(Comparator.EQ, index, sym_index);
                 if (pc.simplify()) { // satisfiable
-                    ((PCChoiceGenerator) lastCG).setCurrentPC(pc);
+                    ((PCChoiceGeneratorLISSA) lastCG).setCurrentPC(pc);
                 } else {
                     ti.getVM().getSystemState().setIgnored(true);// backtrack
                     return getNext(ti);
@@ -117,11 +117,11 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
             else if (index == len) {
                 pc._addDet(Comparator.LT, sym_index, 0);
                 if (pc.simplify()) { // satisfiable
-                    ((PCChoiceGenerator) lastCG).setCurrentPC(pc);
+                    ((PCChoiceGeneratorLISSA) lastCG).setCurrentPC(pc);
                     Instruction nextInstruction = ti
                             .createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
                     return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
-                            (PCChoiceGenerator) lastCG);
+                            (PCChoiceGeneratorLISSA) lastCG);
                 } else {
                     ti.getVM().getSystemState().setIgnored(true);// backtrack
                     return getNext(ti);
@@ -129,11 +129,11 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
             } else if (index == len + 1) {
                 pc._addDet(Comparator.GE, sym_index, len);
                 if (pc.simplify()) { // satisfiable
-                    ((PCChoiceGenerator) lastCG).setCurrentPC(pc);
+                    ((PCChoiceGeneratorLISSA) lastCG).setCurrentPC(pc);
                     Instruction nextInstruction = ti
                             .createAndThrowException("java.lang.ArrayIndexOutOfBoundsException");
                     return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
-                            (PCChoiceGenerator) lastCG);
+                            (PCChoiceGeneratorLISSA) lastCG);
                 } else {
                     ti.getVM().getSystemState().setIgnored(true);// backtrack
                     return getNext(ti);
@@ -168,10 +168,10 @@ public class CALOAD extends gov.nasa.jpf.jvm.bytecode.CALOAD {
                 }
 
                 return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, getNext(ti),
-                        (PCChoiceGenerator) lastCG);
+                        (PCChoiceGeneratorLISSA) lastCG);
             } catch (ArrayIndexOutOfBoundsExecutiveException ex) {
                 return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, ex.getInstruction(),
-                        (PCChoiceGenerator) lastCG);
+                        (PCChoiceGeneratorLISSA) lastCG);
             }
         }
     }
