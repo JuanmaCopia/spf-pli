@@ -67,4 +67,6 @@ public class SymHeap {
 
     native public static boolean isCheckPathValidityEnabled();
 
+    native public static void printSymbolicHeap();
+
 }

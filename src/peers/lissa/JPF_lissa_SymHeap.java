@@ -111,6 +111,16 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
+    public static void printSymbolicHeap(MJIEnv env, int objRef) {
+        SystemState ss = env.getVM().getSystemState();
+        HeapChoiceGeneratorLISSA heapCG = ss.getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
+        SymbolicInputHeapLISSA symInputHeap = heapCG.getCurrentSymInputHeap();
+        assert (symInputHeap != null);
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+        System.out.println("\nSymbolic Heap:\n" + symRefInput.toString());
+    }
+
+    @MJI
     public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
 

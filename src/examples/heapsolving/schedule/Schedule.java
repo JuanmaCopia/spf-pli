@@ -233,7 +233,7 @@ public class Schedule {
             prio_3 = queue;
             break;
         default:
-            throw new IllegalArgumentException();
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
@@ -248,7 +248,7 @@ public class Schedule {
         case 3:
             return prio_3;
         default:
-            throw new IllegalArgumentException();
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
