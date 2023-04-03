@@ -109,4 +109,49 @@ public class NTOPT extends NT {
         return spc_conjunction.simplify();
     }
 
+//    PathCondition makeConjunction(PathCondition pc1, PathCondition pc2) {
+//        assert (pc1 != null && pc2 != null);
+//
+//        PathCondition conjunction = pc1.make_copy();
+//
+//        Constraint current = pc2.header;
+//        while (current != null) {
+//            Expression left = current.getLeft();
+//            Expression right = current.getRight();
+//            Comparator comp = current.getComparator();
+//            conjunction._addDet(comp, left, right);
+//
+//            current = current.and;
+//        }
+//
+//        StringPathCondition spc1 = pc1.spc;
+//        StringPathCondition spc2 = pc2.spc;
+//
+//        if (spc1 == null && spc2 == null)
+//            return conjunction;
+//        if (spc1 == null) {
+//            conjunction.spc = spc2.make_copy(pc2);
+//            return conjunction;
+//        }
+//        if (spc2 == null) {
+//            conjunction.spc = spc1.make_copy(pc1);
+//            return conjunction;
+//        }
+//
+//        StringPathCondition spc_conjunction = spc1.make_copy(pc1);
+//
+//        StringConstraint scurrent = spc2.header;
+//        while (scurrent != null) {
+//            StringExpression left = scurrent.getLeft();
+//            StringExpression right = scurrent.getRight();
+//            StringComparator comp = scurrent.getComparator();
+//            spc_conjunction._addDet(comp, left, right);
+//
+//            scurrent = scurrent.and();
+//        }
+//
+//        conjunction.spc = spc_conjunction;
+//        return conjunction;
+//    }
+
 }

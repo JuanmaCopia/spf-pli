@@ -42,6 +42,16 @@ public class SolvingStrategy {
 
     public void pathFinished(ThreadInfo ti, Instruction current, Instruction next) {
         exploredPaths++;
+        if (config.checkPathValidity) {
+            generateTestCase(ti, current, next);
+            checkPathValidity(ti, current, next);
+        }
+    }
+
+    void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
+    }
+
+    void generateTestCase(ThreadInfo ti, Instruction current, Instruction next) {
     }
 
     public void countException() {

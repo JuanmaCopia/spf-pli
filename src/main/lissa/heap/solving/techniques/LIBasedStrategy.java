@@ -82,14 +82,7 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     }
 
     @Override
-    public void pathFinished(ThreadInfo ti, Instruction current, Instruction next) {
-        super.pathFinished(ti, current, next);
-        if (config.checkPathValidity) {
-            checkPathValidity(ti, current, next);
-        }
-    }
-
-    private void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
+    void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
         StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runRepOKComplete()V");
 

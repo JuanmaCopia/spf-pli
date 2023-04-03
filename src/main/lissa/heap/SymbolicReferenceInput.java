@@ -108,7 +108,7 @@ public class SymbolicReferenceInput {
         return visitor.getConcreteToSymbolicMap();
     }
 
-    public class ObjectData {
+    public static class ObjectData {
         public int objRef;
         public int id;
         public ClassInfo type;

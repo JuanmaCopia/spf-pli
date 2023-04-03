@@ -1,4 +1,4 @@
-package lissa.heap.builder;
+package lissa.heap.testgen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ import symsolve.candidates.traversals.BFSCandidateTraversal;
 import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
 import symsolve.vector.SymSolveSolution;
 
-public class HeapSolutionVisitor extends GenericCandidateVisitor {
+public class TestGenVisitor extends GenericCandidateVisitor {
 
     MJIEnv env;
     SymbolicReferenceInput symRefInput;
@@ -57,7 +57,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
 
     int symbolicID = 0;
 
-    public HeapSolutionVisitor(MJIEnv env, int newObjectRootRef, SymbolicInputHeapLISSA symInputHeap,
+    public TestGenVisitor(MJIEnv env, int newObjectRootRef, SymbolicInputHeapLISSA symInputHeap,
             SymSolveSolution solution, Map<Object, Integer> symSolveToSymbolic) {
         this.env = env;
         this.newObjectRootElementInfo = VM.getVM().getHeap().getModifiable(newObjectRootRef);

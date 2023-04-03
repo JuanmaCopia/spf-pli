@@ -135,6 +135,13 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         builder.buildSolution(env, objRef, symInputHeap, solution);
     }
 
+//    @Override
+//    void generateTestCase(ThreadInfo ti, Instruction current, Instruction next) {
+//        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
+//        SymSolveSolution heapSolution = heapCG.getCurrentSolution();
+//        PathCondition solutionPC = heapCG.getCurrentRepOKPathCondition();
+//    }
+
     public void countPrunedBranch() {
         prunedBranches++;
     }

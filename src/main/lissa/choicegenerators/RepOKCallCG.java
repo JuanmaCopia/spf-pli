@@ -41,8 +41,6 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
     public boolean allRepOKPathsReturnedFalse() {
         if (pathReturningTrueFound) {
             setDone();
-            if (isPathValidityCheck)
-                strategy.countValidPath();
             if (isLazyStep) {
                 // Cache Solution and repOK Path Condition
                 assert (candidateHeapSolution != null);
