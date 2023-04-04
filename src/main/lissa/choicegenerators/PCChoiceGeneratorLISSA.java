@@ -8,8 +8,9 @@ import symsolve.vector.SymSolveSolution;
 
 public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
 
-    protected HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
-    protected HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();
+    HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
+    HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();
+    HashMap<Integer, Integer> buildedObjectsCache = new HashMap<>();
 
     public PCChoiceGeneratorLISSA(String id, int size) {
         super(id, size);
@@ -56,6 +57,14 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
 
     public SymSolveSolution getCurrentSolution() {
         return solutionsCache.get(getNextChoice());
+    }
+
+    public void setCurrentBuildedObject(int buildedObjectRef) {
+        buildedObjectsCache.put(getNextChoice(), buildedObjectRef);
+    }
+
+    public int getCurrentBuildedObject() {
+        return buildedObjectsCache.get(getNextChoice());
     }
 
 }

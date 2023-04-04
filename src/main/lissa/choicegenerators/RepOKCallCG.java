@@ -13,6 +13,8 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
     SymbolicInputHeapLISSA symInputHeap;
     boolean isLazyStep;
 
+    int buildedObjectRef;
+
     NT stg;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, HeapChoiceGeneratorLISSA curHeapCG,
@@ -47,9 +49,11 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             assert (repOKPathCondition != null);
             if (isLazyStep) {
                 // Cache Solution and repOK Path Condition
+                curHeapCG.setCurrentBuildedObject(buildedObjectRef);
                 curHeapCG.setCurrentSolution(candidateHeapSolution);
                 curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
             } else {
+                curPCCG.setCurrentBuildedObject(buildedObjectRef);
                 curPCCG.setCurrentSolution(candidateHeapSolution);
                 curPCCG.setCurrentRepOKPathCondition(repOKPathCondition);
             }
@@ -64,6 +68,10 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
 
     public SymSolveSolution getCandidateHeapSolution() {
         return candidateHeapSolution;
+    }
+
+    public void setBuildedObjectRef(int objvRef) {
+        buildedObjectRef = objvRef;
     }
 
 }
