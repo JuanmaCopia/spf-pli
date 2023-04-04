@@ -1,5 +1,7 @@
 package lissa.heap.solving.techniques;
 
+import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
@@ -137,10 +139,39 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
 //    @Override
 //    void generateTestCase(ThreadInfo ti, Instruction current, Instruction next) {
-//        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
-//        SymSolveSolution heapSolution = heapCG.getCurrentSolution();
-//        PathCondition solutionPC = heapCG.getCurrentRepOKPathCondition();
+//        ChoiceGenerator<?> lastCG = ti.getVM().getSystemState().getChoiceGenerator();
+//        SymSolveSolution heapSolution = getCachedSolution(lastCG);
+//        PathCondition solutionPC = getCachedPathCondition(lastCG);
+//
 //    }
+
+    SymSolveSolution getCachedSolution(ChoiceGenerator<?> lastCG) {
+        assert (lastCG != null);
+        ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
+        for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof HeapChoiceGeneratorLISSA) {
+                return ((HeapChoiceGeneratorLISSA) cg).getCurrentSolution();
+            }
+            if (cg instanceof PCChoiceGeneratorLISSA) {
+                return ((PCChoiceGeneratorLISSA) cg).getCurrentSolution();
+            }
+        }
+        return null;
+    }
+
+    PathCondition getCachedPathCondition(ChoiceGenerator<?> lastCG) {
+        assert (lastCG != null);
+        ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
+        for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
+            if (cg instanceof HeapChoiceGeneratorLISSA) {
+                return ((HeapChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+            }
+            if (cg instanceof PCChoiceGeneratorLISSA) {
+                return ((PCChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+            }
+        }
+        return null;
+    }
 
     public void countPrunedBranch() {
         prunedBranches++;
