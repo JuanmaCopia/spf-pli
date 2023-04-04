@@ -20,8 +20,9 @@ import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.visitors.HeapVisitor;
 
-public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
+public class PartialHeapBuilderVisitor implements HeapVisitor {
 
     LIBasedStrategy strategy;
 
@@ -145,6 +146,14 @@ public class PartialHeapBuilderVisitor implements SymbolicInputHeapVisitor {
     @Override
     public boolean isAborted() {
         return false;
+    }
+
+    @Override
+    public void visitedConcretePrimitiveField() {
+    }
+
+    @Override
+    public void visitFinished() {
     }
 
 }

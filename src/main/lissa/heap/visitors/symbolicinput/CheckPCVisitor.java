@@ -22,9 +22,10 @@ import korat.utils.IIntList;
 import lissa.LISSAShell;
 import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.visitors.HeapVisitor;
 import symsolve.vector.SymSolveSolution;
 
-public class CheckPCVisitor implements SymbolicInputHeapVisitor {
+public class CheckPCVisitor implements HeapVisitor {
 
     VM vm;
     Heap JPFHeap;
@@ -158,4 +159,13 @@ public class CheckPCVisitor implements SymbolicInputHeapVisitor {
     public boolean isAborted() {
         return isAborted;
     }
+
+    @Override
+    public void visitedConcretePrimitiveField() {
+    }
+
+    @Override
+    public void visitFinished() {
+    }
+
 }

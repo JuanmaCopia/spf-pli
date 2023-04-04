@@ -1,158 +1,149 @@
 package lissa.heap.testgen;
 
-import java.util.Map;
-
+import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
+import gov.nasa.jpf.vm.BooleanFieldInfo;
+import gov.nasa.jpf.vm.ClassInfo;
+import gov.nasa.jpf.vm.DoubleFieldInfo;
+import gov.nasa.jpf.vm.ElementInfo;
+import gov.nasa.jpf.vm.FieldInfo;
+import gov.nasa.jpf.vm.FloatFieldInfo;
+import gov.nasa.jpf.vm.Heap;
+import gov.nasa.jpf.vm.IntegerFieldInfo;
+import gov.nasa.jpf.vm.LongFieldInfo;
 import gov.nasa.jpf.vm.MJIEnv;
-import korat.finitization.impl.FieldDomain;
-import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.SymbolicReferenceInput;
-import symsolve.candidates.traversals.BFSCandidateTraversal;
-import symsolve.candidates.traversals.visitors.GenericCandidateVisitor;
-import symsolve.vector.SymSolveSolution;
+import gov.nasa.jpf.vm.ReferenceFieldInfo;
+import lissa.heap.SymHeapHelper;
+import lissa.heap.SymbolicReferenceInput.ObjectData;
+import lissa.heap.visitors.HeapVisitor;
 
-public class TestGenVisitor extends GenericCandidateVisitor {
+public class TestGenVisitor implements HeapVisitor {
 
     MJIEnv env;
-    SymbolicReferenceInput symRefInput;
+    Heap JPFHeap;
 
-//    // Field
-//    FieldInfo currentField;
-
-    Integer equivalentOwnerInSymHeap;
-
-    Map<Object, Integer> symSolveToSymbolic;
-
-    BFSCandidateTraversal.ObjectInfo currentOwnerInfo;
-    String currentRefChain;
+    PathCondition pc;
 
     StringBuilder testCase = new StringBuilder();
     int testID;
 
-    public TestGenVisitor(MJIEnv env, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
-            PathCondition repOKPathCondition, Map<Object, Integer> symSolveToSymbolic, int testID) {
+    // root data
+    ElementInfo rootEI;
+    ClassInfo rootClass;
+    String rootClassName;
+
+    // owner data
+    ObjectData currentOwnerData;
+
+    // field data
+    FieldInfo currentField;
+    ClassInfo fieldClass;
+    String currentRefChain;
+
+    public TestGenVisitor(MJIEnv env, PathCondition pc, int testID) {
         this.env = env;
-        this.symRefInput = symInputHeap.getImplicitInputThis();
-        this.symSolveToSymbolic = symSolveToSymbolic;
+        this.pc = pc;
+        this.JPFHeap = env.getVM().getHeap();
         this.testID = testID;
-
     }
 
     @Override
-    public void setRoot(Object rootObject, BFSCandidateTraversal.ObjectInfo rootInfo) {
-        super.setRoot(rootObject, rootInfo);
-        appendTestSignature(rootClass.getSimpleName(), testID);
-        appendCreateRoot(rootInfo.chainRef);
-
+    public void setRoot(int rootRef) {
+        rootEI = JPFHeap.getModifiable(rootRef);
+        rootClass = rootEI.getClassInfo();
+        rootClassName = rootClass.getSimpleName();
+        appendTestSignature(rootClassName, testID);
+        appendDeclareAndCreateNewObject(rootClassName, rootClassName.toLowerCase() + "_0");
     }
 
     @Override
-    public void setCurrentOwner(Object currentOwnerObject, BFSCandidateTraversal.ObjectInfo currentOwnerInfo) {
-        super.setCurrentOwner(currentOwnerObject, currentOwnerInfo);
-        this.currentOwnerInfo = currentOwnerInfo;
-        equivalentOwnerInSymHeap = symSolveToSymbolic.get(currentOwnerObject);
+    public void setCurrentOwner(ObjectData ownerData) {
+        currentOwnerData = ownerData;
     }
 
     @Override
-    public void setCurrentField(FieldDomain fieldDomain, String fieldName, int fieldIndexInVector,
-            int fieldIndexInFieldDomain) {
-        super.setCurrentField(fieldDomain, fieldName, fieldIndexInVector, fieldIndexInFieldDomain);
-        currentRefChain = currentOwnerInfo.chainRef + "." + fieldName;
+    public void setCurrentField(FieldInfo field, ClassInfo type) {
+        currentField = field;
+        fieldClass = type;
+        currentRefChain = currentOwnerData.chainRef + "." + field.getName();
     }
 
     @Override
-    public void accessedNullReferenceField() {
+    public void visitedNullReferenceField() {
         appendLine(makeAssing(currentRefChain, "null"));
     }
 
     @Override
-    public void accessedNewReferenceField(Object fieldObject, BFSCandidateTraversal.ObjectInfo fieldObjectInfo) {
-        appendLine(makeAssing(currentRefChain, fieldObjectInfo.chainRef));
+    public void visitedSymbolicReferenceField() {
+        assert (false);
     }
 
     @Override
-    public void accessedVisitedReferenceField(Object fieldObject, BFSCandidateTraversal.ObjectInfo fieldObjectInfo) {
-        appendLine(makeAssing(currentRefChain, fieldObjectInfo.chainRef));
+    public void visitedNewReferenceField(ObjectData fieldData) {
+        appendLine(makeAssing(currentRefChain, makeConstructorCall(fieldClass.getName())));
     }
 
     @Override
-    public void accessedPrimitiveField(int fieldObjectID) {
-//        if (equivalentOwnerInSymHeap != null) {
-//            setValueForExistingPrimitiveField();
-//        } else {
-//            setValueForNonExistingPrimitiveField();
-//        }
+    public void visitedExistentReferenceField(ObjectData fieldData) {
+        appendLine(makeAssing(currentRefChain, fieldData.chainRef));
     }
 
-//    void setValueForExistingPrimitiveField() {
-//        assert (currentFieldDomain.isPrimitiveType());
-//        if (accessedIndices.contains(currentFieldIndexInVector)) {
-//            int value = 0;
-//            Class<?> clsOfField = currentFieldDomain.getClassOfField();
-//            if (clsOfField == int.class) {
-//                value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
-//                currentOwnerEI.setIntField(currentField, value);
-//            } else if (clsOfField == boolean.class) {
-//                boolean boolValue = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
-//                currentOwnerEI.setBooleanField(currentField, boolValue);
-//                if (boolValue)
-//                    value = 1;
-//            } else {
-//                assert (false); // TODO: add support for other types, String, Long, etc.
-//            }
-//
-//            currentOwnerEI.setFieldAttr(currentField, null);
-//
-//            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(equivalentOwnerInSymHeap, currentField);
-//            assert (symbolicVar != null);
-//
-//            IntegerConstant constant = new IntegerConstant(value);
-//
-//            PCChoiceGeneratorLISSA currPCCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(env.getVM());
-//            assert (currPCCG != null);
-//
-//            PathCondition pc = currPCCG.getCurrentPC();
-//            assert (pc != null);
-//            pc._addDet(Comparator.EQ, symbolicVar, constant);
-//
-//            assert (pc.simplify());
-//            currPCCG.setCurrentPC(pc);
-//        } else {
-//            Expression symbolicVar = symRefInput.getPrimitiveSymbolicField(equivalentOwnerInSymHeap, currentField);
-//            assert (symbolicVar != null);
-//            if (symbolicVar instanceof StringExpression) {
-//                int val = env.newString("WWWWW's Birthday is 12-17-77");
-//                currentOwnerEI.set1SlotField(currentField, val);
-//            }
-//
-//            currentOwnerEI.setFieldAttr(currentField, symbolicVar);
-//        }
-//    }
-//
-//    void setValueForNonExistingPrimitiveField() {
-//        Expression symbolicValue = null;
-//        String name = currentField.getName() + "(sym)_" + symbolicID;
-//        symbolicID++;
-//        if (currentField instanceof IntegerFieldInfo || currentField instanceof LongFieldInfo) {
-//            symbolicValue = new SymbolicInteger(name);
-//        } else if (currentField instanceof FloatFieldInfo || currentField instanceof DoubleFieldInfo) {
-//            symbolicValue = new SymbolicReal(name);
-//        } else if (currentField instanceof ReferenceFieldInfo) {
-//            if (currentField.getType().equals("java.lang.String")) {
-//                symbolicValue = new StringSymbolic(name);
-//                int val = env.newString("WWWWW's Birthday is 12-17-77");
-//                currentOwnerEI.set1SlotField(currentField, val);
-//            } else {
-//                symbolicValue = new SymbolicInteger(name);
-//            }
-//        } else if (currentField instanceof BooleanFieldInfo) {
-//            // treat boolean as an integer with range [0,1]
-//            symbolicValue = new SymbolicInteger(name, 0, 1);
-//        } else {
-//            throw new RuntimeException("symbolicValue is null !!!!");
-//        }
-//        currentOwnerEI.setFieldAttr(currentField, symbolicValue);
-//    }
+    @Override
+    public void visitedSymbolicPrimitiveField(Expression symbolicPrimitive) {
+        String strValue = null;
+        if (currentField instanceof IntegerFieldInfo || currentField instanceof LongFieldInfo) {
+            int solution = SymHeapHelper.getSolution((SymbolicInteger) symbolicPrimitive, pc);
+            strValue = Integer.toString(solution);
+        } else if (currentField instanceof BooleanFieldInfo) {
+            int solution = SymHeapHelper.getSolution((SymbolicInteger) symbolicPrimitive, pc);
+            if (solution == 0)
+                strValue = "false";
+            else
+                strValue = "true";
+        } else {
+            throw new RuntimeException("Unsuported type !!!!");
+        }
+
+        appendLine(makeAssing(currentRefChain, strValue));
+    }
+
+    @Override
+    public void visitedConcretePrimitiveField() {
+        ElementInfo ownerEI = currentOwnerData.objEI;
+        String strValue = null;
+        if (currentField instanceof IntegerFieldInfo) {
+            int value = ownerEI.getIntField(currentField);
+            strValue = Integer.toString(value);
+        } else if (currentField instanceof LongFieldInfo) {
+            long value = ownerEI.getLongField(currentField);
+            strValue = Long.toString(value);
+        } else if (currentField instanceof FloatFieldInfo) {
+            float value = ownerEI.getFloatField(currentField);
+            strValue = Float.toString(value);
+        } else if (currentField instanceof DoubleFieldInfo) {
+            double value = ownerEI.getDoubleField(currentField);
+            strValue = Double.toString(value);
+        } else if (currentField instanceof ReferenceFieldInfo) {
+            if (currentField.getType().equals("java.lang.String")) {
+                strValue = ownerEI.getStringField(currentField.getName());
+            } else {
+                assert (false);
+            }
+        } else if (currentField instanceof BooleanFieldInfo) {
+            boolean value = ownerEI.getBooleanField(currentField);
+            strValue = Boolean.toString(value);
+        } else {
+            throw new RuntimeException("Unsuported type !!!!");
+        }
+
+        appendLine(makeAssing(currentRefChain, strValue));
+    }
+
+    @Override
+    public void visitFinished() {
+        appendLine("}");
+    }
 
     String makeConstructorCall(String className) {
         return String.format("new %s()", className);
@@ -166,12 +157,24 @@ public class TestGenVisitor extends GenericCandidateVisitor {
         testCase.append(String.format("@Test\npublic void %sTest%d {\n", className.toLowerCase(), testId));
     }
 
-    void appendCreateRoot(String rootIdentifier) {
-        testCase.append(String.format("\t%s = %s;\n", rootIdentifier, makeConstructorCall(rootClass.getSimpleName())));
+    void appendDeclareAndCreateNewObject(String className, String identifier) {
+        String left = String.format("%s %s", className, identifier);
+        String right = makeConstructorCall(className);
+        appendLine(makeAssing(left, right));
     }
 
     void appendLine(String line) {
         testCase.append(line + "\n");
+    }
+
+    @Override
+    public boolean isIgnoredField() {
+        return false;
+    }
+
+    @Override
+    public boolean isAborted() {
+        return false;
     }
 
 }

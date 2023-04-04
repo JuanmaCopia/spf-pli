@@ -21,10 +21,10 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import korat.finitization.impl.StateSpace;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.heap.visitors.HeapVisitor;
 import lissa.heap.visitors.symbolicinput.CheckPCVisitor;
 import lissa.heap.visitors.symbolicinput.ObjectMapCreatorVisitor;
 import lissa.heap.visitors.symbolicinput.PartialHeapBuilderVisitor;
-import lissa.heap.visitors.symbolicinput.SymbolicInputHeapVisitor;
 import symsolve.vector.SymSolveSolution;
 
 public class SymbolicReferenceInput {
@@ -123,10 +123,9 @@ public class SymbolicReferenceInput {
             this.chainRef = chainRef;
             this.objEI = ti.getModifiableElementInfo(objRef);
         }
-
     }
 
-    public void acceptBFS(SymbolicInputHeapVisitor visitor) {
+    public void acceptBFS(HeapVisitor visitor) {
         HashMap<Integer, ObjectData> idMap = new HashMap<>();
         HashMap<ClassInfo, Integer> maxIdMap = new HashMap<>();
 

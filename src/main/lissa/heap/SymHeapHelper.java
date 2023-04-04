@@ -8,7 +8,6 @@ import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -33,10 +32,12 @@ import gov.nasa.jpf.vm.VM;
 import lissa.LISSAShell;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
-import lissa.heap.visitors.output.SymbolicOutputHeapVisitor;
+import lissa.heap.visitors.HeapVisitor;
 
 public class SymHeapHelper {
 
@@ -184,73 +185,91 @@ public class SymHeapHelper {
         return vm.getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
     }
 
-    public static void acceptBFS(int rootIndex, SymbolicOutputHeapVisitor visitor) {
-        HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>();
-        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<ClassInfo, Integer>();
-
+    public static void acceptBFS(int rootRef, HeapVisitor visitor) {
         ThreadInfo ti = VM.getVM().getCurrentThread();
-        ElementInfo rootElementInfo = ti.getElementInfo(rootIndex);
+        HashMap<Integer, ObjectData> idMap = new HashMap<>();
+        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<>();
+
+        ElementInfo rootElementInfo = ti.getElementInfo(rootRef);
         ClassInfo rootClass = rootElementInfo.getClassInfo();
 
-        idMap.put(rootIndex, 0);
+        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName() + "_0");
+
+        idMap.put(rootRef, rootData);
         maxIdMap.put(rootClass, 0);
 
         LinkedList<Integer> worklist = new LinkedList<Integer>();
-        worklist.add(rootIndex);
+        worklist.add(rootRef);
+        visitor.setRoot(rootRef);
 
         while (!worklist.isEmpty()) {
-            int currentObjRef = worklist.removeFirst();
-            int currentObjID = idMap.get(currentObjRef);
-            ElementInfo elementInfo = ti.getElementInfo(currentObjRef);
-            ClassInfo ownerObjectClass = elementInfo.getClassInfo();
+            int currentOwnerRef = worklist.removeFirst();
+            ObjectData currentOwnerData = idMap.get(currentOwnerRef);
+            ElementInfo elementInfo = ti.getElementInfo(currentOwnerRef);
+            ClassInfo ownerClass = elementInfo.getClassInfo();
 
-//            visitor.setCurrentOwner(ownerObjectClass, currentObjID);
+            visitor.setCurrentOwner(currentOwnerData);
 
-            if (currentObjRef != rootIndex)
-                visitor.setCurrentOwner(ownerObjectClass, currentObjID + 1);
-            else
-                visitor.setCurrentOwner(ownerObjectClass, currentObjID);
-
-            FieldInfo[] instanceFields = ownerObjectClass.getDeclaredInstanceFields();
+            FieldInfo[] instanceFields = ownerClass.getDeclaredInstanceFields();
             for (int i = 0; i < instanceFields.length; i++) {
+                if (visitor.isAborted())
+                    return;
+
                 FieldInfo field = instanceFields[i];
                 ClassInfo fieldClass = field.getTypeClassInfo();
 
-                visitor.setCurrentField(fieldClass, field);
+                visitor.setCurrentField(field, fieldClass);
 
                 if (visitor.isIgnoredField()) {
-                    // System.out.println("Ignored field: " + field.getName());
-                    // System.out.println("type: " + fieldClass.getSimpleName());
                     continue;
                 }
 
+                Object attr = elementInfo.getFieldAttr(field);
+
                 if (field.isReference() && !field.getType().equals("java.lang.String")) {
-                    Object attr = elementInfo.getFieldAttr(field);
-                    int fieldIndex = elementInfo.getReferenceField(field);
-                    // Integer fieldIndex = getReferenceField(currentObjRef, field);
+
+                    int fieldRef = elementInfo.getReferenceField(field);
                     if (attr != null) {
                         visitor.visitedSymbolicReferenceField();
-                    } else if (fieldIndex == MJIEnv.NULL) {
+                    } else if (fieldRef == MJIEnv.NULL) {
                         visitor.visitedNullReferenceField();
-                    } else if (idMap.containsKey(fieldIndex)) { // previously visited object
-                        visitor.visitedExistentReferenceField(idMap.get(fieldIndex) + 1);
+                    } else if (idMap.containsKey(fieldRef)) { // previously visited object
+                        visitor.visitedExistentReferenceField(idMap.get(fieldRef));
                     } else { // first time visited
                         int id = 0;
                         if (maxIdMap.containsKey(fieldClass))
                             id = maxIdMap.get(fieldClass) + 1;
 
-                        idMap.put(fieldIndex, id);
+                        ObjectData newObject = new ObjectData(fieldRef, id, fieldClass,
+                                currentOwnerData.chainRef + "." + field.getName());
+                        idMap.put(fieldRef, newObject);
                         maxIdMap.put(fieldClass, id);
-                        visitor.visitedNewReferenceField(id + 1);
-                        worklist.add(fieldIndex);
+                        visitor.visitedNewReferenceField(newObject);
+                        worklist.add(fieldRef);
                     }
                 } else {
-                    visitor.visitedSymbolicPrimitiveField(field);
+                    if (attr != null) {
+                        Expression symbolicPrimitive = (Expression) attr;
+                        visitor.visitedSymbolicPrimitiveField(symbolicPrimitive);
+                    } else {
+                        visitor.visitedConcretePrimitiveField();
+                    }
                 }
-                visitor.resetCurrentField();
             }
-            visitor.resetCurrentOwner();
         }
+        visitor.visitFinished();
+    }
+
+    public static int getSolution(SymbolicInteger symbolicInteger, PathCondition pathCondition) {
+        int solution = 0;
+        if (pathCondition != null) {
+            if (!PathCondition.flagSolved)
+                pathCondition.solveOld();
+            long val = symbolicInteger.solution();
+            if (val != SymbolicInteger.UNDEFINED)
+                solution = (int) val;
+        }
+        return solution;
     }
 
     public static void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {
@@ -293,18 +312,5 @@ public class SymHeapHelper {
             }
         }
     }
-
-    // public static Integer getSolution(SymbolicInteger symbolicInteger,
-    // PathCondition pathCondition) {
-    // int solution = 0;
-    // if (pathCondition != null) {
-    // if (!PathCondition.flagSolved)
-    // pathCondition.solveOld();
-    // long val = symbolicInteger.solution();
-    // if (val != SymbolicInteger.UNDEFINED)
-    // solution = (int) val;
-    // }
-    // return solution;
-    // }
 
 }

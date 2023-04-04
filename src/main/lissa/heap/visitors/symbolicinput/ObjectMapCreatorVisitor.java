@@ -16,9 +16,10 @@ import korat.utils.IIntList;
 import lissa.LISSAShell;
 import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.visitors.HeapVisitor;
 import symsolve.vector.SymSolveSolution;
 
-public class ObjectMapCreatorVisitor implements SymbolicInputHeapVisitor {
+public class ObjectMapCreatorVisitor implements HeapVisitor {
 
     VM vm;
     Heap JPFHeap;
@@ -121,7 +122,15 @@ public class ObjectMapCreatorVisitor implements SymbolicInputHeapVisitor {
     public void visitedSymbolicPrimitiveField(Expression symbolicPrimitive) {
     }
 
+    @Override
+    public void visitedConcretePrimitiveField() {
+    }
+
     public Map<Object, Integer> getConcreteToSymbolicMap() {
         return concreteToSymbolic;
+    }
+
+    @Override
+    public void visitFinished() {
     }
 }

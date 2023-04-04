@@ -8,8 +8,9 @@ import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.canonicalizer.VectorField;
 import lissa.heap.canonicalizer.VectorStructure;
 import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.visitors.HeapVisitor;
 
-public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
+public class ReferenceFieldOnlyVisitor implements HeapVisitor {
 
     String currentOwnerObjClassName;
     String currentFieldName;
@@ -71,4 +72,13 @@ public class ReferenceFieldOnlyVisitor implements SymbolicInputHeapVisitor {
     public boolean isAborted() {
         return false;
     }
+
+    @Override
+    public void visitedConcretePrimitiveField() {
+    }
+
+    @Override
+    public void visitFinished() {
+    }
+
 }

@@ -145,30 +145,41 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
 //
 //    }
 
+    int getCachedBuildedObject(ChoiceGenerator<?> lastCG) {
+        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        assert (cg != null);
+        if (cg instanceof HeapChoiceGeneratorLISSA)
+            return ((HeapChoiceGeneratorLISSA) cg).getCurrentBuildedObject();
+
+        return ((PCChoiceGeneratorLISSA) cg).getCurrentBuildedObject();
+    }
+
     SymSolveSolution getCachedSolution(ChoiceGenerator<?> lastCG) {
-        assert (lastCG != null);
-        ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
-        for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof HeapChoiceGeneratorLISSA) {
-                return ((HeapChoiceGeneratorLISSA) cg).getCurrentSolution();
-            }
-            if (cg instanceof PCChoiceGeneratorLISSA) {
-                return ((PCChoiceGeneratorLISSA) cg).getCurrentSolution();
-            }
-        }
-        return null;
+        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        if (cg == null)
+            return null;
+        if (cg instanceof HeapChoiceGeneratorLISSA)
+            return ((HeapChoiceGeneratorLISSA) cg).getCurrentSolution();
+
+        return ((PCChoiceGeneratorLISSA) cg).getCurrentSolution();
     }
 
     PathCondition getCachedPathCondition(ChoiceGenerator<?> lastCG) {
+        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        if (cg == null)
+            return null;
+        if (cg instanceof HeapChoiceGeneratorLISSA)
+            return ((HeapChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+
+        return ((PCChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+    }
+
+    ChoiceGenerator<?> getLastBranchPoint(ChoiceGenerator<?> lastCG) {
         assert (lastCG != null);
         ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
         for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof HeapChoiceGeneratorLISSA) {
-                return ((HeapChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
-            }
-            if (cg instanceof PCChoiceGeneratorLISSA) {
-                return ((PCChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
-            }
+            if (cg instanceof HeapChoiceGeneratorLISSA || cg instanceof PCChoiceGeneratorLISSA)
+                return cg;
         }
         return null;
     }
