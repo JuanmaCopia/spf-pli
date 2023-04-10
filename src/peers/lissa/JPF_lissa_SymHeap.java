@@ -28,6 +28,7 @@ import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.NT;
+import lissa.heap.testgen.TestGenVisitor;
 
 public class JPF_lissa_SymHeap extends NativePeer {
 
@@ -137,12 +138,20 @@ public class JPF_lissa_SymHeap extends NativePeer {
     }
 
     @MJI
-    public static void handleRepOKResult(MJIEnv env, int objRef, boolean repOKResult) {
+    public static void handleRepOKResult(MJIEnv env, int objRef, int objvRef, boolean repOKResult) {
         SystemState ss = env.getVM().getSystemState();
 
         if (repOKResult) {
             RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
-            repOKChoiceGenerator.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
+            PathCondition pc = PathCondition.getPC(env.getVM());
+            repOKChoiceGenerator.setRepOKPathCondition(pc);
+
+            if (LISSAShell.configParser.generateTests) {
+                TestGenVisitor visitor = new TestGenVisitor(env.getHeap(), pc);
+                SymHeapHelper.acceptBFS(objvRef, visitor);
+                String testCode = visitor.getTestCaseCode();
+                repOKChoiceGenerator.setTestCode(testCode);
+            }
             repOKChoiceGenerator.pathReturningTrueFound();
         }
         ss.setIgnored(true);

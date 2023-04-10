@@ -404,13 +404,13 @@ public class Schedule {
     public static void runRepOK() {
         Schedule toBuild = new Schedule();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         Schedule toBuild = new Schedule();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finSchedule(int jobsNum) {

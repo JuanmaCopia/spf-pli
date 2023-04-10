@@ -306,13 +306,13 @@ public class DictionaryInfo {
     public static void runRepOK() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finDictionaryInfo(int nodesNum) {

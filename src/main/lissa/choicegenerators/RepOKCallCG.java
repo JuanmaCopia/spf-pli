@@ -49,11 +49,11 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             assert (repOKPathCondition != null);
             if (isLazyStep) {
                 // Cache Solution and repOK Path Condition
-                curHeapCG.setCurrentBuildedObject(buildedObjectRef);
+                curHeapCG.setCurrentTestCode(testCode);
                 curHeapCG.setCurrentSolution(candidateHeapSolution);
                 curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
             } else {
-                curPCCG.setCurrentBuildedObject(buildedObjectRef);
+                curPCCG.setCurrentTestCode(testCode);
                 curPCCG.setCurrentSolution(candidateHeapSolution);
                 curPCCG.setCurrentRepOKPathCondition(repOKPathCondition);
             }

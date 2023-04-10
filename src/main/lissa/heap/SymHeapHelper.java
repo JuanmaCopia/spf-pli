@@ -190,10 +190,10 @@ public class SymHeapHelper {
         HashMap<Integer, ObjectData> idMap = new HashMap<>();
         HashMap<ClassInfo, Integer> maxIdMap = new HashMap<>();
 
-        ElementInfo rootElementInfo = ti.getElementInfo(rootRef);
+        ElementInfo rootElementInfo = ti.getModifiableElementInfo(rootRef);
         ClassInfo rootClass = rootElementInfo.getClassInfo();
 
-        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName() + "_0");
+        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName().toLowerCase() + "_0");
 
         idMap.put(rootRef, rootData);
         maxIdMap.put(rootClass, 0);

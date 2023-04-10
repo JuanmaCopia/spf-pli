@@ -859,13 +859,13 @@ public class TreeMap {
     public static void runRepOK() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
 //    public String treeToString() {

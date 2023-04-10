@@ -42,10 +42,10 @@ public class SolvingStrategy {
 
     public void pathFinished(ThreadInfo ti, Instruction current, Instruction next) {
         exploredPaths++;
-        if (config.checkPathValidity) {
+        if (config.generateTests)
             generateTestCase(ti, current, next);
+        if (config.checkPathValidity)
             checkPathValidity(ti, current, next);
-        }
     }
 
     void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {

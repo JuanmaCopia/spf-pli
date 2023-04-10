@@ -195,13 +195,13 @@ public class TreeSet {
     public static void runRepOK() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finTreeSet(int nodesNum) {

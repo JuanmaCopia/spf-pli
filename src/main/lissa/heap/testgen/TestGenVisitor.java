@@ -12,26 +12,26 @@ import gov.nasa.jpf.vm.FloatFieldInfo;
 import gov.nasa.jpf.vm.Heap;
 import gov.nasa.jpf.vm.IntegerFieldInfo;
 import gov.nasa.jpf.vm.LongFieldInfo;
-import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ReferenceFieldInfo;
+import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicReferenceInput.ObjectData;
+import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.visitors.HeapVisitor;
 
 public class TestGenVisitor implements HeapVisitor {
 
-    MJIEnv env;
     Heap JPFHeap;
 
     PathCondition pc;
 
     StringBuilder testCase = new StringBuilder();
-    int testID;
 
     // root data
     ElementInfo rootEI;
     ClassInfo rootClass;
     String rootClassName;
+    String rootIdentifier;
 
     // owner data
     ObjectData currentOwnerData;
@@ -41,20 +41,20 @@ public class TestGenVisitor implements HeapVisitor {
     ClassInfo fieldClass;
     String currentRefChain;
 
-    public TestGenVisitor(MJIEnv env, PathCondition pc, int testID) {
-        this.env = env;
+    public TestGenVisitor(Heap JPFHeap, PathCondition pc) {
+        this.JPFHeap = JPFHeap;
         this.pc = pc;
-        this.JPFHeap = env.getVM().getHeap();
-        this.testID = testID;
     }
 
     @Override
     public void setRoot(int rootRef) {
         rootEI = JPFHeap.getModifiable(rootRef);
         rootClass = rootEI.getClassInfo();
-        rootClassName = rootClass.getSimpleName();
-        appendTestSignature(rootClassName, testID);
-        appendDeclareAndCreateNewObject(rootClassName, rootClassName.toLowerCase() + "_0");
+        rootClassName = rootClass.getName();
+        String simpleRootClassName = rootClass.getSimpleName();
+        rootIdentifier = simpleRootClassName.toLowerCase() + "_0";
+        appendTestSignature(rootClassName);
+        appendDeclareAndCreateNewObject(rootClassName, rootIdentifier);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TestGenVisitor implements HeapVisitor {
 
     @Override
     public void visitedNullReferenceField() {
-        appendLine(makeAssing(currentRefChain, "null"));
+        appendTabbedLine(makeAssing(currentRefChain, "null"));
     }
 
     @Override
@@ -81,12 +81,12 @@ public class TestGenVisitor implements HeapVisitor {
 
     @Override
     public void visitedNewReferenceField(ObjectData fieldData) {
-        appendLine(makeAssing(currentRefChain, makeConstructorCall(fieldClass.getName())));
+        appendTabbedLine(makeAssing(currentRefChain, makeConstructorCall(fieldClass.getName())));
     }
 
     @Override
     public void visitedExistentReferenceField(ObjectData fieldData) {
-        appendLine(makeAssing(currentRefChain, fieldData.chainRef));
+        appendTabbedLine(makeAssing(currentRefChain, fieldData.chainRef));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TestGenVisitor implements HeapVisitor {
             throw new RuntimeException("Unsuported type !!!!");
         }
 
-        appendLine(makeAssing(currentRefChain, strValue));
+        appendTabbedLine(makeAssing(currentRefChain, strValue));
     }
 
     @Override
@@ -137,12 +137,25 @@ public class TestGenVisitor implements HeapVisitor {
             throw new RuntimeException("Unsuported type !!!!");
         }
 
-        appendLine(makeAssing(currentRefChain, strValue));
+        appendTabbedLine(makeAssing(currentRefChain, strValue));
     }
 
     @Override
     public void visitFinished() {
+        appendLine("\n    " + makeInputRepOKCheck() + "  // assert program precondition");
+        appendLine("\n    " + makeSUTCall() + "  // SUT call");
+        appendLine("\n    " + makeInputRepOKCheck() + "  // assert postcondition");
         appendLine("}");
+    }
+
+    String makeInputRepOKCheck() {
+        return String.format("assertTrue(%s.repOKComplete());", rootIdentifier);
+    }
+
+    String makeSUTCall() {
+        String methodName = "method";
+        String args = "arg0, arg1";
+        return String.format("%s.%s(%s));", rootIdentifier, methodName, args);
     }
 
     String makeConstructorCall(String className) {
@@ -153,28 +166,38 @@ public class TestGenVisitor implements HeapVisitor {
         return String.format("%s = %s;", left, right);
     }
 
-    void appendTestSignature(String className, int testId) {
-        testCase.append(String.format("@Test\npublic void %sTest%d {\n", className.toLowerCase(), testId));
+    void appendTestSignature(String className) {
+        testCase.append(String.format("@Test\npublic void %sTestTESTID {\n", className.toLowerCase()));
     }
 
     void appendDeclareAndCreateNewObject(String className, String identifier) {
         String left = String.format("%s %s", className, identifier);
         String right = makeConstructorCall(className);
-        appendLine(makeAssing(left, right));
+        appendTabbedLine(makeAssing(left, right));
     }
 
     void appendLine(String line) {
         testCase.append(line + "\n");
     }
 
+    void appendTabbedLine(String line) {
+        testCase.append("    " + line + "\n");
+    }
+
     @Override
     public boolean isIgnoredField() {
-        return false;
+        String currentOwnerClassName = currentOwnerData.type.getName();
+        LIBasedStrategy strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
+        return !strategy.isFieldTracked(currentOwnerClassName, currentField.getName());
     }
 
     @Override
     public boolean isAborted() {
         return false;
+    }
+
+    public String getTestCaseCode() {
+        return testCase.toString();
     }
 
 }

@@ -471,13 +471,13 @@ public class BinomialHeap {
     public static void runRepOK() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finBinomialHeap(int size) {

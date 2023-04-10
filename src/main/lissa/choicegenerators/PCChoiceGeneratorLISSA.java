@@ -10,7 +10,7 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
 
     HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
     HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();
-    HashMap<Integer, Integer> buildedObjectsCache = new HashMap<>();
+    HashMap<Integer, String> testCodeCache = new HashMap<>();
 
     public PCChoiceGeneratorLISSA(String id, int size) {
         super(id, size);
@@ -59,12 +59,12 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
         return solutionsCache.get(getNextChoice());
     }
 
-    public void setCurrentBuildedObject(int buildedObjectRef) {
-        buildedObjectsCache.put(getNextChoice(), buildedObjectRef);
+    public void setCurrentTestCode(String code) {
+        testCodeCache.put(getNextChoice(), code);
     }
 
-    public int getCurrentBuildedObject() {
-        return buildedObjectsCache.get(getNextChoice());
+    public String getCurrentTestCode() {
+        return testCodeCache.get(getNextChoice());
     }
 
 }

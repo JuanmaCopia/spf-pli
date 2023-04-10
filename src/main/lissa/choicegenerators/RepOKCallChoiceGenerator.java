@@ -12,6 +12,7 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
     boolean pathReturningTrueFound = false;
     boolean isPathValidityCheck = false;
     PathCondition repOKPathCondition;
+    String testCode = null;
 
     public RepOKCallChoiceGenerator(String id) {
         super(id);
@@ -60,6 +61,10 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
         if (pc == null)
             pc = new PathCondition();
         repOKPathCondition = pc;
+    }
+
+    public void setTestCode(String code) {
+        testCode = code;
     }
 
     @Override

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  * AELITIS, SAS au capital de 46,603.30 euros
  * 8 Allee Lenotre, La Grille Royale, 78600 Le Mesnil le Roi, France.
  *
@@ -113,13 +113,13 @@ public class TransportStats {
     public static void runRepOK() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finTransportStats(int nodesNum) {
@@ -146,36 +146,36 @@ public class TransportStats {
 //    System.out.println( "\n------------------------------" );
 //    System.out.println( "***** TCP SOCKET READ SIZE STATS *****" );
 //    printSizes( read_sizes, total_reads );
-//    
+//
 //    System.out.println( "\n***** TCP SOCKET WRITE SIZE STATS *****" );
 //    printSizes( write_sizes, total_writes );
 //    System.out.println( "------------------------------" );
 //  }
-//  
-// 
-//  
+//
+//
+//
 //  private void printSizes( TreeMapIntLong size_map, long num_total ) {
 //    int prev_high = 1;
-//    
+//
 //    for( Iterator it = size_map.entrySet().iterator(); it.hasNext(); ) {
 //      Map.Entry entry = (Map.Entry)it.next();
 //      int key = ((Integer)entry.getKey()).intValue();
 //      long count = ((Long)entry.getValue()).longValue();
-//      
+//
 //      long percentage = (count *100) / num_total;
-//      
-//      if( key == 0 ) {   
+//
+//      if( key == 0 ) {
 //        if( percentage > 3 ) {
 //          System.out.println( "[0 bytes]= x" +percentage+ "%" );
 //        }
 //      }
 //      else {
 //        int high = key * GRANULARITY;
-//        
+//
 //        if( percentage > 3 ) {
 //          System.out.println( "[" +prev_high+ "-" +(high -1)+ " bytes]= x" +percentage+ "%" );
 //        }
-//        
+//
 //        prev_high = high;
 //      }
 //    }

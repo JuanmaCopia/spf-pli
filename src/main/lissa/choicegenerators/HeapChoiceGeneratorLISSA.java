@@ -12,7 +12,7 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator {
 
     SymSolveSolution[] solutionsCache;
     PathCondition[] repOKPathConditionCache;
-    int[] buildedObjectsCache;
+    String[] testCodes;
 
     public HeapChoiceGeneratorLISSA(String id, int size) {
         super(id, 0, size - 1);
@@ -20,7 +20,7 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator {
         symInputHeap = new SymbolicInputHeapLISSA[size];
         solutionsCache = new SymSolveSolution[size];
         repOKPathConditionCache = new PathCondition[size];
-        buildedObjectsCache = new int[size];
+        testCodes = new String[size];
     }
 
     // sets the heap constraints for the current choice
@@ -78,12 +78,12 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator {
         return null;
     }
 
-    public void setCurrentBuildedObject(int buildedObjectRef) {
-        buildedObjectsCache[getNextChoice()] = buildedObjectRef;
+    public void setCurrentTestCode(String code) {
+        testCodes[getNextChoice()] = code;
     }
 
-    public int getCurrentBuildedObject() {
-        return buildedObjectsCache[getNextChoice()];
+    public String getCurrentTestCode() {
+        return testCodes[getNextChoice()];
     }
 
 }

@@ -132,7 +132,7 @@ public class SymbolicReferenceInput {
         ClassInfo rootClass = this.rootHeapNode.getType();
         int rootRef = this.rootHeapNode.getIndex();
 
-        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName() + "_0");
+        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName().toLowerCase() + "_0");
 
         idMap.put(rootRef, rootData);
         maxIdMap.put(rootClass, 0);

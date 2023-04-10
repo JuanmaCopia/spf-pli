@@ -137,21 +137,26 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         builder.buildSolution(env, objRef, symInputHeap, solution);
     }
 
-//    @Override
-//    void generateTestCase(ThreadInfo ti, Instruction current, Instruction next) {
-//        ChoiceGenerator<?> lastCG = ti.getVM().getSystemState().getChoiceGenerator();
-//        SymSolveSolution heapSolution = getCachedSolution(lastCG);
-//        PathCondition solutionPC = getCachedPathCondition(lastCG);
-//
-//    }
+    int testID = 0;
 
-    int getCachedBuildedObject(ChoiceGenerator<?> lastCG) {
+    @Override
+    void generateTestCase(ThreadInfo ti, Instruction current, Instruction next) {
+        ChoiceGenerator<?> lastCG = ti.getVM().getSystemState().getChoiceGenerator();
+        assert (lastCG != null);
+        String code = getCachedTestCode(lastCG);
+        assert code != null;
+        code = code.replace("TESTID", Integer.toString(testID++));
+        System.out.println("\n TEST: \n\n" + code);
+    }
+
+    String getCachedTestCode(ChoiceGenerator<?> lastCG) {
         ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
-        assert (cg != null);
+        if (cg == null)
+            return null;
         if (cg instanceof HeapChoiceGeneratorLISSA)
-            return ((HeapChoiceGeneratorLISSA) cg).getCurrentBuildedObject();
+            return ((HeapChoiceGeneratorLISSA) cg).getCurrentTestCode();
 
-        return ((PCChoiceGeneratorLISSA) cg).getCurrentBuildedObject();
+        return ((PCChoiceGeneratorLISSA) cg).getCurrentTestCode();
     }
 
     SymSolveSolution getCachedSolution(ChoiceGenerator<?> lastCG) {

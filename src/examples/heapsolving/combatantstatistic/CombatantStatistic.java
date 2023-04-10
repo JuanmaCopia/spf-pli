@@ -128,13 +128,13 @@ public class CombatantStatistic {
     public static void runRepOK() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
     public static void runRepOKComplete() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finCombatantStatistic(int nodesNum) {
