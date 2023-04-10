@@ -28,6 +28,7 @@ import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
 import lissa.heap.solving.techniques.NT;
+import lissa.heap.testgen.TestCaseHelper;
 import lissa.heap.testgen.TestGenVisitor;
 
 public class JPF_lissa_SymHeap extends NativePeer {
@@ -147,6 +148,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
             repOKChoiceGenerator.setRepOKPathCondition(pc);
 
             if (LISSAShell.configParser.generateTests) {
+                TestCaseHelper.solveTargetMethodArguments(pc);
                 TestGenVisitor visitor = new TestGenVisitor(env.getHeap(), pc);
                 SymHeapHelper.acceptBFS(objvRef, visitor);
                 String testCode = visitor.getTestCaseCode();

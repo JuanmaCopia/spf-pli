@@ -10,11 +10,20 @@ package heapsolving.treemap.remove;
 import heapsolving.treemap.TreeMap;
 import heapsolving.treemap.TreeMapHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class TreeMapMain {
 
+    private static void registerTargetMethodData(int key) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("remove", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(key);
+    }
+
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(key);
 
         TreeMap structure = TreeMapHarness.getStructure();
         if (structure != null) {

@@ -3,6 +3,8 @@ package lissa.heap.solving.techniques;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.config.ConfigParser;
+import lissa.heap.testgen.args.Argument;
+import lissa.heap.testgen.args.TargetMethod;
 import symsolve.explorers.impl.SymmetryBreakStrategy;
 
 public class SolvingStrategy {
@@ -10,6 +12,7 @@ public class SolvingStrategy {
     public int exploredPaths = 0;
     public int exceptionsThrown = 0;
     static ConfigParser config;
+    TargetMethod targetMethod;
 
     public static SolvingStrategy makeSymbolicHeapSolvingTechnique(ConfigParser config) {
         SolvingStrategy.config = config;
@@ -56,6 +59,22 @@ public class SolvingStrategy {
 
     public void countException() {
         exceptionsThrown++;
+    }
+
+    public void setTargetMethod(String name, int numArgs) {
+        targetMethod = new TargetMethod(config.symSolveSimpleClassName, name, numArgs);
+    }
+
+    public void setArgument(Argument arg, int index) {
+        targetMethod.setArgument(arg, index);
+    }
+
+    public void setArgument(Argument arg) {
+        targetMethod.setArgument(arg);
+    }
+
+    public TargetMethod getTargetMethod() {
+        return targetMethod;
     }
 
 }

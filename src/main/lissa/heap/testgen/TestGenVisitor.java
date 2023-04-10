@@ -17,6 +17,9 @@ import lissa.LISSAShell;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicReferenceInput.ObjectData;
 import lissa.heap.solving.techniques.LIBasedStrategy;
+import lissa.heap.solving.techniques.SolvingStrategy;
+import lissa.heap.testgen.args.Argument;
+import lissa.heap.testgen.args.TargetMethod;
 import lissa.heap.visitors.HeapVisitor;
 
 public class TestGenVisitor implements HeapVisitor {
@@ -41,9 +44,12 @@ public class TestGenVisitor implements HeapVisitor {
     ClassInfo fieldClass;
     String currentRefChain;
 
+    SolvingStrategy stg;
+
     public TestGenVisitor(Heap JPFHeap, PathCondition pc) {
         this.JPFHeap = JPFHeap;
         this.pc = pc;
+        this.stg = LISSAShell.solvingStrategy;
     }
 
     @Override
@@ -143,9 +149,38 @@ public class TestGenVisitor implements HeapVisitor {
     @Override
     public void visitFinished() {
         appendLine("\n    " + makeInputRepOKCheck() + "  // assert program precondition");
-        appendLine("\n    " + makeSUTCall() + "  // SUT call");
+        appendLine("\n    " + createArgumentsCode());
+        appendLine("    " + makeMethodCallCode() + "  // SUT call");
         appendLine("\n    " + makeInputRepOKCheck() + "  // assert postcondition");
         appendLine("}");
+    }
+
+    private String makeMethodCallCode() {
+        TargetMethod method = stg.getTargetMethod();
+        String methodName = method.getName();
+        String arguments = createArgumentsString(method);
+        return String.format("%s.%s(%s);", rootIdentifier, methodName, arguments);
+    }
+
+    private String createArgumentsString(TargetMethod method) {
+        Argument[] args = method.getArguments();
+        String commaSeparatedNames = "";
+        if (args.length > 0) {
+            commaSeparatedNames += args[0].getName();
+            for (int i = 1; i < args.length; i++)
+                commaSeparatedNames += ", " + args[i].getName();
+        }
+        return commaSeparatedNames;
+    }
+
+    private String createArgumentsCode() {
+        TargetMethod method = stg.getTargetMethod();
+        String code = "";
+        for (int i = 0; i < method.getNumberOfArguments(); i++) {
+            Argument arg = method.getArgument(i);
+            code += arg.getDeclarationCode() + "\n";
+        }
+        return code;
     }
 
     String makeInputRepOKCheck() {
