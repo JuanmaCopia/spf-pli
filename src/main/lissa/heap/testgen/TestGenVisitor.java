@@ -148,10 +148,11 @@ public class TestGenVisitor implements HeapVisitor {
 
     @Override
     public void visitFinished() {
-        appendLine("\n    " + makeInputRepOKCheck() + "  // assert program precondition");
-        appendLine("\n    " + createArgumentsCode());
-        appendLine("    " + makeMethodCallCode() + "  // SUT call");
-        appendLine("\n    " + makeInputRepOKCheck() + "  // assert postcondition");
+        appendLine("");
+        appendTabbedLine(makeInputRepOKCheck() + "  // assert program precondition\n");
+        testCase.append(createArgumentsCode());
+        appendTabbedLine(makeMethodCallCode() + "  // SUT call\n");
+        appendTabbedLine(makeInputRepOKCheck() + "  // assert postcondition");
         appendLine("}");
     }
 
@@ -178,7 +179,7 @@ public class TestGenVisitor implements HeapVisitor {
         String code = "";
         for (int i = 0; i < method.getNumberOfArguments(); i++) {
             Argument arg = method.getArgument(i);
-            code += arg.getDeclarationCode() + "\n";
+            code += "        " + arg.getDeclarationCode() + "\n";
         }
         return code;
     }
@@ -194,7 +195,8 @@ public class TestGenVisitor implements HeapVisitor {
     }
 
     String makeConstructorCall(String className) {
-        return String.format("new %s()", className);
+        String constructor = className.replace("$", ".");
+        return String.format("new %s()", constructor);
     }
 
     String makeAssing(String left, String right) {
@@ -202,7 +204,8 @@ public class TestGenVisitor implements HeapVisitor {
     }
 
     void appendTestSignature(String className) {
-        testCase.append(String.format("@Test\npublic void %sTestTESTID {\n", className.toLowerCase()));
+        testCase.append(String.format("    @Test\n    public void %sTestTESTID() {\n",
+                SolvingStrategy.config.targetMethodName));
     }
 
     void appendDeclareAndCreateNewObject(String className, String identifier) {
@@ -212,11 +215,11 @@ public class TestGenVisitor implements HeapVisitor {
     }
 
     void appendLine(String line) {
-        testCase.append(line + "\n");
+        testCase.append("    " + line + "\n");
     }
 
     void appendTabbedLine(String line) {
-        testCase.append("    " + line + "\n");
+        testCase.append("        " + line + "\n");
     }
 
     @Override

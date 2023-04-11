@@ -33,6 +33,7 @@ public class ConfigParser {
     public String symSolveSimpleClassName;
     public String finitizationArgs;
     public String resultsFileName;
+    public String testsFileName;
     public String predicateName;
     public SolvingStrategyEnum solvingStrategy;
     public SymmetryBreakStrategy symmetryBreakingStrategy = SymmetryBreakStrategy.SYMMETRY_BREAK;
@@ -51,6 +52,7 @@ public class ConfigParser {
         this.getFieldLimit = conf.getInt(HEAP_GETFIELD_LIMIT_CONFIG, DEFAULT_GETFIELD_LIMIT);
         String resFileName = this.symSolveSimpleClassName + RESULTS_FILE_POSFIX;
         this.resultsFileName = String.format("%s/%s", STATISTICS_DIR, resFileName);
+        this.testsFileName = String.format("%s/%s", TESTCASE_DIR, getTestFileName());
         this.predicateName = getConfigValueString(SYMSOLVE_PREDICATE_CONFIG, DEFAULT_PREDICATE_NAME);
         this.checkPathValidity = getConfigValueBoolean(CHECK_PATH_VALIDITY_CONFIG, "false");
         this.generateTests = getConfigValueBoolean(GENERATE_TESTS_CONFIG, "false");
@@ -85,6 +87,14 @@ public class ConfigParser {
             throw new InvalidConfigurationValueException(
                     "the value of " + SYMSOLVE_CLASS_CONFIG + " is not well formed");
         return cnsplit[cnsplit.length - 1];
+    }
+
+    public String getTestFileName() {
+        return getTestFileNameWithoutFormat() + ".java";
+    }
+
+    public String getTestFileNameWithoutFormat() {
+        return symSolveSimpleClassName + targetMethodName + solvingStrategy.name() + finitizationArgs + "Test";
     }
 
 }

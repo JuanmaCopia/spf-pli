@@ -1,5 +1,8 @@
 package lissa.heap.solving.techniques;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.config.ConfigParser;
@@ -11,8 +14,9 @@ public class SolvingStrategy {
 
     public int exploredPaths = 0;
     public int exceptionsThrown = 0;
-    static ConfigParser config;
+    public static ConfigParser config;
     TargetMethod targetMethod;
+    List<String> tests = new LinkedList<>();
 
     public static SolvingStrategy makeSymbolicHeapSolvingTechnique(ConfigParser config) {
         SolvingStrategy.config = config;
@@ -75,6 +79,10 @@ public class SolvingStrategy {
 
     public TargetMethod getTargetMethod() {
         return targetMethod;
+    }
+
+    public List<String> getTests() {
+        return tests;
     }
 
 }

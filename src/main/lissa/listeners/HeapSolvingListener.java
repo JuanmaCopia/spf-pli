@@ -1,17 +1,18 @@
 package lissa.listeners;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.jvm.bytecode.EXECUTENATIVE;
 import gov.nasa.jpf.search.Search;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
@@ -96,6 +97,19 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         getStatistics();
         printReport();
         writeDataToFile(createStringData());
+
+        if (config.generateTests) {
+
+            Utils.createFileAndFolders(config.testsFileName, true);
+            Utils.appendToFile(config.testsFileName, makeStartOfFile());
+
+            List<String> tests = heapSolvingStrategy.getTests();
+            for (String test : tests) {
+                Utils.appendToFile(config.testsFileName, test);
+            }
+
+            Utils.appendToFile(config.testsFileName, "}");
+        }
     }
 
     void getStatistics() {
@@ -181,6 +195,22 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
     String getFileHeader() {
         return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls";
+    }
+
+    String makeStartOfFile() {
+        StringBuilder ret = new StringBuilder();
+
+        String[] sp = config.symSolveClassName.split("\\.");
+        String classSimpleName = sp[sp.length - 1];
+
+        String packageName = config.symSolveClassName.replace("." + classSimpleName, "");
+        String packageDecl = String.format("package %s;\n\n", packageName);
+
+        ret.append(packageDecl);
+        ret.append("import org.junit.Test;\n");
+        ret.append("import static org.junit.Assert.*;\n\n");
+        ret.append(String.format("public class %s {\n\n", config.getTestFileNameWithoutFormat()));
+        return ret.toString();
     }
 
 }

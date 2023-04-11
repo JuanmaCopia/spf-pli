@@ -773,7 +773,7 @@ public class TreeMap {
         }
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
         public Object value;
@@ -798,6 +798,9 @@ public class TreeMap {
             this.key = key;
             this.value = value;
             this.parent = parent;
+        }
+
+        public Entry() {
         }
 
         /**

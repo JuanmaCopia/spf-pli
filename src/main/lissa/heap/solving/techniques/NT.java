@@ -146,7 +146,8 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
         String code = getCachedTestCode(lastCG);
         assert code != null;
         code = code.replace("TESTID", Integer.toString(testID++));
-        System.out.println("\n TEST: \n\n" + code);
+        tests.add(code);
+//        System.out.println("\n TEST: \n\n" + code);
     }
 
     String getCachedTestCode(ChoiceGenerator<?> lastCG) {
