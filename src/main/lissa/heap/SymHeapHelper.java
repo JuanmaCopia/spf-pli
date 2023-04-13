@@ -260,6 +260,107 @@ public class SymHeapHelper {
         visitor.visitFinished();
     }
 
+    public static String toString(int rootRef) {
+        ThreadInfo ti = VM.getVM().getCurrentThread();
+        HashMap<Integer, ObjectData> idMap = new HashMap<>();
+        HashMap<ClassInfo, Integer> maxIdMap = new HashMap<>();
+
+        ElementInfo rootElementInfo = ti.getModifiableElementInfo(rootRef);
+        ClassInfo rootClass = rootElementInfo.getClassInfo();
+
+        ObjectData rootData = new ObjectData(rootRef, 0, rootClass, rootClass.getSimpleName().toLowerCase() + "_0");
+
+        idMap.put(rootRef, rootData);
+        maxIdMap.put(rootClass, 0);
+
+        LinkedList<Integer> worklist = new LinkedList<Integer>();
+        worklist.add(rootRef);
+
+        StringBuilder sb = new StringBuilder();
+        String indent = "";
+
+        while (!worklist.isEmpty()) {
+            int currentOwnerRef = worklist.removeFirst();
+            ObjectData currentOwnerData = idMap.get(currentOwnerRef);
+            ElementInfo elementInfo = ti.getElementInfo(currentOwnerRef);
+            ClassInfo ownerClass = elementInfo.getClassInfo();
+
+            String ownerString = "[" + currentOwnerData.objRef + "]";
+
+            FieldInfo[] instanceFields = ownerClass.getDeclaredInstanceFields();
+            for (int i = 0; i < instanceFields.length; i++) {
+
+                FieldInfo field = instanceFields[i];
+                ClassInfo fieldClass = field.getTypeClassInfo();
+
+                String fieldString = indent + ownerString + "." + field.getName();
+
+                Object attr = elementInfo.getFieldAttr(field);
+
+                if (field.isReference() && !field.getType().equals("java.lang.String")) {
+
+                    int fieldRef = elementInfo.getReferenceField(field);
+                    if (attr != null) {
+                        sb.append(String.format("%s -> SYMBOLIC\n", fieldString));
+                    } else if (fieldRef == MJIEnv.NULL) {
+                        sb.append(String.format("%s -> null\n", fieldString));
+                    } else if (idMap.containsKey(fieldRef)) { // previously visited object
+                        sb.append(String.format("%s -> *%d*\n", fieldString, fieldRef));
+                    } else { // first time visited
+                        int id = 0;
+                        if (maxIdMap.containsKey(fieldClass))
+                            id = maxIdMap.get(fieldClass) + 1;
+
+                        ObjectData newObject = new ObjectData(fieldRef, id, fieldClass,
+                                currentOwnerData.chainRef + "." + field.getName());
+                        idMap.put(fieldRef, newObject);
+                        maxIdMap.put(fieldClass, id);
+                        sb.append(String.format("%s -> %d\n", fieldString, fieldRef));
+                        worklist.add(fieldRef);
+                    }
+                } else {
+                    if (attr != null) {
+                        Expression symbolicPrimitive = (Expression) attr;
+                        sb.append(String.format("%s -> %s\n", fieldString, symbolicPrimitive.toString()));
+                    } else {
+                        ElementInfo ownerEI = currentOwnerData.objEI;
+                        String strValue = null;
+                        if (field instanceof IntegerFieldInfo) {
+                            int value = ownerEI.getIntField(field);
+                            strValue = Integer.toString(value);
+                        } else if (field instanceof LongFieldInfo) {
+                            long value = ownerEI.getLongField(field);
+                            strValue = Long.toString(value);
+                        } else if (field instanceof FloatFieldInfo) {
+                            float value = ownerEI.getFloatField(field);
+                            strValue = Float.toString(value);
+                        } else if (field instanceof DoubleFieldInfo) {
+                            double value = ownerEI.getDoubleField(field);
+                            strValue = Double.toString(value);
+                        } else if (field instanceof ReferenceFieldInfo) {
+                            if (field.getType().equals("java.lang.String")) {
+                                strValue = ownerEI.getStringField(field.getName());
+                            } else {
+                                assert (false);
+                            }
+                        } else if (field instanceof BooleanFieldInfo) {
+                            boolean value = ownerEI.getBooleanField(field);
+                            strValue = Boolean.toString(value);
+                        } else {
+                            throw new RuntimeException("Unsuported type !!!!");
+                        }
+                        sb.append(String.format("%s -> %s (concrete)\n", fieldString, strValue));
+                    }
+                }
+            }
+            indent = indent + "  ";
+        }
+        PathCondition pc = PathCondition.getPC(ti.getVM());
+        String pcString = pc.toString();
+        sb.append("\n" + pcString);
+        return sb.toString();
+    }
+
     public static int getSolution(SymbolicInteger symbolicInteger, PathCondition pathCondition) {
         int solution = 0;
         if (pathCondition != null) {

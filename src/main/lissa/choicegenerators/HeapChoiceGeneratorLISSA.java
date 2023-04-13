@@ -5,7 +5,7 @@ import gov.nasa.jpf.vm.choice.IntIntervalGenerator;
 import lissa.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
 
-public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator {
+public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator implements PLIChoiceGenerator {
 
     protected PathCondition[] PCheap; // maintains constraints on the heap: one PC per choice
     protected SymbolicInputHeapLISSA[] symInputHeap; // maintains list of input symbolic nodes; one list per choice

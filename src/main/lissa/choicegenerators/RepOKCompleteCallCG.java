@@ -3,8 +3,8 @@ package lissa.choicegenerators;
 
 public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
 
-    public RepOKCompleteCallCG(String id) {
-        super(id);
+    public RepOKCompleteCallCG(String id, PLIChoiceGenerator curCG) {
+        super(id, curCG);
     }
 
     @Override
@@ -12,6 +12,11 @@ public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
         if (pathReturningTrueFound) {
             if (isPathValidityCheck)
                 strategy.countValidPath();
+            else {
+                // Cache Solution and repOK Path Condition
+                curCG.setCurrentTestCode(testCode);
+                curCG.setCurrentRepOKPathCondition(repOKPathCondition);
+            }
         }
         setDone();
 

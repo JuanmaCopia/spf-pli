@@ -8,14 +8,22 @@ import lissa.heap.solving.techniques.LIBasedStrategy;
 public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integer> {
 
     LIBasedStrategy strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
+    PLIChoiceGenerator curCG;
+    boolean isLazyStep;
     int repOKExecutions = 0;
     boolean pathReturningTrueFound = false;
     boolean isPathValidityCheck = false;
     PathCondition repOKPathCondition;
     String testCode = null;
 
-    public RepOKCallChoiceGenerator(String id) {
+    public RepOKCallChoiceGenerator(String id, PLIChoiceGenerator curCG) {
         super(id);
+        this.curCG = curCG;
+        if (curCG == null)
+            isPathValidityCheck = true;
+        else if (curCG instanceof HeapChoiceGeneratorLISSA)
+            isLazyStep = true;
+
         strategy.startRepOKExecutionMode();
     }
 

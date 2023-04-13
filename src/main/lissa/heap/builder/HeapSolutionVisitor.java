@@ -6,7 +6,6 @@ import java.util.Map;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
-import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
@@ -27,6 +26,7 @@ import korat.finitization.impl.BooleanSet;
 import korat.finitization.impl.FieldDomain;
 import korat.finitization.impl.IntSet;
 import korat.utils.IntListAI;
+import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
@@ -164,6 +164,28 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
     }
 
     void setValueForNonExistingPrimitiveField() {
+        if (accessedIndices.contains(currentFieldIndexInVector)) {
+            int value = 0;
+            Class<?> clsOfField = currentFieldDomain.getClassOfField();
+            if (clsOfField == int.class) {
+                value = ((IntSet) currentFieldDomain).getInt(currentFieldIndexInFieldDomain);
+                currentOwnerEI.setIntField(currentField, value);
+            } else if (clsOfField == boolean.class) {
+                boolean boolValue = ((BooleanSet) currentFieldDomain).getBoolean(currentFieldIndexInFieldDomain);
+                currentOwnerEI.setBooleanField(currentField, boolValue);
+                if (boolValue)
+                    value = 1;
+            } else {
+                assert (false); // TODO: add support for other types, String, Long, etc.
+            }
+            currentOwnerEI.setFieldAttr(currentField, null);
+        } else {
+            Expression symbolicValue = getNewSymbolicValueForTheCurrentField();
+            currentOwnerEI.setFieldAttr(currentField, symbolicValue);
+        }
+    }
+
+    Expression getNewSymbolicValueForTheCurrentField() {
         Expression symbolicValue = null;
         String name = currentField.getName() + "(sym)_" + symbolicID;
         symbolicID++;
@@ -185,6 +207,7 @@ public class HeapSolutionVisitor extends GenericCandidateVisitor {
         } else {
             throw new RuntimeException("symbolicValue is null !!!!");
         }
-        currentOwnerEI.setFieldAttr(currentField, symbolicValue);
+        assert symbolicValue != null;
+        return symbolicValue;
     }
 }

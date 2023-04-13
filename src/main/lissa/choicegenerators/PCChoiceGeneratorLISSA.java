@@ -6,7 +6,7 @@ import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import symsolve.vector.SymSolveSolution;
 
-public class PCChoiceGeneratorLISSA extends PCChoiceGenerator {
+public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoiceGenerator {
 
     HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
     HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();

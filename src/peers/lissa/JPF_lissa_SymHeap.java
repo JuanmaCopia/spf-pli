@@ -143,8 +143,8 @@ public class JPF_lissa_SymHeap extends NativePeer {
         SystemState ss = env.getVM().getSystemState();
 
         if (repOKResult) {
-            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
             PathCondition pc = PathCondition.getPC(env.getVM());
+            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
             repOKChoiceGenerator.setRepOKPathCondition(pc);
 
             if (LISSAShell.configParser.generateTests) {
@@ -153,6 +153,15 @@ public class JPF_lissa_SymHeap extends NativePeer {
                 SymHeapHelper.acceptBFS(objvRef, visitor);
                 String testCode = visitor.getTestCaseCode();
                 repOKChoiceGenerator.setTestCode(testCode);
+
+                // if (testCode.contains("treemap_0.size = 3;") && testCode.contains("treemap_0.root.left.color = true;")
+                //         && testCode.contains("treemap_0.root.right.color = false;")) {
+                //     System.out.println("\n===========================================\n");
+                //     System.out.println("id: " + id++);
+                //     System.out.println("testCode:\n\n" + testCode);
+                //     System.out.println(SymHeapHelper.toString(objvRef));
+                // }
+
             }
             repOKChoiceGenerator.pathReturningTrueFound();
         }

@@ -61,8 +61,7 @@ public class NTOPT extends NT {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG, false);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
     }
 
     boolean isConjunctionSAT(PathCondition pc1, PathCondition pc2) {

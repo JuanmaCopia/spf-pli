@@ -86,8 +86,7 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runRepOKComplete()V");
 
-        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity");
-        rcg.markAsPathValidityCheck();
+        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity", null);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         ti.setNextPC(repOKCallInstruction);

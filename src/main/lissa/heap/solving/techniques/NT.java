@@ -8,6 +8,7 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import lissa.bytecode.lazy.StaticRepOKCallInstruction;
 import lissa.choicegenerators.HeapChoiceGeneratorLISSA;
 import lissa.choicegenerators.PCChoiceGeneratorLISSA;
+import lissa.choicegenerators.PLIChoiceGenerator;
 import lissa.choicegenerators.RepOKCallCG;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
@@ -53,8 +54,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG, true);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
     }
 
     @Override
@@ -85,8 +85,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG,
-                heapCG, false);
+        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
     }
 
     @Override
@@ -110,13 +109,12 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
     }
 
     Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
-            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PCChoiceGeneratorLISSA pcCG,
-            HeapChoiceGeneratorLISSA heapCG, boolean isLazyStep) {
+            SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PLIChoiceGenerator curCG) {
         if (repOKCallInstruction == null)
             repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
 
-        assert (pcCG != null && heapCG != null);
-        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, heapCG, pcCG, solution, isLazyStep);
+        assert (curCG != null);
+        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, solution, curCG);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;

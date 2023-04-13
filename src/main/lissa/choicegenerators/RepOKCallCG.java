@@ -7,25 +7,20 @@ import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends RepOKCallChoiceGenerator {
 
-    HeapChoiceGeneratorLISSA curHeapCG;
-    PCChoiceGeneratorLISSA curPCCG;
     SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
-    boolean isLazyStep;
 
     int buildedObjectRef;
 
     NT stg;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, HeapChoiceGeneratorLISSA curHeapCG,
-            PCChoiceGeneratorLISSA pcCG, SymSolveSolution solution, boolean isLazyStep) {
-        super(id);
+    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
+            PLIChoiceGenerator curCG) {
+        super(id, curCG);
         this.stg = (NT) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         this.candidateHeapSolution = solution;
-        this.curHeapCG = curHeapCG;
-        this.curPCCG = pcCG;
-        this.isLazyStep = isLazyStep;
+        this.curCG = curCG;
     }
 
     @Override
@@ -47,16 +42,10 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             setDone();
             assert (candidateHeapSolution != null);
             assert (repOKPathCondition != null);
-            if (isLazyStep) {
-                // Cache Solution and repOK Path Condition
-                curHeapCG.setCurrentTestCode(testCode);
-                curHeapCG.setCurrentSolution(candidateHeapSolution);
-                curHeapCG.setCurrentRepOKPathCondition(repOKPathCondition);
-            } else {
-                curPCCG.setCurrentTestCode(testCode);
-                curPCCG.setCurrentSolution(candidateHeapSolution);
-                curPCCG.setCurrentRepOKPathCondition(repOKPathCondition);
-            }
+            // Cache Solution and repOK Path Condition
+            curCG.setCurrentTestCode(testCode);
+            curCG.setCurrentSolution(candidateHeapSolution);
+            curCG.setCurrentRepOKPathCondition(repOKPathCondition);
         }
 
         return !pathReturningTrueFound;
