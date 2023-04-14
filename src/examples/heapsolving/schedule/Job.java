@@ -15,6 +15,9 @@ public class Job {
         val = newNum;
     }
 
+    public Job() {
+    }
+
     public Job getNext() {
         return next;
     }

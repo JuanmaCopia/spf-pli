@@ -10,11 +10,20 @@ package heapsolving.schedule.addprocess;
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class ScheduleMain {
 
+    private static void registerTargetMethodData(int key) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("addProcess", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(key);
+    }
+
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(key);
 
         Schedule structure = ScheduleHarness.getStructure();
         if (structure != null) {

@@ -647,7 +647,7 @@ public class HashMap {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
         public Object value;

@@ -10,10 +10,17 @@ package heapsolving.schedule.finishallprocesses;
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class ScheduleMain {
 
+    private static void registerTargetMethodData() {
+        int numberOfArguments = 0;
+        TestGen.registerTargetMethod("finishAllProcesses", numberOfArguments);
+    }
+
     public static void main(String[] args) {
+        registerTargetMethodData();
 
         Schedule structure = ScheduleHarness.getStructure();
         if (structure != null) {
