@@ -3,6 +3,7 @@ package lissa.heap.testgen;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
+import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.BooleanFieldInfo;
 import gov.nasa.jpf.vm.ClassInfo;
 import gov.nasa.jpf.vm.DoubleFieldInfo;
@@ -107,6 +108,12 @@ public class TestGenVisitor implements HeapVisitor {
                 strValue = "false";
             else
                 strValue = "true";
+        } else if (currentField instanceof ReferenceFieldInfo) {
+            if (currentField.getType().equals("java.lang.String")) {
+                strValue = SymHeapHelper.getSolution((StringSymbolic) symbolicPrimitive, pc.spc);
+            } else {
+                assert (false);
+            }
         } else {
             throw new RuntimeException("Unsuported type !!!!");
         }

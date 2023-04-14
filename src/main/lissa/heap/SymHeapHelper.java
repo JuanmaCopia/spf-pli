@@ -11,6 +11,7 @@ import gov.nasa.jpf.symbc.numeric.IntegerConstant;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.symbc.numeric.SymbolicReal;
+import gov.nasa.jpf.symbc.string.StringPathCondition;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
 import gov.nasa.jpf.vm.BooleanFieldInfo;
 import gov.nasa.jpf.vm.ClassInfo;
@@ -371,6 +372,20 @@ public class SymHeapHelper {
                 solution = (int) val;
         }
         return solution;
+    }
+
+    public static String getSolution(StringSymbolic symVar, StringPathCondition spc) {
+        String solution = StringSymbolic.UNDEFINED;
+        if (spc != null) {
+            spc.solve();
+            // System.out.println(pc.spc.toString());
+        }
+
+        solution = symVar.solution();
+        if (solution == StringSymbolic.UNDEFINED)
+            solution = "''";
+        return solution;
+
     }
 
     public static void pushArguments(ThreadInfo ti, Object[] args, Object[] attrs) {

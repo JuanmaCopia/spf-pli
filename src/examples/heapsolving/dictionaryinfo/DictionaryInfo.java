@@ -124,6 +124,24 @@ public class DictionaryInfo {
      *
      * @param field - a field
      */
+    public void addField(int tagNumber, String name) {
+        FieldInfo field = new FieldInfo();
+        field.setTagNumber(tagNumber);
+        field.setName(name);
+
+        if (fieldsByTagNumber == null) {
+            fieldsByTagNumber = new TreeMap();
+            fieldsByName = new TreeMapStrR();
+        }
+        fieldsByTagNumber.put(field.getTagNumber(), field);
+        fieldsByName.put(field.getName(), field);
+    }
+
+    /**
+     * Adds a field
+     *
+     * @param field - a field
+     */
     public void addField(FieldInfo field) {
         if (fieldsByTagNumber == null) {
             fieldsByTagNumber = new TreeMap();

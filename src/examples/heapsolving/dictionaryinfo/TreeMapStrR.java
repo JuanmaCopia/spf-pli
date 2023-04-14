@@ -376,12 +376,12 @@ public class TreeMapStrR {
      * (see Map.Entry).
      */
     public static class Entry {
-        String key;
-        Object value;
-        Entry left = null;
-        Entry right = null;
-        Entry parent;
-        boolean color = BLACK;
+        public String key;
+        public Object value;
+        public Entry left = null;
+        public Entry right = null;
+        public Entry parent;
+        public boolean color = BLACK;
 
         /**
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
@@ -391,6 +391,10 @@ public class TreeMapStrR {
             this.key = key;
             this.value = value;
             this.parent = parent;
+        }
+
+        public Entry() {
+
         }
 
         /**

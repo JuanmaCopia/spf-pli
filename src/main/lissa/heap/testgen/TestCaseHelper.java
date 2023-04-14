@@ -46,10 +46,10 @@ public class TestCaseHelper {
             StringSymbolic symVar = symStrArg.getSymbolicVariable();
             String solution = "";
             if (spc != null) {
-                String val = symVar.solution();
-                System.out.println("solution: " + val);
-                if (val != StringSymbolic.UNDEFINED)
-                    solution = val;
+                solution = symVar.solution();
+                // System.out.println("solution: " + val);
+                if (solution == StringSymbolic.UNDEFINED)
+                    solution = "''";
             }
             symbolicArg.setValue(solution);
         }

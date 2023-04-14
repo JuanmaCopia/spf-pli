@@ -41,7 +41,7 @@ import java.util.TreeMap;
  */
 public class FieldInfo implements FixInfo {
 
-    private int tagNumber;
+    public int tagNumber;
 
     public String name;
 
