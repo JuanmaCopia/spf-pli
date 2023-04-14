@@ -15,11 +15,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import korat.finitization.IFinitization;
-import korat.finitization.IObjSet;
-import korat.finitization.impl.FinitizationFactory;
-import lissa.SymHeap;
-
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This
  * class guarantees that the map will be in ascending key order, sorted
@@ -765,7 +760,7 @@ public class TreeMapIntLong {
         }
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
         public long value;
@@ -790,6 +785,10 @@ public class TreeMapIntLong {
             this.key = key;
             this.value = value;
             this.parent = parent;
+        }
+
+        public Entry() {
+
         }
 
         /**
@@ -834,6 +833,5 @@ public class TreeMapIntLong {
         }
 
     }
-
 
 }
