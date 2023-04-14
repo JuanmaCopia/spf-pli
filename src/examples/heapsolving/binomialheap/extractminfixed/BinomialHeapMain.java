@@ -10,10 +10,17 @@ package heapsolving.binomialheap.extractminfixed;
 import heapsolving.binomialheap.BinomialHeap;
 import heapsolving.binomialheap.BinomialHeapHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class BinomialHeapMain {
 
+    private static void registerTargetMethodData() {
+        TestGen.registerTargetMethod("extractMinFixed", 0);
+    }
+
     public static void main(String[] args) {
+        registerTargetMethodData();
+
         BinomialHeap structure = BinomialHeapHarness.getStructure();
         if (structure != null) {
             try {
@@ -24,7 +31,7 @@ public class BinomialHeapMain {
             }
             SymHeap.pathFinished();
 
-            //assert (structure.countNodes() == structure.getSize());
+            // assert (structure.countNodes() == structure.getSize());
 
 //            if (structure.countNodes() != structure.getSize()) {
 //                SymHeap.exceptionThrown();

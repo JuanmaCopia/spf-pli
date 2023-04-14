@@ -15,6 +15,10 @@ public class BinomialHeapNode {
 
     public BinomialHeapNode child; // pointer to the first child of the current node
 
+    public BinomialHeapNode() {
+
+    }
+
     public BinomialHeapNode(int k) {
         // public BinomialHeapNode(Integer k) {
         key = k;

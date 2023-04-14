@@ -621,6 +621,10 @@ public class HashMapIntDataSet {
         public int hash;
         public Entry next;
 
+        public Entry() {
+
+        }
+
         /**
          * Create new entry.
          */
@@ -741,7 +745,7 @@ public class HashMapIntDataSet {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry e = getTable(i);
             if (e != null) {
-                if (i >= 14)
+                if (i >= 15)
                     return false;
                 else if (!visited.add(e))
                     return false;
@@ -751,7 +755,7 @@ public class HashMapIntDataSet {
     }
 
     public boolean checkListsHasJustOneElement() {
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 15; i++) {
             Entry e = getTable(i);
             if (e != null) {
                 if (e.next != null)
@@ -766,10 +770,11 @@ public class HashMapIntDataSet {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry e = getTable(i);
             if (e != null) {
-                if (i >= 14)
+                if (i >= 15) {
                     return false;
-                else if (!visitedE.add(e))
+                } else if (!visitedE.add(e)) {
                     return false;
+                }
             }
         }
 
@@ -826,7 +831,7 @@ public class HashMapIntDataSet {
     }
 
     public boolean checkValuesRepOK() {
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 15; i++) {
             Entry e = getTable(i);
             if (e != null) {
                 if (!e.value.repOKSymSolve())
@@ -836,9 +841,8 @@ public class HashMapIntDataSet {
         return true;
     }
 
-
     public boolean checkKeys() {
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 15; i++) {
             Entry e = getTable(i);
             if (e != null) {
                 if (e.key != i)
@@ -849,7 +853,7 @@ public class HashMapIntDataSet {
     }
 
     public boolean checkHashes() {
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 15; i++) {
             Entry e = getTable(i);
             if (e != null) {
                 if (e.hash != i)

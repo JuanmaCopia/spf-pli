@@ -453,6 +453,10 @@ public class HashMapIntList {
         public int hash;
         public Entry next;
 
+        public Entry() {
+
+        }
+
         /**
          * Create new entry.
          */

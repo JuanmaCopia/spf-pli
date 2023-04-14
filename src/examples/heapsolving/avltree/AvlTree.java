@@ -318,26 +318,30 @@ public class AvlTree {
     }
 
     public static class AvlNode {
+        public AvlNode() {
+
+        }
+
         // Constructors
-        AvlNode(int theElement) {
+        public AvlNode(int theElement) {
             this(theElement, null, null);
         }
 
-        AvlNode(int theElement, AvlNode lt, AvlNode rt) {
+        public AvlNode(int theElement, AvlNode lt, AvlNode rt) {
             element = theElement;
             left = lt;
             right = rt;
             height = 0;
         }
 
-        int element; // The data in the node
-        AvlNode left; // Left child
-        AvlNode right; // Right child
-        int height; // Height
+        public int element; // The data in the node
+        public AvlNode left; // Left child
+        public AvlNode right; // Right child
+        public int height; // Height
     }
 
     /** The tree root. */
-    private AvlNode root;
+    public AvlNode root;
 
 //    // Test program
 //    public static void main(String[] args) {

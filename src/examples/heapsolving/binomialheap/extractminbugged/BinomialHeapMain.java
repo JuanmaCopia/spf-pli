@@ -10,10 +10,17 @@ package heapsolving.binomialheap.extractminbugged;
 import heapsolving.binomialheap.BinomialHeap;
 import heapsolving.binomialheap.BinomialHeapHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class BinomialHeapMain {
 
+    private static void registerTargetMethodData() {
+        TestGen.registerTargetMethod("extractMinBugged", 0);
+    }
+
     public static void main(String[] args) {
+        registerTargetMethodData();
+
         BinomialHeap structure = BinomialHeapHarness.getStructure();
         if (structure != null) {
             try {

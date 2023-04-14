@@ -86,8 +86,8 @@ import lissa.SymHeap;
  * @since 1.2
  */
 public class LinkedList {
-    public transient Entry header = new Entry();
-    public transient int size = 0;
+    public Entry header = new Entry();
+    public int size = 0;
 
     /**
      * Constructs an empty list.
@@ -472,12 +472,12 @@ public class LinkedList {
         return count;
     }
 
-    public class Entry {
+    public static class Entry {
         public int element;
         public Entry next;
         public Entry previous;
 
-        Entry() {
+        public Entry() {
         }
 
         Entry(int element, Entry next, Entry previous) {

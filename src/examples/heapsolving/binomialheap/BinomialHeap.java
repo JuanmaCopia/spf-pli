@@ -57,9 +57,9 @@ import lissa.SymHeap;
  */
 public class BinomialHeap {
 
-    private/* @ nullable @ */BinomialHeapNode Nodes;
+    public /* @ nullable @ */BinomialHeapNode Nodes;
 
-    private int size;
+    public int size;
 
     public BinomialHeap() {
         Nodes = null;

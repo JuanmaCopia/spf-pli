@@ -47,13 +47,6 @@ public class DataSet {
         valuesPerSide.put(1, new LinkedList());
     }
 
-    public void init() {
-        if (!valuesPerSide.containsKey(0))
-            valuesPerSide.put(0, new LinkedList());
-        if (!valuesPerSide.containsKey(1))
-            valuesPerSide.put(1, new LinkedList());
-    }
-
     /**
      * Add an additional value to this set of data
      *
@@ -74,7 +67,6 @@ public class DataSet {
 
         return true;
     }
-
 
     /**
      * use the given operation to calculate an aggregated value for this dataset
