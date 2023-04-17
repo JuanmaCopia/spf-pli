@@ -10,11 +10,20 @@ package heapsolving.template.getparameter;
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class TemplateMain {
 
+    private static void registerTargetMethodData(int key) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("getParameter", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(key);
+    }
+
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(key);
 
         Template structure = TemplateHarness.getStructure();
         if (structure != null) {

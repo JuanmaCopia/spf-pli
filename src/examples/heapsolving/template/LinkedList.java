@@ -7,8 +7,10 @@
 
 package heapsolving.template;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -78,8 +80,8 @@ import java.util.Set;
  * @since 1.2
  */
 public class LinkedList {
-    private transient Entry header = new Entry(null, null, null);
-    private transient int size = 0;
+    public transient Entry header = new Entry(null, null, null);
+    public transient int size = 0;
 
     /**
      * Constructs an empty list.
@@ -373,9 +375,9 @@ public class LinkedList {
     }
 
     public static class Entry {
-        Object element;
-        Entry next;
-        Entry previous;
+        public Object element;
+        public Entry next;
+        public Entry previous;
 
         Entry() {
         }

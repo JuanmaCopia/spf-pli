@@ -120,6 +120,25 @@ public class Template {
 //		return null;
 //	}
 
+    public void addParameter(int pname, int index, int row, int column) {
+        Parameter parameter = new Parameter();
+        parameter.setName(pname);
+        parameter.setIndex(index);
+        parameter.setRow(row);
+        parameter.setColumn(column);
+
+        parameters.add(parameter);
+        Integer name = parameter.getName();
+        // Parameter name is optional
+        if (name != null) {
+            if (!parametersByName.containsKey(name)) {
+                parametersByName.put(name, parameter);
+            } else {
+                // logger.warn("Duplicate parameter: "+name);
+            }
+        }
+    }
+
     public void addParameter(Parameter parameter) {
         parameters.add(parameter);
         Integer name = parameter.getName();
