@@ -28,7 +28,7 @@ public class DictionaryInfoHarness {
         for (int i = 1; i <= numNodes; i++) {
             FieldInfo fi = new FieldInfo();
             fi.setTagNumber(SymHeap.makeSymbolicInteger("tagNum" + i));
-            fi.setName(SymHeap.makeSymbolicString("name" + i));
+            fi.setName(SymHeap.makeSymbolicInteger("name" + i));
             structure.addField(fi);
         }
         return structure;

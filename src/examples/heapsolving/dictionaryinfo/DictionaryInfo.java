@@ -30,7 +30,11 @@
 
 package heapsolving.dictionaryinfo;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import heapsolving.treemap.TreeMap;
+import heapsolving.treemap.TreeMap.Entry;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -60,7 +64,7 @@ public class DictionaryInfo {
 
     // private TreeMap<String, FieldInfo> fieldsByName;
 
-    public TreeMapStrR fieldsByName;
+    public TreeMap fieldsByName;
     // ==========================================================
 
     // Default collection
@@ -124,14 +128,14 @@ public class DictionaryInfo {
      *
      * @param field - a field
      */
-    public void addField(int tagNumber, String name) {
+    public void addField(int tagNumber, int name) {
         FieldInfo field = new FieldInfo();
         field.setTagNumber(tagNumber);
         field.setName(name);
 
         if (fieldsByTagNumber == null) {
             fieldsByTagNumber = new TreeMap();
-            fieldsByName = new TreeMapStrR();
+            fieldsByName = new TreeMap();
         }
         fieldsByTagNumber.put(field.getTagNumber(), field);
         fieldsByName.put(field.getName(), field);
@@ -145,7 +149,7 @@ public class DictionaryInfo {
     public void addField(FieldInfo field) {
         if (fieldsByTagNumber == null) {
             fieldsByTagNumber = new TreeMap();
-            fieldsByName = new TreeMapStrR();
+            fieldsByName = new TreeMap();
         }
         fieldsByTagNumber.put(field.getTagNumber(), field);
         fieldsByName.put(field.getName(), field);
@@ -298,9 +302,13 @@ public class DictionaryInfo {
     public boolean repOKSymSolve() {
         if (fieldsByTagNumber == null || fieldsByName == null)
             return false;
-        if (!fieldsByTagNumber.isBinTreeWithParentReferences())
+        if (fieldsByTagNumber == fieldsByName)
             return false;
-        if (!fieldsByName.isBinTreeWithParentReferences())
+
+        Set<Entry> visited = new HashSet<>();
+        if (!fieldsByTagNumber.isBinTreeWithParentReferences(visited))
+            return false;
+        if (!fieldsByName.isBinTreeWithParentReferences(visited))
             return false;
         if (!fieldsByTagNumber.isWellColored())
             return false;
@@ -335,11 +343,10 @@ public class DictionaryInfo {
 
     public static IFinitization finDictionaryInfo(int nodesNum) {
         IFinitization f = FinitizationFactory.create(DictionaryInfo.class);
-        IObjSet t1 = f.createObjSet(TreeMap.class, 1, true);
-        IObjSet t2 = f.createObjSet(TreeMapStrR.class, 1, true);
+        IObjSet treemaps = f.createObjSet(TreeMap.class, 2, true);
 
-        f.set(DictionaryInfo.class, "fieldsByTagNumber", t1);
-        f.set(DictionaryInfo.class, "fieldsByName", t2);
+        f.set(DictionaryInfo.class, "fieldsByTagNumber", treemaps);
+        f.set(DictionaryInfo.class, "fieldsByName", treemaps);
 
         IObjSet entries = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
 
@@ -351,14 +358,13 @@ public class DictionaryInfo {
         f.set(TreeMap.Entry.class, "parent", entries);
         f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
 
-        IObjSet entriesB = f.createObjSet(TreeMapStrR.Entry.class, nodesNum, true);
-        f.set(TreeMapStrR.class, "root", entriesB);
-        f.set(TreeMapStrR.class, "size", f.createIntSet(0, nodesNum));
-        f.set(TreeMapStrR.Entry.class, "key", f.createRandomStringSet(nodesNum, 1, 2));
-        f.set(TreeMapStrR.Entry.class, "left", entriesB);
-        f.set(TreeMapStrR.Entry.class, "right", entriesB);
-        f.set(TreeMapStrR.Entry.class, "parent", entriesB);
-        f.set(TreeMapStrR.Entry.class, "color", f.createBooleanSet());
+        f.set(TreeMap.class, "root", entries);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        f.set(TreeMap.Entry.class, "left", entries);
+        f.set(TreeMap.Entry.class, "right", entries);
+        f.set(TreeMap.Entry.class, "parent", entries);
+        f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
 
         return f;
     }

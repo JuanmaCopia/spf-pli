@@ -43,7 +43,7 @@ public class FieldInfo implements FixInfo {
 
     public int tagNumber;
 
-    public String name;
+    public int name;
 
     private String dataType;
 
@@ -96,7 +96,7 @@ public class FieldInfo implements FixInfo {
      * 
      * @return the fieldName
      */
-    public String getName() {
+    public int getName() {
         return name;
     }
 
@@ -105,7 +105,7 @@ public class FieldInfo implements FixInfo {
      * 
      * @param name - the fieldName to set
      */
-    public void setName(String name) {
+    public void setName(int name) {
         this.name = name;
     }
 

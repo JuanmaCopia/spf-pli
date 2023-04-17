@@ -660,6 +660,7 @@ public class TreeMap {
     }
 
     public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+        int prevSize = visited.size();
         if (root == null)
             return size == 0;
         if (root.parent != null)
@@ -689,7 +690,7 @@ public class TreeMap {
                 worklist.add(right);
             }
         }
-        return visited.size() == size;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean isWellColored() {

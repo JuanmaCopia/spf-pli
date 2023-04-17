@@ -14,16 +14,16 @@ import lissa.TestGen;
 
 public class DictionaryInfoMain {
 
-    private static void registerTargetMethodData(int tagNumber, String fieldName) {
+    private static void registerTargetMethodData(int tagNumber, int fieldName) {
         int numberOfArguments = 2;
         TestGen.registerTargetMethod("addField", numberOfArguments);
         TestGen.registerSymbolicIntegerArgument(tagNumber);
-        TestGen.registerSymbolicStringArgument(fieldName);
+        TestGen.registerSymbolicIntegerArgument(fieldName);
     }
 
     public static void main(String[] args) {
         int tagNumber = SymHeap.makeSymbolicInteger("tagNumber");
-        String name = SymHeap.makeSymbolicString("fieldName");
+        int name = SymHeap.makeSymbolicInteger("fieldName");
 
         registerTargetMethodData(tagNumber, name);
 
