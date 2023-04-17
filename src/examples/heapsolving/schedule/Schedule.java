@@ -304,14 +304,12 @@ public class Schedule {
             return false;
 
         Set<Job> visitedJobs = new HashSet<Job>();
-        if (curProc != null)
-            visitedJobs.add(curProc);
-        if (!isDoublyLinkedList(prio_1, visitedJobs))
-            return false;
-        if (!isDoublyLinkedList(prio_2, visitedJobs))
-            return false;
-        if (!isDoublyLinkedList(prio_3, visitedJobs))
-            return false;
+        for (int i = 1; i < MAXPRIO; i++) {
+            List prioQueue = getPrioQueue(i);
+            if (!isDoublyLinkedList(prioQueue, visitedJobs))
+                return false;
+        }
+
         if (!isDoublyLinkedList(blockQueue, visitedJobs))
             return false;
 
