@@ -16,7 +16,7 @@ public class SymbolicStringArgument extends SymbolicArgument {
     }
 
     public String getDeclarationCode() {
-        return String.format("%s %s = \"%s\";", this.typeName, this.argName, this.value);
+        return String.format("%s %s = \"%s\";", this.typeName, this.argName, "");
     }
 
 }

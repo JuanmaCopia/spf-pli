@@ -10,13 +10,24 @@ package heapsolving.sqlfilterclauses.put;
 import heapsolving.sqlfilterclauses.SQLFilterClauses;
 import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
 import lissa.SymHeap;
+import lissa.TestGen;
 
 public class SQLFilterClausesMain {
+
+    private static void registerTargetMethodData(int clause, int table, String clauseInfo) {
+        int numberOfArguments = 3;
+        TestGen.registerTargetMethod("put", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(clause);
+        TestGen.registerSymbolicIntegerArgument(table);
+        TestGen.registerSymbolicStringArgument(clauseInfo);
+    }
 
     public static void main(String[] args) {
         int clauseName = SymHeap.makeSymbolicInteger("INPUTclauseName");
         int tableName = SymHeap.makeSymbolicInteger("INPUTtableName");
         String clauseInformation = SymHeap.makeSymbolicString("INPUT_KEY3");
+
+        registerTargetMethodData(clauseName, tableName, clauseInformation);
 
         SQLFilterClauses structure = SQLFilterClausesHarness.getStructure();
         if (structure != null) {

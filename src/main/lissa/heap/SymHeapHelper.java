@@ -383,7 +383,7 @@ public class SymHeapHelper {
 
         solution = symVar.solution();
         if (solution == StringSymbolic.UNDEFINED)
-            solution = "''";
+            solution = "\"\"";
         return solution;
 
     }

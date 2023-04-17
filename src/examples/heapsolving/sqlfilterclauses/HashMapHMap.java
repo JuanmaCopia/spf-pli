@@ -10,6 +10,8 @@ package heapsolving.sqlfilterclauses;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -521,22 +523,47 @@ public class HashMapHMap {
     }
 
     public boolean repOKSymSolve() {
-        Threshold threshold = new Threshold(THRESHOLD);
         Set<Entry> visited = new HashSet<Entry>();
+        Threshold threshold = new Threshold(THRESHOLD);
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
             if (list != null && !isLinkedList(list, visited, threshold))
                 return false;
         }
+
+        Set<HashMapStr> v2 = new HashSet<>();
+        for (Entry e : visited) {
+            if (e != null) {
+                HashMapStr value = e.getValue();
+                if (value != null && !v2.add(value)) {
+                    return false;
+                }
+            }
+        }
+
+        Set<HashMapStr.Entry> v3 = new HashSet<>();
+        for (HashMapStr h : v2) {
+            if (!h.repOKSymSolve(v3))
+                return false;
+        }
+
         return visited.size() == size;
     }
 
     public boolean repOKSymbolicExecution() {
+        List<HashMapStr> hm = new LinkedList<>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
-            if (list != null && !checkListKeys(list, i))
+            if (list != null && !checkListKeys(list, i, hm))
                 return false;
         }
+
+        for (HashMapStr value : hm) {
+            if (!value.repOKSymbolicExecution()) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -558,7 +585,7 @@ public class HashMapHMap {
         return true;
     }
 
-    private boolean checkListKeys(Entry head, int index) {
+    private boolean checkListKeys(Entry head, int index, List<HashMapStr> hm) {
         int[] visitedKeys = new int[THRESHOLD];
         int currentIndex = 0;
         Entry current = head;
@@ -577,12 +604,15 @@ public class HashMapHMap {
 
             visitedKeys[currentIndex] = currentKey;
             currentIndex++;
+
+            if (current.value != null)
+                hm.add(current.value);
             current = current.next;
         }
         return true;
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
         public HashMapStr value;

@@ -165,7 +165,7 @@ public class HashMapStr {
     void init() {
     }
 
-    Entry getTable(int index) {
+    public Entry getTable(int index) {
         switch (index) {
         case 0:
             return e0;
@@ -525,13 +525,14 @@ public class HashMapStr {
     }
 
     public boolean repOKSymSolve(Set<Entry> visited) {
+        int prevSize = visited.size();
         Threshold threshold = new Threshold(THRESHOLD);
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
             if (list != null && !isLinkedList(list, visited, threshold))
                 return false;
         }
-        return visited.size() == size;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean repOKSymbolicExecution() {
@@ -585,7 +586,7 @@ public class HashMapStr {
         return true;
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
         public String value;

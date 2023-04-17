@@ -19,8 +19,6 @@ package heapsolving.sqlfilterclauses;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
@@ -85,16 +83,6 @@ public class SQLFilterClauses implements Serializable {
             return false;
         if (!_sqlClauseInformation.repOKSymSolve())
             return false;
-
-        HashMapStr h;
-        Set<HashMapStr.Entry> visitedEntries = new HashSet<>();
-        for (HashMapHMap.Entry e : _sqlClauseInformation.entrySet()) {
-            h = e.getValue();
-            if (h == null)
-                return false;
-            if (!h.repOKSymSolve(visitedEntries))
-                return false;
-        }
         return true;
     }
 
@@ -102,12 +90,6 @@ public class SQLFilterClauses implements Serializable {
         if (!_sqlClauseInformation.repOKSymbolicExecution())
             return false;
 
-        HashMapStr h;
-        for (HashMapHMap.Entry e : _sqlClauseInformation.entrySet()) {
-            h = e.getValue();
-            if (!h.repOKSymbolicExecution())
-                return false;
-        }
         return true;
     }
 
