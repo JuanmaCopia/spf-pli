@@ -2,7 +2,7 @@ package lissa.choicegenerators;
 
 import lissa.LISSAShell;
 import lissa.heap.SymbolicInputHeapLISSA;
-import lissa.heap.solving.techniques.NT;
+import lissa.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
 
 public class RepOKCallCG extends RepOKCallChoiceGenerator {
@@ -12,12 +12,12 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
 
     int buildedObjectRef;
 
-    NT stg;
+    PLI stg;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
             PLIChoiceGenerator curCG) {
         super(id, curCG);
-        this.stg = (NT) LISSAShell.solvingStrategy;
+        this.stg = (PLI) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         this.candidateHeapSolution = solution;
         this.curCG = curCG;

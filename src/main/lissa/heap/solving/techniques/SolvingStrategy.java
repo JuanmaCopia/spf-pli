@@ -25,10 +25,10 @@ public class SolvingStrategy {
             return new LISSA();
         case LISSAM:
             return new LISSAM();
-        case NT:
-            return new NT();
-        case NTOPT:
-            return new NTOPT();
+        case PLI:
+            return new PLI();
+        case PLIOPT:
+            return new PLIOPT();
         case LISSANOSB:
             config.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
             return new LISSA();

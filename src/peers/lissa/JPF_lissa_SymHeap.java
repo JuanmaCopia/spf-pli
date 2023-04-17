@@ -27,7 +27,7 @@ import lissa.config.SolvingStrategyEnum;
 import lissa.heap.SymHeapHelper;
 import lissa.heap.SymbolicInputHeapLISSA;
 import lissa.heap.SymbolicReferenceInput;
-import lissa.heap.solving.techniques.NT;
+import lissa.heap.solving.techniques.PLI;
 import lissa.heap.testgen.TestCaseHelper;
 import lissa.heap.testgen.TestGenVisitor;
 
@@ -89,7 +89,7 @@ public class JPF_lissa_SymHeap extends NativePeer {
                 pc = ((PCChoiceGeneratorLISSA) prev_cg).getCurrentPC();
             assert (pc != null);
             ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
-            ((NT) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
+            ((PLI) LISSAShell.solvingStrategy).buildSolutionHeap(env, objvRef);
         }
     }
 

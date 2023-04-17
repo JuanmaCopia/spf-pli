@@ -10,6 +10,8 @@ shell=lissa.LISSAShell
 target = heapsolving.schedule.METHOD.ScheduleMain
 method = METHOD
 
+search.depth_limit = 50
+
 symbolic.debug = false
 symbolic.dp = z3
 

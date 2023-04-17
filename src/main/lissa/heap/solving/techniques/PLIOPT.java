@@ -18,7 +18,7 @@ import lissa.heap.SymbolicReferenceInput;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class NTOPT extends NT {
+public class PLIOPT extends PLI {
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,

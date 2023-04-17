@@ -17,7 +17,7 @@ import lissa.heap.builder.HeapSolutionBuilder;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class NT extends LIBasedStrategy implements PCCheckStrategy {
+public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
     StaticRepOKCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;
@@ -26,7 +26,7 @@ public class NT extends LIBasedStrategy implements PCCheckStrategy {
 
     public int primitiveBranches = 0;
 
-    public NT() {
+    public PLI() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
     }
 

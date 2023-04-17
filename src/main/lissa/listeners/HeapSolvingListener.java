@@ -17,8 +17,8 @@ import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
-import lissa.heap.solving.techniques.NT;
-import lissa.heap.solving.techniques.NTOPT;
+import lissa.heap.solving.techniques.PLI;
+import lissa.heap.solving.techniques.PLIOPT;
 import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
@@ -152,15 +152,15 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         }
         if (heapSolvingStrategy instanceof LISSAM)
             System.out.println(" - Cache Hits:            " + cacheHits);
-        if (heapSolvingStrategy instanceof NT) {
+        if (heapSolvingStrategy instanceof PLI) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
             System.out.println(" - PC invalid branches:   " + prunedBranchesDueToPC);
-            NT nt = (NT) heapSolvingStrategy;
+            PLI nt = (PLI) heapSolvingStrategy;
             System.out.println(" - Total branches seen:   " + nt.primitiveBranchChoices);
             System.out.println(" - Solving procedure calls:   " + solvingProcedureCalls);
 
-            if (heapSolvingStrategy instanceof NTOPT) {
-                System.out.println(" - branches cache hits:   " + ((NTOPT) nt).primitiveBranchCacheHits);
+            if (heapSolvingStrategy instanceof PLIOPT) {
+                System.out.println(" - branches cache hits:   " + ((PLIOPT) nt).primitiveBranchCacheHits);
             }
 
         }
@@ -181,7 +181,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         else
             results.add("-");
         results.add(Integer.toString(exceptionsThrown));
-        if (heapSolvingStrategy instanceof NT)
+        if (heapSolvingStrategy instanceof PLI)
             results.add(Integer.toString(solvingProcedureCalls));
         else
             results.add("-");

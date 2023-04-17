@@ -9,7 +9,7 @@ import lissa.choicegenerators.PLIChoiceGenerator;
 import lissa.choicegenerators.RepOKCompleteCallCG;
 import lissa.heap.SymHeapHelper;
 
-public class REPOKSOLVER extends NT {
+public class REPOKSOLVER extends PLI {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
