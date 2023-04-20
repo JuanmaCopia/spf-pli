@@ -1,7 +1,7 @@
 package heapsolving.treemap;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class TreeMapHarness {
 
@@ -13,7 +13,7 @@ public class TreeMapHarness {
         structure = (TreeMap) SymHeap.makeSymbolicRefThis("treemap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 

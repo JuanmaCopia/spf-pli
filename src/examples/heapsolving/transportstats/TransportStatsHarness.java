@@ -1,7 +1,7 @@
 package heapsolving.transportstats;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class TransportStatsHarness {
 
@@ -13,7 +13,7 @@ public class TransportStatsHarness {
         structure = (TransportStats) SymHeap.makeSymbolicRefThis("transportstats_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 

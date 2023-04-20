@@ -1,7 +1,7 @@
 package heapsolving.sqlfilterclauses;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class SQLFilterClausesHarness {
 
@@ -13,7 +13,7 @@ public class SQLFilterClausesHarness {
         structure = (SQLFilterClauses) SymHeap.makeSymbolicRefThis("sqlfilterclauses_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 
@@ -26,8 +26,8 @@ public class SQLFilterClausesHarness {
         int numNodes = Verify.getInt(0, maxScope);
 
         for (int i = 1; i <= numNodes; i++) {
-            String clauseName = SymHeap.makeSymbolicString("N" + i);
-            String tableName = SymHeap.makeSymbolicString("N2" + i);
+            int clauseName = SymHeap.makeSymbolicInteger("N" + i);
+            int tableName = SymHeap.makeSymbolicInteger("N2" + i);
             String clauseInformation = SymHeap.makeSymbolicString("N3" + i);
             try {
                 h.put(clauseName, tableName, clauseInformation);

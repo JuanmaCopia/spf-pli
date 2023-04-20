@@ -8,6 +8,7 @@ import lissa.LISSAShell;
 import lissa.config.ConfigParser;
 import symsolve.SymSolve;
 import symsolve.config.SolverConfig;
+import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
 public class SymSolveHeapSolver {
@@ -40,6 +41,20 @@ public class SymSolveHeapSolver {
     public boolean isSatisfiableAutoHybridRepOK(SymSolveVector vector) {
         long time = System.currentTimeMillis();
         boolean result = solver.isSatAutoHybridRepOK(vector);
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
+    }
+
+    public SymSolveSolution solve(SymSolveVector vector) {
+        long time = System.currentTimeMillis();
+        SymSolveSolution result = solver.solve(vector);
+        solvingTime += (System.currentTimeMillis() - time);
+        return result;
+    }
+
+    public SymSolveSolution getNextSolution(SymSolveSolution previousSolution) {
+        long time = System.currentTimeMillis();
+        SymSolveSolution result = solver.getNextSolution(previousSolution);
         solvingTime += (System.currentTimeMillis() - time);
         return result;
     }

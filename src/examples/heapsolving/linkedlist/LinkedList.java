@@ -16,6 +16,7 @@ import java.util.Vector;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -85,8 +86,8 @@ import korat.finitization.impl.FinitizationFactory;
  * @since 1.2
  */
 public class LinkedList {
-    public transient Entry header = new Entry();
-    public transient int size = 0;
+    public Entry header = new Entry();
+    public int size = 0;
 
     /**
      * Constructs an empty list.
@@ -414,12 +415,30 @@ public class LinkedList {
         return result;
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        return isCircularLinkedList();
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (header == null)
+            return false;
+        return isSizeOK();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public boolean isCircularLinkedList() {
+        return isCircularLinkedList(new HashSet<Entry>());
+    }
+
+    public boolean isCircularLinkedList(Set<Entry> visited) {
         if (header == null)
             return false;
 
-        Set<Entry> visited = new HashSet<Entry>();
-        visited.add(header);
+        if (!visited.add(header))
+            return false;
         Entry current = header;
 
         while (true) {
@@ -438,12 +457,27 @@ public class LinkedList {
         return true;
     }
 
-    public class Entry {
+    public boolean isSizeOK() {
+        return size == countNodes();
+    }
+
+    public int countNodes() {
+        int count = 0;
+
+        Entry current = header.next;
+        while (current != header) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+
+    public static class Entry {
         public int element;
         public Entry next;
         public Entry previous;
 
-        Entry() {
+        public Entry() {
         }
 
         Entry(int element, Entry next, Entry previous) {
@@ -451,6 +485,18 @@ public class LinkedList {
             this.next = next;
             this.previous = previous;
         }
+    }
+
+    public static void runRepOK() {
+        LinkedList toBuild = new LinkedList();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        LinkedList toBuild = new LinkedList();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finLinkedList(int nodesNum) {

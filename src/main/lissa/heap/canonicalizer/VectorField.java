@@ -13,11 +13,10 @@ public class VectorField {
     int indexInVector;
     FieldDomain domain;
 
-    public static final int SYMBOLIC = -1;
     public static final int DEFAULT_VALUE = 0;
 
     public static String createFieldSignature(String ownerClassName, String fieldName, String fieldClassName) {
-        return String.format("%s.%s(%s)", ownerClassName, fieldName, fieldClassName);
+        return String.format("%s.%s", ownerClassName, fieldName);
     }
 
     public VectorField(CVElem elem, int indexInVector) {

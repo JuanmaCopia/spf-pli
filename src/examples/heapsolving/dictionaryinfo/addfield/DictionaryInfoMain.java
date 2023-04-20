@@ -7,30 +7,37 @@
 
 package heapsolving.dictionaryinfo.addfield;
 
-import lissa.SymHeap;
-
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
-import heapsolving.dictionaryinfo.FieldInfo;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class DictionaryInfoMain {
 
+    private static void registerTargetMethodData(int tagNumber, int fieldName) {
+        int numberOfArguments = 2;
+        TestGen.registerTargetMethod("addField", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(tagNumber);
+        TestGen.registerSymbolicIntegerArgument(fieldName);
+    }
+
     public static void main(String[] args) {
         int tagNumber = SymHeap.makeSymbolicInteger("tagNumber");
-        String name = SymHeap.makeSymbolicString("fieldName");
-        FieldInfo field = new FieldInfo();
-        field.setName(name);
-        field.setTagNumber(tagNumber);
+        int name = SymHeap.makeSymbolicInteger("fieldName");
+
+        registerTargetMethodData(tagNumber, name);
 
         DictionaryInfo structure = DictionaryInfoHarness.getStructure();
         if (structure != null) {
             try {
                 // Call to method under analysis
-                structure.addField(field);
+                structure.addField(tagNumber, name);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

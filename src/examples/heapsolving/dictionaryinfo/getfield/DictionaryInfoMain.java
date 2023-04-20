@@ -7,14 +7,23 @@
 
 package heapsolving.dictionaryinfo.getfield;
 
-import lissa.SymHeap;
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class DictionaryInfoMain {
 
+    private static void registerTargetMethodData(int tagNumber) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("getField", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(tagNumber);
+    }
+
     public static void main(String[] args) {
         int tagNumber = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(tagNumber);
 
         DictionaryInfo structure = DictionaryInfoHarness.getStructure();
         if (structure != null) {
@@ -22,9 +31,11 @@ public class DictionaryInfoMain {
                 // Call to method under analysis
                 structure.getField(tagNumber);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

@@ -39,13 +39,12 @@ package lissa.heap;
 
 import gov.nasa.jpf.symbc.arrays.ArrayHeapNode;
 import gov.nasa.jpf.symbc.heap.HeapNode;
-import gov.nasa.jpf.symbc.heap.SymbolicInputHeap;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
 import gov.nasa.jpf.vm.ClassInfo;
 
-public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
+public class SymbolicInputHeapLISSA {
 
-    private SymbolicReferenceInput implicitInputThis;
+    SymbolicReferenceInput implicitInputThis;
 
     public SymbolicReferenceInput getImplicitInputThis() {
         return this.implicitInputThis;
@@ -59,13 +58,16 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         this.implicitInputThis = new SymbolicReferenceInput();
     }
 
-    @Override
-    public SymbolicInputHeap make_copy() {
+    public SymbolicInputHeapLISSA make_copy() {
         SymbolicInputHeapLISSA sih_new = new SymbolicInputHeapLISSA();
         sih_new.header = this.header;
         sih_new.count = this.count;
         sih_new.implicitInputThis = this.implicitInputThis.makeShallowCopy();
         return sih_new;
+    }
+
+    public ClassInfo getImplicitInputClassInfo() {
+        return implicitInputThis.getRootHeapNode().getType();
     }
 
     public void _add(HeapNode n) {
@@ -114,11 +116,7 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         int numSymRefs = 0;
         HeapNode n = header;
         while (null != n) {
-            // String t = (String)n.getType();
             ClassInfo tClassInfo = n.getType();
-            // reference only objects of same class or super
-            // if (fullType.equals(t)){
-            // if (typeClassInfo.isInstanceOf(tClassInfo)) {
             if (tClassInfo.isInstanceOf(type)) {
                 numSymRefs++;
             }
@@ -129,11 +127,7 @@ public class SymbolicInputHeapLISSA extends SymbolicInputHeap {
         HeapNode[] nodes = new HeapNode[numSymRefs]; // estimate of size; should be changed
         int i = 0;
         while (null != n) {
-            // String t = (String)n.getType();
             ClassInfo tClassInfo = n.getType();
-            // reference only objects of same class or super
-            // if (fullType.equals(t)){
-            // if (typeClassInfo.isInstanceOf(tClassInfo)) {
             if (tClassInfo.isInstanceOf(type)) {
                 nodes[i] = n;
                 i++;

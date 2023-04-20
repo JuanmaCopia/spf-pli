@@ -1,0 +1,23 @@
+@using=spf-lissa
+
+# ---------------   Arguments   ---------------
+
+shell=lissa.LISSAShell
+
+target = heapsolving.binomialheap.METHOD.BinomialHeapMain
+method = METHOD
+
+symbolic.debug = false
+symbolic.dp = z3bitvector
+
+heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
+heapsolving.generateTests = BOOLEAN
+heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap
+heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.predicate = repOKSymSolve
+
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+
+# ---------------------------------------------

@@ -7,14 +7,20 @@
 
 package heapsolving.schedule.blockprocess;
 
-import lissa.SymHeap;
-
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class ScheduleMain {
 
+    private static void registerTargetMethodData() {
+        int numberOfArguments = 0;
+        TestGen.registerTargetMethod("blockProcess", numberOfArguments);
+    }
+
     public static void main(String[] args) {
+        registerTargetMethodData();
 
         Schedule structure = ScheduleHarness.getStructure();
         if (structure != null) {
@@ -22,9 +28,11 @@ public class ScheduleMain {
                 // Call to method under analysis
                 structure.blockProcess();
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
+ *
  * AELITIS, SAS au capital de 46,603.30 euros
  * 8 Allee Lenotre, La Grille Royale, 78600 Le Mesnil le Roi, France.
  *
@@ -28,14 +28,15 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 public class TransportStats {
 
     // private static final int PRINT_INTERVAL = 60 * 1000;
     private static final int GRANULARITY = 10; // bytes
 
-    public TreeMap read_sizes = new TreeMap();
-    public TreeMap write_sizes = new TreeMap();
+    public TreeMapIntLong read_sizes = new TreeMapIntLong();
+    public TreeMapIntLong write_sizes = new TreeMapIntLong();
 
     public long total_reads = 0;
     public long total_writes = 0;
@@ -62,7 +63,7 @@ public class TransportStats {
         updateSizes(write_sizes, num_bytes_written);
     }
 
-    private void updateSizes(TreeMap io_sizes, int num_bytes) {
+    private void updateSizes(TreeMapIntLong io_sizes, int num_bytes) {
         int size_key;
 
         if (num_bytes == 0) {
@@ -80,56 +81,63 @@ public class TransportStats {
         }
     }
 
-    public boolean repOK() {
-        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-        if (read_sizes != null)
-            visited_tm.add(read_sizes);
-
-        if (write_sizes != null && !visited_tm.add(write_sizes))
+    public boolean repOKSymSolve() {
+        if (read_sizes == null || write_sizes == null)
             return false;
-
-        Set<TreeMap.Entry> visited = new HashSet<TreeMap.Entry>();
-
-        if (read_sizes != null && !read_sizes.repOK(visited))
+        if (read_sizes == write_sizes)
             return false;
-        if (write_sizes != null && !write_sizes.repOK(visited))
+        Set<TreeMapIntLong.Entry> visited = new HashSet<>();
+        if (!read_sizes.isBinTreeWithParentReferences(visited))
             return false;
-
+        if (!write_sizes.isBinTreeWithParentReferences(visited))
+            return false;
+        if (!read_sizes.isWellColored())
+            return false;
+        if (!write_sizes.isWellColored())
+            return false;
         return true;
     }
 
-    public boolean areTreesOK() {
-        HashSet<TreeMap> visited_tm = new HashSet<TreeMap>();
-        if (read_sizes != null)
-            visited_tm.add(read_sizes);
-
-        if (write_sizes != null && !visited_tm.add(write_sizes)) {
+    public boolean repOKSymbolicExecution() {
+        if (!read_sizes.isSorted())
             return false;
-        }
-
-        if (read_sizes != null && !read_sizes.isBinTreeWithParentReferences()) {
+        if (!write_sizes.isSorted())
             return false;
-        }
-        if (write_sizes != null && !write_sizes.isBinTreeWithParentReferences()) {
-            return false;
-        }
-
         return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finTransportStats(int nodesNum) {
         IFinitization f = FinitizationFactory.create(TransportStats.class);
 
-        IObjSet treemaps = f.createObjSet(TreeMap.class, 2, true);
+        IObjSet treemaps = f.createObjSet(TreeMapIntLong.class, 2, true);
         f.set(TransportStats.class, "read_sizes", treemaps);
         f.set(TransportStats.class, "write_sizes", treemaps);
 
-        IObjSet nodes = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
-        f.set(TreeMap.class, "root", nodes);
-        f.set(TreeMap.Entry.class, "left", nodes);
-        f.set(TreeMap.Entry.class, "right", nodes);
-        f.set(TreeMap.Entry.class, "parent", nodes);
-        f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
+        IObjSet nodes = f.createObjSet(TreeMapIntLong.Entry.class, nodesNum, true);
+        f.set(TreeMapIntLong.class, "root", nodes);
+        f.set(TreeMapIntLong.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMapIntLong.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        f.set(TreeMapIntLong.Entry.class, "value", f.createLongSet(0, nodesNum));
+        f.set(TreeMapIntLong.Entry.class, "left", nodes);
+        f.set(TreeMapIntLong.Entry.class, "right", nodes);
+        f.set(TreeMapIntLong.Entry.class, "parent", nodes);
+        f.set(TreeMapIntLong.Entry.class, "color", f.createBooleanSet());
 
         return f;
     }
@@ -138,36 +146,36 @@ public class TransportStats {
 //    System.out.println( "\n------------------------------" );
 //    System.out.println( "***** TCP SOCKET READ SIZE STATS *****" );
 //    printSizes( read_sizes, total_reads );
-//    
+//
 //    System.out.println( "\n***** TCP SOCKET WRITE SIZE STATS *****" );
 //    printSizes( write_sizes, total_writes );
 //    System.out.println( "------------------------------" );
 //  }
-//  
-// 
-//  
-//  private void printSizes( TreeMap size_map, long num_total ) {
+//
+//
+//
+//  private void printSizes( TreeMapIntLong size_map, long num_total ) {
 //    int prev_high = 1;
-//    
+//
 //    for( Iterator it = size_map.entrySet().iterator(); it.hasNext(); ) {
 //      Map.Entry entry = (Map.Entry)it.next();
 //      int key = ((Integer)entry.getKey()).intValue();
 //      long count = ((Long)entry.getValue()).longValue();
-//      
+//
 //      long percentage = (count *100) / num_total;
-//      
-//      if( key == 0 ) {   
+//
+//      if( key == 0 ) {
 //        if( percentage > 3 ) {
 //          System.out.println( "[0 bytes]= x" +percentage+ "%" );
 //        }
 //      }
 //      else {
 //        int high = key * GRANULARITY;
-//        
+//
 //        if( percentage > 3 ) {
 //          System.out.println( "[" +prev_high+ "-" +(high -1)+ " bytes]= x" +percentage+ "%" );
 //        }
-//        
+//
 //        prev_high = high;
 //      }
 //    }

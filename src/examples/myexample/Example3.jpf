@@ -1,0 +1,8 @@
+target = myexample.Example3
+
+symbolic.dp=z3
+
+
+symbolic.strings = true
+symbolic.string_dp=z3-str
+symbolic.string_dp_timeout_ms=3000

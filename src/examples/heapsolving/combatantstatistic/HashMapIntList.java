@@ -13,6 +13,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import heapsolving.linkedlist.LinkedList;
+
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
  * implementation provides all of the optional map operations, and permits
@@ -113,7 +115,7 @@ public class HashMapIntList {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 8;
+    static final int DEFAULT_INITIAL_CAPACITY = 4;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified by
@@ -131,50 +133,21 @@ public class HashMapIntList {
      */
     // transient Entry[] table;
 
-    Entry e0;
-    Entry e1;
-    Entry e2;
-    Entry e3;
-    Entry e4;
-    Entry e5;
-    Entry e6;
-    Entry e7;
+    public Entry e0;
+    public Entry e1;
+    public Entry e2;
+    public Entry e3;
 
     /**
      * The number of key-value mappings contained in this identity hash map.
      */
-    transient int size;
-
-    /**
-     * The next size value at which to resize (capacity * load factor).
-     *
-     * @serial
-     */
-    int threshold;
-
-    /**
-     * The load factor for the hash table.
-     *
-     * @serial
-     */
-    final float loadFactor;
-
-    /**
-     * The number of times this HashMap has been structurally modified Structural
-     * modifications are those that change the number of mappings in the HashMap or
-     * otherwise modify its internal structure (e.g., rehash). This field is used to
-     * make iterators on Collection-views of the HashMap fail-fast. (See
-     * ConcurrentModificationException).
-     */
-    transient volatile int modCount;
+    public transient int size;
 
     /**
      * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
      * and the default load factor (0.75).
      */
     public HashMapIntList() {
-        this.loadFactor = DEFAULT_LOAD_FACTOR;
-        threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
 //    table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
@@ -200,14 +173,6 @@ public class HashMapIntList {
             return e2;
         case 3:
             return e3;
-        case 4:
-            return e4;
-        case 5:
-            return e5;
-        case 6:
-            return e6;
-        case 7:
-            return e7;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
@@ -226,18 +191,6 @@ public class HashMapIntList {
             break;
         case 3:
             e3 = entry;
-            break;
-        case 4:
-            e4 = entry;
-            break;
-        case 5:
-            e5 = entry;
-            break;
-        case 6:
-            e6 = entry;
-            break;
-        case 7:
-            e7 = entry;
             break;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
@@ -375,7 +328,6 @@ public class HashMapIntList {
             }
         }
 
-        modCount++;
         addEntry(hash, key, value, i);
         return null;
     }
@@ -407,7 +359,6 @@ public class HashMapIntList {
         while (e != null) {
             Entry next = e.next;
             if (e.hash == hash && eq(key, e.key)) {
-                modCount++;
                 size--;
                 if (prev == e)
                     setTable(i, next);
@@ -441,7 +392,6 @@ public class HashMapIntList {
         while (e != null) {
             Entry next = e.next;
             if (e.hash == hash && e.equals(entry)) {
-                modCount++;
                 size--;
                 if (prev == e)
                     setTable(i, next);
@@ -461,7 +411,6 @@ public class HashMapIntList {
      * Removes all mappings from this map.
      */
     public void clear() {
-        modCount++;
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
             setTable(i, null);
         size = 0;
@@ -499,10 +448,14 @@ public class HashMapIntList {
     }
 
     public static class Entry {
-        final int key;
-        LinkedList value;
-        final int hash;
-        Entry next;
+        public int key;
+        public LinkedList value;
+        public int hash;
+        public Entry next;
+
+        public Entry() {
+
+        }
 
         /**
          * Create new entry.
@@ -578,9 +531,9 @@ public class HashMapIntList {
     }
 
     /**
-     * Like addEntry except that this version is used when creating entries as
-     * part of Map construction or "pseudo-construction" (cloning, deserialization).
-     * This version needn't worry about resizing the table.
+     * Like addEntry except that this version is used when creating entries as part
+     * of Map construction or "pseudo-construction" (cloning, deserialization). This
+     * version needn't worry about resizing the table.
      *
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
@@ -607,33 +560,65 @@ public class HashMapIntList {
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    private boolean isLL(Entry e, HashSet<Entry> visited) {
-        Entry current = e;
-        while (current != null) {
-            if (!visited.add(current))
-                return false;
-            current = current.next;
-        }
+    public boolean repOKSymSolve() {
+        if (!checkKeys())
+            return false;
+        if (!checkHashes())
+            return false;
         return true;
     }
 
-    public boolean repOK() {
-        for (int i = 2; i < DEFAULT_INITIAL_CAPACITY; i++)
-            if (getTable(i) != null)
-                return false;
+    public boolean checkEntries() {
+        if (e0 == null)
+            return false;
+        if (e1 == null)
+            return false;
+        if (e2 != null || e3 != null)
+            return false;
+        if (e0 == e1)
+            return false;
+        return true;
+    }
 
-        HashSet<Entry> visited = new HashSet<Entry>();
-        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
-            if (!isLL(getTable(i), visited))
-                return false;
-        }
+    public boolean checkListsHasJustOneElement() {
+        if (e0.next != null)
+            return false;
+        if (e1.next != null)
+            return false;
+        return true;
+    }
 
-        for (Entry e : visited) {
-            LinkedList list = e.getValue();
-            if (list != null && !list.repOK())
-                return false;
-        }
+    public boolean checkValuesAreDifferentAndNonNull() {
+        if (e0.value == null)
+            return false;
+        if (e1.value == null)
+            return false;
+        if (e0.value == e1.value)
+            return false;
+        return true;
+    }
 
+    public boolean checkValuesRepOK() {
+        if (!e0.value.repOKSymSolve())
+            return false;
+        if (!e1.value.repOKSymSolve())
+            return false;
+        return true;
+    }
+
+    public boolean checkKeys() {
+        if (e0.key != 0)
+            return false;
+        if (e1.key != 1)
+            return false;
+        return true;
+    }
+
+    public boolean checkHashes() {
+        if (e0.hash != 0)
+            return false;
+        if (e1.hash != 1)
+            return false;
         return true;
     }
 

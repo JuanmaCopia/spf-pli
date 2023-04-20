@@ -15,11 +15,19 @@ public class SymHeap {
             Verify.ignoreIf(true);
     }
 
+    native public static void handleRepOKResult(Object v, boolean result);
+
     native public static void makeSymbolicImplicitInputThis(String name, Object v);
+
+    native public static void buildSolutionHeap(Object v);
+
+    native public static void buildPartialHeapInput(Object v);
 
     native public static int getMaxScope();
 
-    native public static void countPath();
+    native public static void pathFinished();
+
+    native public static void exceptionThrown();
 
     native public static boolean usingDriverStrategy();
 
@@ -56,5 +64,9 @@ public class SymHeap {
         }
         return new String(str);
     }
+
+    native public static boolean isCheckPathValidityEnabled();
+
+    native public static void printSymbolicHeap();
 
 }

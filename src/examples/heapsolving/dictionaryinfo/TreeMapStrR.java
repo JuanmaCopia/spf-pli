@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This
@@ -375,12 +376,12 @@ public class TreeMapStrR {
      * (see Map.Entry).
      */
     public static class Entry {
-        String key;
-        Object value;
-        Entry left = null;
-        Entry right = null;
-        Entry parent;
-        boolean color = BLACK;
+        public String key;
+        public Object value;
+        public Entry left = null;
+        public Entry right = null;
+        public Entry parent;
+        public boolean color = BLACK;
 
         /**
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
@@ -390,6 +391,10 @@ public class TreeMapStrR {
             this.key = key;
             this.value = value;
             this.parent = parent;
+        }
+
+        public Entry() {
+
         }
 
         /**
@@ -699,25 +704,20 @@ public class TreeMapStrR {
         setColor(x, BLACK);
     }
 
-    public boolean repOK() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isWellColored())
-                return false;
-        }
-        return true;
+    public boolean isBinTreeWithParentReferences() {
+        return isBinTreeWithParentReferences(new HashSet<>());
     }
 
-    public boolean isBinTreeWithParentReferences() {
+    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
         if (root == null)
-            return true;
-        HashSet<Entry> visited = new HashSet<Entry>();
-        LinkedList<Entry> worklist = new LinkedList<Entry>();
-        visited.add(root);
-        worklist.add(root);
+            return size == 0;
         if (root.parent != null)
             return false;
+
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
+        if (!visited.add(root))
+            return false;
+        worklist.add(root);
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
@@ -738,10 +738,12 @@ public class TreeMapStrR {
                 worklist.add(right);
             }
         }
-        return true;
+        return visited.size() == size;
     }
 
     public boolean isWellColored() {
+        if (root == null)
+            return true;
         if (root.color != BLACK)
             return false;
         LinkedList<Entry> worklist = new LinkedList<Entry>();
@@ -780,6 +782,28 @@ public class TreeMapStrR {
                 worklist2.add(new Pair<Entry, Integer>(e.right, n));
             }
         }
+        return true;
+    }
+
+    public boolean isSorted() {
+        if (root == null)
+            return true;
+        return isSorted(root, null, null);
+    }
+
+    private boolean isSorted(Entry n, String min, String max) {
+        if (n.key == null)
+            return false;
+
+        if ((min != null && n.key.compareTo(min) <= 0) || (max != null && n.key.compareTo(max) >= 0))
+            return false;
+
+        if (n.left != null)
+            if (!isSorted(n.left, min, n.key))
+                return false;
+        if (n.right != null)
+            if (!isSorted(n.right, n.key, max))
+                return false;
         return true;
     }
 

@@ -7,15 +7,23 @@
 
 package heapsolving.transportstats.byteswritten;
 
-import lissa.SymHeap;
-
 import heapsolving.transportstats.TransportStats;
 import heapsolving.transportstats.TransportStatsHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class TransportStatsMain {
 
+    private static void registerTargetMethodData(int key) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("bytesWritten", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(key);
+    }
+
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(key);
 
         TransportStats structure = TransportStatsHarness.getStructure();
         if (structure != null) {
@@ -23,9 +31,11 @@ public class TransportStatsMain {
                 // Call to method under analysis
                 structure.bytesWritten(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 
