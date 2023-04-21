@@ -16,7 +16,7 @@ declare -a subjects=(
 	"heapsolving.treeset.TreeSet"
 )
 
-EVOSUITE_BUDGET=10
+EVOSUITE_BUDGET=60
 
 full_cp="build/examples:lib/symsolve.jar"
 
