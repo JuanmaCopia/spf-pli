@@ -10,7 +10,7 @@ PACKAGE="heapsolving.combatantstatistic"
 CLASS_NAME="CombatantStatistic"
 echo "===============================  Class: $CLASS_NAME  ================================="
 MINSCOPE=1
-MAXSCOPE=50
+MAXSCOPE=25
 
 
 METHOD="addData"

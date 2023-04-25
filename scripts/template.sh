@@ -10,7 +10,7 @@ PACKAGE="heapsolving.template"
 CLASS_NAME="Template"
 echo "===============================  Class: $CLASS_NAME  ================================="
 MINSCOPE=1
-MAXSCOPE=50
+MAXSCOPE=25
 
 
 METHOD="addParameter"

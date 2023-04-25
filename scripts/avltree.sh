@@ -10,7 +10,7 @@ PACKAGE="heapsolving.avltree"
 CLASS_NAME="AvlTree"
 echo "===============================  Class: $CLASS_NAME  ================================="
 MINSCOPE=1
-MAXSCOPE=50
+MAXSCOPE=25
 
 
 METHOD="insert"

@@ -10,7 +10,7 @@ PACKAGE="heapsolving.treeset"
 CLASS_NAME="TreeSet"
 echo "===============================  Class: $CLASS_NAME  ================================="
 MINSCOPE=1
-MAXSCOPE=50
+MAXSCOPE=25
 
 
 METHOD="remove"
