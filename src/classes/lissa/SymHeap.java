@@ -10,6 +10,14 @@ public class SymHeap {
         return thisObject;
     }
 
+    public static Object considerNullChoice(Object v) {
+        assert (v != null);
+        if (Verify.randomBool()) {
+            return null;
+        }
+        return v;
+    }
+
     public static void assume(boolean c) {
         if (!c)
             Verify.ignoreIf(true);
