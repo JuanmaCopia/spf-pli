@@ -14,18 +14,22 @@ import lissa.TestGen;
 
 public class HashMapMain {
 
-    private static void registerTargetMethodData(int key) {
+    private static void registerTargetMethodData(int key, Object value) {
         int numberOfArguments = 2;
         TestGen.registerTargetMethod("put", numberOfArguments);
         TestGen.registerSymbolicIntegerArgument(key);
-        TestGen.registerConcreteArgument("value", "Object value = new Object();");
+        if (value == null)
+            TestGen.registerConcreteArgument("value", "Object value = null;");
+        else
+            TestGen.registerConcreteArgument("value", "Object value = new Object();");
     }
 
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
         Object value = new Object();
+        value = SymHeap.considerNullChoice(value);
 
-        registerTargetMethodData(key);
+        registerTargetMethodData(key, value);
 
         HashMap structure = HashMapHarness.getStructure();
         if (structure != null) {
