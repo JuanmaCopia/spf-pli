@@ -383,7 +383,7 @@ public class AvlTree {
     public boolean repOKSymSolve() {
         if (!isBinTreeWithParentReferences())
             return false;
-        if (!isBalanced(root))
+        if (!isBalanced())
             return false;
         return true;
     }
@@ -426,32 +426,35 @@ public class AvlTree {
         return true;
     }
 
-    boolean isBalanced(AvlNode node) {
-        int lh;
-        int rh;
-
-        if (node == null)
+    private boolean isBalanced() {
+        if (root == null)
             return true;
+        return isBalanced(root) >= 0;
+    }
 
-        /* Get the height of left and right sub trees */
-        lh = calculateHeight(node.left);
-        rh = calculateHeight(node.right);
+    private int isBalanced(AvlNode node) {
+        if (node == null)
+            return -1;
+        int lh = isBalanced(node.left);
+        if (lh == Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
+        int rh = isBalanced(node.right);
+        if (rh == Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
 
-        int diff = lh - rh;
-        if (diff > 1 || diff < -1)
-            return false;
+        int abs = lh - rh;
+        if (abs < 0)
+            abs = abs * -1;
 
-        if (!isBalanced(node.left))
-            return false;
-        if (!isBalanced(node.right))
-            return false;
-
-        return true;
+        if (abs > 1)
+            return Integer.MIN_VALUE;
+        else
+            return max(lh, rh) + 1;
     }
 
     int calculateHeight(AvlNode node) {
         if (node == null)
-            return 0;
+            return -1;
         return 1 + max(calculateHeight(node.left), calculateHeight(node.right));
     }
 
@@ -464,30 +467,6 @@ public class AvlTree {
             return false;
         return node.height == calculateHeight(node);
     }
-
-//    private boolean isBalanced() {
-//        return isBalanced(root) > 0;
-//    }
-//
-//    private int isBalanced(AvlNode root) {
-//        if (root == null)
-//            return 0;
-//        int lh = isBalanced(root.left);
-//        if (lh == -1)
-//            return -1;
-//        int rh = isBalanced(root.right);
-//        if (rh == -1)
-//            return -1;
-//
-//        int abs = lh - rh;
-//        if (abs < 0)
-//            abs = abs * -1;
-//
-//        if (abs > 1)
-//            return -1;
-//        else
-//            return max(lh, rh) + 1;
-//    }
 
     private int max(int a, int b) {
         if (a > b)
