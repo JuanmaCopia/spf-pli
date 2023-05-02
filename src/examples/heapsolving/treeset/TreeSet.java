@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 
-import heapsolving.treemap.TreeMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -94,7 +93,7 @@ public class TreeSet {
     public transient TreeMap m; // The backing Map
 
     // Dummy value to associate with an Object in the backing Map
-    private static final Object PRESENT = new Object();
+    private static final Obj PRESENT = new Obj();
 
     public TreeSet() {
         this.m = new TreeMap();
@@ -146,7 +145,7 @@ public class TreeSet {
      *                            the elements currently in the set.
      */
     public boolean remove(int o) {
-        return m.remove(o) == PRESENT;
+        return m.remove(o) != null;
     }
 
     /**
@@ -212,6 +211,8 @@ public class TreeSet {
         f.set(TreeMap.class, "root", nodes);
         f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
         f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        IObjSet obj = f.createObjSet(Obj.class, 1, true);
+        f.set(TreeMap.Entry.class, "value", obj);
         f.set(TreeMap.Entry.class, "left", nodes);
         f.set(TreeMap.Entry.class, "right", nodes);
         f.set(TreeMap.Entry.class, "parent", nodes);
