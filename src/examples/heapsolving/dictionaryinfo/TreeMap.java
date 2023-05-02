@@ -91,7 +91,7 @@ import java.util.Set;
  * @see Collections#synchronizedMap(Map)
  * @since 1.2
  */
-public class TreeMapStrR {
+public class TreeMap {
 
     public transient Entry root = null;
 
@@ -121,7 +121,7 @@ public class TreeMapStrR {
      *
      * @see Comparable
      */
-    public TreeMapStrR() {
+    public TreeMap() {
     }
 
     // Query Operations
@@ -147,7 +147,7 @@ public class TreeMapStrR {
      *                              ordering, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public boolean containsKey(String key) {
+    public boolean containsKey(int key) {
         return getEntry(key) != null;
     }
 
@@ -206,7 +206,7 @@ public class TreeMapStrR {
      *
      * @see #containsKey(Object)
      */
-    public Object get(String key) {
+    public Object get(int key) {
         Entry p = getEntry(key);
         return (p == null ? null : p.value);
     }
@@ -217,7 +217,7 @@ public class TreeMapStrR {
      * @return the first (lowest) key currently in this sorted map.
      * @throws NoSuchElementException Map is empty.
      */
-    public String firstKey() {
+    public int firstKey() {
         return key(firstEntry());
     }
 
@@ -227,7 +227,7 @@ public class TreeMapStrR {
      * @return the last (highest) key currently in this sorted map.
      * @throws NoSuchElementException Map is empty.
      */
-    public String lastKey() {
+    public int lastKey() {
         return key(lastEntry());
     }
 
@@ -243,7 +243,7 @@ public class TreeMapStrR {
      *                              order, or its comparator does not tolerate *
      *                              <tt>null</tt> keys.
      */
-    private Entry getEntry(String key) {
+    private Entry getEntry(int key) {
         Entry p = root;
         while (p != null) {
             int cmp = compare(key, p.key);
@@ -261,7 +261,7 @@ public class TreeMapStrR {
      * Returns the key corresonding to the specified Entry. Throw
      * NoSuchElementException if the Entry is <tt>null</tt>.
      */
-    private static String key(Entry e) {
+    private static int key(Entry e) {
         if (e == null)
             throw new NoSuchElementException();
         return e.key;
@@ -284,7 +284,7 @@ public class TreeMapStrR {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object put(String key, Object value) {
+    public Object put(int key, Object value) {
         Entry t = root;
 
         if (t == null) {
@@ -334,7 +334,7 @@ public class TreeMapStrR {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object remove(String key) {
+    public Object remove(int key) {
         Entry p = getEntry(key);
         if (p == null) {
             return null;
@@ -356,88 +356,16 @@ public class TreeMapStrR {
     /**
      * Compares two keys using the correct comparison method for this TreeMap.
      */
-    private int compare(String k1, String k2) {
-        return k1.compareTo(k2);
+    private int compare(int k1, int k2) {
+        if (k1 < k2)
+            return -1;
+        else if (k1 > k2)
+            return 1;
+        return 0;
     }
 
-    /**
-     * Test two values for equality. Differs from o1.equals(o2) only in that it
-     * copes with with <tt>null</tt> o1 properly.
-     */
-    private static boolean valEquals(Object o1, Object o2) {
-        return (o1 == null ? o2 == null : o1.equals(o2));
-    }
-
-    private static final boolean RED = false;
-    private static final boolean BLACK = true;
-
-    /**
-     * Node in the Tree. Doubles as a means to pass key-value pairs back to user
-     * (see Map.Entry).
-     */
-    public static class Entry {
-        public String key;
-        public Object value;
-        public Entry left = null;
-        public Entry right = null;
-        public Entry parent;
-        public boolean color = BLACK;
-
-        /**
-         * Make a new cell with given key, value, and parent, and with <tt>null</tt>
-         * child links, and BLACK color.
-         */
-        Entry(String key, Object value, Entry parent) {
-            this.key = key;
-            this.value = value;
-            this.parent = parent;
-        }
-
-        public Entry() {
-
-        }
-
-        /**
-         * Returns the key.
-         *
-         * @return the key.
-         */
-        public String getKey() {
-            return key;
-        }
-
-        /**
-         * Returns the value associated with the key.
-         *
-         * @return the value associated with the key.
-         */
-        public Object getValue() {
-            return value;
-        }
-
-        /**
-         * Replaces the value currently associated with the key with the given value.
-         *
-         * @return the value associated with the key before this method was called.
-         */
-        public Object setValue(Object value) {
-            Object oldValue = this.value;
-            this.value = value;
-            return oldValue;
-        }
-
-        public boolean equals(Object o) {
-            if (!(o instanceof Entry))
-                return false;
-            Entry e = (Entry) o;
-
-            return valEquals(key, e.getKey()) && valEquals(value, e.getValue());
-        }
-
-        public String toString() {
-            return key + "=" + value;
-        }
-    }
+    public static final boolean RED = false;
+    public static final boolean BLACK = true;
 
     /**
      * Returns the first Entry in the TreeMap (according to the TreeMap's key-sort
@@ -704,11 +632,30 @@ public class TreeMapStrR {
         setColor(x, BLACK);
     }
 
+    public boolean repOKSymSolve() {
+        if (!isBinTreeWithParentReferences())
+            return false;
+        if (!isWellColored())
+            return false;
+        return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (!isSorted())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
     public boolean isBinTreeWithParentReferences() {
         return isBinTreeWithParentReferences(new HashSet<>());
     }
 
     public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+        int prevSize = visited.size();
         if (root == null)
             return size == 0;
         if (root.parent != null)
@@ -738,7 +685,7 @@ public class TreeMapStrR {
                 worklist.add(right);
             }
         }
-        return visited.size() == size;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean isWellColored() {
@@ -791,11 +738,8 @@ public class TreeMapStrR {
         return isSorted(root, null, null);
     }
 
-    private boolean isSorted(Entry n, String min, String max) {
-        if (n.key == null)
-            return false;
-
-        if ((min != null && n.key.compareTo(min) <= 0) || (max != null && n.key.compareTo(max) >= 0))
+    private boolean isSorted(Entry n, Integer min, Integer max) {
+        if ((min != null && n.key <= (min)) || (max != null && n.key >= (max)))
             return false;
 
         if (n.left != null)
@@ -824,5 +768,159 @@ public class TreeMapStrR {
             return b;
         }
     }
+
+    public static class Entry {
+
+        public int key;
+        public Object value;
+        public Entry left = null;
+        public Entry right = null;
+        public Entry parent;
+        public boolean color = TreeMap.BLACK;
+
+        /**
+         * Test two values for equality. Differs from o1.equals(o2) only in that it
+         * copes with with <tt>null</tt> o1 properly.
+         */
+        private boolean valEquals(Object o1, Object o2) {
+            return (o1 == null ? o2 == null : o1.equals(o2));
+        }
+
+        /**
+         * Make a new cell with given key, value, and parent, and with <tt>null</tt>
+         * child links, and BLACK color.
+         */
+        public Entry(int key, Object value, Entry parent) {
+            this.key = key;
+            this.value = value;
+            this.parent = parent;
+        }
+
+        public Entry() {
+        }
+
+        /**
+         * Returns the key.
+         *
+         * @return the key.
+         */
+        public int getKey() {
+            return key;
+        }
+
+        /**
+         * Returns the value associated with the key.
+         *
+         * @return the value associated with the key.
+         */
+        public Object getValue() {
+            return value;
+        }
+
+        /**
+         * Replaces the value currently associated with the key with the given value.
+         *
+         * @return the value associated with the key before this method was called.
+         */
+        public Object setValue(Object value) {
+            Object oldValue = this.value;
+            this.value = value;
+            return oldValue;
+        }
+
+        public boolean equals(Object o) {
+            if (!(o instanceof Entry))
+                return false;
+            Entry e = (Entry) o;
+
+            return valEquals(key, e.getKey()) && valEquals(value, e.getValue());
+        }
+
+        public String toString() {
+            return key + "=" + value;
+        }
+
+    }
+
+//    public String treeToString() {
+//        if (root == null)
+//            return "root -> null";
+//
+//        StringBuilder sb = new StringBuilder();
+//        String indent = "  ";
+//        sb.append("root\n");
+//
+//        if (root.color)
+//            sb.append("root.color: BLACK\n");
+//        else
+//            sb.append("root.color: RED\n");
+//
+//        sb.append("root.color -> " + root.color + "\n");
+//
+//        Set<Entry> visited = new HashSet<Entry>();
+//        LinkedList<Entry> worklist = new LinkedList<Entry>();
+//        visited.add(root);
+//        worklist.add(root);
+//        if (root.parent != null)
+//            sb.append("root.parent != null (WRONG!)\n");
+//
+//        sb.append("root.parent -> null (OK)\n");
+//
+//        while (!worklist.isEmpty()) {
+//            Entry node = worklist.removeFirst();
+//
+//            sb.append(indent + "color -> " + node.color + "\n");
+//            sb.append(indent + "key -> " + node.key + "\n");
+//
+//            Entry left = node.left;
+//
+//            if (left != null) {
+//                boolean add = true;
+//                if (!visited.add(left)) {
+//                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "left -> NewObject (OK)\n");
+//                }
+//                if (left.parent != node) {
+//                    sb.append(indent + "left.parent -> (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "left.parent -> OK\n");
+//                }
+//                if (add) {
+//                    worklist.add(left);
+//                }
+//            } else {
+//                sb.append(indent + "left -> null (OK)\n");
+//            }
+//
+//            Entry right = node.right;
+//
+//            if (right != null) {
+//                boolean add = true;
+//                if (!visited.add(right)) {
+//                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
+//                    add = false;
+//                } else
+//                    sb.append(indent + "rigth -> NewObject (OK)\n");
+//
+//                if (right.parent != node) {
+//                    sb.append(indent + "right.parent -> (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "right.parent -> OK\n");
+//                }
+//                if (add) {
+//                    worklist.add(right);
+//                }
+//            } else {
+//                sb.append(indent + "right -> null (OK)\n");
+//            }
+//
+//            indent = indent + "  ";
+//        }
+//        return sb.toString();
+//    }
 
 }

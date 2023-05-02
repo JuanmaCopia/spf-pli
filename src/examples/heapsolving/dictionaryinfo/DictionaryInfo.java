@@ -33,8 +33,6 @@ package heapsolving.dictionaryinfo;
 import java.util.HashSet;
 import java.util.Set;
 
-import heapsolving.treemap.TreeMap;
-import heapsolving.treemap.TreeMap.Entry;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -300,17 +298,18 @@ public class DictionaryInfo {
 //    }
 
     public boolean repOKSymSolve() {
-        if (fieldsByTagNumber == null || fieldsByName == null)
+        if (fieldsByName == null)
             return false;
         if (fieldsByTagNumber == fieldsByName)
             return false;
 
-        Set<Entry> visited = new HashSet<>();
-        if (!fieldsByTagNumber.isBinTreeWithParentReferences(visited))
+        Set<TreeMap.Entry> visited = new HashSet<>();
+
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isBinTreeWithParentReferences(visited))
             return false;
         if (!fieldsByName.isBinTreeWithParentReferences(visited))
             return false;
-        if (!fieldsByTagNumber.isWellColored())
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isWellColored())
             return false;
         if (!fieldsByName.isWellColored())
             return false;
@@ -318,7 +317,7 @@ public class DictionaryInfo {
     }
 
     public boolean repOKSymbolicExecution() {
-        if (!fieldsByTagNumber.isSorted())
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isSorted())
             return false;
         if (!fieldsByName.isSorted())
             return false;
