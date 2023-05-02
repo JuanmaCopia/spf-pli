@@ -28,7 +28,6 @@ public class CombatantStatisticMain {
         CombatantStatistic structure = CombatantStatisticHarness.getStructure();
         if (structure != null) {
             try {
-                SymHeap.assume(type >= 0 && type <= 14);
                 // Call to method under analysis
                 structure.ensureTypExists(type);
             } catch (Exception e) {

@@ -32,8 +32,6 @@ public class CombatantStatisticMain {
         CombatantStatistic structure = CombatantStatisticHarness.getStructure();
         if (structure != null) {
             try {
-                SymHeap.assume(side >= 0 && side <= 1);
-                SymHeap.assume(type >= 0 && type <= 14);
                 // Call to method under analysis
                 structure.addData(type, side, value);
             } catch (Exception e) {

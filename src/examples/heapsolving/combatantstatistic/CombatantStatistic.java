@@ -82,9 +82,9 @@ public class CombatantStatistic {
      */
     public void addData(int type, int side, int value) {
         if (side < 0 || side > 1)
-            throw new IllegalArgumentException("wrong side!");
+            return;
         if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+            return;
 
         ensureTypExists(type);
         int storedValue;
@@ -102,7 +102,7 @@ public class CombatantStatistic {
      */
     public void ensureTypExists(int type) {
         if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+            return;
 
         if (!allData.containsKey(type)) {
             allData.put(type, new DataSet());
