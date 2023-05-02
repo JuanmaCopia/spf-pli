@@ -1,7 +1,5 @@
 package heapsolving.combatantstatistic;
 
-import heapsolving.linkedlist.LinkedList;
-
 /*
  Copyright (c) 2010 Daniel Raap
 

@@ -13,8 +13,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import heapsolving.linkedlist.LinkedList;
-
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
  * implementation provides all of the optional map operations, and permits

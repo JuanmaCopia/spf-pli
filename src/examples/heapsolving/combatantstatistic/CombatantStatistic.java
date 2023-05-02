@@ -1,6 +1,5 @@
 package heapsolving.combatantstatistic;
 
-import heapsolving.linkedlist.LinkedList;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
