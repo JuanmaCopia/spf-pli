@@ -16,7 +16,6 @@
 
 package heapsolving.template;
 
-import heapsolving.hashmap.HashMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
