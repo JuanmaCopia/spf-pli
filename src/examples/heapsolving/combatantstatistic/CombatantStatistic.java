@@ -80,9 +80,13 @@ public class CombatantStatistic {
      * @param value
      */
     public void addData(int type, int side, int value) {
-        if (side < 0 || side > 1)
+        if (side > 1)
             return;
-        if (type < 0 || type > 14)
+        if (side < 0)
+            return;
+        if (type > 14)
+            return;
+        if (type < 0)
             return;
 
         ensureTypExists(type);
@@ -100,7 +104,9 @@ public class CombatantStatistic {
      * @param type
      */
     public void ensureTypExists(int type) {
-        if (type < 0 || type > 14)
+        if (type > 14)
+            return;
+        if (type < 0)
             return;
 
         if (!allData.containsKey(type)) {

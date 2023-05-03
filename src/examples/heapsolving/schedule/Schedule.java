@@ -184,8 +184,6 @@ public class Schedule {
     }
 
     private Job newProcess(int prio) {
-        if (prio < 1 || prio > MAXPRIO)
-            throw new IllegalArgumentException();
         Job proc = new Job(allocProcNum++);
         proc.setPriority(prio);
         numProcesses++;
@@ -193,10 +191,11 @@ public class Schedule {
     }
 
     public void addProcess(int prio) {
-        if (prio < 1 || prio > MAXPRIO)
-            // throw new IllegalArgumentException();
-            return; // replaced by the exception, our test case generation has not implemented
-                    // exception behavior
+        if (prio > MAXPRIO)
+            return;
+        if (prio < 1)
+            return;
+
         Job proc;
         proc = newProcess(prio);
 
