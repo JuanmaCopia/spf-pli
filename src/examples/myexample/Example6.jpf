@@ -1,0 +1,6 @@
+target = myexample.Example6
+
+symbolic.dp=z3bitvector
+
+
+symbolic.optimizechoices=false
