@@ -1,0 +1,23 @@
+@using=spf-lissa
+
+# ---------------   Arguments   ---------------
+
+shell=lissa.LISSAShell
+
+target = heapsolving.avltree.METHOD.AvlTreeMain
+method = METHOD
+
+symbolic.debug = false
+symbolic.dp = z3
+
+heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
+heapsolving.generateTests = BOOLEAN
+heapsolving.symsolve.finitization.class = heapsolving.avltree.AvlTree
+heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.predicate = repOKSymSolve
+
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+
+# ---------------------------------------------

@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Red-Black tree based implementation of the <tt>SortedMap</tt> interface. This
@@ -363,80 +364,8 @@ public class TreeMap {
         return 0;
     }
 
-    /**
-     * Test two values for equality. Differs from o1.equals(o2) only in that it
-     * copes with with <tt>null</tt> o1 properly.
-     */
-    private static boolean valEquals(Object o1, Object o2) {
-        return (o1 == null ? o2 == null : o1.equals(o2));
-    }
-
-    private static final boolean RED = false;
-    private static final boolean BLACK = true;
-
-    /**
-     * Node in the Tree. Doubles as a means to pass key-value pairs back to user
-     * (see Map.Entry).
-     */
-    public static class Entry {
-        int key;
-        Object value;
-        Entry left = null;
-        Entry right = null;
-        Entry parent;
-        boolean color = BLACK;
-
-        /**
-         * Make a new cell with given key, value, and parent, and with <tt>null</tt>
-         * child links, and BLACK color.
-         */
-        Entry(int key, Object value, Entry parent) {
-            this.key = key;
-            this.value = value;
-            this.parent = parent;
-        }
-
-        /**
-         * Returns the key.
-         *
-         * @return the key.
-         */
-        public int getKey() {
-            return key;
-        }
-
-        /**
-         * Returns the value associated with the key.
-         *
-         * @return the value associated with the key.
-         */
-        public Object getValue() {
-            return value;
-        }
-
-        /**
-         * Replaces the value currently associated with the key with the given value.
-         *
-         * @return the value associated with the key before this method was called.
-         */
-        public Object setValue(Object value) {
-            Object oldValue = this.value;
-            this.value = value;
-            return oldValue;
-        }
-
-        public boolean equals(Object o) {
-            if (!(o instanceof Entry))
-                return false;
-            Entry e = (Entry) o;
-
-            return valEquals(key, e.getKey()) && valEquals(value, e.getValue());
-        }
-
-        public String toString() {
-            return key + "=" + value;
-        }
-    }
+    public static final boolean RED = false;
+    public static final boolean BLACK = true;
 
     /**
      * Returns the first Entry in the TreeMap (according to the TreeMap's key-sort
@@ -703,25 +632,39 @@ public class TreeMap {
         setColor(x, BLACK);
     }
 
-    public boolean repOK() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isWellColored())
-                return false;
-        }
+    public boolean repOKSymSolve() {
+        if (!isBinTreeWithParentReferences())
+            return false;
+        if (!isWellColored())
+            return false;
         return true;
     }
 
+    public boolean repOKSymbolicExecution() {
+        if (!isSorted())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
     public boolean isBinTreeWithParentReferences() {
+        return isBinTreeWithParentReferences(new HashSet<>());
+    }
+
+    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+        int prevSize = visited.size();
         if (root == null)
-            return true;
-        HashSet<Entry> visited = new HashSet<Entry>();
-        LinkedList<Entry> worklist = new LinkedList<Entry>();
-        visited.add(root);
-        worklist.add(root);
+            return size == 0;
         if (root.parent != null)
             return false;
+
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
+        if (!visited.add(root))
+            return false;
+        worklist.add(root);
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
@@ -742,10 +685,12 @@ public class TreeMap {
                 worklist.add(right);
             }
         }
-        return true;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean isWellColored() {
+        if (root == null)
+            return true;
         if (root.color != BLACK)
             return false;
         LinkedList<Entry> worklist = new LinkedList<Entry>();
@@ -787,6 +732,25 @@ public class TreeMap {
         return true;
     }
 
+    public boolean isSorted() {
+        if (root == null)
+            return true;
+        return isSorted(root, null, null);
+    }
+
+    private boolean isSorted(Entry n, Integer min, Integer max) {
+        if ((min != null && n.key <= (min)) || (max != null && n.key >= (max)))
+            return false;
+
+        if (n.left != null)
+            if (!isSorted(n.left, min, n.key))
+                return false;
+        if (n.right != null)
+            if (!isSorted(n.right, n.key, max))
+                return false;
+        return true;
+    }
+
     private class Pair<T, U> {
         private T a;
         private U b;
@@ -804,5 +768,159 @@ public class TreeMap {
             return b;
         }
     }
+
+    public static class Entry {
+
+        public int key;
+        public Object value;
+        public Entry left = null;
+        public Entry right = null;
+        public Entry parent;
+        public boolean color = TreeMap.BLACK;
+
+        /**
+         * Test two values for equality. Differs from o1.equals(o2) only in that it
+         * copes with with <tt>null</tt> o1 properly.
+         */
+        private boolean valEquals(Object o1, Object o2) {
+            return (o1 == null ? o2 == null : o1.equals(o2));
+        }
+
+        /**
+         * Make a new cell with given key, value, and parent, and with <tt>null</tt>
+         * child links, and BLACK color.
+         */
+        public Entry(int key, Object value, Entry parent) {
+            this.key = key;
+            this.value = value;
+            this.parent = parent;
+        }
+
+        public Entry() {
+        }
+
+        /**
+         * Returns the key.
+         *
+         * @return the key.
+         */
+        public int getKey() {
+            return key;
+        }
+
+        /**
+         * Returns the value associated with the key.
+         *
+         * @return the value associated with the key.
+         */
+        public Object getValue() {
+            return value;
+        }
+
+        /**
+         * Replaces the value currently associated with the key with the given value.
+         *
+         * @return the value associated with the key before this method was called.
+         */
+        public Object setValue(Object value) {
+            Object oldValue = this.value;
+            this.value = value;
+            return oldValue;
+        }
+
+        public boolean equals(Object o) {
+            if (!(o instanceof Entry))
+                return false;
+            Entry e = (Entry) o;
+
+            return valEquals(key, e.getKey()) && valEquals(value, e.getValue());
+        }
+
+        public String toString() {
+            return key + "=" + value;
+        }
+
+    }
+
+//    public String treeToString() {
+//        if (root == null)
+//            return "root -> null";
+//
+//        StringBuilder sb = new StringBuilder();
+//        String indent = "  ";
+//        sb.append("root\n");
+//
+//        if (root.color)
+//            sb.append("root.color: BLACK\n");
+//        else
+//            sb.append("root.color: RED\n");
+//
+//        sb.append("root.color -> " + root.color + "\n");
+//
+//        Set<Entry> visited = new HashSet<Entry>();
+//        LinkedList<Entry> worklist = new LinkedList<Entry>();
+//        visited.add(root);
+//        worklist.add(root);
+//        if (root.parent != null)
+//            sb.append("root.parent != null (WRONG!)\n");
+//
+//        sb.append("root.parent -> null (OK)\n");
+//
+//        while (!worklist.isEmpty()) {
+//            Entry node = worklist.removeFirst();
+//
+//            sb.append(indent + "color -> " + node.color + "\n");
+//            sb.append(indent + "key -> " + node.key + "\n");
+//
+//            Entry left = node.left;
+//
+//            if (left != null) {
+//                boolean add = true;
+//                if (!visited.add(left)) {
+//                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "left -> NewObject (OK)\n");
+//                }
+//                if (left.parent != node) {
+//                    sb.append(indent + "left.parent -> (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "left.parent -> OK\n");
+//                }
+//                if (add) {
+//                    worklist.add(left);
+//                }
+//            } else {
+//                sb.append(indent + "left -> null (OK)\n");
+//            }
+//
+//            Entry right = node.right;
+//
+//            if (right != null) {
+//                boolean add = true;
+//                if (!visited.add(right)) {
+//                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
+//                    add = false;
+//                } else
+//                    sb.append(indent + "rigth -> NewObject (OK)\n");
+//
+//                if (right.parent != node) {
+//                    sb.append(indent + "right.parent -> (WRONG!)\n");
+//                    add = false;
+//                } else {
+//                    sb.append(indent + "right.parent -> OK\n");
+//                }
+//                if (add) {
+//                    worklist.add(right);
+//                }
+//            } else {
+//                sb.append(indent + "right -> null (OK)\n");
+//            }
+//
+//            indent = indent + "  ";
+//        }
+//        return sb.toString();
+//    }
 
 }

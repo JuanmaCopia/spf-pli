@@ -15,6 +15,7 @@ import java.util.SortedSet;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * This class implements the <tt>Set</tt> interface, backed by a
@@ -48,7 +49,7 @@ import korat.finitization.impl.FinitizationFactory;
  * object exists, the set should be "wrapped" using the
  * <tt>Collections.synchronizedSet</tt> method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the set:
- * 
+ *
  * <pre>
  *     SortedSet s = Collections.synchronizedSortedSet(new TreeSet(...));
  * </pre>
@@ -92,7 +93,7 @@ public class TreeSet {
     public transient TreeMap m; // The backing Map
 
     // Dummy value to associate with an Object in the backing Map
-    private static final Object PRESENT = new Object();
+    private static final Obj PRESENT = new Obj();
 
     public TreeSet() {
         this.m = new TreeMap();
@@ -144,7 +145,7 @@ public class TreeSet {
      *                            the elements currently in the set.
      */
     public boolean remove(int o) {
-        return m.remove(o) == PRESENT;
+        return m.remove(o) != null;
     }
 
     /**
@@ -174,16 +175,32 @@ public class TreeSet {
         return m.lastKey();
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
         if (m == null)
             return false;
-        return m.repOK();
+        return m.repOKSymSolve();
     }
 
-    public boolean isBinTreeWithParentReferences() {
+    public boolean repOKSymbolicExecution() {
         if (m == null)
             return false;
-        return m.isBinTreeWithParentReferences();
+        return m.repOKSymbolicExecution();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        TreeSet toBuild = new TreeSet();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        TreeSet toBuild = new TreeSet();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finTreeSet(int nodesNum) {
@@ -194,6 +211,8 @@ public class TreeSet {
         f.set(TreeMap.class, "root", nodes);
         f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
         f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        IObjSet obj = f.createObjSet(Obj.class, 1, true);
+        f.set(TreeMap.Entry.class, "value", obj);
         f.set(TreeMap.Entry.class, "left", nodes);
         f.set(TreeMap.Entry.class, "right", nodes);
         f.set(TreeMap.Entry.class, "parent", nodes);

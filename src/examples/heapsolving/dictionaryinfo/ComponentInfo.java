@@ -106,13 +106,13 @@ public class ComponentInfo implements CompositeFixInfo {
      *      double)
      */
     public void addField(FieldInfo field, double position) {
-        if (fieldsByTagNumber == null) {
-            fieldsByTagNumber = new TreeMap<Integer, FieldInfo>();
-            fieldsByName = new TreeMap<String, FieldInfo>();
-        }
-        fieldsByTagNumber.put(field.getTagNumber(), field);
-        fieldsByName.put(field.getName(), field);
-        addItem(field, position);
+//        if (fieldsByTagNumber == null) {
+//            fieldsByTagNumber = new TreeMap<Integer, FieldInfo>();
+//            fieldsByName = new TreeMap<String, FieldInfo>();
+//        }
+//        fieldsByTagNumber.put(field.getTagNumber(), field);
+//        fieldsByName.put(field.getName(), field);
+//        addItem(field, position);
     }
 
     /**
@@ -174,12 +174,12 @@ public class ComponentInfo implements CompositeFixInfo {
      *      org.fixsuite.message.info.GroupInfo)
      */
     public void replaceAsGroup(FieldInfo field, GroupInfo group) {
-        fieldsByTagNumber.put(field.getTagNumber(), group);
-        fieldsByName.put(field.getName(), group);
-        double position = itemsByContent.get(field);
-        itemsByContent.remove(field);
-        itemsByContent.put(group, position);
-        itemsByPosition.put(position, group);
+//        fieldsByTagNumber.put(field.getTagNumber(), group);
+//        fieldsByName.put(field.getName(), group);
+//        double position = itemsByContent.get(field);
+//        itemsByContent.remove(field);
+//        itemsByContent.put(group, position);
+//        itemsByPosition.put(position, group);
     }
 
     /**

@@ -3,6 +3,7 @@ package heapsolving.combatantstatistic;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /*
  Copyright (c) 2010 Daniel Raap
@@ -69,7 +70,7 @@ public class CombatantStatistic {
      *
      * @param numberOfRounds
      */
-    public CombatantStatistic(final int numberOfRounds) {
+    public CombatantStatistic() {
         // this.numberOfRounds = numberOfRounds;
     }
 
@@ -79,10 +80,14 @@ public class CombatantStatistic {
      * @param value
      */
     public void addData(int type, int side, int value) {
-        if (side < 0 || side > 1)
-            throw new IllegalArgumentException("wrong side!");
-        if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+        if (side > 1)
+            return;
+        if (side < 0)
+            return;
+        if (type > 14)
+            return;
+        if (type < 0)
+            return;
 
         ensureTypExists(type);
         int storedValue;
@@ -99,29 +104,42 @@ public class CombatantStatistic {
      * @param type
      */
     public void ensureTypExists(int type) {
-        if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+        if (type > 14)
+            return;
+        if (type < 0)
+            return;
 
         if (!allData.containsKey(type)) {
             allData.put(type, new DataSet());
         }
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
         if (allData == null)
             return false;
-
-        if (!allData.repOK())
+        if (!allData.repOKSymSolve())
             return false;
-
-        DataSet h;
-        for (HashMapIntDataSet.Entry e : allData.entrySet()) {
-            h = e.getValue();
-            if (h != null && !h.repOK())
-                return false;
-        }
-
         return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        CombatantStatistic toBuild = new CombatantStatistic();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        CombatantStatistic toBuild = new CombatantStatistic();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finCombatantStatistic(int nodesNum) {
@@ -139,9 +157,36 @@ public class CombatantStatistic {
         f.set(HashMapIntDataSet.class, "e5", entries);
         f.set(HashMapIntDataSet.class, "e6", entries);
         f.set(HashMapIntDataSet.class, "e7", entries);
+        f.set(HashMapIntDataSet.class, "e8", entries);
+        f.set(HashMapIntDataSet.class, "e9", entries);
+        f.set(HashMapIntDataSet.class, "e10", entries);
+        f.set(HashMapIntDataSet.class, "e11", entries);
+        f.set(HashMapIntDataSet.class, "e12", entries);
+        f.set(HashMapIntDataSet.class, "e13", entries);
+        f.set(HashMapIntDataSet.class, "e14", entries);
+        f.set(HashMapIntDataSet.class, "e15", entries);
+        f.set(HashMapIntDataSet.class, "e16", entries);
+        f.set(HashMapIntDataSet.class, "e17", entries);
+        f.set(HashMapIntDataSet.class, "e18", entries);
+        f.set(HashMapIntDataSet.class, "e19", entries);
+        f.set(HashMapIntDataSet.class, "e20", entries);
+        f.set(HashMapIntDataSet.class, "e21", entries);
+        f.set(HashMapIntDataSet.class, "e22", entries);
+        f.set(HashMapIntDataSet.class, "e23", entries);
+        f.set(HashMapIntDataSet.class, "e24", entries);
+        f.set(HashMapIntDataSet.class, "e25", entries);
+        f.set(HashMapIntDataSet.class, "e26", entries);
+        f.set(HashMapIntDataSet.class, "e27", entries);
+        f.set(HashMapIntDataSet.class, "e28", entries);
+        f.set(HashMapIntDataSet.class, "e29", entries);
+        f.set(HashMapIntDataSet.class, "e30", entries);
+        f.set(HashMapIntDataSet.class, "e31", entries);
+        f.set(HashMapIntDataSet.class, "size", f.createIntSet(0, nodesNum));
 
         IObjSet datasets = f.createObjSet(DataSet.class, nodesNum, true);
+        f.set(HashMapIntDataSet.Entry.class, "key", f.createIntSet(0, 14));
         f.set(HashMapIntDataSet.Entry.class, "value", datasets);
+        f.set(HashMapIntDataSet.Entry.class, "hash", f.createIntSet(0, 14));
         f.set(HashMapIntDataSet.Entry.class, "next", entries);
 
         IObjSet hashmap2 = f.createObjSet(HashMapIntList.class, nodesNum, true);
@@ -152,17 +197,18 @@ public class CombatantStatistic {
         f.set(HashMapIntList.class, "e1", entries2);
         f.set(HashMapIntList.class, "e2", entries2);
         f.set(HashMapIntList.class, "e3", entries2);
-        f.set(HashMapIntList.class, "e4", entries2);
-        f.set(HashMapIntList.class, "e5", entries2);
-        f.set(HashMapIntList.class, "e6", entries2);
-        f.set(HashMapIntList.class, "e7", entries2);
+        f.set(HashMapIntList.class, "size", f.createIntSet(0, 2));
 
-        IObjSet list = f.createObjSet(LinkedList.class, nodesNum, true);
+        IObjSet list = f.createObjSet(LinkedList.class, 2, true);
+        f.set(HashMapIntList.Entry.class, "key", f.createIntSet(0, 1));
         f.set(HashMapIntList.Entry.class, "value", list);
+        f.set(HashMapIntList.Entry.class, "hash", f.createIntSet(0, 1));
         f.set(HashMapIntList.Entry.class, "next", entries2);
 
-        IObjSet listNodes = f.createObjSet(LinkedList.Entry.class, nodesNum * nodesNum, true);
+        IObjSet listNodes = f.createObjSet(LinkedList.Entry.class, nodesNum, true);
         f.set(LinkedList.class, "header", listNodes);
+        f.set(LinkedList.class, "size", f.createIntSet(0, nodesNum));
+        f.set(LinkedList.Entry.class, "element", f.createIntSet(0, nodesNum));
         f.set(LinkedList.Entry.class, "next", listNodes);
         f.set(LinkedList.Entry.class, "previous", listNodes);
 

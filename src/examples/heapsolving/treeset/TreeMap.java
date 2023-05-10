@@ -7,8 +7,11 @@
 
 package heapsolving.treeset;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -49,7 +52,7 @@ import java.util.Set;
  * be "wrapped" using the <tt>Collections.synchronizedMap</tt> method. This is
  * best done at creation time, to prevent accidental unsynchronized access to
  * the map:
- * 
+ *
  * <pre>
  *     Map m = Collections.synchronizedMap(new TreeMap(...));
  * </pre>
@@ -281,7 +284,7 @@ public class TreeMap {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object put(int key, Object value) {
+    public Object put(int key, Obj value) {
         Entry t = root;
 
         if (t == null) {
@@ -629,25 +632,41 @@ public class TreeMap {
         setColor(x, BLACK);
     }
 
-    public boolean repOK() {
-        if (root != null) {
-            if (!isBinTreeWithParentReferences())
-                return false;
-            if (!isWellColored())
-                return false;
-        }
+    public boolean repOKSymSolve() {
+        if (!isBinTreeWithParentReferences())
+            return false;
+        if (!isWellColored())
+            return false;
         return true;
     }
 
+    public boolean repOKSymbolicExecution() {
+        if (!isSorted())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
     public boolean isBinTreeWithParentReferences() {
+        return isBinTreeWithParentReferences(new HashSet<>());
+    }
+
+    public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+        int prevSize = visited.size();
         if (root == null)
-            return true;
-        Set<Entry> visited = new HashSet<Entry>();
-        LinkedList<Entry> worklist = new LinkedList<Entry>();
-        visited.add(root);
-        worklist.add(root);
+            return size == 0;
         if (root.parent != null)
             return false;
+        if (root.value == null)
+            return false;
+
+        LinkedList<Entry> worklist = new LinkedList<Entry>();
+        if (!visited.add(root))
+            return false;
+        worklist.add(root);
 
         while (!worklist.isEmpty()) {
             Entry node = worklist.removeFirst();
@@ -657,6 +676,8 @@ public class TreeMap {
                     return false;
                 if (left.parent != node)
                     return false;
+                if (left.value == null)
+                    return false;
                 worklist.add(left);
             }
             Entry right = node.right;
@@ -665,13 +686,17 @@ public class TreeMap {
                     return false;
                 if (right.parent != node)
                     return false;
+                if (right.value == null)
+                    return false;
                 worklist.add(right);
             }
         }
-        return true;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean isWellColored() {
+        if (root == null)
+            return true;
         if (root.color != BLACK)
             return false;
         LinkedList<Entry> worklist = new LinkedList<Entry>();
@@ -713,6 +738,25 @@ public class TreeMap {
         return true;
     }
 
+    public boolean isSorted() {
+        if (root == null)
+            return true;
+        return isSorted(root, null, null);
+    }
+
+    private boolean isSorted(Entry n, Integer min, Integer max) {
+        if ((min != null && n.key <= (min)) || (max != null && n.key >= (max)))
+            return false;
+
+        if (n.left != null)
+            if (!isSorted(n.left, min, n.key))
+                return false;
+        if (n.right != null)
+            if (!isSorted(n.right, n.key, max))
+                return false;
+        return true;
+    }
+
     private class Pair<T, U> {
         private T a;
         private U b;
@@ -731,10 +775,10 @@ public class TreeMap {
         }
     }
 
-    public class Entry {
+    public static class Entry {
 
         public int key;
-        public Object value;
+        public Obj value;
         public Entry left = null;
         public Entry right = null;
         public Entry parent;
@@ -752,10 +796,13 @@ public class TreeMap {
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
          * child links, and BLACK color.
          */
-        public Entry(int key, Object value, Entry parent) {
+        public Entry(int key, Obj value, Entry parent) {
             this.key = key;
             this.value = value;
             this.parent = parent;
+        }
+
+        public Entry() {
         }
 
         /**
@@ -781,7 +828,7 @@ public class TreeMap {
          *
          * @return the value associated with the key before this method was called.
          */
-        public Object setValue(Object value) {
+        public Object setValue(Obj value) {
             Object oldValue = this.value;
             this.value = value;
             return oldValue;

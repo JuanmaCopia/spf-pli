@@ -7,15 +7,23 @@
 
 package heapsolving.hashmap.containskey;
 
-import lissa.SymHeap;
-
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class HashMapMain {
 
+    private static void registerTargetMethodData(int key) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("containsKey", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(key);
+    }
+
     public static void main(String[] args) {
         int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        registerTargetMethodData(key);
 
         HashMap structure = HashMapHarness.getStructure();
         if (structure != null) {
@@ -23,9 +31,10 @@ public class HashMapMain {
                 // Call to method under analysis
                 structure.containsKey(key);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
-
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

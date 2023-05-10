@@ -138,4 +138,30 @@ public class Utils {
         return result;
     }
 
+    public static String calculateTimeInHHMMSS(long timeInMiliseconds) {
+        long timeInSeconds = timeInMiliseconds / 1000;
+        long hours = timeInSeconds / 3600;
+        long timeLeft = timeInSeconds % 3600;
+        long minutes = timeLeft / 60;
+        long seconds = timeLeft % 60;
+
+        String sec = prependZeroIfNecessary(seconds);
+        String min;
+
+        if (hours == 0) {
+            min = Long.toString(minutes);
+            return String.format("%s:%s", min, sec);
+        }
+
+        min = prependZeroIfNecessary(minutes);
+        String h = Long.toString(hours);
+        return String.format("%s:%s:%s", h, min, sec);
+    }
+
+    public static String prependZeroIfNecessary(long time) {
+        if (time <= 9)
+            return String.format("%d%d", 0, time);
+        return String.format("%d", time);
+    }
+
 }

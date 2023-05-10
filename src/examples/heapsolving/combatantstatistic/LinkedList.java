@@ -7,9 +7,11 @@
 
 package heapsolving.combatantstatistic;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Vector;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -79,8 +81,8 @@ import java.util.Set;
  * @since 1.2
  */
 public class LinkedList {
-    public transient Entry header = new Entry();
-    public transient int size = 0;
+    public Entry header = new Entry();
+    public int size = 0;
 
     /**
      * Constructs an empty list.
@@ -408,12 +410,30 @@ public class LinkedList {
         return result;
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        return isCircularLinkedList();
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (header == null)
+            return false;
+        return isSizeOK();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public boolean isCircularLinkedList() {
+        return isCircularLinkedList(new HashSet<Entry>());
+    }
+
+    public boolean isCircularLinkedList(Set<Entry> visited) {
         if (header == null)
             return false;
 
-        Set<Entry> visited = new HashSet<Entry>();
-        visited.add(header);
+        if (!visited.add(header))
+            return false;
         Entry current = header;
 
         while (true) {
@@ -432,12 +452,27 @@ public class LinkedList {
         return true;
     }
 
-    public class Entry {
+    public boolean isSizeOK() {
+        return size == countNodes();
+    }
+
+    public int countNodes() {
+        int count = 0;
+
+        Entry current = header.next;
+        while (current != header) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+
+    public static class Entry {
         public int element;
         public Entry next;
         public Entry previous;
 
-        Entry() {
+        public Entry() {
         }
 
         Entry(int element, Entry next, Entry previous) {
@@ -446,5 +481,4 @@ public class LinkedList {
             this.previous = previous;
         }
     }
-
 }

@@ -10,15 +10,19 @@ shell=lissa.LISSAShell
 target = heapsolving.schedule.METHOD.ScheduleMain
 method = METHOD
 
+search.depth_limit = 250
+
 symbolic.debug = false
 symbolic.dp = z3
 
 heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
+heapsolving.generateTests = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.schedule.Schedule
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOK
+heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.heap.HeapSolvingInstructionFactory
+jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

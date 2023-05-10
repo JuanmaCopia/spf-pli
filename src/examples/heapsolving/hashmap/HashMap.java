@@ -16,6 +16,7 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
@@ -117,13 +118,18 @@ public class HashMap {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 16;
+    public static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified by
      * either of the constructors with arguments. MUST be a power of two <= 1<<30.
      */
     static final int MAXIMUM_CAPACITY = 1 << 30;
+
+    /**
+     * The load factor used when none specified in constructor.
+     **/
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
@@ -557,25 +563,91 @@ public class HashMap {
         return es;
     }
 
-    public boolean repOK() {
+    static final int THRESHOLD = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+
+    class Threshold {
+        public int value;
+
+        public Threshold(int value) {
+            this.value = value;
+        }
+    }
+
+    public boolean repOKSymSolve() {
+        Threshold threshold = new Threshold(THRESHOLD);
         Set<Entry> visited = new HashSet<Entry>();
-        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++)
-            if (!isLinkedList(i, visited))
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
+            Entry list = getTable(i);
+            if (list != null && !isLinkedList(list, visited, threshold))
                 return false;
+        }
+        return visited.size() == size;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
+            Entry list = getTable(i);
+            if (list != null && !checkListKeys(list, i))
+                return false;
+        }
         return true;
     }
 
-    private boolean isLinkedList(int index, Set<Entry> visited) {
-        Entry current = getTable(index);
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    private boolean isLinkedList(Entry head, Set<Entry> visited, Threshold threshold) {
+        Entry current = head;
         while (current != null) {
+            threshold.value--;
+            if (threshold.value < 0)
+                return false;
             if (!visited.add(current))
                 return false;
+
             current = current.next;
         }
         return true;
     }
 
-    public class Entry {
+    private boolean checkListKeys(Entry head, int index) {
+        int[] visitedKeys = new int[THRESHOLD];
+        int currentIndex = 0;
+        Entry current = head;
+        while (current != null) {
+            int currentKey = current.key;
+            int correctIndex = currentKey & (DEFAULT_INITIAL_CAPACITY - 1);
+            if (index != correctIndex)
+                return false;
+            for (int i = 0; i < currentIndex; i++) {
+                if (visitedKeys[i] == currentKey)
+                    return false;
+            }
+
+            if (current.hash != currentKey)
+                return false;
+
+            visitedKeys[currentIndex] = currentKey;
+            currentIndex++;
+            current = current.next;
+        }
+        return true;
+    }
+
+    public static void runRepOK() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+    }
+
+    public static class Entry {
 
         public int key;
         public Object value;
@@ -668,11 +740,10 @@ public class HashMap {
         f.set(HashMap.class, "e14", entries);
         f.set(HashMap.class, "e15", entries);
 
-        int maxint = DEFAULT_INITIAL_CAPACITY * nodesNum;
-        f.set(Entry.class, "key", f.createIntSet(0, maxint - 1));
-        f.set(Entry.class, "hash", f.createIntSet(0, maxint - 1));
+        f.set(Entry.class, "key", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
+        // f.set(Entry.class, "value", );
+        f.set(Entry.class, "hash", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
         f.set(Entry.class, "next", entries);
-
         return f;
     }
 

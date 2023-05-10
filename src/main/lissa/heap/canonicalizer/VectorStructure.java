@@ -1,30 +1,31 @@
 package lissa.heap.canonicalizer;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import gov.nasa.jpf.symbc.numeric.Expression;
 import korat.finitization.impl.CVElem;
+import korat.utils.IntListAI;
 
 public class VectorStructure {
 
     VectorField[] vector;
 
-    HashSet<Integer> fixedIndices = new HashSet<Integer>();
+    IntListAI fixedIndices;
+
+    int length;
 
     HashMap<String, Integer> currentIndexMap = new HashMap<String, Integer>();
 
     HashMap<String, Integer> indexMap = new HashMap<String, Integer>();
 
-    private HashSet<String> fieldSignatures = new HashSet<String>();
-
     // private HashMap<Integer, Expression> primitiveIndices = new HashMap<Integer,
     // Expression>();
 
     public VectorStructure(CVElem[] structureList) {
-        this.vector = new VectorField[structureList.length];
-        for (int i = 0; i < structureList.length; i++) {
+        length = structureList.length;
+        vector = new VectorField[length];
+        fixedIndices = new IntListAI(length);
+        for (int i = 0; i < length; i++) {
             CVElem elem = structureList[i];
             VectorField vectorField = new VectorField(elem, i);
             vector[i] = vectorField;
@@ -32,7 +33,6 @@ public class VectorStructure {
             if (!indexMap.containsKey(ownerClassName))
                 indexMap.put(ownerClassName, i);
             this.currentIndexMap = new HashMap<String, Integer>(this.indexMap);
-            this.fieldSignatures.add(vectorField.getFieldSignature());
         }
     }
 
@@ -63,18 +63,6 @@ public class VectorStructure {
         assert (vectorField.matchesField(ownerClassName, fieldName));
         currentIndexMap.put(ownerClassName, vectorIndex + 1);
         return vectorField;
-    }
-
-    public boolean isTrackedField(String signature) {
-        boolean result = fieldSignatures.contains(signature);
-
-        // if (!result) {
-        // System.out.println(String.format("Signature %s not tracked. Tracked
-        // signatures: \n", signature));
-        // System.out.println(fieldSignatures.toString());
-        // }
-
-        return result;
     }
 
     public void resetVector() {
@@ -114,16 +102,12 @@ public class VectorStructure {
         return array;
     }
 
-    public Set<Integer> getFixedIndices() {
-        return this.fixedIndices;
+    public IntListAI getFixedIndices() {
+        return fixedIndices;
     }
 //
 //    public HashMap<Integer, Expression> getPrimitiveIndices() {
 //        return this.primitiveIndices;
 //    }
-
-    public Set<String> getFieldSignatures() {
-        return this.fieldSignatures;
-    }
 
 }

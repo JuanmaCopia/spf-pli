@@ -7,23 +7,32 @@
 
 package heapsolving.schedule.quantumexpire;
 
-import lissa.SymHeap;
-
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class ScheduleMain {
 
+    private static void registerTargetMethodData() {
+        int numberOfArguments = 0;
+        TestGen.registerTargetMethod("quantumExpire", numberOfArguments);
+    }
+
     public static void main(String[] args) {
+        registerTargetMethodData();
+
         Schedule structure = ScheduleHarness.getStructure();
         if (structure != null) {
             try {
                 // Call to method under analysis
                 structure.quantumExpire();
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

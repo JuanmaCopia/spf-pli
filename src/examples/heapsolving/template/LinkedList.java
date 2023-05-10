@@ -7,8 +7,10 @@
 
 package heapsolving.template;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all
@@ -40,7 +42,7 @@ import java.util.Set;
  * encapsulates the list. If no such object exists, the list should be "wrapped"
  * using the Collections.synchronizedList method. This is best done at creation
  * time, to prevent accidental unsynchronized access to the list:
- * 
+ *
  * <pre>
  *     List list = Collections.synchronizedList(new LinkedList(...));
  * </pre>
@@ -78,8 +80,8 @@ import java.util.Set;
  * @since 1.2
  */
 public class LinkedList {
-    private transient Entry header = new Entry(null, null, null);
-    private transient int size = 0;
+    public transient Entry header = new Entry(null, null, null);
+    public transient int size = 0;
 
     /**
      * Constructs an empty list.
@@ -373,9 +375,9 @@ public class LinkedList {
     }
 
     public static class Entry {
-        Object element;
-        Entry next;
-        Entry previous;
+        public Object element;
+        public Entry next;
+        public Entry previous;
 
         Entry() {
         }
@@ -405,7 +407,21 @@ public class LinkedList {
         size--;
     }
 
-    public boolean repOK() {
+    public boolean repOKSymSolve() {
+        return isCircularLinkedList();
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (header == null)
+            return false;
+        return isSizeOK();
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public boolean isCircularLinkedList() {
         if (header == null)
             return false;
 
@@ -429,4 +445,18 @@ public class LinkedList {
         return true;
     }
 
+    public boolean isSizeOK() {
+        return size == countNodes();
+    }
+
+    public int countNodes() {
+        int count = 0;
+
+        Entry current = header.next;
+        while (current != header) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }

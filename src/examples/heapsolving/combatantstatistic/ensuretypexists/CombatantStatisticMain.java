@@ -7,26 +7,35 @@
 
 package heapsolving.combatantstatistic.ensuretypexists;
 
-import lissa.SymHeap;
-
 import heapsolving.combatantstatistic.CombatantStatistic;
 import heapsolving.combatantstatistic.CombatantStatisticHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class CombatantStatisticMain {
+
+    private static void registerTargetMethodData(int type) {
+        int numberOfArguments = 1;
+        TestGen.registerTargetMethod("ensureTypExists", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(type);
+    }
 
     public static void main(String[] args) {
         int type = SymHeap.makeSymbolicInteger("type");
 
+        registerTargetMethodData(type);
+
         CombatantStatistic structure = CombatantStatisticHarness.getStructure();
         if (structure != null) {
             try {
-                SymHeap.assume(type >= 0 && type <= 14);
                 // Call to method under analysis
                 structure.ensureTypExists(type);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 

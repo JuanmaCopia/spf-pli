@@ -30,9 +30,13 @@
 
 package heapsolving.dictionaryinfo;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Represents a FIX version specification. DictionaryInfo acts as a central
@@ -42,9 +46,9 @@ import korat.finitization.impl.FinitizationFactory;
  */
 public class DictionaryInfo {
 
-    private String version;
+    // private String version;
 
-    private int loadCount;
+    // private int loadCount;
 
     // Default collection
 //    private TreeMap<String, MessageInfo> messagesByName;
@@ -58,7 +62,7 @@ public class DictionaryInfo {
 
     // private TreeMap<String, FieldInfo> fieldsByName;
 
-    public TreeMapStrR fieldsByName;
+    public TreeMap fieldsByName;
     // ==========================================================
 
     // Default collection
@@ -71,8 +75,10 @@ public class DictionaryInfo {
      *
      * @param version - a version
      */
-    public DictionaryInfo(String version) {
-        this.version = version;
+//    public DictionaryInfo(String version) {
+//        this.version = version;
+//    }
+    public DictionaryInfo() {
     }
 
     /**
@@ -120,10 +126,28 @@ public class DictionaryInfo {
      *
      * @param field - a field
      */
+    public void addField(int tagNumber, int name) {
+        FieldInfo field = new FieldInfo();
+        field.setTagNumber(tagNumber);
+        field.setName(name);
+
+        if (fieldsByTagNumber == null) {
+            fieldsByTagNumber = new TreeMap();
+            fieldsByName = new TreeMap();
+        }
+        fieldsByTagNumber.put(field.getTagNumber(), field);
+        fieldsByName.put(field.getName(), field);
+    }
+
+    /**
+     * Adds a field
+     *
+     * @param field - a field
+     */
     public void addField(FieldInfo field) {
         if (fieldsByTagNumber == null) {
             fieldsByTagNumber = new TreeMap();
-            fieldsByName = new TreeMapStrR();
+            fieldsByName = new TreeMap();
         }
         fieldsByTagNumber.put(field.getTagNumber(), field);
         fieldsByName.put(field.getName(), field);
@@ -239,84 +263,107 @@ public class DictionaryInfo {
 //        messagesByName.put(message.getName(), message);
 //    }
 
-    /**
-     * Returns the version
-     *
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
+//    /**
+//     * Returns the version
+//     *
+//     * @return the version
+//     */
+//    public String getVersion() {
+//        return version;
+//    }
+//
+//    /**
+//     * Modifies the version
+//     *
+//     * @param version - the version to set
+//     */
+//    public void setVersion(String version) {
+//        this.version = version;
+//    }
+//
+//    /**
+//     * Increments the loadCount
+//     */
+//    public void incrementLoadCount() {
+//        loadCount++;
+//    }
+//
+//    /**
+//     * Returns whether the dictionary is loaded
+//     *
+//     * @return whether the dictionary is loaded
+//     */
+//    public boolean isLoaded() {
+//        return loadCount == 5;
+//    }
 
-    /**
-     * Modifies the version
-     *
-     * @param version - the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
-     * Increments the loadCount
-     */
-    public void incrementLoadCount() {
-        loadCount++;
-    }
-
-    /**
-     * Returns whether the dictionary is loaded
-     *
-     * @return whether the dictionary is loaded
-     */
-    public boolean isLoaded() {
-        return loadCount == 5;
-    }
-
-    public boolean repOK() {
-        if (fieldsByTagNumber == null)
-            return false;
+    public boolean repOKSymSolve() {
         if (fieldsByName == null)
             return false;
-        return fieldsByTagNumber.repOK() && fieldsByName.repOK();
-    }
+        if (fieldsByTagNumber == fieldsByName)
+            return false;
 
-    public boolean areTreesOK() {
-        if (fieldsByTagNumber == null)
+        Set<TreeMap.Entry> visited = new HashSet<>();
+
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isBinTreeWithParentReferences(visited))
             return false;
-        if (fieldsByName == null)
+        if (!fieldsByName.isBinTreeWithParentReferences(visited))
             return false;
-        if (!fieldsByTagNumber.isBinTreeWithParentReferences()) {
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isWellColored())
             return false;
-        }
-        if (!fieldsByName.isBinTreeWithParentReferences()) {
+        if (!fieldsByName.isWellColored())
             return false;
-        }
         return true;
+    }
+
+    public boolean repOKSymbolicExecution() {
+        if (fieldsByTagNumber != null && !fieldsByTagNumber.isSorted())
+            return false;
+        if (!fieldsByName.isSorted())
+            return false;
+        return true;
+    }
+
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    public static void runRepOK() {
+        DictionaryInfo toBuild = new DictionaryInfo();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        DictionaryInfo toBuild = new DictionaryInfo();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
     }
 
     public static IFinitization finDictionaryInfo(int nodesNum) {
         IFinitization f = FinitizationFactory.create(DictionaryInfo.class);
-        IObjSet t1 = f.createObjSet(TreeMap.class, 1, true);
-        IObjSet t2 = f.createObjSet(TreeMapStrR.class, 1, true);
+        IObjSet treemaps = f.createObjSet(TreeMap.class, 2, true);
 
-        f.set(DictionaryInfo.class, "fieldsByTagNumber", t1);
-        f.set(DictionaryInfo.class, "fieldsByName", t2);
+        f.set(DictionaryInfo.class, "fieldsByTagNumber", treemaps);
+        f.set(DictionaryInfo.class, "fieldsByName", treemaps);
 
         IObjSet entries = f.createObjSet(TreeMap.Entry.class, nodesNum, true);
 
         f.set(TreeMap.class, "root", entries);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
         f.set(TreeMap.Entry.class, "left", entries);
         f.set(TreeMap.Entry.class, "right", entries);
         f.set(TreeMap.Entry.class, "parent", entries);
         f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
 
-        IObjSet entriesB = f.createObjSet(TreeMapStrR.Entry.class, nodesNum, true);
-        f.set(TreeMapStrR.class, "root", entriesB);
-        f.set(TreeMapStrR.Entry.class, "left", entriesB);
-        f.set(TreeMapStrR.Entry.class, "right", entriesB);
-        f.set(TreeMapStrR.Entry.class, "parent", entriesB);
-        f.set(TreeMapStrR.Entry.class, "color", f.createBooleanSet());
+        f.set(TreeMap.class, "root", entries);
+        f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+        f.set(TreeMap.Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+        f.set(TreeMap.Entry.class, "left", entries);
+        f.set(TreeMap.Entry.class, "right", entries);
+        f.set(TreeMap.Entry.class, "parent", entries);
+        f.set(TreeMap.Entry.class, "color", f.createBooleanSet());
 
         return f;
     }

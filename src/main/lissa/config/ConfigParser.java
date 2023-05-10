@@ -11,6 +11,8 @@ public class ConfigParser {
     private static final String SYMSOLVE_PREDICATE_CONFIG = "heapsolving.symsolve.predicate";
     private static final String SYMSOLVE_FINITIZATION_ARGS_CONFIG = "heapsolving.symsolve.finitization.args";
     private static final String HEAP_SOLVING_TECHNIQUE_CONFIG = "heapsolving.strategy";
+    private static final String CHECK_PATH_VALIDITY_CONFIG = "heapsolving.checkPathValidity";
+    private static final String GENERATE_TESTS_CONFIG = "heapsolving.generateTests";
     private static final String HEAP_GETFIELD_LIMIT_CONFIG = "heap.getFieldLimit";
 
     public static final String DEFAULT_PREDICATE_NAME = "repOK";
@@ -21,7 +23,7 @@ public class ConfigParser {
     public static final String STATISTICS_DIR = String.format("%s/%s", OUTPUT_DIR, "results");
     public static final String TESTCASE_DIR = String.format("%s/%s", OUTPUT_DIR, "testcases");
 
-    private static final int DEFAULT_GETFIELD_LIMIT = 2000;
+    private static final int DEFAULT_GETFIELD_LIMIT = 200;
 
     public Config conf;
 
@@ -31,10 +33,13 @@ public class ConfigParser {
     public String symSolveSimpleClassName;
     public String finitizationArgs;
     public String resultsFileName;
+    public String testsFileName;
     public String predicateName;
     public SolvingStrategyEnum solvingStrategy;
     public SymmetryBreakStrategy symmetryBreakingStrategy = SymmetryBreakStrategy.SYMMETRY_BREAK;
     public int getFieldLimit;
+    public boolean checkPathValidity;
+    public boolean generateTests;
 
     public ConfigParser(Config conf) {
         this.conf = conf;
@@ -47,7 +52,10 @@ public class ConfigParser {
         this.getFieldLimit = conf.getInt(HEAP_GETFIELD_LIMIT_CONFIG, DEFAULT_GETFIELD_LIMIT);
         String resFileName = this.symSolveSimpleClassName + RESULTS_FILE_POSFIX;
         this.resultsFileName = String.format("%s/%s", STATISTICS_DIR, resFileName);
+        this.testsFileName = String.format("%s/%s", TESTCASE_DIR, getTestFileName());
         this.predicateName = getConfigValueString(SYMSOLVE_PREDICATE_CONFIG, DEFAULT_PREDICATE_NAME);
+        this.checkPathValidity = getConfigValueBoolean(CHECK_PATH_VALIDITY_CONFIG, "false");
+        this.generateTests = getConfigValueBoolean(GENERATE_TESTS_CONFIG, "false");
     }
 
     public String getConfigValueString(String settingName) {
@@ -61,6 +69,13 @@ public class ConfigParser {
         return conf.getString(settingName, defaultValue).trim();
     }
 
+    public boolean getConfigValueBoolean(String settingName, String defaultValue) {
+        String value = conf.getString(settingName, defaultValue).trim();
+        if (value.equals("true"))
+            return true;
+        return false;
+    }
+
     public SolvingStrategyEnum getSolvingHeapSolvingTechnique() {
         String techniqueName = getConfigValueString(HEAP_SOLVING_TECHNIQUE_CONFIG);
         return SolvingStrategyEnum.valueOf(techniqueName.toUpperCase());
@@ -72,6 +87,14 @@ public class ConfigParser {
             throw new InvalidConfigurationValueException(
                     "the value of " + SYMSOLVE_CLASS_CONFIG + " is not well formed");
         return cnsplit[cnsplit.length - 1];
+    }
+
+    public String getTestFileName() {
+        return getTestFileNameWithoutFormat() + ".java";
+    }
+
+    public String getTestFileNameWithoutFormat() {
+        return symSolveSimpleClassName + targetMethodName + solvingStrategy.name() + finitizationArgs + "Test";
     }
 
 }

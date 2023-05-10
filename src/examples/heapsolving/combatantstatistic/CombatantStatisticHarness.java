@@ -1,7 +1,7 @@
 package heapsolving.combatantstatistic;
 
-import lissa.SymHeap;
 import gov.nasa.jpf.vm.Verify;
+import lissa.SymHeap;
 
 public class CombatantStatisticHarness {
 
@@ -9,11 +9,11 @@ public class CombatantStatisticHarness {
         if (SymHeap.usingDriverStrategy())
             return generateDriverStructure();
 
-        CombatantStatistic structure = new CombatantStatistic(SymHeap.makeSymbolicInteger("numRounds"));
+        CombatantStatistic structure = new CombatantStatistic();
         structure = (CombatantStatistic) SymHeap.makeSymbolicRefThis("combatantstatistic_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOK())
+            if (!structure.repOKComplete())
                 return null;
         }
 
@@ -22,7 +22,7 @@ public class CombatantStatisticHarness {
 
     private static CombatantStatistic generateDriverStructure() {
         int maxScope = SymHeap.getMaxScope();
-        CombatantStatistic structure = new CombatantStatistic(SymHeap.makeSymbolicInteger("numRounds"));
+        CombatantStatistic structure = new CombatantStatistic();
         int numNodes = Verify.getInt(0, maxScope);
         for (int i = 1; i <= numNodes; i++) {
             try {

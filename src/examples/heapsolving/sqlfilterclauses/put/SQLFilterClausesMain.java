@@ -7,16 +7,27 @@
 
 package heapsolving.sqlfilterclauses.put;
 
-import lissa.SymHeap;
 import heapsolving.sqlfilterclauses.SQLFilterClauses;
 import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
+import lissa.SymHeap;
+import lissa.TestGen;
 
 public class SQLFilterClausesMain {
 
+    private static void registerTargetMethodData(int clause, int table, String clauseInfo) {
+        int numberOfArguments = 3;
+        TestGen.registerTargetMethod("put", numberOfArguments);
+        TestGen.registerSymbolicIntegerArgument(clause);
+        TestGen.registerSymbolicIntegerArgument(table);
+        TestGen.registerSymbolicStringArgument(clauseInfo);
+    }
+
     public static void main(String[] args) {
-        String clauseName = SymHeap.makeSymbolicString("INPUT_KEY");
-        String tableName = SymHeap.makeSymbolicString("INPUT_KEY2");
+        int clauseName = SymHeap.makeSymbolicInteger("INPUTclauseName");
+        int tableName = SymHeap.makeSymbolicInteger("INPUTtableName");
         String clauseInformation = SymHeap.makeSymbolicString("INPUT_KEY3");
+
+        registerTargetMethodData(clauseName, tableName, clauseInformation);
 
         SQLFilterClauses structure = SQLFilterClausesHarness.getStructure();
         if (structure != null) {
@@ -24,9 +35,11 @@ public class SQLFilterClausesMain {
                 // Call to method under analysis
                 structure.put(clauseName, tableName, clauseInformation);
             } catch (Exception e) {
+                SymHeap.exceptionThrown();
+                e.printStackTrace();
             }
 
-            SymHeap.countPath();
+            SymHeap.pathFinished();
         }
     }
 
