@@ -3,7 +3,7 @@ sourcepath = ${jpf-symbc}/src/examples
 
 target = myexample.Example
 
-symbolic.lazy = true
+#symbolic.lazy = true
 symbolic.debug=false
 symbolic.dp=z3
 
