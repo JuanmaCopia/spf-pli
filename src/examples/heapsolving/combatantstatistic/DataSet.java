@@ -52,8 +52,6 @@ public class DataSet {
      * @param value not <code>null</code>!
      */
     public void addData(int side, int value) {
-        if (side < 0 || side > 1)
-            return;
         valuesPerSide.get(side).add(value);
     }
 
