@@ -5,7 +5,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package heapsolving.transportstats;
+package heapsolving.treeset;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -91,14 +91,14 @@ import java.util.Set;
  * @see Collections#synchronizedMap(Map)
  * @since 1.2
  */
-public class TreeMapIntLong_EvoSuite {
+public class TreeMap {
 
-    private transient Entry root = null;
+    public transient Entry root = null;
 
     /**
      * The number of entries in the tree
      */
-    private transient int size = 0;
+    public transient int size = 0;
 
     private void incrementSize() {
         size++;
@@ -121,7 +121,7 @@ public class TreeMapIntLong_EvoSuite {
      *
      * @see Comparable
      */
-    public TreeMapIntLong_EvoSuite() {
+    public TreeMap() {
     }
 
     // Query Operations
@@ -163,13 +163,22 @@ public class TreeMapIntLong_EvoSuite {
      *         otherwise.
      * @since 1.2
      */
-    public boolean containsValue(long value) {
-        return (root == null ? false : valueSearchNonNull(root, value));
+    public boolean containsValue(Object value) {
+        return (root == null ? false : (value == null ? valueSearchNull(root) : valueSearchNonNull(root, value)));
     }
 
-    private boolean valueSearchNonNull(Entry n, long value) {
+    private boolean valueSearchNull(Entry n) {
+        if (n.value == null) {
+            return true;
+        }
+
+        // Check left and right subtrees for value
+        return (n.left != null && valueSearchNull(n.left)) || (n.right != null && valueSearchNull(n.right));
+    }
+
+    private boolean valueSearchNonNull(Entry n, Object value) {
         // Check this node for the value
-        if (value == n.value) {
+        if (value.equals(n.value)) {
             return true;
         }
 
@@ -197,7 +206,7 @@ public class TreeMapIntLong_EvoSuite {
      *
      * @see #containsKey(Object)
      */
-    public Long get(int key) {
+    public Object get(int key) {
         Entry p = getEntry(key);
         return (p == null ? null : p.value);
     }
@@ -275,7 +284,7 @@ public class TreeMapIntLong_EvoSuite {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Object put(int key, long value) {
+    public Object put(int key, Obj value) {
         Entry t = root;
 
         if (t == null) {
@@ -325,13 +334,13 @@ public class TreeMapIntLong_EvoSuite {
      *                              order, or its comparator does not tolerate
      *                              <tt>null</tt> keys.
      */
-    public Long remove(int key) {
+    public Object remove(int key) {
         Entry p = getEntry(key);
         if (p == null) {
             return null;
         }
 
-        long oldValue = p.value;
+        Object oldValue = p.value;
         deleteEntry(p);
         return oldValue;
     }
@@ -355,8 +364,8 @@ public class TreeMapIntLong_EvoSuite {
         return 0;
     }
 
-    private static final boolean RED = false;
-    private static final boolean BLACK = true;
+    public static final boolean RED = false;
+    public static final boolean BLACK = true;
 
     /**
      * Returns the first Entry in the TreeMap (according to the TreeMap's key-sort
@@ -646,13 +655,15 @@ public class TreeMapIntLong_EvoSuite {
     }
 
     public boolean isBinTreeWithParentReferences(Set<Entry> visited) {
+        int prevSize = visited.size();
         if (root == null)
             return size == 0;
         if (root.parent != null)
             return false;
+        if (root.value == null)
+            return false;
 
         LinkedList<Entry> worklist = new LinkedList<Entry>();
-
         if (!visited.add(root))
             return false;
         worklist.add(root);
@@ -665,6 +676,8 @@ public class TreeMapIntLong_EvoSuite {
                     return false;
                 if (left.parent != node)
                     return false;
+                if (left.value == null)
+                    return false;
                 worklist.add(left);
             }
             Entry right = node.right;
@@ -673,10 +686,12 @@ public class TreeMapIntLong_EvoSuite {
                     return false;
                 if (right.parent != node)
                     return false;
+                if (right.value == null)
+                    return false;
                 worklist.add(right);
             }
         }
-        return visited.size() == size;
+        return (visited.size() - prevSize) == size;
     }
 
     public boolean isWellColored() {
@@ -762,12 +777,12 @@ public class TreeMapIntLong_EvoSuite {
 
     public static class Entry {
 
-        private int key;
-        private long value;
-        private Entry left = null;
-        private Entry right = null;
-        private Entry parent;
-        private boolean color = TreeMapIntLong_EvoSuite.BLACK;
+        public int key;
+        public Obj value;
+        public Entry left = null;
+        public Entry right = null;
+        public Entry parent;
+        public boolean color = TreeMap.BLACK;
 
         /**
          * Test two values for equality. Differs from o1.equals(o2) only in that it
@@ -781,14 +796,13 @@ public class TreeMapIntLong_EvoSuite {
          * Make a new cell with given key, value, and parent, and with <tt>null</tt>
          * child links, and BLACK color.
          */
-        public Entry(int key, long value, Entry parent) {
+        public Entry(int key, Obj value, Entry parent) {
             this.key = key;
             this.value = value;
             this.parent = parent;
         }
 
         public Entry() {
-
         }
 
         /**
@@ -814,7 +828,7 @@ public class TreeMapIntLong_EvoSuite {
          *
          * @return the value associated with the key before this method was called.
          */
-        public Object setValue(long value) {
+        public Object setValue(Obj value) {
             Object oldValue = this.value;
             this.value = value;
             return oldValue;

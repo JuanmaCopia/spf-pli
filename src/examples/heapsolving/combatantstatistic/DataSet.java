@@ -1,7 +1,5 @@
 package heapsolving.combatantstatistic;
 
-import heapsolving.linkedlist.LinkedList;
-
 /*
  Copyright (c) 2010 Daniel Raap
 
@@ -54,8 +52,6 @@ public class DataSet {
      * @param value not <code>null</code>!
      */
     public void addData(int side, int value) {
-        if (side < 0 || side > 1)
-            throw new IllegalArgumentException("wrong side!");
         valuesPerSide.get(side).add(value);
     }
 

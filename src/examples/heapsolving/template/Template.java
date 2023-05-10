@@ -16,7 +16,6 @@
 
 package heapsolving.template;
 
-import heapsolving.hashmap.HashMap;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -58,11 +57,11 @@ public class Template {
         return (Parameter) parametersByName.get(name);
     }
 
-    public void setParameters(Parameter[] parameters) {
-        for (Parameter p : parameters) {
-            addParameter(p);
-        }
-    }
+//    public void setParameters(Parameter[] parameters) {
+//        for (Parameter p : parameters) {
+//            addParameter(p);
+//        }
+//    }
 
     public int getParametersNumber() {
         return parameters.size();
@@ -128,29 +127,27 @@ public class Template {
         parameter.setColumn(column);
 
         parameters.add(parameter);
-        Integer name = parameter.getName();
+        int name = parameter.getName();
         // Parameter name is optional
-        if (name != null) {
-            if (!parametersByName.containsKey(name)) {
-                parametersByName.put(name, parameter);
-            } else {
-                // logger.warn("Duplicate parameter: "+name);
-            }
+        if (!parametersByName.containsKey(name)) {
+            parametersByName.put(name, parameter);
+        } else {
+            // logger.warn("Duplicate parameter: "+name);
         }
     }
-
-    public void addParameter(Parameter parameter) {
-        parameters.add(parameter);
-        Integer name = parameter.getName();
-        // Parameter name is optional
-        if (name != null) {
-            if (!parametersByName.containsKey(name)) {
-                parametersByName.put(name, parameter);
-            } else {
-                // logger.warn("Duplicate parameter: "+name);
-            }
-        }
-    }
+//
+//    public void addParameter(Parameter parameter) {
+//        parameters.add(parameter);
+//        Integer name = parameter.getName();
+//        // Parameter name is optional
+//        if (name != null) {
+//            if (!parametersByName.containsKey(name)) {
+//                parametersByName.put(name, parameter);
+//            } else {
+//                // logger.warn("Duplicate parameter: "+name);
+//            }
+//        }
+//    }
 
 //    public Parameter getParameter(int idx) {
 //        return idx >= 1 && idx <= parameters.size() ? (Parameter) parameters.get(idx - 1) : null;

@@ -5,7 +5,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package heapsolving.linkedlist;
+package heapsolving.combatantstatistic;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,14 +80,14 @@ import java.util.Vector;
  * @see Collections#synchronizedList(List)
  * @since 1.2
  */
-public class LinkedList_EvoSuite {
-    protected Entry header = new Entry();
-    protected int size = 0;
+public class LinkedList {
+    public Entry header = new Entry();
+    public int size = 0;
 
     /**
      * Constructs an empty list.
      */
-    public LinkedList_EvoSuite() {
+    public LinkedList() {
         header.next = header.previous = header;
     }
 
@@ -375,9 +375,9 @@ public class LinkedList_EvoSuite {
      * @return a shallow copy of this <tt>LinkedList</tt> instance.
      */
     public Object clone() {
-        LinkedList_EvoSuite clone;
+        LinkedList clone;
         try {
-            clone = (LinkedList_EvoSuite) super.clone();
+            clone = (LinkedList) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
@@ -468,9 +468,9 @@ public class LinkedList_EvoSuite {
     }
 
     public static class Entry {
-        protected int element;
-        protected Entry next;
-        protected Entry previous;
+        public int element;
+        public Entry next;
+        public Entry previous;
 
         public Entry() {
         }
@@ -481,5 +481,4 @@ public class LinkedList_EvoSuite {
             this.previous = previous;
         }
     }
-
 }

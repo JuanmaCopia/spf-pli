@@ -25,12 +25,11 @@ public class TemplateHarness {
         Template t = new Template();
         int numNodes = Verify.getInt(0, maxScope);
         for (int i = 1; i <= numNodes; i++) {
-            Parameter p = new Parameter();
-            p.setName(SymHeap.makeSymbolicInteger("pname" + i));
-            p.setIndex(SymHeap.makeSymbolicInteger("pindex" + i));
-            p.setRow(SymHeap.makeSymbolicInteger("prow" + i));
-            p.setColumn(SymHeap.makeSymbolicInteger("pcol" + i));
-            t.addParameter(p);
+            int name = SymHeap.makeSymbolicInteger("pname" + i);
+            int index = SymHeap.makeSymbolicInteger("pindex" + i);
+            int row = SymHeap.makeSymbolicInteger("prow" + i);
+            int col = SymHeap.makeSymbolicInteger("pcol" + i);
+            t.addParameter(name, index, row, col);
         }
         return t;
     }

@@ -383,12 +383,14 @@ public class AvlTree {
     public boolean repOKSymSolve() {
         if (!isBinTreeWithParentReferences())
             return false;
-        if (!isBalanced(root, new Height()))
+        if (!isBalanced())
             return false;
         return true;
     }
 
     public boolean repOKSymbolicExecution() {
+        if (!heightsOK(root))
+            return false;
         if (!isSorted())
             return false;
         return true;
@@ -424,68 +426,52 @@ public class AvlTree {
         return true;
     }
 
-    private class Height {
-        int height = -1;
-    }
-
-//    public boolean isBalancedShape(AvlNode root, Height height) {
-//        if (root == null)
-//            return true;
-//
-//        Height leftHeight = new Height();
-//        Height rightHeight = new Height();
-//
-//        if (!isBalancedShape(root.left, leftHeight))
-//            return false;
-//        int leftH = leftHeight.height;
-//
-//        if (!isBalancedShape(root.right, rightHeight))
-//            return false;
-//        int rightH = rightHeight.height;
-//
-//        int absoluteSum = leftH - rightH;
-//        if (absoluteSum < 0)
-//            absoluteSum = absoluteSum + -1;
-//
-//        if (absoluteSum > 1)
-//            return false;
-//
-//        height.height = (leftH > rightH ? leftH : rightH) + 1;
-//        return true;
-//    }
-
-    public boolean isBalanced(AvlNode root, Height height) {
+    private boolean isBalanced() {
         if (root == null)
             return true;
+        return isBalanced(root) >= 0;
+    }
 
-        Height leftHeight = new Height();
-        Height rightHeight = new Height();
+    private int isBalanced(AvlNode node) {
+        if (node == null)
+            return -1;
+        int lh = isBalanced(node.left);
+        if (lh == Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
+        int rh = isBalanced(node.right);
+        if (rh == Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
 
-        if (!isBalanced(root.left, leftHeight))
+        int abs = lh - rh;
+        if (abs < 0)
+            abs = abs * -1;
+
+        if (abs > 1)
+            return Integer.MIN_VALUE;
+        else
+            return max(lh, rh) + 1;
+    }
+
+    int calculateHeight(AvlNode node) {
+        if (node == null)
+            return -1;
+        return 1 + max(calculateHeight(node.left), calculateHeight(node.right));
+    }
+
+    boolean heightsOK(AvlNode node) {
+        if (node == null)
+            return true;
+        if (!heightsOK(node.left))
             return false;
-        int leftH = leftHeight.height;
-        if (root.left != null && root.left.height != leftH)
+        if (!heightsOK(node.right))
             return false;
+        return node.height == calculateHeight(node);
+    }
 
-        if (!isBalanced(root.right, rightHeight))
-            return false;
-        int rightH = rightHeight.height;
-        if (root.right != null && root.right.height != rightH)
-            return false;
-
-        int absoluteSum = leftH - rightH;
-        if (absoluteSum < 0)
-            absoluteSum = absoluteSum + -1;
-
-        if (absoluteSum > ALLOWED_IMBALANCE)
-            return false;
-
-        int rootH = (leftH > rightH ? leftH : rightH) + 1;
-        if (root.height != rootH)
-            return false;
-
-        height.height = rootH;
-        return true;
+    private int max(int a, int b) {
+        if (a > b)
+            return a;
+        return b;
     }
 
     private boolean isSorted() {

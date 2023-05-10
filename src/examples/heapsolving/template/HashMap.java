@@ -5,7 +5,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package heapsolving.combatantstatistic;
+package heapsolving.template;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,7 +13,10 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import heapsolving.linkedlist.LinkedList;
+import korat.finitization.IFinitization;
+import korat.finitization.IObjSet;
+import korat.finitization.impl.FinitizationFactory;
+import lissa.SymHeap;
 
 /**
  * Hash table based implementation of the <tt>Map</tt> interface. This
@@ -107,15 +110,15 @@ import heapsolving.linkedlist.LinkedList;
  * @see Object#hashCode()
  * @see Collection
  * @see Map
- * @see HashMapIntDataSet
+ * @see HashMap
  * @see Hashtable
  * @since 1.2
  */
-public class HashMapIntDataSet_EvoSuite {
+public class HashMap {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 32;
+    public static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified by
@@ -133,50 +136,34 @@ public class HashMapIntDataSet_EvoSuite {
      */
     // transient Entry[] table;
 
-    protected Entry e0;
-    protected Entry e1;
-    protected Entry e2;
-    protected Entry e3;
-    protected Entry e4;
-    protected Entry e5;
-    protected Entry e6;
-    protected Entry e7;
-    protected Entry e8;
-    protected Entry e9;
-    protected Entry e10;
-    protected Entry e11;
-    protected Entry e12;
-    protected Entry e13;
-    protected Entry e14;
-    protected Entry e15;
-    protected Entry e16;
-    protected Entry e17;
-    protected Entry e18;
-    protected Entry e19;
-    protected Entry e20;
-    protected Entry e21;
-    protected Entry e22;
-    protected Entry e23;
-    protected Entry e24;
-    protected Entry e25;
-    protected Entry e26;
-    protected Entry e27;
-    protected Entry e28;
-    protected Entry e29;
-    protected Entry e30;
-    protected Entry e31;
-
     /**
      * The number of key-value mappings contained in this identity hash map.
      */
-    protected transient int size;
+    public transient int size;
+
+    public Entry e0;
+    public Entry e1;
+    public Entry e2;
+    public Entry e3;
+    public Entry e4;
+    public Entry e5;
+    public Entry e6;
+    public Entry e7;
+    public Entry e8;
+    public Entry e9;
+    public Entry e10;
+    public Entry e11;
+    public Entry e12;
+    public Entry e13;
+    public Entry e14;
+    public Entry e15;
 
     /**
      * Constructs an empty <tt>HashMap</tt> with the default initial capacity (16)
      * and the default load factor (0.75).
      */
-    public HashMapIntDataSet_EvoSuite() {
-//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
+    public HashMap() {
+        // table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -225,38 +212,6 @@ public class HashMapIntDataSet_EvoSuite {
             return e14;
         case 15:
             return e15;
-        case 16:
-            return e16;
-        case 17:
-            return e17;
-        case 18:
-            return e18;
-        case 19:
-            return e19;
-        case 20:
-            return e20;
-        case 21:
-            return e21;
-        case 22:
-            return e22;
-        case 23:
-            return e23;
-        case 24:
-            return e24;
-        case 25:
-            return e25;
-        case 26:
-            return e26;
-        case 27:
-            return e27;
-        case 28:
-            return e28;
-        case 29:
-            return e29;
-        case 30:
-            return e30;
-        case 31:
-            return e31;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
@@ -311,54 +266,6 @@ public class HashMapIntDataSet_EvoSuite {
             break;
         case 15:
             e15 = entry;
-            break;
-        case 16:
-            e16 = entry;
-            break;
-        case 17:
-            e17 = entry;
-            break;
-        case 18:
-            e18 = entry;
-            break;
-        case 19:
-            e19 = entry;
-            break;
-        case 20:
-            e20 = entry;
-            break;
-        case 21:
-            e21 = entry;
-            break;
-        case 22:
-            e22 = entry;
-            break;
-        case 23:
-            e23 = entry;
-            break;
-        case 24:
-            e24 = entry;
-            break;
-        case 25:
-            e25 = entry;
-            break;
-        case 26:
-            e26 = entry;
-            break;
-        case 27:
-            e27 = entry;
-            break;
-        case 28:
-            e28 = entry;
-            break;
-        case 29:
-            e29 = entry;
-            break;
-        case 30:
-            e30 = entry;
-            break;
-        case 31:
-            e31 = entry;
             break;
         default:
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
@@ -425,10 +332,10 @@ public class HashMapIntDataSet_EvoSuite {
      *         if the map contains no mapping for this key.
      * @see #put(Object, Object)
      */
-    public DataSet get(int key) {
+    public Object get(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (true) {
             if (e == null)
@@ -448,7 +355,7 @@ public class HashMapIntDataSet_EvoSuite {
     public boolean containsKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
@@ -465,7 +372,7 @@ public class HashMapIntDataSet_EvoSuite {
     Entry getEntry(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
@@ -483,13 +390,13 @@ public class HashMapIntDataSet_EvoSuite {
      *         indicate that the HashMap previously associated <tt>null</tt> with
      *         the specified key.
      */
-    public DataSet put(int key, DataSet value) {
+    public Object put(int key, Object value) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
 
         for (Entry e = getTable(i); e != null; e = e.next) {
             if (e.hash == hash && eq(key, e.key)) {
-                DataSet oldValue = e.value;
+                Object oldValue = e.value;
                 e.value = value;
                 e.recordAccess(this);
                 return oldValue;
@@ -509,9 +416,9 @@ public class HashMapIntDataSet_EvoSuite {
      *         indicate that the map previously associated <tt>null</tt> with the
      *         specified key.
      */
-    public DataSet remove(int key) {
+    public Object remove(int key) {
         Entry e = removeEntryForKey(key);
-        return (e == null ? null : e.value);
+        return (e == null ? e : e.value);
     }
 
     /**
@@ -592,7 +499,7 @@ public class HashMapIntDataSet_EvoSuite {
      * @return <tt>true</tt> if this map maps one or more keys to the specified
      *         value.
      */
-    public boolean containsValue(DataSet value) {
+    public boolean containsValue(Object value) {
         if (value == null) {
             return containsNullValue();
         }
@@ -615,77 +522,6 @@ public class HashMapIntDataSet_EvoSuite {
         return false;
     }
 
-    public static class Entry {
-        public int key;
-        public DataSet value;
-        public int hash;
-        public Entry next;
-
-        public Entry() {
-
-        }
-
-        /**
-         * Create new entry.
-         */
-        Entry(int h, int k, DataSet v, Entry n) {
-            value = v;
-            next = n;
-            key = k;
-            hash = h;
-        }
-
-        public int getKey() {
-            return key;
-        }
-
-        public DataSet getValue() {
-            return value;
-        }
-
-        public DataSet setValue(DataSet newValue) {
-            DataSet oldValue = value;
-            value = newValue;
-            return oldValue;
-        }
-
-        public boolean equals(Object o) {
-            if (!(o instanceof Entry))
-                return false;
-            Entry e = (Entry) o;
-            int k1 = getKey();
-            int k2 = e.getKey();
-            if (k1 == k2) {
-                DataSet v1 = getValue();
-                DataSet v2 = e.getValue();
-                if (v1 == v2 || (v1 != null && v1.equals(v2)))
-                    return true;
-            }
-            return false;
-        }
-
-//    public int hashCode() {
-//      return key ^ (value == null ? 0 : value.hashCode());
-//    }
-
-        public String toString() {
-            return getKey() + "=" + getValue();
-        }
-
-        /**
-         * This method is invoked whenever the value in an entry is overwritten by an
-         * invocation of put(k,v) for a key k that's already in the HashMap.
-         */
-        void recordAccess(HashMapIntDataSet_EvoSuite m) {
-        }
-
-        /**
-         * This method is invoked whenever the entry is removed from the table.
-         */
-        void recordRemoval(HashMapIntDataSet_EvoSuite m) {
-        }
-    }
-
     /**
      * Add a new entry with the specified key, value and hash code to the specified
      * bucket. It is the responsibility of this method to resize the table if
@@ -693,8 +529,9 @@ public class HashMapIntDataSet_EvoSuite {
      *
      * Subclass overrides this to alter the behavior of put method.
      */
-    void addEntry(int hash, int key, DataSet value, int bucketIndex) {
+    void addEntry(int hash, int key, Object value, int bucketIndex) {
         setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
+        size++;
         // if (size++ >= threshold) resize(2 * DEFAULT_INITIAL_CAPACITY);
     }
 
@@ -706,7 +543,7 @@ public class HashMapIntDataSet_EvoSuite {
      * Subclass overrides this to alter the behavior of HashMap(Map), clone, and
      * readObject.
      */
-    void createEntry(int hash, int key, DataSet value, int bucketIndex) {
+    void createEntry(int hash, int key, Object value, int bucketIndex) {
         setTable(bucketIndex, new Entry(hash, key, value, getTable(bucketIndex)));
         size++;
     }
@@ -726,141 +563,188 @@ public class HashMapIntDataSet_EvoSuite {
         return es;
     }
 
-    // private static final long serialVersionUID = 362498820763181265L;
+    static final int THRESHOLD = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+
+    class Threshold {
+        public int value;
+
+        public Threshold(int value) {
+            this.value = value;
+        }
+    }
 
     public boolean repOKSymSolve() {
-        if (!checkStructure())
-            return false;
-        if (!checkValuesRepOK())
-            return false;
-        if (!checkKeys())
-            return false;
-        if (!checkHashes())
-            return false;
-        return true;
-    }
-
-    public boolean checkEntries() {
-        Set<Entry> visited = new HashSet<>();
+        Threshold threshold = new Threshold(THRESHOLD);
+        Set<Entry> visited = new HashSet<Entry>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (i >= 15)
-                    return false;
-                else if (!visited.add(e))
-                    return false;
-            }
+            Entry list = getTable(i);
+            if (list != null && !isLinkedList(list, visited, threshold))
+                return false;
         }
-        return true;
+        return visited.size() == size;
     }
 
-    public boolean checkListsHasJustOneElement() {
-        for (int i = 0; i < 15; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (e.next != null)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean checkStructure() {
-        Set<Entry> visitedE = new HashSet<>();
+    public boolean repOKSymbolicExecution() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (i >= 15) {
-                    return false;
-                } else if (!visitedE.add(e)) {
-                    return false;
-                }
-            }
-        }
-
-        Set<DataSet> visited = new HashSet<>();
-        for (Entry e : visitedE) {
-            if (e.next != null)
+            Entry list = getTable(i);
+            if (list != null && !checkListKeys(list, i))
                 return false;
-            if (e.value == null)
-                return false;
-            if (!visited.add(e.value))
-                return false;
-        }
-
-        Set<HashMapIntList> visitedHashMaps = new HashSet<>();
-        for (DataSet ds : visited) {
-            HashMapIntList valuesPerSide = ds.valuesPerSide;
-            if (valuesPerSide == null)
-                return false;
-            if (!visitedHashMaps.add(ds.valuesPerSide))
-                return false;
-        }
-
-        Set<HashMapIntList.Entry> visitedEntries = new HashSet<>();
-        for (HashMapIntList hashmap : visitedHashMaps) {
-            if (hashmap.e0 == null)
-                return false;
-            if (hashmap.e1 == null)
-                return false;
-            if (!visitedEntries.add(hashmap.e0))
-                return false;
-            if (!visitedEntries.add(hashmap.e1))
-                return false;
-            if (hashmap.e2 != null || hashmap.e3 != null)
-                return false;
-        }
-
-        Set<LinkedList> visitedLists = new HashSet<>();
-        for (HashMapIntList.Entry e : visitedEntries) {
-            if (e.next != null)
-                return false;
-            if (e.value == null)
-                return false;
-            if (!visitedLists.add(e.value))
-                return false;
-        }
-
-        Set<LinkedList.Entry> visitedListEntries = new HashSet<>();
-        for (LinkedList ll : visitedLists) {
-            if (!ll.isCircularLinkedList(visitedListEntries))
-                return false;
-        }
-
-        return true;
-    }
-
-    public boolean checkValuesRepOK() {
-        for (int i = 0; i < 15; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (!e.value.repOKSymSolve())
-                    return false;
-            }
         }
         return true;
     }
 
-    public boolean checkKeys() {
-        for (int i = 0; i < 15; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (e.key != i)
-                    return false;
-            }
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
+    private boolean isLinkedList(Entry head, Set<Entry> visited, Threshold threshold) {
+        Entry current = head;
+        while (current != null) {
+            threshold.value--;
+            if (threshold.value < 0)
+                return false;
+            if (!visited.add(current))
+                return false;
+
+            current = current.next;
         }
         return true;
     }
 
-    public boolean checkHashes() {
-        for (int i = 0; i < 15; i++) {
-            Entry e = getTable(i);
-            if (e != null) {
-                if (e.hash != i)
+    private boolean checkListKeys(Entry head, int index) {
+        int[] visitedKeys = new int[THRESHOLD];
+        int currentIndex = 0;
+        Entry current = head;
+        while (current != null) {
+            int currentKey = current.key;
+            int correctIndex = currentKey & (DEFAULT_INITIAL_CAPACITY - 1);
+            if (index != correctIndex)
+                return false;
+            for (int i = 0; i < currentIndex; i++) {
+                if (visitedKeys[i] == currentKey)
                     return false;
             }
+
+            if (current.hash != currentKey)
+                return false;
+
+            visitedKeys[currentIndex] = currentKey;
+            currentIndex++;
+            current = current.next;
         }
         return true;
+    }
+
+    public static void runRepOK() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runRepOKComplete() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+    }
+
+    public static class Entry {
+
+        public int key;
+        public Object value;
+        public int hash;
+        public Entry next;
+
+        public Entry() {
+        }
+
+        /**
+         * Create new entry.
+         */
+        Entry(int h, int k, Object v, Entry n) {
+            value = v;
+            next = n;
+            key = k;
+            hash = h;
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object setValue(Object newValue) {
+            Object oldValue = value;
+            value = newValue;
+            return oldValue;
+        }
+
+        public boolean equals(Object o) {
+            if (!(o instanceof Entry))
+                return false;
+            Entry e = (Entry) o;
+            int k1 = getKey();
+            int k2 = e.getKey();
+            if (k1 == k2) {
+                Object v1 = getValue();
+                Object v2 = e.getValue();
+                if (v1 == v2 || (v1 != null && v1.equals(v2)))
+                    return true;
+            }
+            return false;
+        }
+
+        // public int hashCode() {
+        // return key ^ (value == null ? 0 : value.hashCode());
+        // }
+
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
+
+        /**
+         * This method is invoked whenever the value in an entry is overwritten by an
+         * invocation of put(k,v) for a key k that's already in the HashMap.
+         */
+        void recordAccess(HashMap m) {
+        }
+
+        /**
+         * This method is invoked whenever the entry is removed from the table.
+         */
+        void recordRemoval(HashMap m) {
+        }
+    }
+
+    public static IFinitization finHashMap(int nodesNum) {
+        IFinitization f = FinitizationFactory.create(HashMap.class);
+        f.set(HashMap.class, "size", f.createIntSet(0, nodesNum));
+
+        IObjSet entries = f.createObjSet(Entry.class, nodesNum, true);
+        f.set(HashMap.class, "e0", entries);
+        f.set(HashMap.class, "e1", entries);
+        f.set(HashMap.class, "e2", entries);
+        f.set(HashMap.class, "e3", entries);
+        f.set(HashMap.class, "e4", entries);
+        f.set(HashMap.class, "e5", entries);
+        f.set(HashMap.class, "e6", entries);
+        f.set(HashMap.class, "e7", entries);
+        f.set(HashMap.class, "e8", entries);
+        f.set(HashMap.class, "e9", entries);
+        f.set(HashMap.class, "e10", entries);
+        f.set(HashMap.class, "e11", entries);
+        f.set(HashMap.class, "e12", entries);
+        f.set(HashMap.class, "e13", entries);
+        f.set(HashMap.class, "e14", entries);
+        f.set(HashMap.class, "e15", entries);
+
+        f.set(Entry.class, "key", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
+        // f.set(Entry.class, "value", );
+        f.set(Entry.class, "hash", f.createIntSet(0, nodesNum * DEFAULT_INITIAL_CAPACITY));
+        f.set(Entry.class, "next", entries);
+        return f;
     }
 
 }

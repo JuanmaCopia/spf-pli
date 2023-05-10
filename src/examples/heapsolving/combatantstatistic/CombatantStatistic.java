@@ -1,6 +1,5 @@
 package heapsolving.combatantstatistic;
 
-import heapsolving.linkedlist.LinkedList;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
@@ -81,10 +80,14 @@ public class CombatantStatistic {
      * @param value
      */
     public void addData(int type, int side, int value) {
-        if (side < 0 || side > 1)
-            throw new IllegalArgumentException("wrong side!");
-        if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+        if (side > 1)
+            return;
+        if (side < 0)
+            return;
+        if (type > 14)
+            return;
+        if (type < 0)
+            return;
 
         ensureTypExists(type);
         int storedValue;
@@ -101,8 +104,10 @@ public class CombatantStatistic {
      * @param type
      */
     public void ensureTypExists(int type) {
-        if (type < 0 || type > 14)
-            throw new IllegalArgumentException("wrong type!");
+        if (type > 14)
+            return;
+        if (type < 0)
+            return;
 
         if (!allData.containsKey(type)) {
             allData.put(type, new DataSet());
