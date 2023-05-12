@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Constants
-TIMEOUT=3610 # 1 hours and 10 seconds
+TIMEOUT=7210 # 2 hours and 10 seconds
 
 # Arguments
 CLASS_NAME=$1

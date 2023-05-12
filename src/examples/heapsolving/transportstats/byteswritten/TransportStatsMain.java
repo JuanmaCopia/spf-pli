@@ -36,8 +36,7 @@ public class TransportStatsMain {
             }
 
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
         }
     }
 

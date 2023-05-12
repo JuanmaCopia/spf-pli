@@ -40,8 +40,7 @@ public class CombatantStatisticMain {
             }
 
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
         }
     }
 

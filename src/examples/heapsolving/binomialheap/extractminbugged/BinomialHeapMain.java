@@ -30,8 +30,7 @@ public class BinomialHeapMain {
                 e.printStackTrace();
             }
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
 
 //            if (structure.countNodes() != structure.getSize()) {
 //                SymHeap.exceptionThrown();

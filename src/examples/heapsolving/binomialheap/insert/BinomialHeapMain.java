@@ -34,8 +34,7 @@ public class BinomialHeapMain {
                 e.printStackTrace();
             }
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
         }
     }
 

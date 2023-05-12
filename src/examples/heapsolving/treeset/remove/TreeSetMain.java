@@ -36,8 +36,7 @@ public class TreeSetMain {
             }
 
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
         }
     }
 

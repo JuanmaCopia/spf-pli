@@ -34,8 +34,7 @@ public class TreeMapMain {
                 e.printStackTrace();
             }
             SymHeap.pathFinished();
-            if (!structure.repOKComplete())
-                SymHeap.repOKViolation();
+            assert(structure.repOKComplete());
         }
     }
 
