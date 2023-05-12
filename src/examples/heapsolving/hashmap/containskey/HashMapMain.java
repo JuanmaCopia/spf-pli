@@ -35,6 +35,8 @@ public class HashMapMain {
                 e.printStackTrace();
             }
             SymHeap.pathFinished();
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
         }
     }
 

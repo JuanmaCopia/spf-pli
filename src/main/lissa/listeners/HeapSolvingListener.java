@@ -17,9 +17,9 @@ import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
 import lissa.heap.solving.techniques.LISSAM;
+import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.PLI;
 import lissa.heap.solving.techniques.PLIOPT;
-import lissa.heap.solving.techniques.PCCheckStrategy;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
 
@@ -35,6 +35,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
     int exploredPaths = 0;
     int exceptionsThrown = 0;
+    int repOKViolations = 0;
     int invalidPaths = 0;
     int validPaths = 0;
 
@@ -88,6 +89,8 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
 
             } else if (exec.getExecutedMethodName().equals("exceptionThrown")) {
                 heapSolvingStrategy.countException();
+            } else if (exec.getExecutedMethodName().equals("repOKViolation")) {
+                heapSolvingStrategy.countRepOKViolation();
             }
         }
     }
@@ -116,6 +119,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         totalTime = (System.currentTimeMillis() - totalTime);
         exploredPaths = heapSolvingStrategy.exploredPaths;
         exceptionsThrown = heapSolvingStrategy.exceptionsThrown;
+        repOKViolations = heapSolvingStrategy.repOKViolations;
 
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
             LIBasedStrategy stg = (LIBasedStrategy) heapSolvingStrategy;
@@ -142,6 +146,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         System.out.println("\n------- Statistics -------\n");
         System.out.println(" - Executed Paths:        " + exploredPaths);
         System.out.println(" - Exceptions thrown:     " + exceptionsThrown);
+        System.out.println(" - RepOK violations:     " + repOKViolations);
         if (heapSolvingStrategy instanceof LIHYBRID)
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
@@ -185,6 +190,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             results.add(Integer.toString(solvingProcedureCalls));
         else
             results.add("-");
+
+        results.add(Integer.toString(repOKViolations));
+
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
     }
@@ -194,7 +202,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls,repOKViolations";
     }
 
     String makeStartOfFile() {

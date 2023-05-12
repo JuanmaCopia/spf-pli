@@ -154,12 +154,13 @@ public class JPF_lissa_SymHeap extends NativePeer {
                 String testCode = visitor.getTestCaseCode();
                 repOKChoiceGenerator.setTestCode(testCode);
 
-                // if (testCode.contains("treemap_0.size = 3;") && testCode.contains("treemap_0.root.left.color = true;")
-                //         && testCode.contains("treemap_0.root.right.color = false;")) {
-                //     System.out.println("\n===========================================\n");
-                //     System.out.println("id: " + id++);
-                //     System.out.println("testCode:\n\n" + testCode);
-                //     System.out.println(SymHeapHelper.toString(objvRef));
+                // if (testCode.contains("treemap_0.size = 3;") &&
+                // testCode.contains("treemap_0.root.left.color = true;")
+                // && testCode.contains("treemap_0.root.right.color = false;")) {
+                // System.out.println("\n===========================================\n");
+                // System.out.println("id: " + id++);
+                // System.out.println("testCode:\n\n" + testCode);
+                // System.out.println(SymHeapHelper.toString(objvRef));
                 // }
 
             }
@@ -267,6 +268,10 @@ public class JPF_lissa_SymHeap extends NativePeer {
 
     @MJI
     public static void exceptionThrown(MJIEnv env, int objRef) {
+    }
+
+    @MJI
+    public static void repOKViolation(MJIEnv env, int objRef) {
     }
 
     @MJI

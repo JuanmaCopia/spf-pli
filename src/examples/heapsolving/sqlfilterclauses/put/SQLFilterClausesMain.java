@@ -40,6 +40,8 @@ public class SQLFilterClausesMain {
             }
 
             SymHeap.pathFinished();
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
         }
     }
 

@@ -14,6 +14,7 @@ public class SolvingStrategy {
 
     public int exploredPaths = 0;
     public int exceptionsThrown = 0;
+    public int repOKViolations = 0;
     public static ConfigParser config;
     TargetMethod targetMethod;
     List<String> tests = new LinkedList<>();
@@ -63,6 +64,10 @@ public class SolvingStrategy {
 
     public void countException() {
         exceptionsThrown++;
+    }
+
+    public void countRepOKViolation() {
+        repOKViolations++;
     }
 
     public void setTargetMethod(String name, int numArgs) {

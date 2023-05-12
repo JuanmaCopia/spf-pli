@@ -37,6 +37,8 @@ public class SymHeap {
 
     native public static void exceptionThrown();
 
+    native public static void repOKViolation();
+
     native public static boolean usingDriverStrategy();
 
     native public static boolean usingIfRepOKStrategy();

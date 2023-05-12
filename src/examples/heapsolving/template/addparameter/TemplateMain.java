@@ -42,6 +42,8 @@ public class TemplateMain {
             }
 
             SymHeap.pathFinished();
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
         }
     }
 

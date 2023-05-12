@@ -33,6 +33,8 @@ public class ScheduleMain {
             }
 
             SymHeap.pathFinished();
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
         }
     }
 

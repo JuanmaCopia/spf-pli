@@ -36,6 +36,8 @@ public class LinkedListMain {
             }
 
             SymHeap.pathFinished();
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
         }
     }
 
