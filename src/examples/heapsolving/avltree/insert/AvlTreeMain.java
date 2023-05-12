@@ -33,8 +33,9 @@ public class AvlTreeMain {
                 SymHeap.exceptionThrown();
                 e.printStackTrace();
             }
+            if (!structure.repOKComplete())
+                SymHeap.repOKViolation();
             SymHeap.pathFinished();
-            assert(structure.repOKComplete());
         }
     }
 

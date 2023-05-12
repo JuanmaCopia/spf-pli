@@ -146,7 +146,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         System.out.println("\n------- Statistics -------\n");
         System.out.println(" - Executed Paths:        " + exploredPaths);
         System.out.println(" - Exceptions thrown:     " + exceptionsThrown);
-//        System.out.println(" - RepOK violations:     " + repOKViolations);
+        System.out.println(" - RepOK violations:     " + repOKViolations);
         if (heapSolvingStrategy instanceof LIHYBRID)
             System.out.println(" - Invalid Paths:         " + invalidPaths);
         System.out.println(" - Total Time:            " + totalTime / 1000 + " s.");
@@ -191,7 +191,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         else
             results.add("-");
 
-//        results.add(Integer.toString(repOKViolations));
+        results.add(Integer.toString(repOKViolations));
 
         String resultsData = results.toString();
         return resultsData.substring(1, resultsData.length() - 1);
@@ -202,7 +202,7 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     }
 
     String getFileHeader() {
-        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls";
+        return "Method,Technique,Scope,TotalTime,SymSolveTime,RepOKTime,TotalPaths,ValidPaths,ExceptionsThrown,SolvingCalls,repOKViolations";
     }
 
     String makeStartOfFile() {
