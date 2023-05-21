@@ -281,32 +281,70 @@ public class Schedule {
         }
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public static IFinitization finSchedule(int jobsNum) {
+        IFinitization f = FinitizationFactory.create(Schedule.class);
+
+        IObjSet jobs = f.createObjSet(Job.class, jobsNum, true);
+        f.set(Schedule.class, "allocProcNum", f.createIntSet(0, jobsNum + 1));
+        f.set(Schedule.class, "numProcesses", f.createIntSet(0, jobsNum));
+        f.set(Schedule.class, "curProc", jobs);
+
+        IObjSet lists = f.createObjSet(List.class, 5, true);
+        f.set(Schedule.class, "prio_0", lists);
+        f.set(Schedule.class, "prio_1", lists);
+        f.set(Schedule.class, "prio_2", lists);
+        f.set(Schedule.class, "prio_3", lists);
+        f.set(Schedule.class, "blockQueue", lists);
+
+        f.set(Job.class, "next", jobs);
+        f.set(Job.class, "prev", jobs);
+        f.set(Job.class, "val", f.createIntSet(0, jobsNum - 1));
+        f.set(Job.class, "priority", f.createIntSet(1, MAXPRIO));
+
+        f.set(List.class, "mem_count", f.createIntSet(0, jobsNum));
+        f.set(List.class, "first", jobs);
+        f.set(List.class, "last", jobs);
+
+        return f;
     }
 
-    public boolean repOKSymSolve() {
-        if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null || blockQueue == null)
+    public boolean pre() {
+        return preH() && preP();
+    }
+
+    public boolean preH() {
+        if (getPrioQueue(0) != null)
             return false;
 
-        HashSet<List> visitedPQ = new HashSet<List>();
+        Set<List> visitedPQ = new HashSet<>();
+        Set<Job> visitedJobs = new HashSet<>();
         for (int i = 1; i <= MAXPRIO; i++) {
-            if (!visitedPQ.add(getPrioQueue(i)))
-                return false;
-        }
-        if (!visitedPQ.add(blockQueue))
-            return false;
-
-        Set<Job> visitedJobs = new HashSet<Job>();
-        for (int i = 1; i <= MAXPRIO; i++) {
-            if (!isDoublyLinkedList(getPrioQueue(i), visitedJobs))
+            if (!checkQueue(getPrioQueue(i), visitedPQ, visitedJobs))
                 return false;
         }
 
-        if (!isDoublyLinkedList(blockQueue, visitedJobs))
+        if (!checkQueue(blockQueue, visitedPQ, visitedJobs))
             return false;
-
         return numProcesses == visitedJobs.size();
+    }
+
+    boolean checkQueue(List queue, Set<List> visitedPQ, Set<Job> visitedJobs) {
+        if (queue == null || !visitedPQ.add(queue))
+            return false;
+        if (!isDoublyLinkedList(queue, visitedJobs))
+            return false;
+        return true;
+    }
+
+    public boolean preP() {
+        if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
+            return false;
+
+        for (int i = 1; i <= MAXPRIO; i++)
+            if (!checkPriorities(getPrioQueue(i), i))
+                return false;
+
+        return checkPrioritiesBlockQueue();
     }
 
     private boolean isDoublyLinkedList(List list, Set<Job> visited) {
@@ -335,20 +373,7 @@ public class Schedule {
         return last == current;
     }
 
-    public boolean repOKSymbolicExecution() {
-        if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
-            return false;
-
-        for (int i = 1; i <= MAXPRIO; i++)
-            if (!isPriorityQueueOK(getPrioQueue(i), i))
-                return false;
-
-        if (!checkBlockQueue())
-            return false;
-        return true;
-    }
-
-    private boolean isPriorityQueueOK(List prioQueue, int priority) {
+    private boolean checkPriorities(List prioQueue, int priority) {
         Job current = prioQueue.getFirst();
         int size = 0;
 
@@ -361,7 +386,7 @@ public class Schedule {
         return size == prioQueue.getMemCount();
     }
 
-    private boolean checkBlockQueue() {
+    private boolean checkPrioritiesBlockQueue() {
         Job current = blockQueue.getFirst();
         int size = 0;
 
@@ -374,61 +399,41 @@ public class Schedule {
         return size == blockQueue.getMemCount();
     }
 
+    // Hardcoded methods that SPF need to intercept to implement PLI
+
     public static void runRepOK() {
         Schedule toBuild = new Schedule();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runRepOKComplete() {
         Schedule toBuild = new Schedule();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
-    public static IFinitization finSchedule(int jobsNum) {
-        IFinitization f = FinitizationFactory.create(Schedule.class);
+    // optimized repOKs
 
-        IObjSet jobs = f.createObjSet(Job.class, jobsNum, true);
-        f.set(Schedule.class, "allocProcNum", f.createIntSet(0, jobsNum + 1));
-        f.set(Schedule.class, "numProcesses", f.createIntSet(0, jobsNum));
-        f.set(Schedule.class, "curProc", jobs);
-
-        IObjSet lists = f.createObjSet(List.class, 5, true);
-        f.set(Schedule.class, "prio_0", lists);
-        f.set(Schedule.class, "prio_1", lists);
-        f.set(Schedule.class, "prio_2", lists);
-        f.set(Schedule.class, "prio_3", lists);
-        f.set(Schedule.class, "blockQueue", lists);
-
-        f.set(Job.class, "next", jobs);
-        f.set(Job.class, "prev", jobs);
-        f.set(Job.class, "val", f.createIntSet(0, jobsNum - 1));
-        f.set(Job.class, "priority", f.createIntSet(1, MAXPRIO));
-
-        f.set(List.class, "mem_count", f.createIntSet(0, jobsNum));
-        f.set(List.class, "first", jobs);
-        f.set(List.class, "last", jobs);
-
-        return f;
-    }
-
-//    public boolean pre() {
-//        return preH() && preP();
-//    }
-//
 //    public boolean preH() {
 //        if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null || blockQueue == null)
 //            return false;
 //
 //        HashSet<List> visitedPQ = new HashSet<List>();
+//        for (int i = 1; i <= MAXPRIO; i++) {
+//            if (!visitedPQ.add(getPrioQueue(i)))
+//                return false;
+//        }
+//        if (!visitedPQ.add(blockQueue))
+//            return false;
+//
 //        Set<Job> visitedJobs = new HashSet<Job>();
 //        for (int i = 1; i <= MAXPRIO; i++) {
-//            if (!visitedPQ.add(getPrioQueue(i)) || !isDoublyLinkedList(getPrioQueue(i), visitedJobs))
+//            if (!isDoublyLinkedList(getPrioQueue(i), visitedJobs))
 //                return false;
 //        }
 //
-//        if (!visitedPQ.add(blockQueue) || !isDoublyLinkedList(blockQueue, visitedJobs))
+//        if (!isDoublyLinkedList(blockQueue, visitedJobs))
 //            return false;
 //
 //        return numProcesses == visitedJobs.size();
@@ -445,6 +450,5 @@ public class Schedule {
 //        if (!checkBlockQueue())
 //            return false;
 //        return true;
-//    }
-
+//    } 
 }
