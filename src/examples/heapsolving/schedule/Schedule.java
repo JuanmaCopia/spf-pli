@@ -281,53 +281,32 @@ public class Schedule {
         }
     }
 
+    public boolean repOKComplete() {
+        return repOKSymSolve() && repOKSymbolicExecution();
+    }
+
     public boolean repOKSymSolve() {
-        if (prio_0 != null)
-            return false;
-        if (prio_1 == null)
-            return false;
-        if (prio_2 == null)
-            return false;
-        if (prio_3 == null)
-            return false;
-        if (blockQueue == null)
+        if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null || blockQueue == null)
             return false;
 
         HashSet<List> visitedPQ = new HashSet<List>();
-        visitedPQ.add(prio_1);
-        if (!visitedPQ.add(prio_2))
-            return false;
-        if (!visitedPQ.add(prio_3))
-            return false;
+        for (int i = 1; i <= MAXPRIO; i++) {
+            if (!visitedPQ.add(getPrioQueue(i)))
+                return false;
+        }
         if (!visitedPQ.add(blockQueue))
             return false;
 
         Set<Job> visitedJobs = new HashSet<Job>();
-        if (!isDoublyLinkedList(prio_1, visitedJobs))
-            return false;
-        if (!isDoublyLinkedList(prio_2, visitedJobs))
-            return false;
-        if (!isDoublyLinkedList(prio_3, visitedJobs))
-            return false;
+        for (int i = 1; i <= MAXPRIO; i++) {
+            if (!isDoublyLinkedList(getPrioQueue(i), visitedJobs))
+                return false;
+        }
 
         if (!isDoublyLinkedList(blockQueue, visitedJobs))
             return false;
 
         return numProcesses == visitedJobs.size();
-    }
-
-    public boolean repOKSymbolicExecution() {
-        if (!checkCurrentProcess())
-            return false;
-        if (!checkPriorityQueues())
-            return false;
-        if (!checkBlockQueue())
-            return false;
-        return true;
-    }
-
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
     }
 
     private boolean isDoublyLinkedList(List list, Set<Job> visited) {
@@ -336,11 +315,11 @@ public class Schedule {
 
         if (current == null)
             return last == null;
+        if (!visited.add(current))
+            return false;
         if (last == null)
             return current == null;
         if (current.getPrev() != null || last.getNext() != null)
-            return false;
-        if (!visited.add(current))
             return false;
 
         Job next = current.getNext();
@@ -356,12 +335,16 @@ public class Schedule {
         return last == current;
     }
 
-    private boolean checkPriorityQueues() {
-        for (int i = 1; i <= MAXPRIO; i++) {
-            List prioQueue = getPrioQueue(i);
-            if (!isPriorityQueueOK(prioQueue, i))
+    public boolean repOKSymbolicExecution() {
+        if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
+            return false;
+
+        for (int i = 1; i <= MAXPRIO; i++)
+            if (!isPriorityQueueOK(getPrioQueue(i), i))
                 return false;
-        }
+
+        if (!checkBlockQueue())
+            return false;
         return true;
     }
 
@@ -389,14 +372,6 @@ public class Schedule {
             current = current.getNext();
         }
         return size == blockQueue.getMemCount();
-    }
-
-    private boolean checkCurrentProcess() {
-        if (curProc != null) {
-            if (curProc.priority < 1 || curProc.priority > MAXPRIO)
-                return false;
-        }
-        return true;
     }
 
     public static void runRepOK() {
@@ -437,5 +412,39 @@ public class Schedule {
 
         return f;
     }
+
+//    public boolean pre() {
+//        return preH() && preP();
+//    }
+//
+//    public boolean preH() {
+//        if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null || blockQueue == null)
+//            return false;
+//
+//        HashSet<List> visitedPQ = new HashSet<List>();
+//        Set<Job> visitedJobs = new HashSet<Job>();
+//        for (int i = 1; i <= MAXPRIO; i++) {
+//            if (!visitedPQ.add(getPrioQueue(i)) || !isDoublyLinkedList(getPrioQueue(i), visitedJobs))
+//                return false;
+//        }
+//
+//        if (!visitedPQ.add(blockQueue) || !isDoublyLinkedList(blockQueue, visitedJobs))
+//            return false;
+//
+//        return numProcesses == visitedJobs.size();
+//    }
+//
+//    public boolean preP() {
+//        if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
+//            return false;
+//
+//        for (int i = 1; i <= MAXPRIO; i++)
+//            if (!isPriorityQueueOK(getPrioQueue(i), i))
+//                return false;
+//
+//        if (!checkBlockQueue())
+//            return false;
+//        return true;
+//    }
 
 }
