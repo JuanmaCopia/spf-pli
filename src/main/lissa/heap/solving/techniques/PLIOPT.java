@@ -25,22 +25,18 @@ public class PLIOPT extends PLI {
             PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
-        assert (heapCG != null);
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
-        assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
-        primitiveBranches++;
-
-        PathCondition currentProgramPC = pcCG.getCurrentPC();
-        assert (currentProgramPC != null);
+        // Optimization that avoid some solver calls
         PathCondition cachedRepOKPC = getCachedPathCondition(pcCG);
         if (cachedRepOKPC != null) {
-            if (isConjunctionSAT(currentProgramPC, cachedRepOKPC)) {
-                primitiveBranchCacheHits++;
+            if (isConjunctionSAT(pcCG.getCurrentPC(), cachedRepOKPC)) {
                 return nextInstruction;
             }
         }
+
+        solverCalls++;
 
         SymSolveSolution solution = getCachedSolution(pcCG);
         if (solution == null) {
@@ -57,7 +53,6 @@ public class PLIOPT extends PLI {
 
         if (solution == null) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            prunedBranches++;
             return currentInstruction;
         }
 

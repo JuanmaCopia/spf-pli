@@ -20,12 +20,8 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     StateSpace stateSpace;
     Canonicalizer canonicalizer;
 
+    public int solverCalls = 0;
     public int validPaths = 0;
-
-    public int lazyChoices = 0;
-    public int primitiveBranchChoices = 0;
-    public int primitiveBranchCacheHits = 0;
-
     boolean executingRepOK = false;
     long repokExecTime = 0;
     long repOKStartTime = 0;
