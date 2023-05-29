@@ -31,10 +31,10 @@ public class BinomialHeapMain {
             }
             SymHeap.pathFinished();
 
-//            if (structure.countNodes() != structure.getSize()) {
-//                SymHeap.exceptionThrown();
-//                System.out.println("ERROR FOUND: POSTONDITION VIOLATED!!");
-//            }
+            if (structure.countNodes() != structure.getSize()) {
+                SymHeap.exceptionThrown();
+                System.out.println("ERROR FOUND: POSTONDITION VIOLATED!!");
+            }
         }
     }
 
