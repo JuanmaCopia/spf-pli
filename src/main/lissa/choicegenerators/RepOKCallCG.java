@@ -28,7 +28,7 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
         assert (candidateHeapSolution != null);
         candidateHeapSolution = stg.getNextSolution(ti, candidateHeapSolution, symInputHeap);
         if (candidateHeapSolution == null) {
-            stg.countPrunedBranch();
+            // The branch is pruned
             setDone();
             return false;
         }
@@ -44,7 +44,7 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             assert (repOKPathCondition != null);
             // Cache Solution and repOK Path Condition
             curCG.setCurrentTestCode(testCode);
-            curCG.setCurrentSolution(candidateHeapSolution);
+            curCG.setCurrentHeapSolution(candidateHeapSolution);
             curCG.setCurrentRepOKPathCondition(repOKPathCondition);
         }
 

@@ -51,11 +51,11 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoi
         }
     }
 
-    public void setCurrentSolution(SymSolveSolution candidateHeapSolution) {
+    public void setCurrentHeapSolution(SymSolveSolution candidateHeapSolution) {
         solutionsCache.put(getNextChoice(), candidateHeapSolution);
     }
 
-    public SymSolveSolution getCurrentSolution() {
+    public SymSolveSolution getCurrentHeapSolution() {
         return solutionsCache.get(getNextChoice());
     }
 

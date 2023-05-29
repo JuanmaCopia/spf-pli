@@ -16,10 +16,8 @@ import lissa.choicegenerators.PCChoiceGeneratorLISSA;
 import lissa.config.ConfigParser;
 import lissa.heap.solving.techniques.LIBasedStrategy;
 import lissa.heap.solving.techniques.LIHYBRID;
-import lissa.heap.solving.techniques.LISSAM;
-import lissa.heap.solving.techniques.PLI;
-import lissa.heap.solving.techniques.PLIOPT;
 import lissa.heap.solving.techniques.PCCheckStrategy;
+import lissa.heap.solving.techniques.PLI;
 import lissa.heap.solving.techniques.SolvingStrategy;
 import lissa.utils.Utils;
 
@@ -29,19 +27,14 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     ConfigParser config;
 
     long totalTime = 0;
-
     long solvingTime = 0;
-    int cacheHits = 0;
+    long repOKPCSolvingTime = 0;
 
     int exploredPaths = 0;
     int exceptionsThrown = 0;
     int invalidPaths = 0;
     int validPaths = 0;
-
     int solvingProcedureCalls = 0;
-
-    int prunedBranchesDueToPC = 0;
-    long repOKPCSolvingTime = 0;
 
     public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser config) {
         this.heapSolvingStrategy = solvingStrategy;
@@ -120,15 +113,12 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (heapSolvingStrategy instanceof LIBasedStrategy) {
             LIBasedStrategy stg = (LIBasedStrategy) heapSolvingStrategy;
             solvingTime = stg.getSolvingTime();
-            solvingProcedureCalls = stg.lazyChoices + stg.primitiveBranchChoices - stg.primitiveBranchCacheHits;
+            solvingProcedureCalls = stg.solverCalls;
 
             if (config.checkPathValidity)
                 validPaths = stg.validPaths;
 
-            if (stg instanceof LISSAM) {
-                cacheHits = ((LISSAM) stg).cacheHits;
-            } else if (stg instanceof PCCheckStrategy) {
-                prunedBranchesDueToPC = ((PCCheckStrategy) stg).getPrunedBranchCount();
+            if (stg instanceof PCCheckStrategy) {
                 repOKPCSolvingTime = stg.getRepOKSolvingTime();
             }
 
@@ -150,19 +140,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
                 System.out.println(" - Valid Paths:           " + validPaths);
             System.out.println(" - Solving Time:          " + solvingTime / 1000 + " s.");
         }
-        if (heapSolvingStrategy instanceof LISSAM)
-            System.out.println(" - Cache Hits:            " + cacheHits);
         if (heapSolvingStrategy instanceof PLI) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
-            System.out.println(" - PC invalid branches:   " + prunedBranchesDueToPC);
-            PLI nt = (PLI) heapSolvingStrategy;
-            System.out.println(" - Total branches seen:   " + nt.primitiveBranchChoices);
             System.out.println(" - Solving procedure calls:   " + solvingProcedureCalls);
-
-            if (heapSolvingStrategy instanceof PLIOPT) {
-                System.out.println(" - branches cache hits:   " + ((PLIOPT) nt).primitiveBranchCacheHits);
-            }
-
         }
         System.out.println("");
     }

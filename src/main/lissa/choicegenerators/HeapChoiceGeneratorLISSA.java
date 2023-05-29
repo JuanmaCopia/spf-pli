@@ -59,11 +59,11 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator implements PL
         }
     }
 
-    public void setCurrentSolution(SymSolveSolution solution) {
+    public void setCurrentHeapSolution(SymSolveSolution solution) {
         solutionsCache[getNextChoice()] = solution;
     }
 
-    public SymSolveSolution getCurrentSolution() {
+    public SymSolveSolution getCurrentHeapSolution() {
         return solutionsCache[getNextChoice()];
     }
 

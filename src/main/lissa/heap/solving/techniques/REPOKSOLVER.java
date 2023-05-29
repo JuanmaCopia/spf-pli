@@ -15,7 +15,7 @@ public class REPOKSOLVER extends PLI {
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
         assert (!isRepOKExecutionMode());
-
+        solverCalls++;
         return createInvokeCompleteRepOKInstruction(ti, currentInstruction, nextInstruction, heapCG);
     }
 
@@ -23,7 +23,7 @@ public class REPOKSOLVER extends PLI {
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
-
+        solverCalls++;
         return createInvokeCompleteRepOKInstruction(ti, currentInstruction, nextInstruction, pcCG);
     }
 

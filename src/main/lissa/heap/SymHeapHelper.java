@@ -67,7 +67,6 @@ public class SymHeapHelper {
         if (solvingStrategy instanceof LIBasedStrategy && !((LIBasedStrategy) solvingStrategy).isRepOKExecutionMode()) {
             if (solvingStrategy instanceof PCCheckStrategy && !ti.getVM().getSystemState().isIgnored()) {
                 PCCheckStrategy strategy = (PCCheckStrategy) solvingStrategy;
-                ((LIBasedStrategy) solvingStrategy).primitiveBranchChoices++;
                 return strategy.handlePrimitiveBranch(ti, current, next, cg);
             }
         }
