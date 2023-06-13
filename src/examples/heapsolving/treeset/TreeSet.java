@@ -15,7 +15,7 @@ import java.util.SortedSet;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 /**
  * This class implements the <tt>Set</tt> interface, backed by a

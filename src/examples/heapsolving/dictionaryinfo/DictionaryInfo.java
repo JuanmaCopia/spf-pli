@@ -36,7 +36,7 @@ import java.util.Set;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 /**
  * Represents a FIX version specification. DictionaryInfo acts as a central

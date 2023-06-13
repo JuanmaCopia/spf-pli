@@ -9,8 +9,8 @@ package heapsolving.transportstats.bytesread;
 
 import heapsolving.transportstats.TransportStats;
 import heapsolving.transportstats.TransportStatsHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class TransportStatsMain {
 

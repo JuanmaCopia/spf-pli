@@ -9,8 +9,8 @@ package heapsolving.linkedlist.contains;
 
 import heapsolving.linkedlist.LinkedList;
 import heapsolving.linkedlist.LinkedListHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class LinkedListMain {
 

@@ -1,11 +1,11 @@
 classpath=${jpf-symbc}/build/examples
 sourcepath=${jpf-symbc}/src/examples
 
-@using=spf-lissa
+@using=spf-pli
 
 # ---------------   Arguments   ---------------
 
-shell=lissa.LISSAShell
+shell=pli.LISSAShell
 
 target = heapsolving.hashmap.METHOD.HashMapMain
 method = METHOD
@@ -20,7 +20,7 @@ heapsolving.symsolve.finitization.class = heapsolving.hashmap.HashMap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

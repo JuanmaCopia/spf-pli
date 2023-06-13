@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>spf-lissa</name>
+	<name>spf-pli</name>
 	<comment></comment>
 	<projects>
 		<project>jpf-core</project>
 		<project>jpf-symbc</project>
-		<project>spf-lissa</project>
+		<project>spf-pli</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

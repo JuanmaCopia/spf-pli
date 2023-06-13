@@ -23,7 +23,7 @@ import java.io.Serializable;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 /**
  * This class contains the information used to build the Where and Order By

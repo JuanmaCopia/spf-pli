@@ -9,8 +9,8 @@ package heapsolving.schedule.addprocess;
 
 import heapsolving.schedule.Schedule;
 import heapsolving.schedule.ScheduleHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class ScheduleMain {
 

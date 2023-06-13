@@ -1,8 +1,8 @@
-@using=spf-lissa
+@using=spf-pli
 
 # ---------------   Arguments   ---------------
 
-shell=lissa.LISSAShell
+shell=pli.LISSAShell
 
 target = heapsolving.binomialheap.METHOD.BinomialHeapMain
 method = METHOD
@@ -17,7 +17,7 @@ heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

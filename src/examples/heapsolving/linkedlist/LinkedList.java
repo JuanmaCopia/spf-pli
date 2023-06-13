@@ -16,7 +16,7 @@ import java.util.Vector;
 import korat.finitization.IFinitization;
 import korat.finitization.IObjSet;
 import korat.finitization.impl.FinitizationFactory;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 /**
  * Linked list implementation of the <tt>List</tt> interface. Implements all

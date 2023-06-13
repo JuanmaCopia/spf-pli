@@ -9,8 +9,8 @@ package heapsolving.combatantstatistic.adddata;
 
 import heapsolving.combatantstatistic.CombatantStatistic;
 import heapsolving.combatantstatistic.CombatantStatisticHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class CombatantStatisticMain {
 

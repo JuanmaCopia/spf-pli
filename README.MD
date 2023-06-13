@@ -1,10 +1,10 @@
-# LISSA: Lazy Initialization with Specialized Solver Aid
+# PLI: Precise Lazy Initialization
 
-`LISSA` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
+`PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
 
 ## Getting Started
 
-To build and run `spf-lissa` you need Java 8 and Ant version 1.9
+To build and run `spf-pli` you need Java 8 and Ant version 1.9
 
 First, let's install the required `jpf-core` and the `jpf-symbc` projects.
 
@@ -23,9 +23,9 @@ Clone the Symbolic Java Pathfinder extension (`jpf-symbc`):
 git clone https://github.com/JuanmaCopia/jpf-symbc
 ```
 
-Clone the `LISSA` extension:
+Clone the `PLI` extension:
 ```
-git clone https://github.com/JuanmaCopia/spf-lissa
+git clone https://github.com/JuanmaCopia/spf-pli
 ```
 
 ### Configuration
@@ -36,9 +36,9 @@ jpf-core=${user.home}/PATH-TO-INSTALLATION_FOLDER/jpf-core
 
 jpf-symbc=${user.home}/PATH-TO-INSTALLATION_FOLDER/jpf-symbc
 
-spf-lissa=${user.home}/PATH-TO-INSTALLATION_FOLDER/spf-lissa
+spf-pli=${user.home}/PATH-TO-INSTALLATION_FOLDER/spf-pli
 
-extensions=${jpf-core},${jpf-symbc},${spf-lissa}
+extensions=${jpf-core},${jpf-symbc},${spf-pli}
 ```
 
 ### Compile projets:
@@ -46,12 +46,12 @@ extensions=${jpf-core},${jpf-symbc},${spf-lissa}
 ```
 cd jpf-core && ant build
 cd ../jpf-symbc && ant build
-cd ../spf-lissa && ant build
+cd ../spf-pli && ant build
 ```
 
 ## Run experiments:
 
-Move to the spf-lissa folder and run an experiment to check everything is working properly:
+Move to the spf-pli folder and run an experiment to check everything is working properly:
 ```
-bash scripts/run_case_study.sh TreeMap remove 4 LISSA
+bash scripts/run_case_study.sh TreeMap remove 4 PLI
 ```

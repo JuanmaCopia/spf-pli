@@ -1,6 +1,6 @@
 package myexample;
 
-import lissa.SymHeap;
+import pli.SymHeap;
 
 public class Example5 {
 

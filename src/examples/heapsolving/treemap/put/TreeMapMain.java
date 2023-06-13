@@ -9,8 +9,8 @@ package heapsolving.treemap.put;
 
 import heapsolving.treemap.TreeMap;
 import heapsolving.treemap.TreeMapHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class TreeMapMain {
 

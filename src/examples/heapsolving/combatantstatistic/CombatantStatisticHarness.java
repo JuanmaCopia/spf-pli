@@ -1,7 +1,7 @@
 package heapsolving.combatantstatistic;
 
 import gov.nasa.jpf.vm.Verify;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 public class CombatantStatisticHarness {
 
