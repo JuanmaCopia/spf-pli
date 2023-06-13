@@ -1,7 +1,7 @@
 package heapsolving.avltree;
 
 import gov.nasa.jpf.vm.Verify;
-import lissa.SymHeap;
+import pli.SymHeap;
 
 public class AvlTreeHarness {
 

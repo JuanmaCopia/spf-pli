@@ -9,8 +9,8 @@ package heapsolving.sqlfilterclauses.get;
 
 import heapsolving.sqlfilterclauses.SQLFilterClauses;
 import heapsolving.sqlfilterclauses.SQLFilterClausesHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class SQLFilterClausesMain {
 

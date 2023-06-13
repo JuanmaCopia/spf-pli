@@ -9,8 +9,8 @@ package heapsolving.hashmap.containskey;
 
 import heapsolving.hashmap.HashMap;
 import heapsolving.hashmap.HashMapHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class HashMapMain {
 

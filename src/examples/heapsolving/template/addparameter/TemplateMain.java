@@ -9,8 +9,8 @@ package heapsolving.template.addparameter;
 
 import heapsolving.template.Template;
 import heapsolving.template.TemplateHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class TemplateMain {
 

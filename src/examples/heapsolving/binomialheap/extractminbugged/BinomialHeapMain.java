@@ -9,8 +9,8 @@ package heapsolving.binomialheap.extractminbugged;
 
 import heapsolving.binomialheap.BinomialHeap;
 import heapsolving.binomialheap.BinomialHeapHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class BinomialHeapMain {
 

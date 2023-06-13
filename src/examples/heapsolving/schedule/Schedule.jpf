@@ -1,11 +1,11 @@
 classpath=${jpf-symbc}/build/examples
 sourcepath=${jpf-symbc}/src/examples
 
-@using=spf-lissa
+@using=spf-pli
 
 # ---------------   Arguments   ---------------
 
-shell=lissa.LISSAShell
+shell=pli.LISSAShell
 
 target = heapsolving.schedule.METHOD.ScheduleMain
 method = METHOD
@@ -22,7 +22,7 @@ heapsolving.symsolve.finitization.class = heapsolving.schedule.Schedule
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = preH
 
-jvm.insn_factory.class=lissa.HeapSolvingInstructionFactory
-vm.insn_factory.class=lissa.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 
 # ---------------------------------------------

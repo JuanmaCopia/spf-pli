@@ -9,8 +9,8 @@ package heapsolving.avltree.insert;
 
 import heapsolving.avltree.AvlTree;
 import heapsolving.avltree.AvlTreeHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class AvlTreeMain {
 

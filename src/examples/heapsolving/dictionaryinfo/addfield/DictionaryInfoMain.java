@@ -9,8 +9,8 @@ package heapsolving.dictionaryinfo.addfield;
 
 import heapsolving.dictionaryinfo.DictionaryInfo;
 import heapsolving.dictionaryinfo.DictionaryInfoHarness;
-import lissa.SymHeap;
-import lissa.TestGen;
+import pli.SymHeap;
+import pli.TestGen;
 
 public class DictionaryInfoMain {
 
