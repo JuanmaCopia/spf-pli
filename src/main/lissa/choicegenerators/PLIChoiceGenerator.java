@@ -5,9 +5,9 @@ import symsolve.vector.SymSolveSolution;
 
 public interface PLIChoiceGenerator {
 
-    void setCurrentSolution(SymSolveSolution solution);
+    void setCurrentHeapSolution(SymSolveSolution solution);
 
-    SymSolveSolution getCurrentSolution();
+    SymSolveSolution getCurrentHeapSolution();
 
     void setCurrentRepOKPathCondition(PathCondition repOKPC);
 

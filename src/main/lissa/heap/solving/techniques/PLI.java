@@ -22,9 +22,6 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
     StaticRepOKCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
-    int prunedBranches = 0;
-
-    public int primitiveBranches = 0;
 
     public PLI() {
         builder = new HeapSolutionBuilder(heapSolver.getFinitization().getStateSpace(), heapSolver);
@@ -34,6 +31,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
         assert (!isRepOKExecutionMode());
+        solverCalls++;
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
@@ -61,14 +59,13 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGeneratorLISSA pcCG) {
         assert (!isRepOKExecutionMode());
+        solverCalls++;
         HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
         assert (heapCG != null);
 
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         assert (symInputHeap != null);
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
-        primitiveBranches++;
 
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
         SymSolveSolution solution = heapSolver.solve(vector);
@@ -81,7 +78,6 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
         if (solution == null) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            prunedBranches++;
             return currentInstruction;
         }
 
@@ -145,55 +141,37 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         assert code != null;
         code = code.replace("TESTID", Integer.toString(testID++));
         tests.add(code);
-//        System.out.println("\n TEST: \n\n" + code);
     }
 
     String getCachedTestCode(ChoiceGenerator<?> lastCG) {
-        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        PLIChoiceGenerator cg = getParentBranchPoint(lastCG);
         if (cg == null)
             return null;
-        if (cg instanceof HeapChoiceGeneratorLISSA)
-            return ((HeapChoiceGeneratorLISSA) cg).getCurrentTestCode();
-
-        return ((PCChoiceGeneratorLISSA) cg).getCurrentTestCode();
+        return cg.getCurrentTestCode();
     }
 
     SymSolveSolution getCachedSolution(ChoiceGenerator<?> lastCG) {
-        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        PLIChoiceGenerator cg = getParentBranchPoint(lastCG);
         if (cg == null)
             return null;
-        if (cg instanceof HeapChoiceGeneratorLISSA)
-            return ((HeapChoiceGeneratorLISSA) cg).getCurrentSolution();
-
-        return ((PCChoiceGeneratorLISSA) cg).getCurrentSolution();
+        return cg.getCurrentHeapSolution();
     }
 
     PathCondition getCachedPathCondition(ChoiceGenerator<?> lastCG) {
-        ChoiceGenerator<?> cg = getLastBranchPoint(lastCG);
+        PLIChoiceGenerator cg = getParentBranchPoint(lastCG);
         if (cg == null)
             return null;
-        if (cg instanceof HeapChoiceGeneratorLISSA)
-            return ((HeapChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
-
-        return ((PCChoiceGeneratorLISSA) cg).getCurrentRepOKPathCondition();
+        return cg.getCurrentRepOKPathCondition();
     }
 
-    ChoiceGenerator<?> getLastBranchPoint(ChoiceGenerator<?> lastCG) {
+    PLIChoiceGenerator getParentBranchPoint(ChoiceGenerator<?> lastCG) {
         assert (lastCG != null);
         ChoiceGenerator<?> currentCG = lastCG.getPreviousChoiceGenerator();
         for (ChoiceGenerator<?> cg = currentCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof HeapChoiceGeneratorLISSA || cg instanceof PCChoiceGeneratorLISSA)
-                return cg;
+            if (cg instanceof PLIChoiceGenerator)
+                return (PLIChoiceGenerator) cg;
         }
         return null;
-    }
-
-    public void countPrunedBranch() {
-        prunedBranches++;
-    }
-
-    public int getPrunedBranchCount() {
-        return prunedBranches;
     }
 
 }
