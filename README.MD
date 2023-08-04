@@ -2,9 +2,13 @@
 
 `PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
 
-## Getting Started
+## Requirements
 
 To build and run `spf-pli` you need Java 8 and Ant version 1.9
+
+If you are using Mac or Windows we recommend installing `PLI` using docker.
+
+## Install
 
 First, let's install the required `jpf-core` and the `jpf-symbc` projects.
 
@@ -30,28 +34,52 @@ git clone https://github.com/JuanmaCopia/spf-pli
 
 ### Configuration
 
-Create a .jpf dir in your home directory and create in it a file called "site.properties" with the following content, replacing `PATH-TO-INSTALLATION_FOLDER` with your installation folder path:
+Create a .jpf directory inside your home directory and create in it a file called "site.properties":
 ```
-jpf-core=${user.home}/PATH-TO-INSTALLATION_FOLDER/jpf-core
-
-jpf-symbc=${user.home}/PATH-TO-INSTALLATION_FOLDER/jpf-symbc
-
-spf-pli=${user.home}/PATH-TO-INSTALLATION_FOLDER/spf-pli
-
-extensions=${jpf-core},${jpf-symbc},${spf-pli}
+cd ~
+mkdir .jpf && cd .jpf
+cat > site.properties
 ```
 
-### Compile projets:
+Paste the following text inside the new site.properties file, replacing `<PATH-TO-INSTALLATION_FOLDER>` with the location of each of the previously cloned repos:
+```
+jpf-core=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-core
 
+jpf-symbc=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-symbc
+
+spf-pli=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/spf-pli
+
+extensions=${jpf-core},${jpf-symbc}
+```
+
+### Compile projects:
+
+Move to the installation folder:
+```
+cd <PATH-TO-INSTALLATION_FOLDER>
+```
+
+Compile each project:
 ```
 cd jpf-core && ant build
 cd ../jpf-symbc && ant build
 cd ../spf-pli && ant build
 ```
 
+## Install Using Docker
+
+Build the docker container:
+```
+docker build -t pli .
+```
+Run the container:
+```
+docker run -it pli:latest /bin/bash
+```
+
 ## Run experiments:
 
-Move to the spf-pli folder and run an experiment to check everything is working properly:
+Inside the `spf-pli` folder and run an experiment to check everything is working properly:
 ```
 bash scripts/run_case_study.sh TreeMap remove 4 PLI
 ```
@@ -93,7 +121,7 @@ LIHYBRID
 
 ## Running all the experiments
 
-To reproduce all the experiments for a specific case study we provide the following scripts: 
+To reproduce all the experiments for a specific case study we provide the following scripts:
 ```
 bash scripts/treemap.sh
 bash scripts/hashmap.sh
@@ -109,7 +137,7 @@ bash scripts/binomialheap.sh
 bash scripts/avltree.sh
 ```
 
-**Important:** This might take several days to finish! 
+**Important:** This might take several days to finish!
 
 ## Understanding the output of the analysis
 
