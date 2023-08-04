@@ -170,9 +170,10 @@ The source files of the case studies can be found in: `spf-pli/src/examples/heap
 The repo also includes the run configurations for the Eclipse IDE.
 
 To run `PLI` in eclipse is necessary to:
-    1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
-    2. Set the parameters in the configuration file `.jpf`.
-    3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
+
+1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
+2. Set the parameters in the configuration file `.jpf`.
+3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
 
 ## Parameters in Configuration File
 
@@ -211,14 +212,15 @@ vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 ```
 
 Explanation of parameters:
-    * `target`: The class that contains the main method.
-    * `method`: The name of the program under analysis (just for output purposes)
-    * `heapsolving.strategy`: The approach to be used to deal with the heap constraints.
-    * `heapsolving.checkPathValidity`: check the validity of paths using PLI (when set to true the performance can decrease).
-    * `heapsolving.generateTests`: generate tests using direct heap manipulation (when set to true the performance can decrease).
-    * `heapsolving.symsolve.finitization.class`: The class containing the finitization and the repOKs methods
-    * `heapsolving.symsolve.finitization.args`: Comma separated arguments for the finitization method (scope).
-    * `heapsolving.symsolve.predicate`: Name of the predicate to be used by `SymSolve` (preH). It must be inside the previously indicated class.
+
+- `target`: The class that contains the main method.
+- `method`: The name of the program under analysis (just for output purposes)
+- `heapsolving.strategy`: The approach to be used to deal with the heap constraints.
+- `heapsolving.checkPathValidity`: check the validity of paths using PLI (when set to true the performance can decrease).
+- `heapsolving.generateTests`: generate tests using direct heap manipulation (when set to true the performance can decrease).
+- `heapsolving.symsolve.finitization.class`: The class containing the finitization and the repOKs methods
+- `heapsolving.symsolve.finitization.args`: Comma separated arguments for the finitization method (scope).
+- `heapsolving.symsolve.predicate`: Name of the predicate to be used by `SymSolve` (preH). It must be inside the previously indicated class.
 
 
 For example, to run the `remove` method from `TreeMap` for a scope of `4` using the `PLIOPT` technique:
