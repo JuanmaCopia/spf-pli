@@ -110,7 +110,6 @@ CombatantStatistic     addData, ensureTypExists
 SQLFilterClauses       get, put
 Template               addParameter, getParameter
 DictionaryInfo         addField, getField
-
 ```
 
 The techniques are:
@@ -121,7 +120,6 @@ LISSA
 IFREPOK
 DRIVER
 LIHYBRID
-
 ```
 
 ## Running all the experiments
@@ -146,5 +144,111 @@ bash scripts/avltree.sh
 
 ## Understanding the output of the analysis
 
-The metrics are stored under `spf-pli/output/results/<CLASS_NAME>-results.csv`, where `<CLASS_NAME>` is the name of the class containing the method under analysis.
+All the outputs of the technique will be placed inside the `spf-pli/output/` folder.
+
+For example, the metrics are stored under `spf-pli/output/results/<CLASS_NAME>-results.csv`, where `<CLASS_NAME>` is the name of the class containing the method under analysis.
+
+
+## Folder structure of a case study
+
+The source files of the case studies can be found in: `spf-pli/src/examples/heapsolving`. Each case study have the following files and folders:
+
+```
+├── <ClassName>.java             --> The class containing the methods under test, repOKs and the finitization method (scopes for the analysis).
+├── <ClassName>.jpf              --> The configuration file
+├── <ClassName>Harness.java      --> A Harness necessary to run techniques that require perform previous actions before SUT's execution (IFREPOK and DRIVER).
+├── <method 1>                   --> A folder for each of the SUTs, containing the main entry for the SUT
+│   └── <ClassName>Main.java     --> A java class that contains the main entry that calls SUT
+├── <method 2>
+│   └── <ClassName>Main.java
+├── <method 3>
+│   └── <ClassName>Main.java
+```
+
+## Run configurations for Eclipse
+
+The repo also includes the run configurations for the Eclipse IDE.
+
+To run `PLI` in eclipse is necessary to:
+    1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
+    2. Set the parameters in the configuration file `.jpf`.
+    3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
+
+## Parameters in Configuration File
+
+The script run_case_study.sh modifies the configuration files of the case studies. To run other programs is required to use a custom configuration file.
+
+
+Configuration file template:
+```
+classpath=${spf-pli}/build/examples
+sourcepath=${spf-pli}/src/examples
+
+@using=spf-pli
+
+# ---------------   Arguments   ---------------
+
+shell=pli.LISSAShell
+
+target = <CLASS_CONTAINING_MAIN>
+method = <METHOD_NAME>
+
+symbolic.debug = false
+symbolic.dp = z3
+
+heapsolving.strategy = <HEAP_SOLVING_STRATEGY>
+heapsolving.checkPathValidity = <BOOLEAN>
+heapsolving.generateTests = <BOOLEAN>
+
+heapsolving.symsolve.finitization.class = <CLASS_CONTAINING_REPOK_AND_FINITIZATION>
+heapsolving.symsolve.finitization.args = <MAX_SCOPE>
+heapsolving.symsolve.predicate = <PRE_H_NAME>
+
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+
+# ---------------------------------------------
+```
+
+Explanation of parameters:
+    * `target`: The class that contains the main method.
+    * `method`: The name of the program under analysis (just for output purposes)
+    * `heapsolving.strategy`: The approach to be used to deal with the heap constraints.
+    * `heapsolving.checkPathValidity`: check the validity of paths using PLI (when set to true the performance can decrease).
+    * `heapsolving.generateTests`: generate tests using direct heap manipulation (when set to true the performance can decrease).
+    * `heapsolving.symsolve.finitization.class`: The class containing the finitization and the repOKs methods
+    * `heapsolving.symsolve.finitization.args`: Comma separated arguments for the finitization method (scope).
+    * `heapsolving.symsolve.predicate`: Name of the predicate to be used by `SymSolve` (preH). It must be inside the previously indicated class.
+
+
+For example, to run the `remove` method from `TreeMap` for a scope of `4` using the `PLIOPT` technique:
+```
+classpath=${spf-pli}/build/examples
+sourcepath=${spf-pli}/src/examples
+
+@using=spf-pli
+
+# ---------------   Arguments   ---------------
+
+shell=pli.LISSAShell
+
+target = heapsolving.treemap.remove.TreeMapMain
+method = remove
+
+symbolic.debug = false
+symbolic.dp = z3
+
+heapsolving.strategy = PLIOPT
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
+
+heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
+heapsolving.symsolve.finitization.args = 4
+heapsolving.symsolve.predicate = repOKSymSolve
+
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+
+# ---------------------------------------------
+```
 
