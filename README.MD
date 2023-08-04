@@ -6,9 +6,9 @@
 
 To build and run `spf-pli` you need Java 8 and Ant version 1.9
 
-If you are using Mac or Windows we recommend installing `PLI` using docker.
+If you are using Mac or Windows we recommend [installing `PLI` using docker.](#install-using-docker)
 
-## Install
+## Install Without Docker
 
 First, let's install the required `jpf-core` and the `jpf-symbc` projects.
 
@@ -67,6 +67,11 @@ cd ../spf-pli && ant build
 ```
 
 ## Install Using Docker
+
+Clone this repository and move inside the cloned folder:
+```
+git clone https://github.com/JuanmaCopia/spf-pli && cd spf-pli
+```
 
 Build the docker container:
 ```
