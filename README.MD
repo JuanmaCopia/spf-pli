@@ -1,70 +1,20 @@
-# PLI: Precise Lazy Initialization
+# Artifact of Precise Lazy Initialization for Programs with Complex Heap Inputs
 
-`PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
+## Artifact Description
+Lazy initialization enables symbolic execution for programs with heap-allocated inputs. In this artifact we present a prototype implementation of our novel PLI (Precise Lazy Initialization) approach for the symbolic execution of such programs. The approach precisely decides whether there exists a concretization of the current symbolic heap that satisfies the program's precondition. Unlike previous approaches, PLI also takes into account the constraints in the path condition to determine the feasibility of the current symbolic heap. Furthermore, PLI allows preconditions to be specified as standard operational predicates for concrete structures, eliminating the need for additional specifications tailored to symbolic heaps. The artifact provides the source code of PLI, and detailed documentation with instructions for: installing the tool, reproducing all the experiments in the paper, and running the tool in new, user defined case studies. Thus, we apply for the Available, Reviewed and Reproducible badges for our artifact.
 
-We recommend [installing `PLI` using docker.](#install-using-docker) `PLI` can also be compiled from the source code following the instructions below.
+### Folder Structure
 
-## Install From Source Code
+- The source code of PLI can be found in `src/main/pli`
+- The source code of case studies can be found in `src/examples/heapsolving`
+- The execution metrics of will be saved in `output/results`.
 
-To build and run `spf-pli` you need Java 8 and Ant version 1.9.
 
-First, let's install the required `jpf-core` and the `jpf-symbc` projects.
+## Environment Setup
 
-Create and move to the folder where you want to install the tool:
-```
-mkdir INSTALLATION_FOLDER && cd INSTALLATION_FOLDER
-```
+We recommend [installing `PLI` using docker.](#install-using-docker).
 
-Clone the Java Pathfinder (`jpf-core`):
-```
-git clone https://github.com/JuanmaCopia/jpf-core
-```
-
-Clone the Symbolic Java Pathfinder extension (`jpf-symbc`):
-```
-git clone https://github.com/JuanmaCopia/jpf-symbc
-```
-
-Clone the `PLI` extension:
-```
-git clone https://github.com/JuanmaCopia/spf-pli
-```
-
-### Configuration
-
-Create a .jpf directory inside your home directory and create in it a file called "site.properties":
-```
-cd ~
-mkdir .jpf && cd .jpf
-cat > site.properties
-```
-
-Paste the following text inside the new site.properties file, replacing `<PATH-TO-INSTALLATION_FOLDER>` with the location of each of the previously cloned repos:
-```
-jpf-core=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-core
-
-jpf-symbc=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-symbc
-
-spf-pli=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/spf-pli
-
-extensions=${jpf-core},${jpf-symbc}
-```
-
-### Compile projects:
-
-Move to the installation folder:
-```
-cd <PATH-TO-INSTALLATION_FOLDER>
-```
-
-Compile each project:
-```
-cd jpf-core && ant build
-cd ../jpf-symbc && ant build
-cd ../spf-pli && ant build
-```
-
-## Install Using Docker
+### Install Using Docker
 
 Clone this repository and move inside the cloned folder:
 ```
@@ -104,7 +54,9 @@ docker run --platform linux/amd64 -it pli:latest /bin/bash
 
 [0] https://docs.docker.com/desktop/multi-arch/
 
-## Run experiments:
+
+
+## Getting Started
 
 Move inside the `spf-pli` folder and run an experiment to check everything is working properly:
 ```
@@ -144,7 +96,7 @@ DRIVER
 LIHYBRID
 ```
 
-## Running all the experiments
+## Reproducibility Instructions
 
 To reproduce all the experiments for a specific case study we provide the following scripts:
 ```
@@ -173,7 +125,7 @@ The above scripts produce the data from where the graphics of `RQ1` and `RQ2` an
 
 **Important:** This might take several days to finish!
 
-## Understanding the output of the analysis
+### Understanding the output of the analysis
 
 All the outputs of the technique will be placed inside the `spf-pli/output/` folder.
 
@@ -192,7 +144,7 @@ Each row in the `.csv` file is an individual run. The columns can be interpreted
 - `SolvingCalls`: The number of times the PLI's solving algorithm was called.
 
 
-## Folder structure of a case study
+### Folder structure of a case study
 
 The source files of the case studies can be found in: `spf-pli/src/examples/heapsolving`. Each case study have the following files and folders:
 
@@ -207,8 +159,6 @@ The source files of the case studies can be found in: `spf-pli/src/examples/heap
 ├── <method 3>
 │   └── <ClassName>Main.java
 ```
-
-## The Case Study Source Code: Preconditions and Analysis Scopes
 
 ### Preconditions (repOK Methods)
 
@@ -266,7 +216,7 @@ public static void runRepOKComplete() {
 }
 ```
 
-## Parameters in Configuration File
+### Parameters in Configuration File
 
 The script run_case_study.sh modifies the configuration files (`.jpf`) of the case studies. To run other programs is required to use a custom configuration file.
 
@@ -344,17 +294,6 @@ vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 
 # ---------------------------------------------
 ```
-
-## Run configurations for Eclipse
-
-The repo also includes the run configurations for the Eclipse IDE.
-
-To run `PLI` in eclipse is necessary to:
-
-1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
-2. Set the parameters in the configuration file `.jpf`.
-3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
-
 
 ## Running PLI on a new case study
 
@@ -436,8 +375,8 @@ vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 ```
 - Notice that in `target` we specified the name of the class containing the `main` method.
 - In `heapsolving.strategy` the `PLIOPT` technique is specified. You can also try just `PLI`.
-- In `heapsolving.symsolve.finitization.class` we specified the class containing the `finitization mycasestudy.TreeMap`
-- In `heapsolving.symsolve.finitization.args` we specified a scope of 6 nodes containing the finitization method `mycasestudy.TreeMap`
+- In `heapsolving.symsolve.finitization.class` we specified the class containing the finitization `mycasestudy.TreeMap`
+- In `heapsolving.symsolve.finitization.args` we specified a scope of 6 nodes
 - In `heapsolving.symsolve.predicate` we specified the name of preH to be used by SymSolve `repOKSymSolve`
 
 For more information about parameters, refer to: [Parameters in Configuration File](#parameters-in-configuration-file)
