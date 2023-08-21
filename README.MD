@@ -2,13 +2,11 @@
 
 `PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
 
-## Requirements
+`PLI` can be compiled from the source code following the instructions below. We recommend [installing `PLI` using docker.](#install-using-docker)
 
-To build and run `spf-pli` you need Java 8 and Ant version 1.9
+## Install From Source Code
 
-If you are using Mac or Windows we recommend [installing `PLI` using docker.](#install-using-docker)
-
-## Install Without Docker
+To build and run `spf-pli` you need Java 8 and Ant version 1.9.
 
 First, let's install the required `jpf-core` and the `jpf-symbc` projects.
 
@@ -73,6 +71,8 @@ Clone this repository and move inside the cloned folder:
 git clone https://github.com/JuanmaCopia/spf-pli && cd spf-pli
 ```
 
+### Recommended setup: Linux, Windows and Mac OS X on Intel sillicon
+
 Build the docker container:
 ```
 docker build -t pli .
@@ -81,6 +81,28 @@ Run the container:
 ```
 docker run -it pli:latest /bin/bash
 ```
+
+**Note:** The experiments in the paper were run in Linux using an Intel CPU.
+
+### Setup for Mac OS X on Apple sillicon
+
+**Warning:** For `Symbolic Pathfinder` with the `Z3` solver (and thus `LISSA`) to run in Apple sillicon, a Docker container for the amd64 platform must be created (an arm64 container did not work for me). Thus, the container must be run in emulated mode in the Apple CPU, which might produce in a significant performance hit and some issues (see below).
+
+Build the docker container using `buildx`[0]:
+```
+docker buildx create --name amd64builder
+docker buildx use amd64builder
+docker buildx build --platform linux/amd64 -t pli . --load
+```
+
+**Warning:** The last command might hang a few times. I cancelled the command when it was taking too long and restarted it. After repeating this process a few times (about 3) I got a working installation.
+
+Run the container:
+```
+docker run --platform linux/amd64 -it pli:latest /bin/bash
+```
+
+[0] https://docs.docker.com/desktop/multi-arch/
 
 ## Run experiments:
 
