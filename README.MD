@@ -86,7 +86,7 @@ docker run -it pli:latest /bin/bash
 
 ### Setup for Mac OS X on Apple sillicon
 
-**Warning:** For `Symbolic Pathfinder` with the `Z3` solver to run in Apple sillicon (and therefore for running `PLI`), a Docker container for the amd64 platform must be created (an arm64 container did not work for me). Thus, the container must run in emulated mode in the Apple CPU, which might produce in a significant performance hit and some issues (see below).
+**Warning:** For `Symbolic Pathfinder` with the `Z3` solver to run in Apple sillicon (and therefore for running `PLI`), a Docker container for the amd64 platform must be created (an arm64 container did not work for me). Thus, the container must run in emulated mode in the Apple CPU, which might produce a significant performance hit and some issues (see below).
 
 Build the docker container using `buildx`[0]:
 ```
