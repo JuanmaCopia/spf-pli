@@ -391,7 +391,7 @@ ant build
 
 After the build finishes you can run the newly added study case with:
 ```
-bash scripts/run.sh src/examples/mycasestudy/config.jpf
+bash run.sh src/examples/mycasestudy/config.jpf
 ```
 
 Below is an excerpt with the relevant parts of `PLI`'s output:
