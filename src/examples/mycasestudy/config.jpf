@@ -1,0 +1,23 @@
+@using=spf-pli
+
+# ---------------   Arguments   ---------------
+
+shell=pli.LISSAShell
+
+target = mycasestudy.MyMain
+method = METHODNAME
+
+symbolic.debug = false
+symbolic.dp = z3
+
+heapsolving.strategy = PLIOPT
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
+heapsolving.symsolve.finitization.class = mycasestudy.TreeMap
+heapsolving.symsolve.finitization.args = 6
+heapsolving.symsolve.predicate = repOKSymSolve
+
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+
+# ---------------------------------------------

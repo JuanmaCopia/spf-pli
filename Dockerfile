@@ -22,6 +22,8 @@ WORKDIR /usr/lib/PLI
 RUN git clone https://github.com/JuanmaCopia/jpf-core
 RUN git clone https://github.com/JuanmaCopia/jpf-symbc
 RUN git clone https://github.com/JuanmaCopia/spf-pli
+RUN cd spf-pli ; git checkout artifact ; cd ..
+
 
 # Setup jpf env
 RUN mkdir /root/.jpf
