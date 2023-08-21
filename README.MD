@@ -180,16 +180,16 @@ All the outputs of the technique will be placed inside the `spf-pli/output/` fol
 For example, the metrics of each run are stored under `spf-pli/output/results/<CLASS_NAME>-results.csv`, where `<CLASS_NAME>` is the name of the class containing the method under analysis.
 Each row in the `.csv` file is an individual run. The columns can be interpreted as follows:
 
-`Method`: The name of the method under analysis (e.g. remove).
-`Technique`: The approach employed to deal with the heaps (e.g. PLIOPT).
-`Scope`: The scope used (e.g. 4).
-`TotalTime`: Total time of the analysis.
-`SymSolveTime`: The time spent solving `preH` with SymSolve.
-`RepOKTime`: The time spent executing the symbolic execution of `preP`.
-`TotalPaths`: Total number of explored paths.
-`ValidPaths`: Number of valid paths (deactivated by default, can reduce performance).
-`ExceptionsThrown`: The number of paths that threw exceptions.
-`SolvingCalls`: The number of times the PLI's solving algorithm was called.
+- `Method`: The name of the method under analysis (e.g. remove).
+- `Technique`: The approach employed to deal with the heaps (e.g. PLIOPT).
+- `Scope`: The scope used (e.g. 4).
+- `TotalTime`: Total time of the analysis.
+- `SymSolveTime`: The time spent solving `preH` with SymSolve.
+- `RepOKTime`: The time spent executing the symbolic execution of `preP`.
+- `TotalPaths`: Total number of explored paths.
+- `ValidPaths`: Number of valid paths (deactivated by default, can reduce performance).
+- `ExceptionsThrown`: The number of paths that threw exceptions.
+- `SolvingCalls`: The number of times the PLI's solving algorithm was called.
 
 
 ## Folder structure of a case study
