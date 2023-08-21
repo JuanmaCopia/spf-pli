@@ -18,7 +18,7 @@ We recommend [installing `PLI` using docker.](#install-using-docker).
 
 Clone this repository and move inside the cloned folder:
 ```
-git clone https://github.com/JuanmaCopia/spf-pli/tree/artifact && cd spf-pli
+git clone https://github.com/JuanmaCopia/spf-pli && cd spf-pli
 ```
 
 ### Recommended setup: Linux, Windows and Mac OS X on Intel sillicon
