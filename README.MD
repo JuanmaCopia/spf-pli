@@ -2,7 +2,7 @@
 
 `PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
 
-`PLI` can be compiled from the source code following the instructions below. We recommend [installing `PLI` using docker.](#install-using-docker)
+We recommend [installing `PLI` using docker.](#install-using-docker) `PLI` can also be compiled from the source code following the instructions below. 
 
 ## Install From Source Code
 
