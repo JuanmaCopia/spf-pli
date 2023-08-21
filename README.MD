@@ -2,7 +2,7 @@
 
 `PLI` is an efficient symbolic execution approach for programs that manipulate complex heap-allocated data structures with rich structural constraints.
 
-We recommend [installing `PLI` using docker.](#install-using-docker) `PLI` can also be compiled from the source code following the instructions below. 
+We recommend [installing `PLI` using docker.](#install-using-docker) `PLI` can also be compiled from the source code following the instructions below.
 
 ## Install From Source Code
 
@@ -106,7 +106,7 @@ docker run --platform linux/amd64 -it pli:latest /bin/bash
 
 ## Run experiments:
 
-Inside the `spf-pli` folder and run an experiment to check everything is working properly:
+Move inside the `spf-pli` folder and run an experiment to check everything is working properly:
 ```
 bash scripts/run_case_study.sh TreeMap remove 4 PLI
 ```
@@ -162,13 +162,34 @@ bash scripts/binomialheap.sh
 bash scripts/avltree.sh
 ```
 
+For example, one also have the possibility to run only `TreeMap` experiments by running:
+```
+bash scripts/treemap.sh
+```
+
+The above script will run all the techniques over the `TreeMap` methods `insert` and `remove` for increasingly large scopes, starting from 1. Each scope is automatically stopped if it exceeds the 1-hour timeout.
+
+The above scripts produce the data from where the graphics of `RQ1` and `RQ2` and the table of `RQ3` of the paper were generated.
+
 **Important:** This might take several days to finish!
 
 ## Understanding the output of the analysis
 
 All the outputs of the technique will be placed inside the `spf-pli/output/` folder.
 
-For example, the metrics are stored under `spf-pli/output/results/<CLASS_NAME>-results.csv`, where `<CLASS_NAME>` is the name of the class containing the method under analysis.
+For example, the metrics of each run are stored under `spf-pli/output/results/<CLASS_NAME>-results.csv`, where `<CLASS_NAME>` is the name of the class containing the method under analysis.
+Each row in the `.csv` file is an individual run. The columns can be interpreted as follows:
+
+`Method`: The name of the method under analysis (e.g. remove).
+`Technique`: The approach employed to deal with the heaps (e.g. PLIOPT).
+`Scope`: The scope used (e.g. 4).
+`TotalTime`: Total time of the analysis.
+`SymSolveTime`: The time spent solving `preH` with SymSolve.
+`RepOKTime`: The time spent executing the symbolic execution of `preP`.
+`TotalPaths`: Total number of explored paths.
+`ValidPaths`: Number of valid paths (deactivated by default, can reduce performance).
+`ExceptionsThrown`: The number of paths that threw exceptions.
+`SolvingCalls`: The number of times the PLI's solving algorithm was called.
 
 
 ## Folder structure of a case study
@@ -187,19 +208,67 @@ The source files of the case studies can be found in: `spf-pli/src/examples/heap
 │   └── <ClassName>Main.java
 ```
 
-## Run configurations for Eclipse
+## The Case Study Source Code: Preconditions and Analysis Scopes
 
-The repo also includes the run configurations for the Eclipse IDE.
+### Preconditions (repOK Methods)
 
-To run `PLI` in eclipse is necessary to:
+In the case studies, `preH` precondition is called `repOKSymSolve` and `preP` precondition is called `repOKSymbolicExecution`.
 
-1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
-2. Set the parameters in the configuration file `.jpf`.
-3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
+### Scopes (Finitization Methods)
+
+Finitization methods specify the scopes for the analysis. PLI requires the finitization method have the following signature:
+```
+public static IFinitization fin<CLASS_NAME>(<FINITIZATION_ARGUMENTS>)
+```
+Where the `<CLASS_NAME>` is the class containing the method under analysis.
+
+Check for example the finitization of the `TreeMap` case study:
+```
+ public static IFinitization finTreeMap(int nodesNum) {
+    IFinitization f = FinitizationFactory.create(TreeMap.class);
+    IObjSet nodes = f.createObjSet(Entry.class, nodesNum, true);
+    f.set(TreeMap.class, "root", nodes);
+    f.set(TreeMap.class, "size", f.createIntSet(0, nodesNum));
+    f.set(Entry.class, "key", f.createIntSet(0, nodesNum - 1));
+    f.set(Entry.class, "left", nodes);
+    f.set(Entry.class, "right", nodes);
+    f.set(Entry.class, "parent", nodes);
+    f.set(Entry.class, "color", f.createBooleanSet());
+    return f;
+}
+```
+
+The method `FinitizationFactory.create(<CLASS>)` creates a finitization for the class.
+`createObjSet(<CLASS>, <NUMBER_OF_OBJECTS>, <ALLOWS_NULL>)` method from the finitization creates a set of `<NUMBER_OF_OBJECTS>` objects of type `<CLASS>` that can be used as field domain for the fields of the structure.
+`createIntSet(<FIRST>, <LAST>)` method from the finitization creates a range of integers from `<FIRST>` to `<LAST>`
+The method `set(<CLASS>, <FIELD_NAME>, <SET_OF_VALUES>)` established the `<SET_OF_VALUES>` as the field domain of the field `<FIELD_NAME>` that belongs to `<CLASS>`.
+
+
+### Required hard-coded methods
+
+To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runRepOK`:
+```
+public static void runRepOK() {
+    <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
+    SymHeap.buildSolutionHeap(toBuild);
+    SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+}
+```
+Where the `<CLASS_NAME>` is the class containing the method under analysis (e.g. TreeMap) and `<CLASS_CONSTRUCTOR>` is the constructor method.
+This method is used to trigger and handle the result of the symbolic execution of `preP` (`repOKSymbolicExecution`).
+
+Optionally, to use the features `heapsolving.checkPathValidity` and `heapsolving.generateTests` (still under development), the following static method called `runRepOKComplete`
+```
+public static void runRepOKComplete() {
+    <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
+    SymHeap.buildPartialHeapInput(toBuild);
+    SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+}
+```
 
 ## Parameters in Configuration File
 
-The script run_case_study.sh modifies the configuration files of the case studies. To run other programs is required to use a custom configuration file.
+The script run_case_study.sh modifies the configuration files (`.jpf`) of the case studies. To run other programs is required to use a custom configuration file.
 
 
 Configuration file template:
@@ -276,3 +345,12 @@ vm.insn_factory.class=pli.HeapSolvingInstructionFactory
 # ---------------------------------------------
 ```
 
+## Run configurations for Eclipse
+
+The repo also includes the run configurations for the Eclipse IDE.
+
+To run `PLI` in eclipse is necessary to:
+
+1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
+2. Set the parameters in the configuration file `.jpf`.
+3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
