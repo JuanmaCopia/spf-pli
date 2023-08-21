@@ -214,7 +214,7 @@ The source files of the case studies can be found in: `spf-pli/src/examples/heap
 
 In the case studies, `preH` precondition is called `repOKSymSolve` and `preP` precondition is called `repOKSymbolicExecution`.
 
-### Scopes (Finitization Methods)
+### Defining the scopes of the analysis
 
 Finitization methods specify the scopes for the analysis. PLI requires the finitization method have the following signature:
 ```
@@ -238,10 +238,10 @@ Check for example the finitization of the `TreeMap` case study:
 }
 ```
 
-The method `FinitizationFactory.create(<CLASS>)` creates a finitization for the class.
-`createObjSet(<CLASS>, <NUMBER_OF_OBJECTS>, <ALLOWS_NULL>)` method from the finitization creates a set of `<NUMBER_OF_OBJECTS>` objects of type `<CLASS>` that can be used as field domain for the fields of the structure.
-`createIntSet(<FIRST>, <LAST>)` method from the finitization creates a range of integers from `<FIRST>` to `<LAST>`
-The method `set(<CLASS>, <FIELD_NAME>, <SET_OF_VALUES>)` established the `<SET_OF_VALUES>` as the field domain of the field `<FIELD_NAME>` that belongs to `<CLASS>`.
+- The method `FinitizationFactory.create(<CLASS>)` creates a finitization for the class.
+- `createObjSet(<CLASS>, <NUMBER_OF_OBJECTS>, <ALLOWS_NULL>)` method from the finitization creates a set of `<NUMBER_OF_OBJECTS>` objects of type `<CLASS>` that can be used as field domain for the fields of the structure.
+- `createIntSet(<FIRST>, <LAST>)` method from the finitization creates a range of integers from `<FIRST>` to `<LAST>`
+- The method `set(<CLASS>, <FIELD_NAME>, <SET_OF_VALUES>)` established the `<SET_OF_VALUES>` as the field domain of the field `<FIELD_NAME>` that belongs to `<CLASS>`.
 
 
 ### Required hard-coded methods
@@ -354,3 +354,130 @@ To run `PLI` in eclipse is necessary to:
 1. Import the three repositories (jpf-core, jpf-symbc and spf-pli).
 2. Set the parameters in the configuration file `.jpf`.
 3. With the configuration file opened and focused on eclipse, execute the run configuration called `"run-spf-pli"`. The run configuration takes as input the configuration file that is focused on the IDE.
+
+
+## Running PLI on a new case study
+
+In the following steps we explain how to run `PLI` on a new case study.
+
+Let's assume that we want to analyze a method inside the class `TreeMap`. There is already a folder prepared with the class `TreeMap` inside the folder `src/examples/mycasestudy/`
+
+
+### Step 1: Write the specifications preH and PreP
+
+The first step is write both specifications. `preH` must the heap-related constraints and `preP` the primitive-typed constraints. The specifications can receive any name, but later the name should be specified in the configuration. Fortunately, the class `TreeMap` already have included the specifications.
+
+
+### Step 2: Write the Finitization method
+
+The next step requires to write the finitization method that defines the scopes for the analysis. In [Defining the scopes of the analysis](#defining-the-scopes-of-the-analysis),we explain how to write finitization methods. For this case, the finitization for `TreeMap` is already defined in the class.
+
+
+### Step 3: Add the required hard-coded method
+
+In [Required hard-coded methods](#required-hard-coded-methods), we explain how to write the required hard-coded method by PLI. This is also already included in the file.
+
+
+### Step 4: Create the Main method that calls the method under analysis
+
+In the folder you will also find a `MyMain.java` file, with the following content.
+
+```
+package mycasestudy;
+
+import pli.SymHeap;
+
+public class MyMain {
+
+    public static void main(String[] args) {
+        TreeMap structure = new TreeMap();
+        structure = (TreeMap) SymHeap.makeSymbolicRefThis("treemap_0", structure);
+        int key = SymHeap.makeSymbolicInteger("INPUT_KEY");
+
+        structure.containsKey(key);  // Call to method under analysis
+
+        SymHeap.pathFinished();
+    }
+}
+```
+The main creates the symbolic inputs and then calls the method under analysis, in this case `containsKey`.
+
+- The method `SymHeap.makeSymbolicRefThis` makes an instance of reference type symbolic.
+- The method `SymHeap.makeSymbolicInteger` creates a symbolic integer.
+
+### Step 5: Create the configuration file
+
+The configuration file called `config.jpf` can also be found inside the folder `src/examples/mycasestudy/`, and contains the following content.
+
+```
+@using=spf-pli
+
+# ---------------   Arguments   ---------------
+
+shell=pli.LISSAShell
+
+target = mycasestudy.MyMain
+method = METHODNAME
+
+symbolic.debug = false
+symbolic.dp = z3
+
+heapsolving.strategy = PLIOPT
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
+heapsolving.symsolve.finitization.class = mycasestudy.TreeMap
+heapsolving.symsolve.finitization.args = 6
+heapsolving.symsolve.predicate = repOKSymSolve
+
+jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
+vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+
+# ---------------------------------------------
+```
+- Notice that in `target` we specified the name of the class containing the `main` method.
+- In `heapsolving.strategy` the `PLIOPT` technique is specified. You can also try just `PLI`.
+- In `heapsolving.symsolve.finitization.class` we specified the class containing the `finitization mycasestudy.TreeMap`
+- In `heapsolving.symsolve.finitization.args` we specified a scope of 6 nodes containing the finitization method `mycasestudy.TreeMap`
+- In `heapsolving.symsolve.predicate` we specified the name of preH to be used by SymSolve `repOKSymSolve`
+
+For more information about parameters, refer to: [Parameters in Configuration File](#parameters-in-configuration-file)
+
+
+### Step 6: Compile the code and run PLI
+
+Compile the code with:
+```
+ant build
+```
+
+After the build finishes you can run the newly added study case with:
+```
+bash scripts/run.sh src/examples/mycasestudy/config.jpf
+```
+
+Below is an excerpt with the relevant parts of `PLI`'s output:
+```
+====================================================== system under test
+mycasestudy.MyMain.main()
+
+====================================================== search started: 8/21/23 10:35 PM
+
+
+Technique:  PLIOPT
+Method:     TreeMap.METHODNAME
+Scope:      6
+
+------- Statistics -------
+
+ - Executed Paths:        46
+ - Exceptions thrown:     0
+ - Total Time:            0 s.
+ - Solving Time:          0 s.
+ - repOK PC solving time: 0 s.
+ - Solving procedure calls:   130
+
+
+====================================================== results
+no errors detected
+
+```
