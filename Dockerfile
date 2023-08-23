@@ -18,10 +18,10 @@ RUN mkdir /usr/lib/PLI
 
 WORKDIR /usr/lib/PLI
 
-# Copy repositories
-COPY . /usr/lib/PLI/jpf-core
-COPY . /usr/lib/PLI/jpf-symbc
-COPY . /usr/lib/PLI/spf-pli
+# Copy projects
+COPY ./jpf-core /usr/lib/PLI/jpf-core
+COPY ./jpf-symbc /usr/lib/PLI/jpf-symbc
+COPY ./spf-pli /usr/lib/PLI/spf-pli
 
 # Setup jpf env
 RUN mkdir /root/.jpf
@@ -30,7 +30,7 @@ RUN echo 'jpf-symbc = /usr/lib/PLI/jpf-symbc' >> /root/.jpf/site.properties
 RUN echo 'spf-pli = /usr/lib/PLI/spf-pli' >> /root/.jpf/site.properties
 RUN echo 'extensions=${jpf-core},${jpf-symbc}' >> /root/.jpf/site.properties
 
-# Build jpf
+# Build projects
 WORKDIR /usr/lib/PLI/jpf-core
 RUN ant clean
 RUN ant build
