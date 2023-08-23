@@ -56,6 +56,45 @@ docker run --platform linux/amd64 -it pli:latest /bin/bash
 
 
 
+### Install From Source Code
+
+To build and run `spf-pli` you need Java 8 and Ant version 1.9.
+
+### Configuration
+
+Create a .jpf directory inside your home directory and create in it a file called "site.properties":
+```
+cd ~
+mkdir .jpf && cd .jpf
+cat > site.properties
+```
+
+Paste the following text inside the new site.properties file, replacing `<PATH-TO-INSTALLATION_FOLDER>` with the location of each of the previously cloned repos:
+```
+jpf-core=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-core
+
+jpf-symbc=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/jpf-symbc
+
+spf-pli=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/spf-pli
+
+extensions=${jpf-core},${jpf-symbc}
+```
+
+### Compile projects:
+
+Move to the installation folder:
+```
+cd <PATH-TO-INSTALLATION_FOLDER>
+```
+
+Compile each project:
+```
+cd jpf-core && ant build
+cd ../jpf-symbc && ant build
+cd ../spf-pli && ant build
+```
+
+
 ## Getting Started
 
 Move inside the `spf-pli` folder and run an experiment to check everything is working properly:
@@ -194,6 +233,8 @@ Check for example the finitization of the `TreeMap` case study:
 - The method `set(<CLASS>, <FIELD_NAME>, <SET_OF_VALUES>)` established the `<SET_OF_VALUES>` as the field domain of the field `<FIELD_NAME>` that belongs to `<CLASS>`.
 
 
+**Important:** The current implementation requires the finitization to set the scopes for each field in the same order they are declared in the class. That is, setting the `size` before `root` in the `TreeMap` very likely would make the analysis crash, given that `root` is declared before than `size` in the `TreeMap` class.
+
 ### Required hard-coded methods
 
 To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runRepOK`:
@@ -304,12 +345,12 @@ Let's assume that we want to analyze a method inside the class `TreeMap`. There 
 
 ### Step 1: Write the specifications preH and PreP
 
-The first step is write both specifications. `preH` must the heap-related constraints and `preP` the primitive-typed constraints. The specifications can receive any name, but later the name should be specified in the configuration. Fortunately, the class `TreeMap` already have included the specifications.
+The first step is write both specifications. `preH` must check all the heap-related constraints and `preP` the primitive-typed constraints. The specifications can receive any name, but later the name should be specified in the configuration. Fortunately, the class `TreeMap` already have included the specifications.
 
 
 ### Step 2: Write the Finitization method
 
-The next step requires to write the finitization method that defines the scopes for the analysis. In [Defining the scopes of the analysis](#defining-the-scopes-of-the-analysis),we explain how to write finitization methods. For this case, the finitization for `TreeMap` is already defined in the class.
+The next step requires to write the finitization method that defines the scopes for the analysis. This is explained in [Defining the scopes of the analysis](#defining-the-scopes-of-the-analysis). For this case, the finitization for `TreeMap` is already defined in the class.
 
 
 ### Step 3: Add the required hard-coded method
@@ -341,8 +382,12 @@ public class MyMain {
 ```
 The main creates the symbolic inputs and then calls the method under analysis, in this case `containsKey`.
 
-- The method `SymHeap.makeSymbolicRefThis` makes an instance of reference type symbolic.
+- The method `SymHeap.makeSymbolicRefThis` makes our subject instance of reference type symbolic.
 - The method `SymHeap.makeSymbolicInteger` creates a symbolic integer.
+
+Here you can play around with other methods of the `TreeMap` class.
+
+**Important:** The current implementation do not support symbolic reference-typed inputs other than the "this" object.
 
 ### Step 5: Create the configuration file
 
