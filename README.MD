@@ -60,6 +60,28 @@ docker run --platform linux/amd64 -it pli:latest /bin/bash
 
 To build and run `spf-pli` you need Java 8 and Ant version 1.9.
 
+First, let's install the required `jpf-core` and the `jpf-symbc` projects.
+
+Create and move to the folder where you want to install the tool:
+```
+mkdir INSTALLATION_FOLDER && cd INSTALLATION_FOLDER
+```
+
+Clone the Java Pathfinder (`jpf-core`):
+```
+git clone https://github.com/JuanmaCopia/jpf-core
+```
+
+Clone the Symbolic Java Pathfinder extension (`jpf-symbc`):
+```
+git clone https://github.com/JuanmaCopia/jpf-symbc
+```
+
+Clone the `PLI` extension:
+```
+git clone https://github.com/JuanmaCopia/spf-pli
+```
+
 ### Configuration
 
 Create a .jpf directory inside your home directory and create in it a file called "site.properties":
