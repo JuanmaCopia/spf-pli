@@ -18,11 +18,10 @@ RUN mkdir /usr/lib/PLI
 
 WORKDIR /usr/lib/PLI
 
-# Move to installation folder and clone the repos
-RUN git clone https://github.com/JuanmaCopia/jpf-core
-RUN git clone https://github.com/JuanmaCopia/jpf-symbc
+# Copy repositories
+COPY . /usr/lib/PLI/jpf-core
+COPY . /usr/lib/PLI/jpf-symbc
 COPY . /usr/lib/PLI/spf-pli
-# RUN git clone https://github.com/JuanmaCopia/spf-pli
 
 # Setup jpf env
 RUN mkdir /root/.jpf
