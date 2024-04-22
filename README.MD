@@ -102,6 +102,16 @@ spf-pli=${user.home}/<PATH-TO-INSTALLATION_FOLDER>/spf-pli
 extensions=${jpf-core},${jpf-symbc}
 ```
 
+Remember to set the JAVA_HOME environment variable:
+```
+export JAVA_HOME=/path/to/java-8-installation
+```
+
+For example:
+```
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
+```
+
 ### Compile projects:
 
 Move to the installation folder:
