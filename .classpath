@@ -7,7 +7,6 @@
 	<classpathentry kind="src" output="build/peers" path="src/peers"/>
 	<classpathentry kind="src" output="build/tests" path="src/tests"/>
 	<classpathentry kind="src" output="build/classes" path="src/classes"/>
-	<classpathentry kind="lib" path="build/spf-pli-annotations.jar"/>
 	<classpathentry kind="lib" path="build/spf-pli-classes.jar"/>
 	<classpathentry kind="lib" path="build/spf-pli.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.12.0.jar"/>
