@@ -319,8 +319,8 @@ heapsolving.symsolve.finitization.class = <CLASS_CONTAINING_REPOK_AND_FINITIZATI
 heapsolving.symsolve.finitization.args = <MAX_SCOPE>
 heapsolving.symsolve.predicate = <PRE_H_NAME>
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```
@@ -362,8 +362,8 @@ heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = 4
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```
@@ -445,8 +445,8 @@ heapsolving.symsolve.finitization.class = mycasestudy.TreeMap
 heapsolving.symsolve.finitization.args = 6
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```

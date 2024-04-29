@@ -7,20 +7,20 @@ sourcepath=${jpf-symbc}/src/examples
 
 shell=pli.LISSAShell
 
-target = heapsolving.hashmap.METHOD.HashMapMain
-method = METHOD
+target = heapsolving.hashmap.put.HashMapMain
+method = put
 
 symbolic.debug = false
 symbolic.dp = z3bitvector
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.checkPathValidity = BOOLEAN
-heapsolving.generateTests = BOOLEAN
+heapsolving.strategy = PLIOPT
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = heapsolving.hashmap.HashMap
-heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.finitization.args = 2
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------

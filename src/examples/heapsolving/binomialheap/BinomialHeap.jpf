@@ -17,7 +17,7 @@ heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap
 heapsolving.symsolve.finitization.args = MAX_SCOPE
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------

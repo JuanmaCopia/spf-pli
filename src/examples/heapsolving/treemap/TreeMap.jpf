@@ -4,20 +4,20 @@
 
 shell=pli.LISSAShell
 
-target = heapsolving.treemap.METHOD.TreeMapMain
-method = METHOD
+target = heapsolving.treemap.remove.TreeMapMain
+method = remove
 
 symbolic.debug = false
 symbolic.dp = z3
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.checkPathValidity = BOOLEAN
-heapsolving.generateTests = BOOLEAN
+heapsolving.strategy = INTERPLI
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
-heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.finitization.args = 7
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------

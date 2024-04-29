@@ -58,7 +58,7 @@ import pli.bytecode.lazy.GETFIELDHeapSolving;
 import pli.bytecode.lazy.GETSTATIC;
 import pli.config.SolvingStrategyEnum;
 
-public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
+public class PLIInstructionFactory extends SymbolicInstructionFactory {
 
     // === Fully Overridden Instructions of jpf-symbc (depentent of jpf-core) ===
 
@@ -367,7 +367,7 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
 
     // ============ Constructor ============ //
 
-    public HeapSolvingInstructionFactory(Config conf) {
+    public PLIInstructionFactory(Config conf) {
         super(conf);
     }
 
