@@ -31,6 +31,8 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import pli.bytecode.lazy.StaticRepOKCallInstruction;
 import pli.choicegenerators.RepOKCallChoiceGenerator;
+import pli.heap.solving.techniques.LIBasedStrategy;
+import pli.listeners.HeapSolvingListener;
 
 // need to fix names
 
@@ -105,6 +107,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         }
 
         if (repOKCG.allRepOKPathsReturnedFalse()) {
+        	HeapSolvingListener.SERepokUnsats++;
             if (repOKCG.hasNextSolution())
                 return executeInvokeRepOK(ti);
             ti.getVM().getSystemState().setIgnored(true);
@@ -115,6 +118,8 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
         MethodInfo callee;
+        
+        LIBasedStrategy.repokSEs++;
 
         try {
             callee = getInvokedMethod(ti);

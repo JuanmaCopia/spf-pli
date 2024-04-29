@@ -35,6 +35,12 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
     int invalidPaths = 0;
     int validPaths = 0;
     int solvingProcedureCalls = 0;
+    int getNextHeapCalls = 0;
+    int repokSECalls = 0;
+    
+    // r
+    public static int SERepokUnsats = 0;
+    
 
     public HeapSolvingListener(SolvingStrategy solvingStrategy, ConfigParser config) {
         this.heapSolvingStrategy = solvingStrategy;
@@ -121,7 +127,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
             if (stg instanceof PCCheckStrategy) {
                 repOKPCSolvingTime = stg.getRepOKSolvingTime();
             }
-
+            
+            getNextHeapCalls = stg.getNextHeapCalls;
+            repokSECalls = LIBasedStrategy.repokSEs;
         }
     }
 
@@ -143,6 +151,9 @@ public class HeapSolvingListener extends PropertyListenerAdapter {
         if (heapSolvingStrategy instanceof PLI) {
             System.out.println(" - repOK PC solving time: " + repOKPCSolvingTime / 1000 + " s.");
             System.out.println(" - Solving procedure calls:   " + solvingProcedureCalls);
+            System.out.println(" - GetNextHeapCalls:   " + getNextHeapCalls);
+            System.out.println(" - RepOKSymbolicExectutions:   " + repokSECalls);
+            System.out.println(" - RepOKSymbolicExectutions unsats:   " + SERepokUnsats);
         }
         System.out.println("");
     }

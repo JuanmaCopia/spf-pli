@@ -21,7 +21,7 @@ import pli.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
-public class PLIOPT extends PLI {
+public class INTERPLI extends PLI {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,

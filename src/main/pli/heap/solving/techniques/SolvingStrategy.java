@@ -38,6 +38,8 @@ public class SolvingStrategy {
             return new PLI();
         case PLIOPT:
             return new PLIOPT();
+        case INTERPLI:
+        	return new INTERPLI();
         case LISSANOSB:
             config.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
             return new LISSA();

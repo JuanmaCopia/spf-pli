@@ -4,7 +4,6 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
-import gov.nasa.jpf.vm.ThreadInfo;
 import pli.bytecode.lazy.StaticRepOKCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
@@ -14,10 +13,10 @@ import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
 import pli.heap.builder.HeapSolutionBuilder;
-import pli.heap.solving.techniques.LIBasedStrategy;
-import pli.heap.solving.techniques.PCCheckStrategy;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
+import gov.nasa.jpf.vm.ThreadInfo;
+
 
 public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
@@ -46,6 +45,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
+            getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
 
@@ -75,6 +75,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
+            getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
 
@@ -94,12 +95,14 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
+        getNextHeapCalls++;
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         if (pcCG != null) {
             while (solution != null) {
                 if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                     return solution;
                 }
+                getNextHeapCalls++;
                 solution = heapSolver.getNextSolution(solution);
             }
         }

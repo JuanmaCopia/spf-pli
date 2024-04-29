@@ -20,8 +20,11 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     Finitization finitization;
     StateSpace stateSpace;
     Canonicalizer canonicalizer;
+    
+    public static int repokSEs = 0;
 
     public int solverCalls = 0;
+    public int getNextHeapCalls = 0;
     public int validPaths = 0;
     boolean executingRepOK = false;
     long repokExecTime = 0;
