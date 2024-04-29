@@ -23,6 +23,7 @@ import korat.finitization.impl.StateSpace;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.heap.visitors.HeapVisitor;
 import pli.heap.visitors.symbolicinput.CheckPCVisitor;
+import pli.heap.visitors.symbolicinput.GetPCVisitor;
 import pli.heap.visitors.symbolicinput.ObjectMapCreatorVisitor;
 import pli.heap.visitors.symbolicinput.PartialHeapBuilderVisitor;
 import symsolve.vector.SymSolveSolution;
@@ -100,6 +101,12 @@ public class SymbolicReferenceInput {
         acceptBFS(visitor);
 
         return !visitor.isAborted();
+    }
+    
+    public PathCondition getAccessedFieldsPathCondition(StateSpace stateSpace, SymSolveSolution solution) {
+        GetPCVisitor visitor = new GetPCVisitor(stateSpace, solution);
+        acceptBFS(visitor);
+        return visitor.getPathConditionOfAccessedFields();
     }
 
     public Map<Object, Integer> getSymSolveToSymbolicMap(StateSpace stateSpace, SymSolveSolution solution) {

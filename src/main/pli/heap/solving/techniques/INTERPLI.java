@@ -17,7 +17,6 @@ import pli.choicegenerators.PLIChoiceGenerator;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
-import pli.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
@@ -51,9 +50,13 @@ public class INTERPLI extends PLI {
 
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {
-            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
+            // if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution,
+            // pcCG.getCurrentPC())) {
+            // break;
+            // }
+            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
+            if (isConjunctionSAT(accessedPC, pcCG.getCurrentPC()))
                 break;
-            }
             getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
