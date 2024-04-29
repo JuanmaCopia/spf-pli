@@ -18,7 +18,7 @@
 package pli.bytecode;
 
 import gov.nasa.jpf.JPFException;
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
+import pli.PLIInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
@@ -59,7 +59,7 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
         if (!ti.isFirstStepInsn()) { // first time around
             /* YN: added symcrete mode */
             // cg = new PCChoiceGeneratorLISSA(targets.length+1);
-            cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : targets.length + 1);
+            cg = new PCChoiceGeneratorLISSA(PLIInstructionFactory.collect_constraints ? 1 : targets.length + 1);
             ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
             ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
             ti.getVM().getSystemState().setNextChoiceGenerator(cg);
@@ -88,7 +88,7 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
         /* YN: enabling concolic exection */
         // int idx = (Integer)cg.getNextChoice();
         int idx;
-        if (SymbolicInstructionFactory.collect_constraints) {
+        if (PLIInstructionFactory.collect_constraints) {
             // Check whether the value from the concrete execution is covered by the table
             // switch or whether it should
             // trigger the default branch.
@@ -117,7 +117,8 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             }
 
             Instruction nextInstruction = mi.getInstructionAt(target);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
+                    (PCChoiceGeneratorLISSA) cg);
         } else {
             lastIdx = idx;
             pc._addDet(Comparator.EQ, sym_v._minus(min), idx);
@@ -128,7 +129,8 @@ public class TABLESWITCH extends SwitchInstruction implements gov.nasa.jpf.vm.by
             }
 
             Instruction nextInstruction = mi.getInstructionAt(targets[idx]);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, nextInstruction,
+                    (PCChoiceGeneratorLISSA) cg);
         }
 
     }

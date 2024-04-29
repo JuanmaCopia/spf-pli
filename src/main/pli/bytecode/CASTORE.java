@@ -20,7 +20,7 @@
 
 package pli.bytecode;
 
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
+import pli.PLIInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
@@ -60,7 +60,7 @@ public class CASTORE extends gov.nasa.jpf.jvm.bytecode.CASTORE {
         if (!ti.isFirstStepInsn()) {
             PCChoiceGeneratorLISSA arrayCG;
 
-            if (SymbolicInstructionFactory.collect_constraints) {
+            if (PLIInstructionFactory.collect_constraints) {
                 arrayCG = new PCChoiceGeneratorLISSA(1); // YN: symcrete mode
             } else {
                 arrayCG = new PCChoiceGeneratorLISSA(0, len + 1); // add 2 error cases: <0, >=len
@@ -72,7 +72,7 @@ public class CASTORE extends gov.nasa.jpf.jvm.bytecode.CASTORE {
             ti.getVM().getSystemState().setNextChoiceGenerator(arrayCG);
 
             // ti.reExecuteInstruction();
-            if (SymbolicInstructionFactory.debugMode)
+            if (PLIInstructionFactory.debugMode)
                 System.out.println("# array cg registered: " + arrayCG);
             return this;
 
@@ -84,7 +84,7 @@ public class CASTORE extends gov.nasa.jpf.jvm.bytecode.CASTORE {
             assert (lastCG != null);
             PCChoiceGeneratorLISSA prevCG = lastCG.getPreviousChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);
 
-            if (SymbolicInstructionFactory.collect_constraints) {
+            if (PLIInstructionFactory.collect_constraints) {
                 // YN: reuse index written from concrete exec + set choice correctly
                 index = peekIndex(ti);
                 ((PCChoiceGeneratorLISSA) lastCG).select(index);
@@ -176,7 +176,8 @@ public class CASTORE extends gov.nasa.jpf.jvm.bytecode.CASTORE {
                         (PCChoiceGeneratorLISSA) lastCG);
             }
 
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, getNext(ti), (PCChoiceGeneratorLISSA) lastCG);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(ti, this, getNext(ti),
+                    (PCChoiceGeneratorLISSA) lastCG);
         }
     }
 

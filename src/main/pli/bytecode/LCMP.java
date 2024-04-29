@@ -17,7 +17,7 @@
  */
 package pli.bytecode;
 
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
+import pli.PLIInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
@@ -50,7 +50,7 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
             ChoiceGenerator<?> cg;
 
             if (!th.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : 3);
+                cg = new PCChoiceGeneratorLISSA(PLIInstructionFactory.collect_constraints ? 1 : 3);
                 ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
                 ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
                 th.getVM().getSystemState().setNextChoiceGenerator(cg);
@@ -65,7 +65,7 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
 
             cg = th.getVM().getSystemState().getChoiceGenerator();
             assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
-            if (SymbolicInstructionFactory.collect_constraints) {
+            if (PLIInstructionFactory.collect_constraints) {
                 // YN: reuse conditionValue written from concrete exec + set choice correctly
                 ((PCChoiceGeneratorLISSA) cg).select(conditionValue + 1);
             } else {
@@ -131,7 +131,8 @@ public class LCMP extends gov.nasa.jpf.jvm.bytecode.LCMP {
             }
 
             Instruction nextInstruction = getNext(th);
-            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+            return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction,
+                    (PCChoiceGeneratorLISSA) cg);
         }
 
     }
