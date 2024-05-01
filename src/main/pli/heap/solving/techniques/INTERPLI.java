@@ -4,6 +4,7 @@ import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.Constraint;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
+import gov.nasa.jpf.symbc.numeric.interp.SpecialSolverQueries;
 import gov.nasa.jpf.symbc.string.StringComparator;
 import gov.nasa.jpf.symbc.string.StringConstraint;
 import gov.nasa.jpf.symbc.string.StringExpression;
@@ -26,8 +27,12 @@ public class INTERPLI extends PLI {
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
+
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
-        SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
+        // System.out.println("checkign lazy init, current pc is: " +
+        // pcCG.getCurrentPC());
+        SymSolveVector vector = canonicalizer.createVector(symInputHeap, pcCG.getCurrentPC());
 
         // Optimization that avoid some solver calls
         PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
@@ -46,7 +51,6 @@ public class INTERPLI extends PLI {
         solverCalls++;
 
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
 
         SymSolveSolution solution = heapSolver.solve(vector);
         while (solution != null) {
@@ -57,10 +61,12 @@ public class INTERPLI extends PLI {
             PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
             if (isConjunctionSAT(accessedPC, pcCG.getCurrentPC()))
                 break;
-            // SpecialSolverQueries.calculateInterpolant(accessedPC, pcCG.getCurrentPC());
+
+            System.err.println("\n--------------------------------------\n");
             System.err.println("\nconcretized primitive types ussat");
             System.err.println("conc heap pc: " + accessedPC);
             System.err.println("\n program pc: " + pcCG.getCurrentPC());
+            SpecialSolverQueries.calculateInterpolant(accessedPC, pcCG.getCurrentPC());
             getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
@@ -94,6 +100,8 @@ public class INTERPLI extends PLI {
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
+        // System.out.println("checkign branch, current pc is: " +
+        // currentCG.getCurrentPC());
 
         // Optimization that avoid some solver calls
         PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
@@ -113,19 +121,24 @@ public class INTERPLI extends PLI {
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
-        SymSolveSolution solution = getCachedSolution(currentCG);
-        if (solution == null) {
-            SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-            solution = heapSolver.solve(vector);
-        }
+//        SymSolveSolution solution = getCachedSolution(currentCG);
+//        if (solution == null) {
+//            SymSolveVector vector = canonicalizer.createVector(symInputHeap, currentCG.getCurrentPC());
+//            solution = heapSolver.solve(vector);
+//        }
+
+        SymSolveVector vector = canonicalizer.createVector(symInputHeap, currentCG.getCurrentPC());
+        SymSolveSolution solution = heapSolver.solve(vector);
 
         while (solution != null) {
             PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
             if (isConjunctionSAT(accessedPC, currentCG.getCurrentPC()))
                 break;
+            System.err.println("\n--------------------------------------\n");
             System.err.println("\nconcretized primitive types ussat");
             System.err.println("conc heap pc: " + accessedPC);
             System.err.println("\n program pc: " + currentCG.getCurrentPC());
+            SpecialSolverQueries.calculateInterpolant(accessedPC, currentCG.getCurrentPC());
             getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
