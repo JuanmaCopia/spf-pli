@@ -1,8 +1,7 @@
 package pli.choicegenerators;
 
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 import pli.LISSAShell;
-import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
@@ -12,17 +11,20 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
     SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
 
+    PathCondition currentPC;
+
     int buildedObjectRef;
 
     PLI stg;
 
     public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
-            PLIChoiceGenerator curCG) {
+            PLIChoiceGenerator curCG, PathCondition currentPC) {
         super(id, curCG);
         this.stg = (PLI) LISSAShell.solvingStrategy;
         this.symInputHeap = symInputHeap;
         this.candidateHeapSolution = solution;
         this.curCG = curCG;
+        this.currentPC = currentPC;
     }
 
     @Override
@@ -48,6 +50,10 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             curCG.setCurrentTestCode(testCode);
             curCG.setCurrentHeapSolution(candidateHeapSolution);
             curCG.setCurrentRepOKPathCondition(repOKPathCondition);
+        } else {
+//            System.err.println("\n----------------------------------------------------\n");
+//            System.err.println("Initial PC: " + currentPC);
+//            System.err.println("\nRepok pc returning false: " + repOKPathCondition);
         }
 
         return !pathReturningTrueFound;

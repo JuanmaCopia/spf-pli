@@ -4,6 +4,7 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
+import gov.nasa.jpf.vm.ThreadInfo;
 import pli.bytecode.lazy.StaticRepOKCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
@@ -15,8 +16,6 @@ import pli.heap.SymbolicReferenceInput;
 import pli.heap.builder.HeapSolutionBuilder;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
-import gov.nasa.jpf.vm.ThreadInfo;
-
 
 public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
@@ -115,7 +114,8 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
 
         assert (curCG != null);
-        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, solution, curCG);
+        PathCondition currentPC = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
+        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, solution, curCG, currentPC);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;

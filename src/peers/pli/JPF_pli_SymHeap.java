@@ -18,7 +18,6 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import pli.LISSAShell;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.RepOKCallCG;
@@ -155,16 +154,20 @@ public class JPF_pli_SymHeap extends NativePeer {
                 String testCode = visitor.getTestCaseCode();
                 repOKChoiceGenerator.setTestCode(testCode);
 
-                // if (testCode.contains("treemap_0.size = 3;") && testCode.contains("treemap_0.root.left.color = true;")
-                //         && testCode.contains("treemap_0.root.right.color = false;")) {
-                //     System.out.println("\n===========================================\n");
-                //     System.out.println("id: " + id++);
-                //     System.out.println("testCode:\n\n" + testCode);
-                //     System.out.println(SymHeapHelper.toString(objvRef));
+                // if (testCode.contains("treemap_0.size = 3;") &&
+                // testCode.contains("treemap_0.root.left.color = true;")
+                // && testCode.contains("treemap_0.root.right.color = false;")) {
+                // System.out.println("\n===========================================\n");
+                // System.out.println("id: " + id++);
+                // System.out.println("testCode:\n\n" + testCode);
+                // System.out.println(SymHeapHelper.toString(objvRef));
                 // }
 
             }
             repOKChoiceGenerator.pathReturningTrueFound();
+        } else {
+            RepOKCallCG repokCallCG = getRepOKCallCG(ss);
+            repokCallCG.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
         }
         ss.setIgnored(true);
     }
@@ -215,7 +218,7 @@ public class JPF_pli_SymHeap extends NativePeer {
 
         String name = env.getStringObject(stringRef);
         String refChain = name + "[" + objvRef + "]"; // why is the type used here? should use the name of the field
-                                                      // instead
+        // instead
 
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);
