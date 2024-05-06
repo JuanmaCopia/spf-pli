@@ -16,6 +16,8 @@ public class SymSolveHeapSolver {
     SymSolve solver;
     Finitization finitization;
     long solvingTime = 0;
+    int isSatCalls = 0;
+    int getNextSolutionCalls = 0;
 
     public SymSolveHeapSolver() {
         solver = createSymSolveInstance();
@@ -35,6 +37,7 @@ public class SymSolveHeapSolver {
         long time = System.currentTimeMillis();
         boolean result = solver.isSatisfiable(vector);
         solvingTime += (System.currentTimeMillis() - time);
+        isSatCalls++;
         return result;
     }
 
@@ -49,6 +52,7 @@ public class SymSolveHeapSolver {
         long time = System.currentTimeMillis();
         SymSolveSolution result = solver.solve(vector);
         solvingTime += (System.currentTimeMillis() - time);
+        isSatCalls++;
         return result;
     }
 
@@ -56,11 +60,20 @@ public class SymSolveHeapSolver {
         long time = System.currentTimeMillis();
         SymSolveSolution result = solver.getNextSolution(previousSolution);
         solvingTime += (System.currentTimeMillis() - time);
+        getNextSolutionCalls++;
         return result;
     }
 
     public long getSolvingTime() {
         return solvingTime;
+    }
+
+    public int getNumberOfIsSatCalls() {
+        return isSatCalls;
+    }
+
+    public int getNumberOfGetNextSolutionCalls() {
+        return getNextSolutionCalls;
     }
 
     public Finitization getFinitization() {

@@ -6,15 +6,6 @@ import java.util.List;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import pli.config.ConfigParser;
-import pli.heap.solving.techniques.IFREPOK;
-import pli.heap.solving.techniques.LIHYBRID;
-import pli.heap.solving.techniques.LISSA;
-import pli.heap.solving.techniques.LISSAM;
-import pli.heap.solving.techniques.PLAINLAZY;
-import pli.heap.solving.techniques.PLI;
-import pli.heap.solving.techniques.PLIOPT;
-import pli.heap.solving.techniques.REPOKSOLVER;
-import pli.heap.solving.techniques.SolvingStrategy;
 import pli.heap.testgen.args.Argument;
 import pli.heap.testgen.args.TargetMethod;
 import symsolve.explorers.impl.SymmetryBreakStrategy;
@@ -32,14 +23,12 @@ public class SolvingStrategy {
         switch (config.solvingStrategy) {
         case LISSA:
             return new LISSA();
-        case LISSAM:
-            return new LISSAM();
         case PLI:
             return new PLI();
         case PLIOPT:
             return new PLIOPT();
         case INTERPLI:
-        	return new INTERPLI();
+            return new INTERPLI();
         case LISSANOSB:
             config.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
             return new LISSA();

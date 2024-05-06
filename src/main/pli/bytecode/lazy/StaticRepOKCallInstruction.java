@@ -107,7 +107,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         }
 
         if (repOKCG.allRepOKPathsReturnedFalse()) {
-        	HeapSolvingListener.SERepokUnsats++;
+            LIBasedStrategy.numberOfUnsatRepOKSymbolicExec++;
             if (repOKCG.hasNextSolution())
                 return executeInvokeRepOK(ti);
             ti.getVM().getSystemState().setIgnored(true);
@@ -119,7 +119,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
         MethodInfo callee;
         
-        LIBasedStrategy.repokSEs++;
+        LIBasedStrategy.numberOfRepOKSymbolicExec++;
 
         try {
             callee = getInvokedMethod(ti);

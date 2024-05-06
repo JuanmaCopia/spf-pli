@@ -44,7 +44,6 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
-            getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
 
@@ -74,7 +73,6 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                 break;
             }
-            getNextHeapCalls++;
             solution = heapSolver.getNextSolution(solution);
         }
 
@@ -94,14 +92,12 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
-        getNextHeapCalls++;
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
         if (pcCG != null) {
             while (solution != null) {
                 if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
                     return solution;
                 }
-                getNextHeapCalls++;
                 solution = heapSolver.getNextSolution(solution);
             }
         }

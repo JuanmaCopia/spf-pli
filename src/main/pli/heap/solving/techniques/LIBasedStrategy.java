@@ -12,7 +12,6 @@ import pli.choicegenerators.RepOKCompleteCallCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.canonicalizer.Canonicalizer;
 import pli.heap.solving.solver.SymSolveHeapSolver;
-import pli.heap.solving.techniques.SolvingStrategy;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
@@ -20,11 +19,11 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     Finitization finitization;
     StateSpace stateSpace;
     Canonicalizer canonicalizer;
-    
-    public static int repokSEs = 0;
+
+    public static int numberOfRepOKSymbolicExec = 0;
+    public static int numberOfUnsatRepOKSymbolicExec = 0;
 
     public int solverCalls = 0;
-    public int getNextHeapCalls = 0;
     public int validPaths = 0;
     boolean executingRepOK = false;
     long repokExecTime = 0;
@@ -94,6 +93,14 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     public boolean isFieldTracked(String ownerClassName, String fieldName) {
         return finitization.isFieldTracked(ownerClassName, fieldName);
+    }
+
+    public int getSymSolveIsSatCalls() {
+        return heapSolver.getNumberOfIsSatCalls();
+    }
+
+    public int getSymSolveGetNextCalls() {
+        return heapSolver.getNumberOfGetNextSolutionCalls();
     }
 
 }
