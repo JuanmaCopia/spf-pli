@@ -20,8 +20,8 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
-import pli.choicegenerators.RepOKCallCG;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
+import pli.choicegenerators.prePCallCG;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.config.ConfigParser;
 import pli.config.SolvingStrategyEnum;
 import pli.heap.SymHeapHelper;
@@ -38,13 +38,13 @@ public class JPF_pli_SymHeap extends NativePeer {
         return LISSAShell.configParser.checkPathValidity;
     }
 
-    private static RepOKCallChoiceGenerator removeAddedChoicesByRepOK(SystemState ss) {
+    private static LaunchSymbolicExecCG removeAddedChoicesByRepOK(SystemState ss) {
         // String cgID = "repOKCG";
         ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
         assert (lastCG != null);
         for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof RepOKCallChoiceGenerator) {
-                return (RepOKCallChoiceGenerator) cg;
+            if (cg instanceof LaunchSymbolicExecCG) {
+                return (LaunchSymbolicExecCG) cg;
             }
             cg.setDone();
         }
@@ -52,12 +52,12 @@ public class JPF_pli_SymHeap extends NativePeer {
         throw new RuntimeException("Error: RepOKCallChoiceGenerator not found");
     }
 
-    private static RepOKCallCG getRepOKCallCG(SystemState ss) {
+    private static prePCallCG getRepOKCallCG(SystemState ss) {
         ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
         assert (lastCG != null);
         for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof RepOKCallCG) {
-                return (RepOKCallCG) cg;
+            if (cg instanceof prePCallCG) {
+                return (prePCallCG) cg;
             }
         }
         throw new RuntimeException("Error: RepOKCallCG not found");
@@ -73,7 +73,7 @@ public class JPF_pli_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            RepOKCallCG repOKCG = getRepOKCallCG(ss);
+            prePCallCG repOKCG = getRepOKCallCG(ss);
             repOKCG.setBuildedObjectRef(objvRef);
 
             cg = new PCChoiceGeneratorLISSA(1);
@@ -144,7 +144,7 @@ public class JPF_pli_SymHeap extends NativePeer {
 
         if (repOKResult) {
             PathCondition pc = PathCondition.getPC(env.getVM());
-            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            LaunchSymbolicExecCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
             repOKChoiceGenerator.setRepOKPathCondition(pc);
 
             if (LISSAShell.configParser.generateTests) {
@@ -166,7 +166,7 @@ public class JPF_pli_SymHeap extends NativePeer {
             }
             repOKChoiceGenerator.pathReturningTrueFound();
         } else {
-            RepOKCallCG repokCallCG = getRepOKCallCG(ss);
+            prePCallCG repokCallCG = getRepOKCallCG(ss);
             repokCallCG.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
         }
         ss.setIgnored(true);

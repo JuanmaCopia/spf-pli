@@ -7,7 +7,7 @@ import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
 import pli.heap.solving.techniques.LIBasedStrategy;
 
-public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integer> {
+public abstract class LaunchSymbolicExecCG extends ChoiceGeneratorBase<Integer> {
 
     LIBasedStrategy strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
     PLIChoiceGenerator curCG;
@@ -18,7 +18,7 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
     PathCondition repOKPathCondition;
     String testCode = null;
 
-    public RepOKCallChoiceGenerator(String id, PLIChoiceGenerator curCG) {
+    public LaunchSymbolicExecCG(String id, PLIChoiceGenerator curCG) {
         super(id);
         this.curCG = curCG;
         if (curCG == null)

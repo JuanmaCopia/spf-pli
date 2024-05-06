@@ -1,12 +1,9 @@
 
 package pli.choicegenerators;
 
-import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
+public class PreHAndPrePCallCG extends LaunchSymbolicExecCG {
 
-public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
-
-    public RepOKCompleteCallCG(String id, PLIChoiceGenerator curCG) {
+    public PreHAndPrePCallCG(String id, PLIChoiceGenerator curCG) {
         super(id, curCG);
     }
 

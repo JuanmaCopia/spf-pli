@@ -9,7 +9,7 @@ import pli.bytecode.lazy.StaticRepOKCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallCG;
+import pli.choicegenerators.prePCallCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
@@ -111,7 +111,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
         assert (curCG != null);
         PathCondition currentPC = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
-        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, solution, curCG, currentPC);
+        prePCallCG rcg = new prePCallCG("repOKCG", symInputHeap, solution, curCG, currentPC);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;
@@ -121,7 +121,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
         assert (symInputHeap != null);
 
-        RepOKCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(RepOKCallCG.class);
+        prePCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(prePCallCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
         PCChoiceGeneratorLISSA pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);

@@ -8,7 +8,7 @@ import korat.finitization.impl.Finitization;
 import korat.finitization.impl.StateSpace;
 import pli.bytecode.lazy.StaticRepOKCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
-import pli.choicegenerators.RepOKCompleteCallCG;
+import pli.choicegenerators.PreHAndPrePCallCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.canonicalizer.Canonicalizer;
 import pli.heap.solving.solver.SymSolveHeapSolver;
@@ -85,7 +85,7 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runRepOKComplete()V");
 
-        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity", null);
+        PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("checkPathValidity", null);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         ti.setNextPC(repOKCallInstruction);

@@ -30,7 +30,7 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import pli.bytecode.lazy.StaticRepOKCallInstruction;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.heap.solving.techniques.LIBasedStrategy;
 import pli.listeners.HeapSolvingListener;
 
@@ -40,13 +40,13 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
     Instruction next;
-    RepOKCallChoiceGenerator repOKCG;
+    LaunchSymbolicExecCG repOKCG;
 
     public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
-    public void initialize(Instruction current, Instruction next, RepOKCallChoiceGenerator repOKCG) {
+    public void initialize(Instruction current, Instruction next, LaunchSymbolicExecCG repOKCG) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;

@@ -6,7 +6,7 @@ import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
 
-public class RepOKCallCG extends RepOKCallChoiceGenerator {
+public class prePCallCG extends LaunchSymbolicExecCG {
 
     SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
@@ -17,7 +17,7 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
 
     PLI stg;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
+    public prePCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
             PLIChoiceGenerator curCG, PathCondition currentPC) {
         super(id, curCG);
         this.stg = (PLI) LISSAShell.solvingStrategy;
