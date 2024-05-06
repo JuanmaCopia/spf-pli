@@ -8,7 +8,6 @@ import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
 import pli.choicegenerators.PreHAndPrePCallCG;
 import pli.heap.SymHeapHelper;
-import pli.heap.solving.techniques.PLI;
 
 public class REPOKSOLVER extends PLI {
 
@@ -32,9 +31,9 @@ public class REPOKSOLVER extends PLI {
             PLIChoiceGenerator curCG) {
 
         StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
-                .createStaticRepOKCallInstruction("runRepOKComplete()V");
+                .createStaticRepOKCallInstruction("runCompleteSpecification()V");
 
-        PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("runRepOKComplete", curCG);
+        PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("runCompleteSpecification", curCG);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;

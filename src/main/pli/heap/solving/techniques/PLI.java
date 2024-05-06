@@ -52,7 +52,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
+        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
+        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
     }
 
     @Override
@@ -104,10 +104,11 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         return null;
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
+    Instruction createInvokeMethodInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PLIChoiceGenerator curCG) {
         if (repOKCallInstruction == null)
-            repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
+            repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap,
+                    "runPrePConcreteHeap()V");
 
         assert (curCG != null);
         PathCondition currentPC = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();

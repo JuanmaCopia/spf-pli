@@ -97,13 +97,13 @@ public class SQLFilterClauses implements Serializable {
         return repOKSymSolve() && repOKSymbolicExecution();
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         SQLFilterClauses toBuild = new SQLFilterClauses();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         SQLFilterClauses toBuild = new SQLFilterClauses();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());

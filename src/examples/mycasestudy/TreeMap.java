@@ -8,6 +8,8 @@
 package mycasestudy;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -869,13 +871,13 @@ public class TreeMap {
 
     // ---------------- Hardcoded required methods ----------------
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());

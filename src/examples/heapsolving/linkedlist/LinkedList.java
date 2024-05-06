@@ -8,6 +8,7 @@
 package heapsolving.linkedlist;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -487,13 +488,13 @@ public class LinkedList {
         }
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());

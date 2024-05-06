@@ -558,25 +558,26 @@ public class BinomialHeap {
         return visited.size() == size;
     }
 
-//    boolean checkDegreesShape(int size) {
-//        if (Nodes == null)
-//            return true;
-//        int degree_ = size;
-//        int rightDegree = 0;
-//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-//            if (degree_ == 0)
-//                return false;
-//            while ((degree_ & 1) == 0) {
-//                rightDegree++;
-//                degree_ /= 2;
-//            }
-//            if (!current.checkDegreeShape(rightDegree))
-//                return false;
-//            rightDegree++;
-//            degree_ /= 2;
-//        }
-//        return (degree_ == 0);
-//    }
+    // boolean checkDegreesShape(int size) {
+    // if (Nodes == null)
+    // return true;
+    // int degree_ = size;
+    // int rightDegree = 0;
+    // for (BinomialHeapNode current = Nodes; current != null; current =
+    // current.sibling) {
+    // if (degree_ == 0)
+    // return false;
+    // while ((degree_ & 1) == 0) {
+    // rightDegree++;
+    // degree_ /= 2;
+    // }
+    // if (!current.checkDegreeShape(rightDegree))
+    // return false;
+    // rightDegree++;
+    // degree_ /= 2;
+    // }
+    // return (degree_ == 0);
+    // }
 
     boolean checkDegrees(int size) {
         if (Nodes == null)
@@ -635,13 +636,13 @@ public class BinomialHeap {
         return size;
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
@@ -661,65 +662,68 @@ public class BinomialHeap {
         return f;
     }
 
-//    public String bhToString() {
-//        if (Nodes == null)
-//            return "Nodes -> null";
-//
-//        StringBuilder sb = new StringBuilder();
-//        String indent = "  ";
-//
-//        sb.append(String.format("size == %d \n", size));
-//
-//        int btnum = 0;
-//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-//            sb.append(String.format(" ---------- BinomialTree%d  ----------\n", btnum));
-//            sb.append(current.btToString(indent));
-//        }
-//
-//        return sb.toString();
-//    }
+    // public String bhToString() {
+    // if (Nodes == null)
+    // return "Nodes -> null";
+    //
+    // StringBuilder sb = new StringBuilder();
+    // String indent = " ";
+    //
+    // sb.append(String.format("size == %d \n", size));
+    //
+    // int btnum = 0;
+    // for (BinomialHeapNode current = Nodes; current != null; current =
+    // current.sibling) {
+    // sb.append(String.format(" ---------- BinomialTree%d ----------\n", btnum));
+    // sb.append(current.btToString(indent));
+    // }
+    //
+    // return sb.toString();
+    // }
 
-//    public boolean oldRepOKComplete() {
-//        if (Nodes == null)
-//            return size == 0;
-//        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-//            /** checks that the list has no cycle */
-//            if (!visited.add(current))
-//                return false;
-//            if (!current.isTree(visited, null))
-//                return false;
-//        }
-//        /** checks that the total size is consistent */
-//        if (visited.size() != size)
-//            return false;
-//
-//        /** checks that the degrees of all trees are binomial */
-//        if (!checkDegrees())
-//            return false;
-//        /** checks that keys are heapified */
-//        if (!checkHeapified())
-//            return false;
-//        return true;
-//    }
+    // public boolean oldRepOKComplete() {
+    // if (Nodes == null)
+    // return size == 0;
+    // Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
+    // for (BinomialHeapNode current = Nodes; current != null; current =
+    // current.sibling) {
+    // /** checks that the list has no cycle */
+    // if (!visited.add(current))
+    // return false;
+    // if (!current.isTree(visited, null))
+    // return false;
+    // }
+    // /** checks that the total size is consistent */
+    // if (visited.size() != size)
+    // return false;
+    //
+    // /** checks that the degrees of all trees are binomial */
+    // if (!checkDegrees())
+    // return false;
+    // /** checks that keys are heapified */
+    // if (!checkHeapified())
+    // return false;
+    // return true;
+    // }
 
-//    public boolean OldRepOKStructure() {
-//        if (Nodes == null)
-//            return true;
-//        Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
-//        for (BinomialHeapNode current = Nodes; current != null; current = current.sibling) {
-//            /** checks that the list has no cycle */
-//            if (!visited.add(current))
-//                return false;
-//            if (!current.isTree(visited, null))
-//                return false;
-//        }
-//
-//        /** checks that the degrees of all trees are binomial */
-//        if (!checkDegrees())
-//            return false;
-//        return true;
-//    }
+    // public boolean OldRepOKStructure() {
+    // if (Nodes == null)
+    // return true;
+    // Set<BinomialHeapNode> visited = new HashSet<BinomialHeapNode>();
+    // for (BinomialHeapNode current = Nodes; current != null; current =
+    // current.sibling) {
+    // /** checks that the list has no cycle */
+    // if (!visited.add(current))
+    // return false;
+    // if (!current.isTree(visited, null))
+    // return false;
+    // }
+    //
+    // /** checks that the degrees of all trees are binomial */
+    // if (!checkDegrees())
+    // return false;
+    // return true;
+    // }
 
 }
 // end of class BinomialHeap

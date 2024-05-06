@@ -280,9 +280,9 @@ public static void runRepOK() {
 Where the `<CLASS_NAME>` is the class containing the method under analysis (e.g. TreeMap) and `<CLASS_CONSTRUCTOR>` is the constructor method.
 This method is used to trigger and handle the result of the symbolic execution of `preP` (`repOKSymbolicExecution`).
 
-Optionally, to use the features `heapsolving.checkPathValidity` and `heapsolving.generateTests` (still under development), the following static method called `runRepOKComplete`
+Optionally, to use the features `heapsolving.checkPathValidity` and `heapsolving.generateTests` (still under development), the following static method called `runCompleteSpecification`
 ```
-public static void runRepOKComplete() {
+public static void runCompleteSpecification() {
     <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
     SymHeap.buildPartialHeapInput(toBuild);
     SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());

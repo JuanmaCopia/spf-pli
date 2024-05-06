@@ -51,9 +51,9 @@ public class DictionaryInfo {
     // private int loadCount;
 
     // Default collection
-//    private TreeMap<String, MessageInfo> messagesByName;
-//
-//    private TreeMap<Integer, MessageInfo> messagesById;
+    // private TreeMap<String, MessageInfo> messagesByName;
+    //
+    // private TreeMap<Integer, MessageInfo> messagesById;
 
     // Default collection
     // =================== Modification =======================
@@ -66,18 +66,18 @@ public class DictionaryInfo {
     // ==========================================================
 
     // Default collection
-//    private TreeMap<String, ComponentInfo> componentsByName;
-//
-//    private TreeMap<Integer, ComponentInfo> componentsById;
+    // private TreeMap<String, ComponentInfo> componentsByName;
+    //
+    // private TreeMap<Integer, ComponentInfo> componentsById;
 
     /**
      * Creates a new DictionaryInfo
      *
      * @param version - a version
      */
-//    public DictionaryInfo(String version) {
-//        this.version = version;
-//    }
+    // public DictionaryInfo(String version) {
+    // this.version = version;
+    // }
     public DictionaryInfo() {
     }
 
@@ -87,12 +87,12 @@ public class DictionaryInfo {
      * @return the fields
      */
     // =================== Modification =======================
-//    public List<FieldInfo> getFields() {
-//        if (fieldsByTagNumber != null) {
-//            return new ArrayList<FieldInfo>(fieldsByTagNumber.values());
-//        }
-//        return null;
-//    }
+    // public List<FieldInfo> getFields() {
+    // if (fieldsByTagNumber != null) {
+    // return new ArrayList<FieldInfo>(fieldsByTagNumber.values());
+    // }
+    // return null;
+    // }
     // ==========================================================
 
     /**
@@ -114,12 +114,12 @@ public class DictionaryInfo {
      * @param name - a name
      * @return a field given a name
      */
-//    public FieldInfo getField(String name) {
-//        if (fieldsByName != null) {
-//            return (FieldInfo) fieldsByName.get(name);
-//        }
-//        return null;
-//    }
+    // public FieldInfo getField(String name) {
+    // if (fieldsByName != null) {
+    // return (FieldInfo) fieldsByName.get(name);
+    // }
+    // return null;
+    // }
 
     /**
      * Adds a field
@@ -153,149 +153,149 @@ public class DictionaryInfo {
         fieldsByName.put(field.getName(), field);
     }
 
-//    /**
-//     * Returns the components
-//     *
-//     * @return the components
-//     */
-//    public List<ComponentInfo> getComponents() {
-//        if (componentsByName != null) {
-//            return new ArrayList<ComponentInfo>(componentsByName.values());
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Returns a component given an id
-//     *
-//     * @param id - an id
-//     * @return a component given an id
-//     */
-//    public ComponentInfo getComponent(int id) {
-//        if (componentsById != null) {
-//            return componentsById.get(id);
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Returns a component given a name
-//     *
-//     * @param name - a name
-//     * @return a component given a name
-//     */
-//    public ComponentInfo getComponent(String name) {
-//        if (componentsByName != null) {
-//            return componentsByName.get(name);
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Adds a component
-//     *
-//     * @param component
-//     */
-//    public void addComponent(ComponentInfo component) {
-//        if (componentsByName == null) {
-//            componentsByName = new TreeMap<String, ComponentInfo>();
-//            componentsById = new TreeMap<Integer, ComponentInfo>();
-//        }
-//        componentsByName.put(component.getName(), component);
-//        componentsById.put(component.getId(), component);
-//    }
-//
-//    /**
-//     * Replace the field by a group. This is used by FPL parsers which cannot
-//     * tell if a field is a group just from Fields.xml
-//     *
-//     * @param field - a field
-//     * @param group - a group
-//     */
-//    public void replaceAsGroup(FieldInfo field, GroupInfo group) {
-//        fieldsByTagNumber.put(field.getTagNumber(), group);
-//        fieldsByName.put(field.getName(), group);
-//    }
-//
-//    /**
-//     * Returns a message given an id
-//     *
-//     * @param id - an id
-//     * @return a message given an id
-//     */
-//    public MessageInfo getMessage(int id) {
-//        if (messagesById != null) {
-//            return messagesById.get(id);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    /**
-//     * Returns a message given a name
-//     *
-//     * @param name - a name
-//     * @return a message given a name
-//     */
-//    public MessageInfo getMessage(String name) {
-//        if (messagesByName != null) {
-//            return messagesByName.get(name);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public List<MessageInfo> getMessages() {
-//        return new ArrayList<MessageInfo>(messagesById.values());
-//    }
-//
-//    /**
-//     * Adds a message
-//     *
-//     * @param message - a message
-//     */
-//    public void addMessage(MessageInfo message) {
-//        if (messagesByName == null) {
-//            messagesByName = new TreeMap<String, MessageInfo>();
-//            messagesById = new TreeMap<Integer, MessageInfo>();
-//        }
-//        messagesById.put(message.getId(), message);
-//        messagesByName.put(message.getName(), message);
-//    }
+    // /**
+    // * Returns the components
+    // *
+    // * @return the components
+    // */
+    // public List<ComponentInfo> getComponents() {
+    // if (componentsByName != null) {
+    // return new ArrayList<ComponentInfo>(componentsByName.values());
+    // }
+    // return null;
+    // }
+    //
+    // /**
+    // * Returns a component given an id
+    // *
+    // * @param id - an id
+    // * @return a component given an id
+    // */
+    // public ComponentInfo getComponent(int id) {
+    // if (componentsById != null) {
+    // return componentsById.get(id);
+    // }
+    // return null;
+    // }
+    //
+    // /**
+    // * Returns a component given a name
+    // *
+    // * @param name - a name
+    // * @return a component given a name
+    // */
+    // public ComponentInfo getComponent(String name) {
+    // if (componentsByName != null) {
+    // return componentsByName.get(name);
+    // }
+    // return null;
+    // }
+    //
+    // /**
+    // * Adds a component
+    // *
+    // * @param component
+    // */
+    // public void addComponent(ComponentInfo component) {
+    // if (componentsByName == null) {
+    // componentsByName = new TreeMap<String, ComponentInfo>();
+    // componentsById = new TreeMap<Integer, ComponentInfo>();
+    // }
+    // componentsByName.put(component.getName(), component);
+    // componentsById.put(component.getId(), component);
+    // }
+    //
+    // /**
+    // * Replace the field by a group. This is used by FPL parsers which cannot
+    // * tell if a field is a group just from Fields.xml
+    // *
+    // * @param field - a field
+    // * @param group - a group
+    // */
+    // public void replaceAsGroup(FieldInfo field, GroupInfo group) {
+    // fieldsByTagNumber.put(field.getTagNumber(), group);
+    // fieldsByName.put(field.getName(), group);
+    // }
+    //
+    // /**
+    // * Returns a message given an id
+    // *
+    // * @param id - an id
+    // * @return a message given an id
+    // */
+    // public MessageInfo getMessage(int id) {
+    // if (messagesById != null) {
+    // return messagesById.get(id);
+    // } else {
+    // return null;
+    // }
+    // }
+    //
+    // /**
+    // * Returns a message given a name
+    // *
+    // * @param name - a name
+    // * @return a message given a name
+    // */
+    // public MessageInfo getMessage(String name) {
+    // if (messagesByName != null) {
+    // return messagesByName.get(name);
+    // } else {
+    // return null;
+    // }
+    // }
+    //
+    // public List<MessageInfo> getMessages() {
+    // return new ArrayList<MessageInfo>(messagesById.values());
+    // }
+    //
+    // /**
+    // * Adds a message
+    // *
+    // * @param message - a message
+    // */
+    // public void addMessage(MessageInfo message) {
+    // if (messagesByName == null) {
+    // messagesByName = new TreeMap<String, MessageInfo>();
+    // messagesById = new TreeMap<Integer, MessageInfo>();
+    // }
+    // messagesById.put(message.getId(), message);
+    // messagesByName.put(message.getName(), message);
+    // }
 
-//    /**
-//     * Returns the version
-//     *
-//     * @return the version
-//     */
-//    public String getVersion() {
-//        return version;
-//    }
-//
-//    /**
-//     * Modifies the version
-//     *
-//     * @param version - the version to set
-//     */
-//    public void setVersion(String version) {
-//        this.version = version;
-//    }
-//
-//    /**
-//     * Increments the loadCount
-//     */
-//    public void incrementLoadCount() {
-//        loadCount++;
-//    }
-//
-//    /**
-//     * Returns whether the dictionary is loaded
-//     *
-//     * @return whether the dictionary is loaded
-//     */
-//    public boolean isLoaded() {
-//        return loadCount == 5;
-//    }
+    // /**
+    // * Returns the version
+    // *
+    // * @return the version
+    // */
+    // public String getVersion() {
+    // return version;
+    // }
+    //
+    // /**
+    // * Modifies the version
+    // *
+    // * @param version - the version to set
+    // */
+    // public void setVersion(String version) {
+    // this.version = version;
+    // }
+    //
+    // /**
+    // * Increments the loadCount
+    // */
+    // public void incrementLoadCount() {
+    // loadCount++;
+    // }
+    //
+    // /**
+    // * Returns whether the dictionary is loaded
+    // *
+    // * @return whether the dictionary is loaded
+    // */
+    // public boolean isLoaded() {
+    // return loadCount == 5;
+    // }
 
     public boolean repOKSymSolve() {
         if (fieldsByName == null)
@@ -328,13 +328,13 @@ public class DictionaryInfo {
         return repOKSymSolve() && repOKSymbolicExecution();
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());

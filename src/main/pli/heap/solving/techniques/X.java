@@ -67,7 +67,7 @@ public class X extends PLI {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
+        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
     }
 
     private boolean fixedFieldsMatch(SymSolveVector vector, SymSolveSolution cachedSolution) {
@@ -137,7 +137,7 @@ public class X extends PLI {
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
+        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
     }
 
 }

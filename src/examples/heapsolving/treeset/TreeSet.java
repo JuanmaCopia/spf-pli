@@ -8,6 +8,8 @@
 package heapsolving.treeset;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -191,13 +193,13 @@ public class TreeSet {
         return repOKSymSolve() && repOKSymbolicExecution();
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
-    public static void runRepOKComplete() {
+    public static void runCompleteSpecification() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
