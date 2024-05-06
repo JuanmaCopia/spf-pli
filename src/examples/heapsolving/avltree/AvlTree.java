@@ -385,12 +385,13 @@ public class AvlTree {
             return false;
         if (!isBalanced())
             return false;
+        if (!heightsOK(root))
+            return false;
         return true;
     }
 
     public boolean repOKSymbolicExecution() {
-        if (!heightsOK(root))
-            return false;
+
         if (!isSorted())
             return false;
         return true;
