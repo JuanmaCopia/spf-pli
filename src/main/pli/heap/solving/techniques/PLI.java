@@ -52,7 +52,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokeMethodInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         return null;
     }
 
-    Instruction createInvokeMethodInstruction(ThreadInfo ti, Instruction current, Instruction next,
+    Instruction createInvokePrePOnConcHeapInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PLIChoiceGenerator curCG) {
         if (repOKCallInstruction == null)
             repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap,
