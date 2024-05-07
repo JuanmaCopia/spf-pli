@@ -500,6 +500,12 @@ public class AvlTree {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        AvlTree toBuild = new AvlTree();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildPartialHeapInput(toBuild);

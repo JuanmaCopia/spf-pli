@@ -9,6 +9,7 @@ import pli.bytecode.lazy.XProcedureCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
+import pli.choicegenerators.XCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
@@ -21,8 +22,6 @@ public class X extends PLI {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA currentCG) {
-        assert (!isRepOKExecutionMode());
-
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
@@ -47,8 +46,10 @@ public class X extends PLI {
             return currentInstruction;
         }
 
-        return createXprePInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
+        if (isRepOKExecutionMode())
+            return nextInstruction;
 
+        return createXprePInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
     }
 
     Instruction createXprePInstruction(ThreadInfo ti, Instruction current, Instruction next,
@@ -56,7 +57,8 @@ public class X extends PLI {
         ClassInfo rootClassInfo = symInputHeap.getImplicitInputThis().getRootHeapNode().getType();
         MethodInfo staticMethod = rootClassInfo.getMethod("runPrePConcreteHeap()V", false);
         SymHeapHelper.pushArguments(ti, null, null);
-        return new XProcedureCallInstruction(staticMethod, current, next, curCG, solution);
+        XCG cg = new XCG("XCG", curCG, solution);
+        return new XProcedureCallInstruction(staticMethod, current, next, cg);
     }
 
     @Override

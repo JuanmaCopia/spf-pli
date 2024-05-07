@@ -19,7 +19,9 @@ public class PLIOPT extends PLI {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA currentCG) {
-        assert (!isRepOKExecutionMode());
+        if (isRepOKExecutionMode()) {
+            return nextInstruction;
+        }
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
@@ -55,7 +57,8 @@ public class PLIOPT extends PLI {
             return currentInstruction;
         }
 
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
+                currentCG);
     }
 
     private boolean fixedFieldsMatch(SymSolveVector vector, SymSolveSolution cachedSolution) {
@@ -116,7 +119,8 @@ public class PLIOPT extends PLI {
             return currentInstruction;
         }
 
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, currentCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
+                currentCG);
     }
 
 }

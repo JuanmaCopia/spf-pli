@@ -29,11 +29,8 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import pli.choicegenerators.LaunchSymbolicExecCG;
-import pli.choicegenerators.PLIChoiceGenerator;
 import pli.choicegenerators.XCG;
 import pli.heap.solving.techniques.LIBasedStrategy;
-import symsolve.vector.SymSolveSolution;
 
 // need to fix names
 
@@ -42,15 +39,14 @@ public class XProcedureCallInstruction extends JVMInvokeInstruction {
     ClassInfo ci;
     Instruction current;
     Instruction next;
-    LaunchSymbolicExecCG XCG;
+    XCG XCG;
     InvokeStaticInstruction partialHprePExecIns;
 
-    public XProcedureCallInstruction(MethodInfo mi, Instruction current, Instruction next, PLIChoiceGenerator cg,
-            SymSolveSolution solution) {
+    public XProcedureCallInstruction(MethodInfo mi, Instruction current, Instruction next, XCG xcg) {
         super(mi.getClassInfo().getName(), mi.getName(), mi.getSignature());
         this.next = next;
         this.current = current;
-        this.XCG = new XCG("XCG", cg, solution);
+        this.XCG = xcg;
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
     }
@@ -106,10 +102,15 @@ public class XProcedureCallInstruction extends JVMInvokeInstruction {
 
         if (XCG.allRepOKPathsReturnedFalse()) {
             LIBasedStrategy.numberOfUnsatRepOKSymbolicExec++;
-            ti.getVM().getSystemState().setIgnored(true);
-            // Call Sym Exec of preP with partial heap
-            // return BytecodeHelper.createInvokeStaticInstruction(getClassInfo(),
-            // "runPrePPartialHeap()V", current);
+            if (XCG.isPrePWithPartialHeapExecuted()) {
+                XCG.setDone();
+                ti.getVM().getSystemState().setIgnored(true);
+            } else {
+                // Call Sym Exec of preP with partial heap
+                XCG.setPrePWithPartialHeapExecuted();
+                return BytecodeHelper.createInvokeStaticInstruction(getClassInfo(), "runPrePPartialHeap()V", current);
+            }
+
         }
 
         return next;
@@ -117,8 +118,6 @@ public class XProcedureCallInstruction extends JVMInvokeInstruction {
 
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
         MethodInfo callee;
-
-        LIBasedStrategy.numberOfRepOKSymbolicExec++;
 
         try {
             callee = getInvokedMethod(ti);

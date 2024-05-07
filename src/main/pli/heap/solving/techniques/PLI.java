@@ -31,7 +31,9 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
             Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
-        assert (!isRepOKExecutionMode());
+        if (isRepOKExecutionMode()) {
+            return nextInstruction;
+        }
         solverCalls++;
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
