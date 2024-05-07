@@ -269,9 +269,9 @@ Check for example the finitization of the `TreeMap` case study:
 
 ### Required hard-coded methods
 
-To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runRepOK`:
+To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runPrePConcreteHeap`:
 ```
-public static void runRepOK() {
+public static void runPrePConcreteHeap() {
     <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
     SymHeap.buildSolutionHeap(toBuild);
     SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
