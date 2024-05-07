@@ -5,8 +5,9 @@ import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.ThreadInfo;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
 import pli.choicegenerators.prePCallCG;
@@ -19,7 +20,7 @@ import symsolve.vector.SymSolveVector;
 
 public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
-    StaticRepOKCallInstruction repOKCallInstruction;
+    PLIPrePCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
 
@@ -52,7 +53,8 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
+                heapCG);
     }
 
     @Override
@@ -81,7 +83,8 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             return currentInstruction;
         }
 
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
+                pcCG);
     }
 
     @Override
@@ -122,7 +125,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
         assert (symInputHeap != null);
 
-        prePCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(prePCallCG.class);
+        LaunchSymbolicExecCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(LaunchSymbolicExecCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
         PCChoiceGeneratorLISSA pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);

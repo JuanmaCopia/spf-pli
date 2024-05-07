@@ -8,13 +8,8 @@ import symsolve.vector.SymSolveSolution;
 
 public class prePCallCG extends LaunchSymbolicExecCG {
 
-    SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
-
     PathCondition currentPC;
-
-    int buildedObjectRef;
-
     PLI stg;
 
     public prePCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
@@ -57,18 +52,6 @@ public class prePCallCG extends LaunchSymbolicExecCG {
         }
 
         return !pathReturningTrueFound;
-    }
-
-    public void setCandidateHeapSolution(SymSolveSolution solution) {
-        candidateHeapSolution = solution;
-    }
-
-    public SymSolveSolution getCandidateHeapSolution() {
-        return candidateHeapSolution;
-    }
-
-    public void setBuildedObjectRef(int objvRef) {
-        buildedObjectRef = objvRef;
     }
 
 }

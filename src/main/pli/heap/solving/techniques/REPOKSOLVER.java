@@ -2,7 +2,7 @@ package pli.heap.solving.techniques;
 
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
@@ -30,7 +30,7 @@ public class REPOKSOLVER extends PLI {
     Instruction createInvokeCompleteRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
             PLIChoiceGenerator curCG) {
 
-        StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
+        PLIPrePCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runCompleteSpecification()V");
 
         PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("runCompleteSpecification", curCG);

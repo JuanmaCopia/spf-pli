@@ -6,7 +6,7 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import korat.finitization.impl.Finitization;
 import korat.finitization.impl.StateSpace;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PreHAndPrePCallCG;
 import pli.heap.SymHeapHelper;
@@ -82,7 +82,7 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     @Override
     void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
-        StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
+        PLIPrePCallInstruction repOKCallInstruction = SymHeapHelper
                 .createStaticRepOKCallInstruction("runCompleteSpecification()V");
 
         PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("checkPathValidity", null);

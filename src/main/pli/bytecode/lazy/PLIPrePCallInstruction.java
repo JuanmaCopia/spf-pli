@@ -29,20 +29,20 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.heap.solving.techniques.LIBasedStrategy;
 import pli.listeners.HeapSolvingListener;
 
 // need to fix names
 
-public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
+public class PLIPrePCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
     Instruction next;
     LaunchSymbolicExecCG repOKCG;
 
-    public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
+    public PLIPrePCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
@@ -226,10 +226,10 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     @Override
     public Instruction typeSafeClone(MethodInfo mi) {
-        StaticRepOKCallInstruction clone = null;
+        PLIPrePCallInstruction clone = null;
 
         try {
-            clone = (StaticRepOKCallInstruction) super.clone();
+            clone = (PLIPrePCallInstruction) super.clone();
 
             // reset the method that this insn belongs to
             clone.mi = mi;

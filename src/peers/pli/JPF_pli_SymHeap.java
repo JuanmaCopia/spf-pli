@@ -21,7 +21,6 @@ import gov.nasa.jpf.vm.VM;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
-import pli.choicegenerators.prePCallCG;
 import pli.config.ConfigParser;
 import pli.config.SolvingStrategyEnum;
 import pli.heap.SymHeapHelper;
@@ -73,7 +72,7 @@ public class JPF_pli_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            prePCallCG repOKCG = (prePCallCG) getRepOKCallCG(ss);
+            LaunchSymbolicExecCG repOKCG = getRepOKCallCG(ss);
             repOKCG.setBuildedObjectRef(objvRef);
 
             cg = new PCChoiceGeneratorLISSA(1);
