@@ -40,7 +40,8 @@ public class X extends PLIOPT {
             }
         }
 
-        solverCalls++;
+        if (!isRepOKExecutionMode())
+            solverCalls++;
 
         SymSolveSolution solution = heapSolver.solve(vector);
         PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());

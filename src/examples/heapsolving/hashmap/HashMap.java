@@ -180,95 +180,95 @@ public class HashMap {
 
     Entry getTable(int index) {
         switch (index) {
-            case 0:
-                return e0;
-            case 1:
-                return e1;
-            case 2:
-                return e2;
-            case 3:
-                return e3;
-            case 4:
-                return e4;
-            case 5:
-                return e5;
-            case 6:
-                return e6;
-            case 7:
-                return e7;
-            case 8:
-                return e8;
-            case 9:
-                return e9;
-            case 10:
-                return e10;
-            case 11:
-                return e11;
-            case 12:
-                return e12;
-            case 13:
-                return e13;
-            case 14:
-                return e14;
-            case 15:
-                return e15;
-            default:
-                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        case 0:
+            return e0;
+        case 1:
+            return e1;
+        case 2:
+            return e2;
+        case 3:
+            return e3;
+        case 4:
+            return e4;
+        case 5:
+            return e5;
+        case 6:
+            return e6;
+        case 7:
+            return e7;
+        case 8:
+            return e8;
+        case 9:
+            return e9;
+        case 10:
+            return e10;
+        case 11:
+            return e11;
+        case 12:
+            return e12;
+        case 13:
+            return e13;
+        case 14:
+            return e14;
+        case 15:
+            return e15;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
     }
 
     void setTable(int index, Entry entry) {
         switch (index) {
-            case 0:
-                e0 = entry;
-                break;
-            case 1:
-                e1 = entry;
-                break;
-            case 2:
-                e2 = entry;
-                break;
-            case 3:
-                e3 = entry;
-                break;
-            case 4:
-                e4 = entry;
-                break;
-            case 5:
-                e5 = entry;
-                break;
-            case 6:
-                e6 = entry;
-                break;
-            case 7:
-                e7 = entry;
-                break;
-            case 8:
-                e8 = entry;
-                break;
-            case 9:
-                e9 = entry;
-                break;
-            case 10:
-                e10 = entry;
-                break;
-            case 11:
-                e11 = entry;
-                break;
-            case 12:
-                e12 = entry;
-                break;
-            case 13:
-                e13 = entry;
-                break;
-            case 14:
-                e14 = entry;
-                break;
-            case 15:
-                e15 = entry;
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+        case 0:
+            e0 = entry;
+            break;
+        case 1:
+            e1 = entry;
+            break;
+        case 2:
+            e2 = entry;
+            break;
+        case 3:
+            e3 = entry;
+            break;
+        case 4:
+            e4 = entry;
+            break;
+        case 5:
+            e5 = entry;
+            break;
+        case 6:
+            e6 = entry;
+            break;
+        case 7:
+            e7 = entry;
+            break;
+        case 8:
+            e8 = entry;
+            break;
+        case 9:
+            e9 = entry;
+            break;
+        case 10:
+            e10 = entry;
+            break;
+        case 11:
+            e11 = entry;
+            break;
+        case 12:
+            e12 = entry;
+            break;
+        case 13:
+            e13 = entry;
+            break;
+        case 14:
+            e14 = entry;
+            break;
+        case 15:
+            e15 = entry;
+            break;
+        default:
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
 
     }
@@ -638,6 +638,12 @@ public class HashMap {
     public static void runPrePConcreteHeap() {
         HashMap toBuild = new HashMap();
         SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
+    public static void runPrePPartialHeap() {
+        HashMap toBuild = new HashMap();
+        SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
