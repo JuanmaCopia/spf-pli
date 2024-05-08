@@ -61,7 +61,7 @@ public class PLIOPT extends PLI {
                 currentCG);
     }
 
-    private boolean fixedFieldsMatch(SymSolveVector vector, SymSolveSolution cachedSolution) {
+    boolean fixedFieldsMatch(SymSolveVector vector, SymSolveSolution cachedSolution) {
         IntListAI fixedIndices = vector.getFixedIndices();
         int[] vect = vector.getConcreteVector();
         int[] candidateSolution = cachedSolution.getSolutionVector();
@@ -72,7 +72,7 @@ public class PLIOPT extends PLI {
         return true;
     }
 
-    private SymSolveSolution getNewSolution(SymSolveVector vector, SymSolveSolution cachedSolution) {
+    SymSolveSolution getNewSolution(SymSolveVector vector, SymSolveSolution cachedSolution) {
         int[] candidateSolution = cachedSolution.getSolutionVector();
         return new SymSolveSolution(vector, candidateSolution, cachedSolution.getAccessedIndices(),
                 cachedSolution.getBuildedSolution());

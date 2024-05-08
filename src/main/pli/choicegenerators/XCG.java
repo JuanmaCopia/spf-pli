@@ -1,6 +1,7 @@
 
 package pli.choicegenerators;
 
+import pli.LISSAShell;
 import symsolve.vector.SymSolveSolution;
 
 public class XCG extends LaunchSymbolicExecCG {
@@ -17,6 +18,13 @@ public class XCG extends LaunchSymbolicExecCG {
     public boolean allRepOKPathsReturnedFalse() {
         if (pathReturningTrueFound) {
             setDone();
+            assert (candidateHeapSolution != null);
+            assert (repOKPathCondition != null);
+            // Cache Solution and repOK Path Condition
+            if (LISSAShell.configParser.generateTests)
+                curCG.setCurrentTestCode(testCode);
+            curCG.setCurrentHeapSolution(candidateHeapSolution);
+            curCG.setCurrentRepOKPathCondition(repOKPathCondition);
             return false;
         }
         return true;
@@ -24,7 +32,7 @@ public class XCG extends LaunchSymbolicExecCG {
 
     @Override
     public boolean hasNextSolution() {
-        return false;
+        throw new RuntimeException("This method should not be invoked");
     }
 
     public void setPrePWithPartialHeapExecuted() {

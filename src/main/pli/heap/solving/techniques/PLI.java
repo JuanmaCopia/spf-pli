@@ -116,8 +116,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
                     "runPrePConcreteHeap()V");
 
         assert (curCG != null);
-        PathCondition currentPC = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
-        prePCallCG rcg = new prePCallCG("repOKCG", symInputHeap, solution, curCG, currentPC);
+        prePCallCG rcg = new prePCallCG("repOKCG", symInputHeap, solution, curCG);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;
