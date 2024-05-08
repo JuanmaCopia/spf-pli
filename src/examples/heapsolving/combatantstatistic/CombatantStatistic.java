@@ -137,6 +137,12 @@ public class CombatantStatistic {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        CombatantStatistic toBuild = new CombatantStatistic();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildPartialHeapInput(toBuild);

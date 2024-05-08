@@ -642,6 +642,12 @@ public class BinomialHeap {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        BinomialHeap toBuild = new BinomialHeap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);

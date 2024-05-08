@@ -199,6 +199,12 @@ public class TreeSet {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        TreeSet toBuild = new TreeSet();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildPartialHeapInput(toBuild);

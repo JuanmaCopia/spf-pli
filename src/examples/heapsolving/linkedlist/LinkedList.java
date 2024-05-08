@@ -494,6 +494,12 @@ public class LinkedList {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        LinkedList toBuild = new LinkedList();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildPartialHeapInput(toBuild);

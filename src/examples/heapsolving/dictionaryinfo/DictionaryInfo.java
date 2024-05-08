@@ -334,6 +334,12 @@ public class DictionaryInfo {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        DictionaryInfo toBuild = new DictionaryInfo();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildPartialHeapInput(toBuild);

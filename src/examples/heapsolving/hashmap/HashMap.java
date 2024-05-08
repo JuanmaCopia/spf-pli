@@ -587,7 +587,13 @@ public class HashMap {
     public boolean repOKSymbolicExecution() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
-            if (list != null && !checkListKeys(list, i))
+            if (list == null)
+                continue;
+            if (!checkHashesAndKeysAreEqual(list, i))
+                return false;
+            if (!checkKeysAreInCorrectBucket(list, i))
+                return false;
+            if (!checkKeysAreDistinct(list, i))
                 return false;
         }
         return true;
@@ -630,6 +636,43 @@ public class HashMap {
 
             visitedKeys[currentIndex] = currentKey;
             currentIndex++;
+            current = current.next;
+        }
+        return true;
+    }
+
+    private boolean checkKeysAreDistinct(Entry head, int index) {
+        int[] visitedKeys = new int[THRESHOLD];
+        int currentIndex = 0;
+        Entry current = head;
+        while (current != null) {
+            for (int i = 0; i < currentIndex; i++) {
+                if (visitedKeys[i] == current.key)
+                    return false;
+            }
+            visitedKeys[currentIndex] = current.key;
+            currentIndex++;
+            current = current.next;
+        }
+        return true;
+    }
+
+    private boolean checkHashesAndKeysAreEqual(Entry head, int index) {
+        Entry current = head;
+        while (current != null) {
+            if (current.hash != current.key)
+                return false;
+            current = current.next;
+        }
+        return true;
+    }
+
+    private boolean checkKeysAreInCorrectBucket(Entry head, int index) {
+        Entry current = head;
+        while (current != null) {
+            int correctIndex = current.key & (DEFAULT_INITIAL_CAPACITY - 1);
+            if (index != correctIndex)
+                return false;
             current = current.next;
         }
         return true;

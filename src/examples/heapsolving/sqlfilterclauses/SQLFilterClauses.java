@@ -103,6 +103,12 @@ public class SQLFilterClauses implements Serializable {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        SQLFilterClauses toBuild = new SQLFilterClauses();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         SQLFilterClauses toBuild = new SQLFilterClauses();
         SymHeap.buildPartialHeapInput(toBuild);

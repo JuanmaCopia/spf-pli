@@ -116,6 +116,12 @@ public class TransportStats {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildPartialHeapInput(toBuild);

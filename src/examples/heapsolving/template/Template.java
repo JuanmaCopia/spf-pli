@@ -208,6 +208,12 @@ public class Template {
         SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
     }
 
+    public static void runPrePPartialHeap() {
+        Template toBuild = new Template();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+    }
+
     public static void runCompleteSpecification() {
         Template toBuild = new Template();
         SymHeap.buildPartialHeapInput(toBuild);

@@ -219,35 +219,35 @@ public class Schedule {
 
     private void setPrioQueue(int prio, List queue) {
         switch (prio) {
-            case 0:
-                prio_0 = queue;
-                break;
-            case 1:
-                prio_1 = queue;
-                break;
-            case 2:
-                prio_2 = queue;
-                break;
-            case 3:
-                prio_3 = queue;
-                break;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
+        case 0:
+            prio_0 = queue;
+            break;
+        case 1:
+            prio_1 = queue;
+            break;
+        case 2:
+            prio_2 = queue;
+            break;
+        case 3:
+            prio_3 = queue;
+            break;
+        default:
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
     private List getPrioQueue(int prio) {
         switch (prio) {
-            case 0:
-                return prio_0;
-            case 1:
-                return prio_1;
-            case 2:
-                return prio_2;
-            case 3:
-                return prio_3;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
+        case 0:
+            return prio_0;
+        case 1:
+            return prio_1;
+        case 2:
+            return prio_2;
+        case 3:
+            return prio_3;
+        default:
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
@@ -404,6 +404,12 @@ public class Schedule {
     public static void runPrePConcreteHeap() {
         Schedule toBuild = new Schedule();
         SymHeap.buildSolutionHeap(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+    }
+
+    public static void runPrePPartialHeap() {
+        Schedule toBuild = new Schedule();
+        SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
