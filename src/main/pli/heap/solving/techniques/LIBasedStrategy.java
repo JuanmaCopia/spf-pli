@@ -103,4 +103,12 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         return heapSolver.getNumberOfGetNextSolutionCalls();
     }
 
+    public Canonicalizer getCanonicalizer() {
+        return canonicalizer;
+    }
+
+    public SymSolveHeapSolver getHeapSolver() {
+        return heapSolver;
+    }
+
 }

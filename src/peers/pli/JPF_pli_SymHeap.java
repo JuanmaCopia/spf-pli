@@ -143,8 +143,12 @@ public class JPF_pli_SymHeap extends NativePeer {
 
         if (repOKResult) {
             PathCondition pc = PathCondition.getPC(env.getVM());
+            SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
+
             LaunchSymbolicExecCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setSymbolicInputHeap(symInputHeap);
             repOKChoiceGenerator.setRepOKPathCondition(pc);
+            repOKChoiceGenerator.pathReturningTrueFound();
 
             if (LISSAShell.configParser.generateTests) {
                 TestCaseHelper.solveTargetMethodArguments(pc);
@@ -152,18 +156,7 @@ public class JPF_pli_SymHeap extends NativePeer {
                 SymHeapHelper.acceptBFS(objvRef, visitor);
                 String testCode = visitor.getTestCaseCode();
                 repOKChoiceGenerator.setTestCode(testCode);
-
-                // if (testCode.contains("treemap_0.size = 3;") &&
-                // testCode.contains("treemap_0.root.left.color = true;")
-                // && testCode.contains("treemap_0.root.right.color = false;")) {
-                // System.out.println("\n===========================================\n");
-                // System.out.println("id: " + id++);
-                // System.out.println("testCode:\n\n" + testCode);
-                // System.out.println(SymHeapHelper.toString(objvRef));
-                // }
-
             }
-            repOKChoiceGenerator.pathReturningTrueFound();
         } else {
             LaunchSymbolicExecCG repokCallCG = getRepOKCallCG(ss);
             repokCallCG.setRepOKPathCondition(PathCondition.getPC(env.getVM()));

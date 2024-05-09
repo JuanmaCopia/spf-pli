@@ -3,6 +3,7 @@ package pli.choicegenerators;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import pli.LISSAShell;
+import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.solving.techniques.LIBasedStrategy;
 import symsolve.vector.SymSolveSolution;
 
@@ -19,6 +20,7 @@ public abstract class LaunchSymbolicExecCG extends ChoiceGeneratorBase<Integer> 
     int buildedObjectRef;
 
     SymSolveSolution candidateHeapSolution;
+    SymbolicInputHeapLISSA partialHeap;
 
     public LaunchSymbolicExecCG(String id, PLIChoiceGenerator curCG) {
         super(id);
@@ -115,6 +117,14 @@ public abstract class LaunchSymbolicExecCG extends ChoiceGeneratorBase<Integer> 
 
     public SymSolveSolution getCandidateHeapSolution() {
         return candidateHeapSolution;
+    }
+
+    public void setSymbolicInputHeap(SymbolicInputHeapLISSA partiallySymbolicHeap) {
+        partialHeap = partiallySymbolicHeap;
+    }
+
+    public SymbolicInputHeapLISSA getSymbolicInputHeap() {
+        return partialHeap;
     }
 
 }

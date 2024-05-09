@@ -30,7 +30,6 @@ import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import pli.choicegenerators.XCG;
-import pli.heap.solving.techniques.LIBasedStrategy;
 
 // need to fix names
 
@@ -100,17 +99,17 @@ public class XProcedureCallInstruction extends JVMInvokeInstruction {
             return executeInvokeRepOK(ti);
         }
 
-        if (XCG.allRepOKPathsReturnedFalse()) {
-            LIBasedStrategy.numberOfUnsatRepOKSymbolicExec++;
-            if (XCG.isPrePWithPartialHeapExecuted()) {
+        if (XCG.isPrePWithPartialHeapExecuted()) {
+            if (XCG.allPathsOfPrePPartialHReturnedFalse()) {
                 XCG.setDone();
                 ti.getVM().getSystemState().setIgnored(true);
-            } else {
+            }
+        } else {
+            if (XCG.allPathsOfPrePConcreteHReturnedFalse()) {
                 // Call Sym Exec of preP with partial heap
                 XCG.setPrePWithPartialHeapExecuted();
                 return BytecodeHelper.createInvokeStaticInstruction(getClassInfo(), "runPrePPartialHeap()V", current);
             }
-
         }
 
         return next;

@@ -26,22 +26,22 @@ public class X extends PLIOPT {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
-        // Optimization that avoid some solver calls
-        PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
-        SymSolveSolution cachedHeapSolution = parent.getCurrentHeapSolution();
-        if (cachedHeapSolution != null) {
-            if (fixedFieldsMatch(vector, cachedHeapSolution)) {
-                SymSolveSolution newSolution = getNewSolution(vector, cachedHeapSolution);
-                // heapCG.setCurrentRepOKPathCondition(parent.getCurrentRepOKPathCondition());
-                // // I cannot set the previous pc because with the current implementation I
-                // dont have the symbolic value correspondence
-                currentCG.setCurrentHeapSolution(newSolution);
-                return nextInstruction;
+        if (!isRepOKExecutionMode()) {
+            // Optimization that avoid some solver calls
+            PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
+            SymSolveSolution cachedHeapSolution = parent.getCurrentHeapSolution();
+            if (cachedHeapSolution != null) {
+                if (fixedFieldsMatch(vector, cachedHeapSolution)) {
+                    SymSolveSolution newSolution = getNewSolution(vector, cachedHeapSolution);
+                    // heapCG.setCurrentRepOKPathCondition(parent.getCurrentRepOKPathCondition());
+                    // // I cannot set the previous pc because with the current implementation I
+                    // dont have the symbolic value correspondence
+                    currentCG.setCurrentHeapSolution(newSolution);
+                    return nextInstruction;
+                }
             }
-        }
-
-        if (!isRepOKExecutionMode())
             solverCalls++;
+        }
 
         SymSolveSolution solution = heapSolver.solve(vector);
         PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
