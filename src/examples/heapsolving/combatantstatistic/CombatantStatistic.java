@@ -115,38 +115,38 @@ public class CombatantStatistic {
         }
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (allData == null)
             return false;
-        if (!allData.repOKSymSolve())
+        if (!allData.preH())
             return false;
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public static void runPrePConcreteHeap() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finCombatantStatistic(int nodesNum) {

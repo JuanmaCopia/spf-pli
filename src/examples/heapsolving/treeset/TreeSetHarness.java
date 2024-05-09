@@ -13,7 +13,7 @@ public class TreeSetHarness {
         structure = (TreeSet) SymHeap.makeSymbolicRefThis("treeset_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

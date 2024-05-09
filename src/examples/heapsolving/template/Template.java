@@ -180,44 +180,44 @@ public class Template {
     // return idx;
     // }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (parameters == null || parametersByName == null)
             return false;
-        if (!parameters.repOKSymSolve())
+        if (!parameters.preH())
             return false;
-        if (!parametersByName.repOKSymSolve())
-            return false;
-        return true;
-    }
-
-    public boolean repOKSymbolicExecution() {
-        if (!parameters.repOKSymbolicExecution())
-            return false;
-        if (!parametersByName.repOKSymbolicExecution())
+        if (!parametersByName.preH())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean preP() {
+        if (!parameters.preP())
+            return false;
+        if (!parametersByName.preP())
+            return false;
+        return true;
+    }
+
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public static void runPrePConcreteHeap() {
         Template toBuild = new Template();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         Template toBuild = new Template();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         Template toBuild = new Template();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finTemplate(int nodesNum) {

@@ -4,18 +4,18 @@
 
 shell=pli.LISSAShell
 
-target = heapsolving.treemap.remove.TreeMapMain
-method = remove
+target = heapsolving.treemap.METHOD.TreeMapMain
+method = METHOD
 
 symbolic.debug = false
 symbolic.dp = z3
 
-heapsolving.strategy = INTERPLI
-heapsolving.checkPathValidity = false
-heapsolving.generateTests = false
+heapsolving.strategy = HEAP_SOLVING_STRATEGY
+heapsolving.checkPathValidity = BOOLEAN
+heapsolving.generateTests = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
-heapsolving.symsolve.finitization.args = 7
-heapsolving.symsolve.predicate = repOKSymSolve
+heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory
 vm.insn_factory.class=pli.PLIInstructionFactory

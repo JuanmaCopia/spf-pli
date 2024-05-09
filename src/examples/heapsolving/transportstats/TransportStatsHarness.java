@@ -13,7 +13,7 @@ public class TransportStatsHarness {
         structure = (TransportStats) SymHeap.makeSymbolicRefThis("transportstats_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

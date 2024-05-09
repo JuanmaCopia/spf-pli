@@ -15,7 +15,7 @@ heapsolving.checkPathValidity = false
 heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = mycasestudy.TreeMap
 heapsolving.symsolve.finitization.args = 6
-heapsolving.symsolve.predicate = repOKSymSolve
+heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory
 vm.insn_factory.class=pli.PLIInstructionFactory

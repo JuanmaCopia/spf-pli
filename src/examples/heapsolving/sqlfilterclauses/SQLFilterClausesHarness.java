@@ -13,7 +13,7 @@ public class SQLFilterClausesHarness {
         structure = (SQLFilterClauses) SymHeap.makeSymbolicRefThis("sqlfilterclauses_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

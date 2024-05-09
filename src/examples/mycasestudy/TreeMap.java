@@ -733,12 +733,12 @@ public class TreeMap {
     // ---------------- Specifications (repOKs) ----------------
 
     // pre
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     // preH
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
@@ -747,7 +747,7 @@ public class TreeMap {
     }
 
     // preP
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!isSorted())
             return false;
         return true;
@@ -874,13 +874,13 @@ public class TreeMap {
     public static void runPrePConcreteHeap() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
 }

@@ -177,38 +177,38 @@ public class TreeSet {
         return m.lastKey();
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (m == null)
             return false;
-        return m.repOKSymSolve();
+        return m.preH();
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (m == null)
             return false;
-        return m.repOKSymbolicExecution();
+        return m.preP();
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public static void runPrePConcreteHeap() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         TreeSet toBuild = new TreeSet();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finTreeSet(int nodesNum) {

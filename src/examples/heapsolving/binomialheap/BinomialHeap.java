@@ -505,7 +505,7 @@ public class BinomialHeap {
      *         invariants
      */
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isTreeWithParentReferencesStructure())
             return false;
         if (!checkDegrees(size))
@@ -513,14 +513,14 @@ public class BinomialHeap {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!checkHeapified())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isTreeWithParentReferencesStructure() {
@@ -639,19 +639,19 @@ public class BinomialHeap {
     public static void runPrePConcreteHeap() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finBinomialHeap(int size) {

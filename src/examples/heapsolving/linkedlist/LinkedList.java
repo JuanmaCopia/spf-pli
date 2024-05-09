@@ -416,18 +416,18 @@ public class LinkedList {
         return result;
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         return isCircularLinkedList();
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (header == null)
             return false;
         return isSizeOK();
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isCircularLinkedList() {
@@ -491,19 +491,19 @@ public class LinkedList {
     public static void runPrePConcreteHeap() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         LinkedList toBuild = new LinkedList();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finLinkedList(int nodesNum) {
