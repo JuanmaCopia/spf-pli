@@ -15,6 +15,7 @@ import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
 import pli.heap.builder.HeapSolutionBuilder;
+import pli.heap.pathcondition.PathConditionUtils;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
 
@@ -30,63 +31,57 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
-        if (isRepOKExecutionMode()) {
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA currentCG) {
+        if (isRepOKExecutionMode())
             return nextInstruction;
-        }
-        solverCalls++;
-        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-        SymSolveSolution solution = heapSolver.solve(vector);
 
-        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
-        assert (pcCG != null);
-
-        while (solution != null) {
-            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                break;
-            }
-            solution = heapSolver.getNextSolution(solution);
-        }
-
-        if (solution == null) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return currentInstruction;
-        }
-
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
-                heapCG);
+        return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
     }
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGeneratorLISSA pcCG) {
+            PCChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
-        solverCalls++;
-        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
-        assert (heapCG != null);
 
-        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
-        assert (symInputHeap != null);
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) SymHeapHelper
+                .getCurrentHeapChoiceGenerator(ti.getVM()).getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+
+        return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
+    }
+
+    SymSolveSolution handleSatisfiabilityWithPathCondition(SymbolicInputHeapLISSA symInputHeap, PathCondition pc,
+            SymSolveVector vector) {
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveSolution solution = heapSolver.solve(vector);
+
         while (solution != null) {
-            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                break;
-            }
+            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
+            if (PathConditionUtils.isConjunctionSAT(accessedPC, pc))
+                return solution;
+
             solution = heapSolver.getNextSolution(solution);
         }
+        return solution;
+    }
 
+    Instruction launchSolvingProcedure(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            PLIChoiceGenerator currentCG, SymbolicInputHeapLISSA symInputHeap, SymSolveVector vector) {
+
+        solverCalls++;
+
+        PathCondition pc = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
+        SymSolveSolution solution = handleSatisfiabilityWithPathCondition(symInputHeap, pc, vector);
         if (solution == null) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return currentInstruction;
         }
 
         return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
-                pcCG);
+                currentCG);
     }
 
     @Override

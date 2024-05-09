@@ -9,7 +9,6 @@ import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
-import pli.heap.SymbolicReferenceInput;
 import pli.heap.pathcondition.PathConditionUtils;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
@@ -89,37 +88,6 @@ public class PLIOPT extends PLI {
             }
         }
         return false;
-    }
-
-    SymSolveSolution handleSatisfiabilityWithPathCondition(SymbolicInputHeapLISSA symInputHeap, PathCondition pc,
-            SymSolveVector vector) {
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-        SymSolveSolution solution = heapSolver.solve(vector);
-
-        while (solution != null) {
-            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
-            if (PathConditionUtils.isConjunctionSAT(accessedPC, pc))
-                return solution;
-
-            solution = heapSolver.getNextSolution(solution);
-        }
-        return solution;
-    }
-
-    Instruction launchSolvingProcedure(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PLIChoiceGenerator currentCG, SymbolicInputHeapLISSA symInputHeap, SymSolveVector vector) {
-
-        solverCalls++;
-
-        PathCondition pc = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
-        SymSolveSolution solution = handleSatisfiabilityWithPathCondition(symInputHeap, pc, vector);
-        if (solution == null) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return currentInstruction;
-        }
-
-        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
-                currentCG);
     }
 
 }
