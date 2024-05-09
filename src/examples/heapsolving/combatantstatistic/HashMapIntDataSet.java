@@ -174,7 +174,7 @@ public class HashMapIntDataSet {
      * and the default load factor (0.75).
      */
     public HashMapIntDataSet() {
-//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
+        // table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -191,175 +191,175 @@ public class HashMapIntDataSet {
 
     Entry getTable(int index) {
         switch (index) {
-        case 0:
-            return e0;
-        case 1:
-            return e1;
-        case 2:
-            return e2;
-        case 3:
-            return e3;
-        case 4:
-            return e4;
-        case 5:
-            return e5;
-        case 6:
-            return e6;
-        case 7:
-            return e7;
-        case 8:
-            return e8;
-        case 9:
-            return e9;
-        case 10:
-            return e10;
-        case 11:
-            return e11;
-        case 12:
-            return e12;
-        case 13:
-            return e13;
-        case 14:
-            return e14;
-        case 15:
-            return e15;
-        case 16:
-            return e16;
-        case 17:
-            return e17;
-        case 18:
-            return e18;
-        case 19:
-            return e19;
-        case 20:
-            return e20;
-        case 21:
-            return e21;
-        case 22:
-            return e22;
-        case 23:
-            return e23;
-        case 24:
-            return e24;
-        case 25:
-            return e25;
-        case 26:
-            return e26;
-        case 27:
-            return e27;
-        case 28:
-            return e28;
-        case 29:
-            return e29;
-        case 30:
-            return e30;
-        case 31:
-            return e31;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                return e0;
+            case 1:
+                return e1;
+            case 2:
+                return e2;
+            case 3:
+                return e3;
+            case 4:
+                return e4;
+            case 5:
+                return e5;
+            case 6:
+                return e6;
+            case 7:
+                return e7;
+            case 8:
+                return e8;
+            case 9:
+                return e9;
+            case 10:
+                return e10;
+            case 11:
+                return e11;
+            case 12:
+                return e12;
+            case 13:
+                return e13;
+            case 14:
+                return e14;
+            case 15:
+                return e15;
+            case 16:
+                return e16;
+            case 17:
+                return e17;
+            case 18:
+                return e18;
+            case 19:
+                return e19;
+            case 20:
+                return e20;
+            case 21:
+                return e21;
+            case 22:
+                return e22;
+            case 23:
+                return e23;
+            case 24:
+                return e24;
+            case 25:
+                return e25;
+            case 26:
+                return e26;
+            case 27:
+                return e27;
+            case 28:
+                return e28;
+            case 29:
+                return e29;
+            case 30:
+                return e30;
+            case 31:
+                return e31;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
     }
 
     void setTable(int index, Entry entry) {
         switch (index) {
-        case 0:
-            e0 = entry;
-            break;
-        case 1:
-            e1 = entry;
-            break;
-        case 2:
-            e2 = entry;
-            break;
-        case 3:
-            e3 = entry;
-            break;
-        case 4:
-            e4 = entry;
-            break;
-        case 5:
-            e5 = entry;
-            break;
-        case 6:
-            e6 = entry;
-            break;
-        case 7:
-            e7 = entry;
-            break;
-        case 8:
-            e8 = entry;
-            break;
-        case 9:
-            e9 = entry;
-            break;
-        case 10:
-            e10 = entry;
-            break;
-        case 11:
-            e11 = entry;
-            break;
-        case 12:
-            e12 = entry;
-            break;
-        case 13:
-            e13 = entry;
-            break;
-        case 14:
-            e14 = entry;
-            break;
-        case 15:
-            e15 = entry;
-            break;
-        case 16:
-            e16 = entry;
-            break;
-        case 17:
-            e17 = entry;
-            break;
-        case 18:
-            e18 = entry;
-            break;
-        case 19:
-            e19 = entry;
-            break;
-        case 20:
-            e20 = entry;
-            break;
-        case 21:
-            e21 = entry;
-            break;
-        case 22:
-            e22 = entry;
-            break;
-        case 23:
-            e23 = entry;
-            break;
-        case 24:
-            e24 = entry;
-            break;
-        case 25:
-            e25 = entry;
-            break;
-        case 26:
-            e26 = entry;
-            break;
-        case 27:
-            e27 = entry;
-            break;
-        case 28:
-            e28 = entry;
-            break;
-        case 29:
-            e29 = entry;
-            break;
-        case 30:
-            e30 = entry;
-            break;
-        case 31:
-            e31 = entry;
-            break;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                e0 = entry;
+                break;
+            case 1:
+                e1 = entry;
+                break;
+            case 2:
+                e2 = entry;
+                break;
+            case 3:
+                e3 = entry;
+                break;
+            case 4:
+                e4 = entry;
+                break;
+            case 5:
+                e5 = entry;
+                break;
+            case 6:
+                e6 = entry;
+                break;
+            case 7:
+                e7 = entry;
+                break;
+            case 8:
+                e8 = entry;
+                break;
+            case 9:
+                e9 = entry;
+                break;
+            case 10:
+                e10 = entry;
+                break;
+            case 11:
+                e11 = entry;
+                break;
+            case 12:
+                e12 = entry;
+                break;
+            case 13:
+                e13 = entry;
+                break;
+            case 14:
+                e14 = entry;
+                break;
+            case 15:
+                e15 = entry;
+                break;
+            case 16:
+                e16 = entry;
+                break;
+            case 17:
+                e17 = entry;
+                break;
+            case 18:
+                e18 = entry;
+                break;
+            case 19:
+                e19 = entry;
+                break;
+            case 20:
+                e20 = entry;
+                break;
+            case 21:
+                e21 = entry;
+                break;
+            case 22:
+                e22 = entry;
+                break;
+            case 23:
+                e23 = entry;
+                break;
+            case 24:
+                e24 = entry;
+                break;
+            case 25:
+                e25 = entry;
+                break;
+            case 26:
+                e26 = entry;
+                break;
+            case 27:
+                e27 = entry;
+                break;
+            case 28:
+                e28 = entry;
+                break;
+            case 29:
+                e29 = entry;
+                break;
+            case 30:
+                e30 = entry;
+                break;
+            case 31:
+                e31 = entry;
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
 
     }
@@ -426,7 +426,7 @@ public class HashMapIntDataSet {
     public DataSet get(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (true) {
             if (e == null)
@@ -446,7 +446,7 @@ public class HashMapIntDataSet {
     public boolean containsKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
@@ -463,7 +463,7 @@ public class HashMapIntDataSet {
     Entry getEntry(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
@@ -662,9 +662,9 @@ public class HashMapIntDataSet {
             return false;
         }
 
-//    public int hashCode() {
-//      return key ^ (value == null ? 0 : value.hashCode());
-//    }
+        // public int hashCode() {
+        // return key ^ (value == null ? 0 : value.hashCode());
+        // }
 
         public String toString() {
             return getKey() + "=" + getValue();
@@ -726,7 +726,7 @@ public class HashMapIntDataSet {
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!checkStructure())
             return false;
         if (!checkValuesRepOK())
@@ -832,7 +832,7 @@ public class HashMapIntDataSet {
         for (int i = 0; i < 15; i++) {
             Entry e = getTable(i);
             if (e != null) {
-                if (!e.value.repOKSymSolve())
+                if (!e.value.preH())
                     return false;
             }
         }

@@ -15,7 +15,7 @@ heapsolving.checkPathValidity = BOOLEAN
 heapsolving.generateTests = BOOLEAN
 heapsolving.symsolve.finitization.class = heapsolving.transportstats.TransportStats
 heapsolving.symsolve.finitization.args = MAX_SCOPE
-heapsolving.symsolve.predicate = repOKSymSolve
+heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory
 vm.insn_factory.class=pli.PLIInstructionFactory

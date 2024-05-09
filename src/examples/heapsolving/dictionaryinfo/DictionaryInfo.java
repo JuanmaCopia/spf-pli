@@ -297,7 +297,7 @@ public class DictionaryInfo {
     // return loadCount == 5;
     // }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (fieldsByName == null)
             return false;
         if (fieldsByTagNumber == fieldsByName)
@@ -316,7 +316,7 @@ public class DictionaryInfo {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (fieldsByTagNumber != null && !fieldsByTagNumber.isSorted())
             return false;
         if (!fieldsByName.isSorted())
@@ -324,26 +324,26 @@ public class DictionaryInfo {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public static void runPrePConcreteHeap() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         DictionaryInfo toBuild = new DictionaryInfo();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finDictionaryInfo(int nodesNum) {

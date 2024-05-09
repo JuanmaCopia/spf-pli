@@ -81,7 +81,7 @@ public class TransportStats {
         }
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (read_sizes == null || write_sizes == null)
             return false;
         if (read_sizes == write_sizes)
@@ -98,7 +98,7 @@ public class TransportStats {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!read_sizes.isSorted())
             return false;
         if (!write_sizes.isSorted())
@@ -106,26 +106,26 @@ public class TransportStats {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public static void runPrePConcreteHeap() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finTransportStats(int nodesNum) {

@@ -146,7 +146,7 @@ public class HashMapIntList {
      * and the default load factor (0.75).
      */
     public HashMapIntList() {
-//    table = new Entry[DEFAULT_INITIAL_CAPACITY];
+        // table = new Entry[DEFAULT_INITIAL_CAPACITY];
         init();
     }
 
@@ -163,35 +163,35 @@ public class HashMapIntList {
 
     Entry getTable(int index) {
         switch (index) {
-        case 0:
-            return e0;
-        case 1:
-            return e1;
-        case 2:
-            return e2;
-        case 3:
-            return e3;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                return e0;
+            case 1:
+                return e1;
+            case 2:
+                return e2;
+            case 3:
+                return e3;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
     }
 
     void setTable(int index, Entry entry) {
         switch (index) {
-        case 0:
-            e0 = entry;
-            break;
-        case 1:
-            e1 = entry;
-            break;
-        case 2:
-            e2 = entry;
-            break;
-        case 3:
-            e3 = entry;
-            break;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                e0 = entry;
+                break;
+            case 1:
+                e1 = entry;
+                break;
+            case 2:
+                e2 = entry;
+                break;
+            case 3:
+                e3 = entry;
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
 
     }
@@ -258,7 +258,7 @@ public class HashMapIntList {
     public LinkedList get(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (true) {
             if (e == null)
@@ -278,7 +278,7 @@ public class HashMapIntList {
     public boolean containsKey(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null) {
             if (e.hash == hash && eq(key, e.key))
@@ -295,7 +295,7 @@ public class HashMapIntList {
     Entry getEntry(int key) {
         int hash = hash(key);
         int i = indexFor(hash, DEFAULT_INITIAL_CAPACITY);
-//    Entry e = table[i];
+        // Entry e = table[i];
         Entry e = getTable(i);
         while (e != null && !(e.hash == hash && eq(key, e.key)))
             e = e.next;
@@ -494,9 +494,9 @@ public class HashMapIntList {
             return false;
         }
 
-//    public int hashCode() {
-//      return key ^ (value == null ? 0 : value.hashCode());
-//    }
+        // public int hashCode() {
+        // return key ^ (value == null ? 0 : value.hashCode());
+        // }
 
         public String toString() {
             return getKey() + "=" + getValue();
@@ -558,7 +558,7 @@ public class HashMapIntList {
 
     // private static final long serialVersionUID = 362498820763181265L;
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!checkKeys())
             return false;
         if (!checkHashes())
@@ -597,9 +597,9 @@ public class HashMapIntList {
     }
 
     public boolean checkValuesRepOK() {
-        if (!e0.value.repOKSymSolve())
+        if (!e0.value.preH())
             return false;
-        if (!e1.value.repOKSymSolve())
+        if (!e1.value.preH())
             return false;
         return true;
     }

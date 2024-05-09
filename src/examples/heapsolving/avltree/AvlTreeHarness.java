@@ -13,7 +13,7 @@ public class AvlTreeHarness {
         structure = (AvlTree) SymHeap.makeSymbolicRefThis("avltree_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

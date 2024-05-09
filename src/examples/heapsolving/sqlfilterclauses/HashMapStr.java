@@ -167,55 +167,55 @@ public class HashMapStr {
 
     public Entry getTable(int index) {
         switch (index) {
-        case 0:
-            return e0;
-        case 1:
-            return e1;
-        case 2:
-            return e2;
-        case 3:
-            return e3;
-        case 4:
-            return e4;
-        case 5:
-            return e5;
-        case 6:
-            return e6;
-        case 7:
-            return e7;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                return e0;
+            case 1:
+                return e1;
+            case 2:
+                return e2;
+            case 3:
+                return e3;
+            case 4:
+                return e4;
+            case 5:
+                return e5;
+            case 6:
+                return e6;
+            case 7:
+                return e7;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
     }
 
     void setTable(int index, Entry entry) {
         switch (index) {
-        case 0:
-            e0 = entry;
-            break;
-        case 1:
-            e1 = entry;
-            break;
-        case 2:
-            e2 = entry;
-            break;
-        case 3:
-            e3 = entry;
-            break;
-        case 4:
-            e4 = entry;
-            break;
-        case 5:
-            e5 = entry;
-            break;
-        case 6:
-            e6 = entry;
-            break;
-        case 7:
-            e7 = entry;
-            break;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                e0 = entry;
+                break;
+            case 1:
+                e1 = entry;
+                break;
+            case 2:
+                e2 = entry;
+                break;
+            case 3:
+                e3 = entry;
+                break;
+            case 4:
+                e4 = entry;
+                break;
+            case 5:
+                e5 = entry;
+                break;
+            case 6:
+                e6 = entry;
+                break;
+            case 7:
+                e7 = entry;
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
 
     }
@@ -520,11 +520,11 @@ public class HashMapStr {
         }
     }
 
-    public boolean repOKSymSolve() {
-        return repOKSymSolve(new HashSet<Entry>());
+    public boolean preH() {
+        return preH(new HashSet<Entry>());
     }
 
-    public boolean repOKSymSolve(Set<Entry> visited) {
+    public boolean preH(Set<Entry> visited) {
         int prevSize = visited.size();
         Threshold threshold = new Threshold(THRESHOLD);
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
@@ -535,7 +535,7 @@ public class HashMapStr {
         return (visited.size() - prevSize) == size;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
             if (list != null && !checkListKeys(list, i))
@@ -544,8 +544,8 @@ public class HashMapStr {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     private boolean isLinkedList(Entry head, Set<Entry> visited, Threshold threshold) {

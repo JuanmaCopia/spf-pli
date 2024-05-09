@@ -380,7 +380,7 @@ public class AvlTree {
     // }
     // }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isBalanced())
@@ -390,15 +390,15 @@ public class AvlTree {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
 
         if (!isSorted())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isBinTreeWithParentReferences() {
@@ -497,19 +497,19 @@ public class AvlTree {
     public static void runPrePConcreteHeap() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runPrePPartialHeap() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finAvlTree(int size) {

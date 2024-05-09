@@ -8,6 +8,8 @@
 package heapsolving.transportstats;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -623,7 +625,7 @@ public class TreeMapIntLong {
         setColor(x, BLACK);
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
@@ -631,14 +633,14 @@ public class TreeMapIntLong {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!isSorted())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isBinTreeWithParentReferences() {

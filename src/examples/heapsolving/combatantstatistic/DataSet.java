@@ -29,7 +29,8 @@ package heapsolving.combatantstatistic;
  * @author daniel
  */
 public class DataSet {
-//	private final Map<CombatantSide, List<Integer>> valuesPerSide = new HashMap<CombatantSide, List<Integer>>();
+    // private final Map<CombatantSide, List<Integer>> valuesPerSide = new
+    // HashMap<CombatantSide, List<Integer>>();
 
     // CombatantSide enum replaced by an equivalent integer representation: 0
     // (CombatantSide.ATTACKER) or 1 (CombatantSide.DEFENDER)
@@ -55,10 +56,10 @@ public class DataSet {
         valuesPerSide.get(side).add(value);
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (valuesPerSide == null)
             return false;
-        if (!valuesPerSide.repOKSymSolve())
+        if (!valuesPerSide.preH())
             return false;
 
         return true;
@@ -71,41 +72,41 @@ public class DataSet {
      * @param type
      * @return
      */
-//	double aggregate(final Integer side, final DataAggregationType type) {
-//		if (side < 0 || side > 1)
-//			throw new IllegalArgumentException("wrong side!");
-//
-//		final List<Integer> data = getSideData(side);
-//		return type.aggregate(data);
-//	}
+    // double aggregate(final Integer side, final DataAggregationType type) {
+    // if (side < 0 || side > 1)
+    // throw new IllegalArgumentException("wrong side!");
+    //
+    // final List<Integer> data = getSideData(side);
+    // return type.aggregate(data);
+    // }
 
     /**
      * @param side
      * @return
      */
-//	List<Integer> getSideData(final Integer side) {
-//		if (side < 0 || side > 1)
-//			throw new IllegalArgumentException("wrong side!");
-//
-//		final List<Integer> data;
-//		if (side == null) {
-//			data = getAll();
-//		} else {
-//			data = valuesPerSide.get(side);
-//		}
-//		return data;
-//	}
+    // List<Integer> getSideData(final Integer side) {
+    // if (side < 0 || side > 1)
+    // throw new IllegalArgumentException("wrong side!");
+    //
+    // final List<Integer> data;
+    // if (side == null) {
+    // data = getAll();
+    // } else {
+    // data = valuesPerSide.get(side);
+    // }
+    // return data;
+    // }
 
     /**
      * @return the values of all sides
      */
-//	private List<Integer> getAll() {
-//		final List<Integer> all = new ArrayList<Integer>();
-//		for (final List<Integer> side : valuesPerSide.values()) {
-//			all.addAll(side);
-//		}
-//		return all;
-//	}
+    // private List<Integer> getAll() {
+    // final List<Integer> all = new ArrayList<Integer>();
+    // for (final List<Integer> side : valuesPerSide.values()) {
+    // all.addAll(side);
+    // }
+    // return all;
+    // }
 
     /**
      * @param value to be counted
@@ -113,19 +114,19 @@ public class DataSet {
      * @return the number of entries in this data set with the given value for the
      *         given side
      */
-//	int countOfValuesWith(final Integer value, final Integer side) {
-//		if (side < 0 || side > 1)
-//			throw new IllegalArgumentException("wrong side!");
-//
-//		final List<Integer> data = getSideData(side);
-//		int count = 0;
-//		for (final Integer v : data) {
-//			if (v.equals(value)) {
-//				count++;
-//			}
-//		}
-//		return count;
-//	}
+    // int countOfValuesWith(final Integer value, final Integer side) {
+    // if (side < 0 || side > 1)
+    // throw new IllegalArgumentException("wrong side!");
+    //
+    // final List<Integer> data = getSideData(side);
+    // int count = 0;
+    // for (final Integer v : data) {
+    // if (v.equals(value)) {
+    // count++;
+    // }
+    // }
+    // return count;
+    // }
 
     /**
      * @see java.lang.Object#toString()
