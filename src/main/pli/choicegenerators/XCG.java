@@ -2,10 +2,7 @@
 package pli.choicegenerators;
 
 import pli.LISSAShell;
-import pli.heap.SymbolicInputHeapLISSA;
-import pli.heap.solving.techniques.LIBasedStrategy;
 import symsolve.vector.SymSolveSolution;
-import symsolve.vector.SymSolveVector;
 
 public class XCG extends LaunchSymbolicExecCG {
 
@@ -41,18 +38,11 @@ public class XCG extends LaunchSymbolicExecCG {
             if (LISSAShell.configParser.generateTests)
                 curCG.setCurrentTestCode(testCode);
             curCG.setCurrentPartialHeapSolution(partialHeap);
-            curCG.setCurrentHeapSolution(getSymSolveSolution(partialHeap));
+            curCG.setCurrentHeapSolution(candidateHeapSolution);
             curCG.setCurrentRepOKPathCondition(repOKPathCondition);
             return false;
         }
         return true;
-    }
-
-    private SymSolveSolution getSymSolveSolution(SymbolicInputHeapLISSA partialHeap) {
-        LIBasedStrategy stg = ((LIBasedStrategy) LISSAShell.solvingStrategy);
-        SymSolveVector vector = stg.getCanonicalizer().createVector(partialHeap);
-        SymSolveSolution solution = stg.getHeapSolver().solve(vector);
-        return solution;
     }
 
     @Override

@@ -111,4 +111,8 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
         return heapSolver;
     }
 
+    public StateSpace getStateSpace() {
+        return stateSpace;
+    }
+
 }

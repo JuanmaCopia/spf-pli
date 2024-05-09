@@ -871,7 +871,7 @@ public class TreeMap {
     public static void runPrePPartialHeap() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

@@ -687,7 +687,7 @@ public class HashMap {
     public static void runPrePPartialHeap() {
         HashMap toBuild = new HashMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

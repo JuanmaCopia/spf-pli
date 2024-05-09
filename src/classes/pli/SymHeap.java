@@ -25,6 +25,8 @@ public class SymHeap {
 
     native public static void handleRepOKResult(Object v, boolean result);
 
+    native public static void handlePrePWithSymbolicHeapResult(Object v, boolean result);
+
     native public static void makeSymbolicImplicitInputThis(String name, Object v);
 
     native public static void buildSolutionHeap(Object v);

@@ -29,6 +29,8 @@ public class SolvingStrategy {
             return new PLIOPT();
         case X:
             return new X();
+        case X2:
+            return new X2();
         case INTERPLI:
             return new INTERPLI();
         case LISSANOSB:

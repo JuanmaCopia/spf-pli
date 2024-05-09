@@ -503,7 +503,7 @@ public class AvlTree {
     public static void runPrePPartialHeap() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

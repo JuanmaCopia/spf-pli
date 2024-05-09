@@ -410,7 +410,7 @@ public class Schedule {
     public static void runPrePPartialHeap() {
         Schedule toBuild = new Schedule();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

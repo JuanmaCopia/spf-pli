@@ -645,7 +645,7 @@ public class BinomialHeap {
     public static void runPrePPartialHeap() {
         BinomialHeap toBuild = new BinomialHeap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

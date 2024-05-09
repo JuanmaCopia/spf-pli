@@ -211,7 +211,7 @@ public class Template {
     public static void runPrePPartialHeap() {
         Template toBuild = new Template();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

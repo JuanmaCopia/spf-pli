@@ -140,7 +140,7 @@ public class CombatantStatistic {
     public static void runPrePPartialHeap() {
         CombatantStatistic toBuild = new CombatantStatistic();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
     public static void runCompleteSpecification() {

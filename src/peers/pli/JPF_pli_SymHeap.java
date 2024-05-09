@@ -26,9 +26,14 @@ import pli.config.SolvingStrategyEnum;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
+import pli.heap.pathcondition.PathConditionUtils;
+import pli.heap.solving.solver.SymSolveHeapSolver;
+import pli.heap.solving.techniques.LIBasedStrategy;
 import pli.heap.solving.techniques.PLI;
 import pli.heap.testgen.TestCaseHelper;
 import pli.heap.testgen.TestGenVisitor;
+import symsolve.vector.SymSolveSolution;
+import symsolve.vector.SymSolveVector;
 
 public class JPF_pli_SymHeap extends NativePeer {
 
@@ -162,6 +167,53 @@ public class JPF_pli_SymHeap extends NativePeer {
             repokCallCG.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
         }
         ss.setIgnored(true);
+    }
+
+    @MJI
+    public static void handlePrePWithSymbolicHeapResult(MJIEnv env, int objRef, int objvRef, boolean repOKResult) {
+        SystemState ss = env.getVM().getSystemState();
+
+        if (repOKResult) {
+            PathCondition pc = PathCondition.getPC(env.getVM());
+            SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
+            SymSolveSolution solution = getSymSolveSolution(symInputHeap, pc);
+
+            LaunchSymbolicExecCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setCandidateHeapSolution(solution);
+            repOKChoiceGenerator.setRepOKPathCondition(pc);
+            repOKChoiceGenerator.pathReturningTrueFound();
+
+            if (LISSAShell.configParser.generateTests) {
+                TestCaseHelper.solveTargetMethodArguments(pc);
+                TestGenVisitor visitor = new TestGenVisitor(env.getHeap(), pc);
+                SymHeapHelper.acceptBFS(objvRef, visitor);
+                String testCode = visitor.getTestCaseCode();
+                repOKChoiceGenerator.setTestCode(testCode);
+            }
+        } else {
+            LaunchSymbolicExecCG repokCallCG = getRepOKCallCG(ss);
+            repokCallCG.setRepOKPathCondition(PathCondition.getPC(env.getVM()));
+        }
+        ss.setIgnored(true);
+    }
+
+    private static SymSolveSolution getSymSolveSolution(SymbolicInputHeapLISSA symInputHeap, PathCondition pc) {
+        LIBasedStrategy stg = ((LIBasedStrategy) LISSAShell.solvingStrategy);
+        SymSolveVector vector = stg.getCanonicalizer().createVector(symInputHeap);
+        SymSolveHeapSolver heapSolver = stg.getHeapSolver();
+        SymSolveSolution solution = heapSolver.solve(vector);
+
+        while (solution != null) {
+            PathCondition accessedPC = symInputHeap.getImplicitInputThis().getAccessedFieldsPathCondition(
+                    ((LIBasedStrategy) LISSAShell.solvingStrategy).getStateSpace(), solution);
+            if (PathConditionUtils.isConjunctionSAT(accessedPC, pc))
+                return solution;
+
+            solution = heapSolver.getNextSolution(solution);
+        }
+
+        assert false;
+        return solution;
     }
 
     @MJI
