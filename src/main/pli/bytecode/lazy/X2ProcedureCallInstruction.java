@@ -94,8 +94,7 @@ public class X2ProcedureCallInstruction extends JVMInvokeInstruction {
             return this;
         }
 
-        if (!XCG.executed()) {
-            XCG.setExecuted();
+        if (!XCG.isPrePWithPartialHeapExecuted()) {
             XCG.setPrePWithPartialHeapExecuted();
             return executeInvokeRepOK(ti);
         }

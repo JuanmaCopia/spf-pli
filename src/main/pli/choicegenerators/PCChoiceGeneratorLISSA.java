@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
-import pli.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
 
 public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoiceGenerator {
@@ -12,7 +11,6 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoi
     HashMap<Integer, PathCondition> repOKPathConditionCache = new HashMap<>();
     HashMap<Integer, SymSolveSolution> solutionsCache = new HashMap<>();
     HashMap<Integer, String> testCodeCache = new HashMap<>();
-    HashMap<Integer, SymbolicInputHeapLISSA> partialHeapCache = new HashMap<>();
 
     public PCChoiceGeneratorLISSA(String id, int size) {
         super(id, size);
@@ -68,15 +66,4 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoi
     public String getCurrentTestCode() {
         return testCodeCache.get(getNextChoice());
     }
-
-    @Override
-    public void setCurrentPartialHeapSolution(SymbolicInputHeapLISSA patialHeap) {
-        partialHeapCache.put(getNextChoice(), patialHeap);
-    }
-
-    @Override
-    public SymbolicInputHeapLISSA getCurrentPartialHeapSolution() {
-        return partialHeapCache.get(getNextChoice());
-    }
-
 }

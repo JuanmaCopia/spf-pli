@@ -32,13 +32,9 @@ public class XCG extends LaunchSymbolicExecCG {
     public boolean allPathsOfPrePPartialHReturnedFalse() {
         if (pathReturningTrueFound) {
             setDone();
-            assert (candidateHeapSolution != null);
             assert (repOKPathCondition != null);
-            // Cache Solution and repOK Path Condition
             if (LISSAShell.configParser.generateTests)
                 curCG.setCurrentTestCode(testCode);
-            curCG.setCurrentPartialHeapSolution(partialHeap);
-            curCG.setCurrentHeapSolution(candidateHeapSolution);
             curCG.setCurrentRepOKPathCondition(repOKPathCondition);
             return false;
         }

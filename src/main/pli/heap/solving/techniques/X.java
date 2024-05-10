@@ -24,9 +24,6 @@ public class X extends PLIOPT {
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
-        if (lazyCacheHit(currentCG, vector))
-            return nextInstruction;
-
         return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
     }
 
@@ -34,11 +31,13 @@ public class X extends PLIOPT {
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
-        if (pcBranchCacheHit(currentCG))
-            return nextInstruction;
 
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) SymHeapHelper
                 .getCurrentHeapChoiceGenerator(ti.getVM()).getCurrentSymInputHeap();
+
+        if (isCacheHit(currentCG, symInputHeap))
+            return nextInstruction;
+
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
         return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
@@ -57,8 +56,6 @@ public class X extends PLIOPT {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return currentInstruction;
         }
-
-        currentCG.setCurrentHeapSolution(solution);
 
         if (isRepOKExecutionMode())
             return nextInstruction;

@@ -10,7 +10,6 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator implements PL
     protected PathCondition[] PCheap; // maintains constraints on the heap: one PC per choice
     protected SymbolicInputHeapLISSA[] symInputHeap; // maintains list of input symbolic nodes; one list per choice
 
-    SymbolicInputHeapLISSA[] partialHeapsCache;
     SymSolveSolution[] solutionsCache;
     PathCondition[] repOKPathConditionCache;
     String[] testCodes;
@@ -19,7 +18,6 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator implements PL
         super(id, 0, size - 1);
         PCheap = new PathCondition[size];
         symInputHeap = new SymbolicInputHeapLISSA[size];
-        partialHeapsCache = new SymbolicInputHeapLISSA[size];
         solutionsCache = new SymSolveSolution[size];
         repOKPathConditionCache = new PathCondition[size];
         testCodes = new String[size];
@@ -86,16 +84,6 @@ public class HeapChoiceGeneratorLISSA extends IntIntervalGenerator implements PL
 
     public String getCurrentTestCode() {
         return testCodes[getNextChoice()];
-    }
-
-    @Override
-    public void setCurrentPartialHeapSolution(SymbolicInputHeapLISSA patialHeap) {
-        partialHeapsCache[getNextChoice()] = patialHeap;
-    }
-
-    @Override
-    public SymbolicInputHeapLISSA getCurrentPartialHeapSolution() {
-        return partialHeapsCache[getNextChoice()];
     }
 
 }

@@ -87,19 +87,16 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
     @Override
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
-        assert (previousSolution != null);
         PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-        assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-        if (pcCG != null) {
-            while (solution != null) {
-                if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                    return solution;
-                }
-                solution = heapSolver.getNextSolution(solution);
-            }
+        while (solution != null) {
+            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
+            if (PathConditionUtils.isConjunctionSAT(accessedPC, pcCG.getCurrentPC()))
+                return solution;
+
+            solution = heapSolver.getNextSolution(solution);
         }
         return null;
     }

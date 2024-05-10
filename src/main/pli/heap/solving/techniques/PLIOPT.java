@@ -3,7 +3,6 @@ package pli.heap.solving.techniques;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
-import korat.utils.IntListAI;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
@@ -24,9 +23,6 @@ public class PLIOPT extends PLI {
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
-        if (lazyCacheHit(currentCG, vector))
-            return nextInstruction;
-
         return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
     }
 
@@ -34,60 +30,37 @@ public class PLIOPT extends PLI {
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
             PCChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
-        if (pcBranchCacheHit(currentCG))
-            return nextInstruction;
 
         SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) SymHeapHelper
                 .getCurrentHeapChoiceGenerator(ti.getVM()).getCurrentSymInputHeap();
+
+        if (isCacheHit(currentCG, symInputHeap))
+            return nextInstruction;
+
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
 
         return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
     }
 
-    boolean fixedFieldsMatch(SymSolveVector vector, SymSolveSolution cachedSolution) {
-        IntListAI fixedIndices = vector.getFixedIndices();
-        int[] vect = vector.getConcreteVector();
-        int[] candidateSolution = cachedSolution.getSolutionVector();
-        for (int i : fixedIndices.toArray()) {
-            if (vect[i] != candidateSolution[i])
-                return false;
-        }
-        return true;
-    }
-
-    SymSolveSolution getNewSolution(SymSolveVector vector, SymSolveSolution cachedSolution) {
-        int[] candidateSolution = cachedSolution.getSolutionVector();
-        return new SymSolveSolution(vector, candidateSolution, cachedSolution.getAccessedIndices(),
-                cachedSolution.getBuildedSolution());
-    }
-
-    boolean lazyCacheHit(HeapChoiceGeneratorLISSA currentCG, SymSolveVector vector) {
-        // Optimization that avoid some solver calls
-        PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
-        SymSolveSolution cachedHeapSolution = parent.getCurrentHeapSolution();
-        if (cachedHeapSolution != null && fixedFieldsMatch(vector, cachedHeapSolution)) {
-            // heapCG.setCurrentRepOKPathCondition(parent.getCurrentRepOKPathCondition());
-            // // I cannot set the previous pc because with the current implementation I
-            // dont have the symbolic value correspondence
-            currentCG.setCurrentHeapSolution(getNewSolution(vector, cachedHeapSolution));
-            return true;
-
-        }
-        return false;
-    }
-
-    boolean pcBranchCacheHit(PCChoiceGeneratorLISSA currentCG) {
+    boolean isCacheHit(PCChoiceGeneratorLISSA currentCG, SymbolicInputHeapLISSA symInputHeap) {
         PLIChoiceGenerator parent = getParentBranchPoint(currentCG);
         PathCondition cachedRepOKPC = parent.getCurrentRepOKPathCondition();
-        if (cachedRepOKPC != null) {
-            PathCondition conjunction = PathConditionUtils.getConjunction(currentCG.getCurrentPC(), cachedRepOKPC);
-            if (conjunction.simplify()) {
-                currentCG.setCurrentRepOKPathCondition(conjunction);
-                currentCG.setCurrentHeapSolution(parent.getCurrentHeapSolution());
-                return true;
-            }
+        SymSolveSolution cachedSymSolveSolution = parent.getCurrentHeapSolution();
+        if (cachedRepOKPC == null || cachedSymSolveSolution == null)
+            return false;
+
+        PathCondition accessedPC = symInputHeap.getImplicitInputThis().getAccessedFieldsPathCondition(stateSpace,
+                cachedSymSolveSolution);
+
+        PathCondition c1 = PathConditionUtils.getConjunction(currentCG.getCurrentPC(), cachedRepOKPC);
+        PathCondition conjunction = PathConditionUtils.getConjunction(c1, accessedPC);
+        if (!conjunction.simplify()) {
+            currentCG.setCurrentRepOKPathCondition(conjunction);
+            currentCG.setCurrentHeapSolution(cachedSymSolveSolution);
+            return false;
         }
-        return false;
+
+        return true;
     }
 
 }
