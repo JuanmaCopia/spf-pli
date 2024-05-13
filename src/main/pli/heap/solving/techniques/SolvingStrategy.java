@@ -21,33 +21,33 @@ public class SolvingStrategy {
     public static SolvingStrategy makeSymbolicHeapSolvingTechnique(ConfigParser config) {
         SolvingStrategy.config = config;
         switch (config.solvingStrategy) {
-        case LISSA:
-            return new LISSA();
-        case PLI:
-            return new PLI();
-        case PLIOPT:
-            return new PLIOPT();
-        case X:
-            return new X();
-        case X2:
-            return new X2();
-        case INTERPLI:
-            return new INTERPLI();
-        case LISSANOSB:
-            config.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
-            return new LISSA();
-        case LIHYBRID:
-            return new LIHYBRID();
-        case DRIVER:
-            return new SolvingStrategy();
-        case IFREPOK:
-            return new IFREPOK();
-        case PLAINLAZY:
-            return new PLAINLAZY();
-        case REPOKSOLVER:
-            return new REPOKSOLVER();
-        default:
-            throw new IllegalArgumentException("Invalid symbolic heap solving technique");
+            case LISSA:
+                return new LISSA();
+            case PLI:
+                return new PLI();
+            case PLIOPT:
+                return new PLIOPT();
+            case X:
+                return new X();
+            case X2:
+                return new X2();
+            case INTERX:
+                return new INTERX();
+            case LISSANOSB:
+                config.symmetryBreakingStrategy = SymmetryBreakStrategy.NO_SYMMETRY_BREAK;
+                return new LISSA();
+            case LIHYBRID:
+                return new LIHYBRID();
+            case DRIVER:
+                return new SolvingStrategy();
+            case IFREPOK:
+                return new IFREPOK();
+            case PLAINLAZY:
+                return new PLAINLAZY();
+            case REPOKSOLVER:
+                return new REPOKSOLVER();
+            default:
+                throw new IllegalArgumentException("Invalid symbolic heap solving technique");
         }
     }
 

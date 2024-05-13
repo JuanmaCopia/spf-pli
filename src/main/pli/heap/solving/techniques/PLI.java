@@ -57,7 +57,11 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
             SymSolveVector vector) {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveSolution solution = heapSolver.solve(vector);
+        return handleSatisfiabilityWithPathCondition(symRefInput, pc, solution);
+    }
 
+    SymSolveSolution handleSatisfiabilityWithPathCondition(SymbolicReferenceInput symRefInput, PathCondition pc,
+            SymSolveSolution solution) {
         while (solution != null) {
             PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
             if (PathConditionUtils.isConjunctionSAT(accessedPC, pc))
@@ -91,14 +95,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-        while (solution != null) {
-            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
-            if (PathConditionUtils.isConjunctionSAT(accessedPC, pcCG.getCurrentPC()))
-                return solution;
-
-            solution = heapSolver.getNextSolution(solution);
-        }
-        return null;
+        return handleSatisfiabilityWithPathCondition(symRefInput, pcCG.getCurrentPC(), solution);
     }
 
     Instruction createInvokePrePOnConcHeapInstruction(ThreadInfo ti, Instruction current, Instruction next,
