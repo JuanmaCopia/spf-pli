@@ -13,7 +13,7 @@ public class TemplateHarness {
         structure = (Template) SymHeap.makeSymbolicRefThis("treemap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

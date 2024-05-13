@@ -13,7 +13,7 @@ public class LinkedListHarness {
         structure = (LinkedList) SymHeap.makeSymbolicRefThis("linkedlist_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.repOKComplete())
+            if (!structure.pre())
                 return null;
         }
 

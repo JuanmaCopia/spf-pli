@@ -401,13 +401,19 @@ public class Schedule {
 
     // Hardcoded methods that SPF need to intercept to implement PLI
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         Schedule toBuild = new Schedule();
         SymHeap.buildSolutionHeap(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
-    public static void runRepOKComplete() {
+    public static void runPrePPartialHeap() {
+        Schedule toBuild = new Schedule();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
+    }
+
+    public static void runCompleteSpecification() {
         Schedule toBuild = new Schedule();
         SymHeap.buildPartialHeapInput(toBuild);
         SymHeap.handleRepOKResult(toBuild, toBuild.pre());
@@ -415,40 +421,41 @@ public class Schedule {
 
     // optimized repOKs
 
-//    public boolean preH() {
-//        if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null || blockQueue == null)
-//            return false;
-//
-//        HashSet<List> visitedPQ = new HashSet<List>();
-//        for (int i = 1; i <= MAXPRIO; i++) {
-//            if (!visitedPQ.add(getPrioQueue(i)))
-//                return false;
-//        }
-//        if (!visitedPQ.add(blockQueue))
-//            return false;
-//
-//        Set<Job> visitedJobs = new HashSet<Job>();
-//        for (int i = 1; i <= MAXPRIO; i++) {
-//            if (!isDoublyLinkedList(getPrioQueue(i), visitedJobs))
-//                return false;
-//        }
-//
-//        if (!isDoublyLinkedList(blockQueue, visitedJobs))
-//            return false;
-//
-//        return numProcesses == visitedJobs.size();
-//    }
-//
-//    public boolean preP() {
-//        if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
-//            return false;
-//
-//        for (int i = 1; i <= MAXPRIO; i++)
-//            if (!isPriorityQueueOK(getPrioQueue(i), i))
-//                return false;
-//
-//        if (!checkBlockQueue())
-//            return false;
-//        return true;
-//    } 
+    // public boolean preH() {
+    // if (prio_0 != null || prio_1 == null || prio_2 == null || prio_3 == null ||
+    // blockQueue == null)
+    // return false;
+    //
+    // HashSet<List> visitedPQ = new HashSet<List>();
+    // for (int i = 1; i <= MAXPRIO; i++) {
+    // if (!visitedPQ.add(getPrioQueue(i)))
+    // return false;
+    // }
+    // if (!visitedPQ.add(blockQueue))
+    // return false;
+    //
+    // Set<Job> visitedJobs = new HashSet<Job>();
+    // for (int i = 1; i <= MAXPRIO; i++) {
+    // if (!isDoublyLinkedList(getPrioQueue(i), visitedJobs))
+    // return false;
+    // }
+    //
+    // if (!isDoublyLinkedList(blockQueue, visitedJobs))
+    // return false;
+    //
+    // return numProcesses == visitedJobs.size();
+    // }
+    //
+    // public boolean preP() {
+    // if (curProc != null && (curProc.priority < 1 || curProc.priority > MAXPRIO))
+    // return false;
+    //
+    // for (int i = 1; i <= MAXPRIO; i++)
+    // if (!isPriorityQueueOK(getPrioQueue(i), i))
+    // return false;
+    //
+    // if (!checkBlockQueue())
+    // return false;
+    // return true;
+    // }
 }

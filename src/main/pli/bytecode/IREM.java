@@ -34,7 +34,7 @@
 //DOCUMENTATION, IF PROVIDED, WILL CONFORM TO THE SUBJECT SOFTWARE.
 package pli.bytecode;
 
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
+import pli.PLIInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
@@ -75,7 +75,7 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
         boolean condition;
 
         if (!th.isFirstStepInsn()) { // first time around
-            cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : 2);
+            cg = new PCChoiceGeneratorLISSA(PLIInstructionFactory.collect_constraints ? 1 : 2);
             ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
             ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getFullName());
             th.getVM().setNextChoiceGenerator(cg);
@@ -84,7 +84,7 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
             cg = th.getVM().getChoiceGenerator();
             assert (cg instanceof PCChoiceGeneratorLISSA) : "expected PCChoiceGeneratorLISSA, got: " + cg;
 
-            if (SymbolicInstructionFactory.collect_constraints) {
+            if (PLIInstructionFactory.collect_constraints) {
                 condition = v1 == 0; // i.e. false
                 ((PCChoiceGeneratorLISSA) cg).select(condition ? 1 : 0); // YN: set the choice correctly
             } else {
@@ -111,7 +111,8 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
                 ((PCChoiceGeneratorLISSA) cg).setCurrentPC(pc);
 
                 Instruction nextInstruction = th.createAndThrowException("java.lang.ArithmeticException", "rem by 0");
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction,
+                        (PCChoiceGeneratorLISSA) cg);
             } else {
                 th.getVM().getSystemState().setIgnored(true);
                 return getNext(th);
@@ -132,7 +133,8 @@ public class IREM extends gov.nasa.jpf.jvm.bytecode.IREM {
                 sf.setOperandAttr(result);
 
                 Instruction nextInstruction = getNext(th);
-                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction, (PCChoiceGeneratorLISSA) cg);
+                return SymHeapHelper.checkIfPathConditionAndHeapAreSAT(th, this, nextInstruction,
+                        (PCChoiceGeneratorLISSA) cg);
 
             } else {
                 th.getVM().getSystemState().setIgnored(true);

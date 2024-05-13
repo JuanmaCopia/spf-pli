@@ -58,7 +58,7 @@ import pli.bytecode.lazy.GETFIELDHeapSolving;
 import pli.bytecode.lazy.GETSTATIC;
 import pli.config.SolvingStrategyEnum;
 
-public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
+public class PLIInstructionFactory extends SymbolicInstructionFactory {
 
     // === Fully Overridden Instructions of jpf-symbc (depentent of jpf-core) ===
 
@@ -336,38 +336,41 @@ public class HeapSolvingInstructionFactory extends SymbolicInstructionFactory {
     // TODO: to review
     // From Fujitsu:
 
-//    public Instruction new_(String clsName) {
-//        return (filter.isPassing(ci) ? new NEW(clsName) : super.new_(clsName));
-//    }
-//
-//    public Instruction ifnonnull(int targetPc) {
-//        return (filter.isPassing(ci) ? new IFNONNULL(targetPc) : super.ifnonnull(targetPc));
-//    }
-//
-//    public Instruction ifnull(int targetPc) {
-//        return (filter.isPassing(ci) ? new IFNULL(targetPc) : super.ifnull(targetPc));
-//    }
-//
-//    public Instruction newarray(int typeCode) {
-//        return (filter.isPassing(ci)
-//                ? (symArrays) ? new gov.nasa.jpf.symbc.bytecode.symarrays.NEWARRAY(typeCode) : new NEWARRAY(typeCode)
-//                : super.newarray(typeCode));
-//    }
-//
-//    public Instruction anewarray(String typeDescriptor) {
-//        return (filter.isPassing(ci) && (symArrays)
-//                ? new gov.nasa.jpf.symbc.bytecode.symarrays.ANEWARRAY(typeDescriptor)
-//                : super.anewarray(typeDescriptor));
-//    }
-//
-//    public Instruction multianewarray(String clsName, int dimensions) {
-//        return (filter.isPassing(ci) ? new MULTIANEWARRAY(clsName, dimensions)
-//                : super.multianewarray(clsName, dimensions));
-//    }
+    // public Instruction new_(String clsName) {
+    // return (filter.isPassing(ci) ? new NEW(clsName) : super.new_(clsName));
+    // }
+    //
+    // public Instruction ifnonnull(int targetPc) {
+    // return (filter.isPassing(ci) ? new IFNONNULL(targetPc) :
+    // super.ifnonnull(targetPc));
+    // }
+    //
+    // public Instruction ifnull(int targetPc) {
+    // return (filter.isPassing(ci) ? new IFNULL(targetPc) :
+    // super.ifnull(targetPc));
+    // }
+    //
+    // public Instruction newarray(int typeCode) {
+    // return (filter.isPassing(ci)
+    // ? (symArrays) ? new gov.nasa.jpf.symbc.bytecode.symarrays.NEWARRAY(typeCode)
+    // : new NEWARRAY(typeCode)
+    // : super.newarray(typeCode));
+    // }
+    //
+    // public Instruction anewarray(String typeDescriptor) {
+    // return (filter.isPassing(ci) && (symArrays)
+    // ? new gov.nasa.jpf.symbc.bytecode.symarrays.ANEWARRAY(typeDescriptor)
+    // : super.anewarray(typeDescriptor));
+    // }
+    //
+    // public Instruction multianewarray(String clsName, int dimensions) {
+    // return (filter.isPassing(ci) ? new MULTIANEWARRAY(clsName, dimensions)
+    // : super.multianewarray(clsName, dimensions));
+    // }
 
     // ============ Constructor ============ //
 
-    public HeapSolvingInstructionFactory(Config conf) {
+    public PLIInstructionFactory(Config conf) {
         super(conf);
     }
 

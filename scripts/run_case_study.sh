@@ -12,8 +12,8 @@ CLASS_NAME=$1
 METHOD=$2
 SCOPE=$3
 STRATEGY=$4
-CHECKPATH=false
-GENTESTS=false
+CHECKPATH=$5
+GENTESTS=$6
 
 
 SRC_FOLDER="src/examples/heapsolving/${CLASS_NAME,,}"

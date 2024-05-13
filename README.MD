@@ -269,9 +269,9 @@ Check for example the finitization of the `TreeMap` case study:
 
 ### Required hard-coded methods
 
-To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runRepOK`:
+To run the technique `PLI` and `PLIOPT` is necessary that the class containing the method under analysis also contains the following hard-coded static method called `runPrePConcreteHeap`:
 ```
-public static void runRepOK() {
+public static void runPrePConcreteHeap() {
     <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
     SymHeap.buildSolutionHeap(toBuild);
     SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
@@ -280,9 +280,9 @@ public static void runRepOK() {
 Where the `<CLASS_NAME>` is the class containing the method under analysis (e.g. TreeMap) and `<CLASS_CONSTRUCTOR>` is the constructor method.
 This method is used to trigger and handle the result of the symbolic execution of `preP` (`repOKSymbolicExecution`).
 
-Optionally, to use the features `heapsolving.checkPathValidity` and `heapsolving.generateTests` (still under development), the following static method called `runRepOKComplete`
+Optionally, to use the features `heapsolving.checkPathValidity` and `heapsolving.generateTests` (still under development), the following static method called `runCompleteSpecification`
 ```
-public static void runRepOKComplete() {
+public static void runCompleteSpecification() {
     <CLASS_NAME> toBuild = new <CLASS_CONSTRUCTOR>();
     SymHeap.buildPartialHeapInput(toBuild);
     SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
@@ -319,8 +319,8 @@ heapsolving.symsolve.finitization.class = <CLASS_CONTAINING_REPOK_AND_FINITIZATI
 heapsolving.symsolve.finitization.args = <MAX_SCOPE>
 heapsolving.symsolve.predicate = <PRE_H_NAME>
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```
@@ -362,8 +362,8 @@ heapsolving.symsolve.finitization.class = heapsolving.treemap.TreeMap
 heapsolving.symsolve.finitization.args = 4
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```
@@ -445,8 +445,8 @@ heapsolving.symsolve.finitization.class = mycasestudy.TreeMap
 heapsolving.symsolve.finitization.args = 6
 heapsolving.symsolve.predicate = repOKSymSolve
 
-jvm.insn_factory.class=pli.HeapSolvingInstructionFactory
-vm.insn_factory.class=pli.HeapSolvingInstructionFactory
+jvm.insn_factory.class=pli.PLIInstructionFactory
+vm.insn_factory.class=pli.PLIInstructionFactory
 
 # ---------------------------------------------
 ```

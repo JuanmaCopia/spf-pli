@@ -8,6 +8,7 @@
 package heapsolving.template;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -407,18 +408,18 @@ public class LinkedList {
         size--;
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         return isCircularLinkedList();
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (header == null)
             return false;
         return isSizeOK();
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isCircularLinkedList() {

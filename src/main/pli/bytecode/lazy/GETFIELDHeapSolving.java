@@ -1,6 +1,5 @@
 package pli.bytecode.lazy;
 
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
 import gov.nasa.jpf.symbc.heap.HeapNode;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerConstant;
@@ -17,6 +16,7 @@ import gov.nasa.jpf.vm.MJIEnv;
 import gov.nasa.jpf.vm.StackFrame;
 import gov.nasa.jpf.vm.ThreadInfo;
 import pli.LISSAShell;
+import pli.PLIInstructionFactory;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
@@ -117,7 +117,7 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
             thisHeapCG = new HeapChoiceGeneratorLISSA("lazyInit", numSymRefs + increment); // +null,new
             ti.getVM().getSystemState().setNextChoiceGenerator(thisHeapCG);
             // ti.reExecuteInstruction();
-            if (SymbolicInstructionFactory.debugMode)
+            if (PLIInstructionFactory.debugMode)
                 System.out.println("# heap cg registered: " + thisHeapCG);
             return this;
 
@@ -199,12 +199,9 @@ public class GETFIELDHeapSolving extends gov.nasa.jpf.jvm.bytecode.GETFIELD {
         HeapChoiceGeneratorLISSA heapCG = (HeapChoiceGeneratorLISSA) thisHeapCG;
         heapCG.setCurrentPCheap(pcHeap);
         heapCG.setCurrentSymInputHeap(symInputHeap);
-        if (SymbolicInstructionFactory.debugMode)
+        if (PLIInstructionFactory.debugMode)
             System.out.println("GETFIELD pcHeap: " + pcHeap);
 
-        if (!heapSolvingStrategy.isRepOKExecutionMode()) {
-            return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), heapCG);
-        }
-        return getNext(ti);
+        return heapSolvingStrategy.handleLazyInitializationStep(ti, this, getNext(ti), heapCG);
     }
 }

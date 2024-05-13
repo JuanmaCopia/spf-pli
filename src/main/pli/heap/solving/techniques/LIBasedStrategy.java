@@ -6,13 +6,12 @@ import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import korat.finitization.impl.Finitization;
 import korat.finitization.impl.StateSpace;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
-import pli.choicegenerators.RepOKCompleteCallCG;
+import pli.choicegenerators.PreHAndPrePCallCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.canonicalizer.Canonicalizer;
 import pli.heap.solving.solver.SymSolveHeapSolver;
-import pli.heap.solving.techniques.SolvingStrategy;
 
 public abstract class LIBasedStrategy extends SolvingStrategy {
 
@@ -20,11 +19,11 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
     Finitization finitization;
     StateSpace stateSpace;
     Canonicalizer canonicalizer;
-    
-    public static int repokSEs = 0;
+
+    public static int numberOfRepOKSymbolicExec = 0;
+    public static int numberOfUnsatRepOKSymbolicExec = 0;
 
     public int solverCalls = 0;
-    public int getNextHeapCalls = 0;
     public int validPaths = 0;
     boolean executingRepOK = false;
     long repokExecTime = 0;
@@ -83,10 +82,10 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     @Override
     void checkPathValidity(ThreadInfo ti, Instruction current, Instruction next) {
-        StaticRepOKCallInstruction repOKCallInstruction = SymHeapHelper
-                .createStaticRepOKCallInstruction("runRepOKComplete()V");
+        PLIPrePCallInstruction repOKCallInstruction = SymHeapHelper
+                .createStaticRepOKCallInstruction("runCompleteSpecification()V");
 
-        RepOKCompleteCallCG rcg = new RepOKCompleteCallCG("checkPathValidity", null);
+        PreHAndPrePCallCG rcg = new PreHAndPrePCallCG("checkPathValidity", null);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         ti.setNextPC(repOKCallInstruction);
@@ -94,6 +93,26 @@ public abstract class LIBasedStrategy extends SolvingStrategy {
 
     public boolean isFieldTracked(String ownerClassName, String fieldName) {
         return finitization.isFieldTracked(ownerClassName, fieldName);
+    }
+
+    public int getSymSolveIsSatCalls() {
+        return heapSolver.getNumberOfIsSatCalls();
+    }
+
+    public int getSymSolveGetNextCalls() {
+        return heapSolver.getNumberOfGetNextSolutionCalls();
+    }
+
+    public Canonicalizer getCanonicalizer() {
+        return canonicalizer;
+    }
+
+    public SymSolveHeapSolver getHeapSolver() {
+        return heapSolver;
+    }
+
+    public StateSpace getStateSpace() {
+        return stateSpace;
     }
 
 }

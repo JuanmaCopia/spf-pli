@@ -1,22 +1,16 @@
 package pli.choicegenerators;
 
 import pli.LISSAShell;
-import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.solving.techniques.PLI;
 import symsolve.vector.SymSolveSolution;
 
-public class RepOKCallCG extends RepOKCallChoiceGenerator {
+public class prePCallCG extends LaunchSymbolicExecCG {
 
-    SymSolveSolution candidateHeapSolution;
     SymbolicInputHeapLISSA symInputHeap;
-
-    int buildedObjectRef;
-
     PLI stg;
 
-    public RepOKCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
+    public prePCallCG(String id, SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution,
             PLIChoiceGenerator curCG) {
         super(id, curCG);
         this.stg = (PLI) LISSAShell.solvingStrategy;
@@ -45,24 +39,14 @@ public class RepOKCallCG extends RepOKCallChoiceGenerator {
             assert (candidateHeapSolution != null);
             assert (repOKPathCondition != null);
             // Cache Solution and repOK Path Condition
-            curCG.setCurrentTestCode(testCode);
+            if (LISSAShell.configParser.generateTests)
+                curCG.setCurrentTestCode(testCode);
             curCG.setCurrentHeapSolution(candidateHeapSolution);
             curCG.setCurrentRepOKPathCondition(repOKPathCondition);
+            return false;
         }
 
-        return !pathReturningTrueFound;
-    }
-
-    public void setCandidateHeapSolution(SymSolveSolution solution) {
-        candidateHeapSolution = solution;
-    }
-
-    public SymSolveSolution getCandidateHeapSolution() {
-        return candidateHeapSolution;
-    }
-
-    public void setBuildedObjectRef(int objvRef) {
-        buildedObjectRef = objvRef;
+        return true;
     }
 
 }

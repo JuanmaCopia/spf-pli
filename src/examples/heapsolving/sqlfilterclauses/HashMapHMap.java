@@ -169,55 +169,55 @@ public class HashMapHMap {
 
     Entry getTable(int index) {
         switch (index) {
-        case 0:
-            return e0;
-        case 1:
-            return e1;
-        case 2:
-            return e2;
-        case 3:
-            return e3;
-        case 4:
-            return e4;
-        case 5:
-            return e5;
-        case 6:
-            return e6;
-        case 7:
-            return e7;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                return e0;
+            case 1:
+                return e1;
+            case 2:
+                return e2;
+            case 3:
+                return e3;
+            case 4:
+                return e4;
+            case 5:
+                return e5;
+            case 6:
+                return e6;
+            case 7:
+                return e7;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
     }
 
     void setTable(int index, Entry entry) {
         switch (index) {
-        case 0:
-            e0 = entry;
-            break;
-        case 1:
-            e1 = entry;
-            break;
-        case 2:
-            e2 = entry;
-            break;
-        case 3:
-            e3 = entry;
-            break;
-        case 4:
-            e4 = entry;
-            break;
-        case 5:
-            e5 = entry;
-            break;
-        case 6:
-            e6 = entry;
-            break;
-        case 7:
-            e7 = entry;
-            break;
-        default:
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
+            case 0:
+                e0 = entry;
+                break;
+            case 1:
+                e1 = entry;
+                break;
+            case 2:
+                e2 = entry;
+                break;
+            case 3:
+                e3 = entry;
+                break;
+            case 4:
+                e4 = entry;
+                break;
+            case 5:
+                e5 = entry;
+                break;
+            case 6:
+                e6 = entry;
+                break;
+            case 7:
+                e7 = entry;
+                break;
+            default:
+                throw new IndexOutOfBoundsException("Index " + index + " is out of bounds!");
         }
 
     }
@@ -522,7 +522,7 @@ public class HashMapHMap {
         }
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         Set<Entry> visited = new HashSet<Entry>();
         Threshold threshold = new Threshold(THRESHOLD);
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
@@ -543,14 +543,14 @@ public class HashMapHMap {
 
         Set<HashMapStr.Entry> v3 = new HashSet<>();
         for (HashMapStr h : v2) {
-            if (!h.repOKSymSolve(v3))
+            if (!h.preH(v3))
                 return false;
         }
 
         return visited.size() == size;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         List<HashMapStr> hm = new LinkedList<>();
         for (int i = 0; i < DEFAULT_INITIAL_CAPACITY; i++) {
             Entry list = getTable(i);
@@ -559,7 +559,7 @@ public class HashMapHMap {
         }
 
         for (HashMapStr value : hm) {
-            if (!value.repOKSymbolicExecution()) {
+            if (!value.preP()) {
                 return false;
             }
         }
@@ -567,8 +567,8 @@ public class HashMapHMap {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     private boolean isLinkedList(Entry head, Set<Entry> visited, Threshold threshold) {

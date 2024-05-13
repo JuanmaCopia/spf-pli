@@ -343,61 +343,62 @@ public class AvlTree {
     /** The tree root. */
     public AvlNode root;
 
-//    // Test program
-//    public static void main(String[] args) {
-//        AvlTree<Integer> t = new AvlTree<>();
-//        final int SMALL = 40;
-//        final int NUMS = 1000000; // must be even
-//        final int GAP = 37;
-//
-//        System.out.println("Checking... (no more output means success)");
-//
-//        for (int i = GAP; i != 0; i = (i + GAP) % NUMS) {
-//            // System.out.println( "INSERT: " + i );
-//            t.insert(i);
-//            if (NUMS < SMALL)
-//                t.checkBalance();
-//        }
-//
-//        for (int i = 1; i < NUMS; i += 2) {
-//            // System.out.println( "REMOVE: " + i );
-//            t.remove(i);
-//            if (NUMS < SMALL)
-//                t.checkBalance();
-//        }
-//        if (NUMS < SMALL)
-//            t.printTree();
-//        if (t.findMin() != 2 || t.findMax() != NUMS - 2)
-//            System.out.println("FindMin or FindMax error!");
-//
-//        for (int i = 2; i < NUMS; i += 2)
-//            if (!t.contains(i))
-//                System.out.println("Find error1!");
-//
-//        for (int i = 1; i < NUMS; i += 2) {
-//            if (t.contains(i))
-//                System.out.println("Find error2!");
-//        }
-//    }
+    // // Test program
+    // public static void main(String[] args) {
+    // AvlTree<Integer> t = new AvlTree<>();
+    // final int SMALL = 40;
+    // final int NUMS = 1000000; // must be even
+    // final int GAP = 37;
+    //
+    // System.out.println("Checking... (no more output means success)");
+    //
+    // for (int i = GAP; i != 0; i = (i + GAP) % NUMS) {
+    // // System.out.println( "INSERT: " + i );
+    // t.insert(i);
+    // if (NUMS < SMALL)
+    // t.checkBalance();
+    // }
+    //
+    // for (int i = 1; i < NUMS; i += 2) {
+    // // System.out.println( "REMOVE: " + i );
+    // t.remove(i);
+    // if (NUMS < SMALL)
+    // t.checkBalance();
+    // }
+    // if (NUMS < SMALL)
+    // t.printTree();
+    // if (t.findMin() != 2 || t.findMax() != NUMS - 2)
+    // System.out.println("FindMin or FindMax error!");
+    //
+    // for (int i = 2; i < NUMS; i += 2)
+    // if (!t.contains(i))
+    // System.out.println("Find error1!");
+    //
+    // for (int i = 1; i < NUMS; i += 2) {
+    // if (t.contains(i))
+    // System.out.println("Find error2!");
+    // }
+    // }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isBalanced())
             return false;
+        if (!heightsOK(root))
+            return false;
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
-        if (!heightsOK(root))
-            return false;
+    public boolean preP() {
+
         if (!isSorted())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
     public boolean isBinTreeWithParentReferences() {
@@ -493,16 +494,22 @@ public class AvlTree {
         return true;
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
-    public static void runRepOKComplete() {
+    public static void runPrePPartialHeap() {
         AvlTree toBuild = new AvlTree();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
+    }
+
+    public static void runCompleteSpecification() {
+        AvlTree toBuild = new AvlTree();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finAvlTree(int size) {

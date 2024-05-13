@@ -31,11 +31,9 @@ import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
 import gov.nasa.jpf.vm.VM;
 import pli.LISSAShell;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
-import pli.heap.SymbolicInputHeapLISSA;
-import pli.heap.SymbolicReferenceInput;
 import pli.heap.SymbolicReferenceInput.ObjectData;
 import pli.heap.solving.techniques.LIBasedStrategy;
 import pli.heap.solving.techniques.PCCheckStrategy;
@@ -44,12 +42,12 @@ import pli.heap.visitors.HeapVisitor;
 
 public class SymHeapHelper {
 
-    public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(String staticMethodSignature) {
+    public static PLIPrePCallInstruction createStaticRepOKCallInstruction(String staticMethodSignature) {
         HeapChoiceGeneratorLISSA heapCG = VM.getVM().getLastChoiceGeneratorOfType(HeapChoiceGeneratorLISSA.class);
         return createStaticRepOKCallInstruction(heapCG.getCurrentSymInputHeap(), staticMethodSignature);
     }
 
-    public static StaticRepOKCallInstruction createStaticRepOKCallInstruction(SymbolicInputHeapLISSA symInputHeap,
+    public static PLIPrePCallInstruction createStaticRepOKCallInstruction(SymbolicInputHeapLISSA symInputHeap,
             String staticMethodSignature) {
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
 
@@ -60,7 +58,7 @@ public class SymHeapHelper {
         String mthName = repokMI.getName();
         String signature = repokMI.getSignature();
 
-        return new StaticRepOKCallInstruction(clsName, mthName, signature);
+        return new PLIPrePCallInstruction(clsName, mthName, signature);
     }
 
     public static Instruction checkIfPathConditionAndHeapAreSAT(ThreadInfo ti, Instruction current, Instruction next,

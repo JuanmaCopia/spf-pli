@@ -29,24 +29,24 @@ import gov.nasa.jpf.vm.StaticElementInfo;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.Types;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.heap.solving.techniques.LIBasedStrategy;
 import pli.listeners.HeapSolvingListener;
 
 // need to fix names
 
-public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
+public class PLIPrePCallInstruction extends JVMInvokeInstruction {
 
     ClassInfo ci;
     Instruction next;
-    RepOKCallChoiceGenerator repOKCG;
+    LaunchSymbolicExecCG repOKCG;
 
-    public StaticRepOKCallInstruction(String clsName, String methodName, String methodSignature) {
+    public PLIPrePCallInstruction(String clsName, String methodName, String methodSignature) {
         super(clsName, methodName, methodSignature);
     }
 
-    public void initialize(Instruction current, Instruction next, RepOKCallChoiceGenerator repOKCG) {
+    public void initialize(Instruction current, Instruction next, LaunchSymbolicExecCG repOKCG) {
         setMethodInfo(current.getMethodInfo());
         setLocation(current.getInstructionIndex(), current.getPosition());
         this.next = next;
@@ -107,7 +107,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
         }
 
         if (repOKCG.allRepOKPathsReturnedFalse()) {
-        	HeapSolvingListener.SERepokUnsats++;
+            LIBasedStrategy.numberOfUnsatRepOKSymbolicExec++;
             if (repOKCG.hasNextSolution())
                 return executeInvokeRepOK(ti);
             ti.getVM().getSystemState().setIgnored(true);
@@ -119,7 +119,7 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
     public Instruction executeInvokeRepOK(ThreadInfo ti) {
         MethodInfo callee;
         
-        LIBasedStrategy.repokSEs++;
+        LIBasedStrategy.numberOfRepOKSymbolicExec++;
 
         try {
             callee = getInvokedMethod(ti);
@@ -226,10 +226,10 @@ public class StaticRepOKCallInstruction extends JVMInvokeInstruction {
 
     @Override
     public Instruction typeSafeClone(MethodInfo mi) {
-        StaticRepOKCallInstruction clone = null;
+        PLIPrePCallInstruction clone = null;
 
         try {
-            clone = (StaticRepOKCallInstruction) super.clone();
+            clone = (PLIPrePCallInstruction) super.clone();
 
             // reset the method that this insn belongs to
             clone.mi = mi;

@@ -8,6 +8,8 @@
 package heapsolving.treemap;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -637,7 +639,7 @@ public class TreeMap {
         setColor(x, BLACK);
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (!isBinTreeWithParentReferences())
             return false;
         if (!isWellColored())
@@ -645,14 +647,14 @@ public class TreeMap {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!isSorted())
             return false;
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean completeSpecification() {
+        return preH() && preP();
     }
 
     public boolean isBinTreeWithParentReferences() {
@@ -860,97 +862,103 @@ public class TreeMap {
         return f;
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
-    public static void runRepOKComplete() {
+    public static void runPrePPartialHeap() {
         TreeMap toBuild = new TreeMap();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
     }
 
-//    public String treeToString() {
-//        if (root == null)
-//            return "root -> null";
-//
-//        StringBuilder sb = new StringBuilder();
-//        String indent = "  ";
-//        sb.append("root\n");
-//
-//        if (root.color)
-//            sb.append("root.color: BLACK\n");
-//        else
-//            sb.append("root.color: RED\n");
-//
-//        sb.append("root.color -> " + root.color + "\n");
-//
-//        Set<Entry> visited = new HashSet<Entry>();
-//        LinkedList<Entry> worklist = new LinkedList<Entry>();
-//        visited.add(root);
-//        worklist.add(root);
-//        if (root.parent != null)
-//            sb.append("root.parent != null (WRONG!)\n");
-//
-//        sb.append("root.parent -> null (OK)\n");
-//
-//        while (!worklist.isEmpty()) {
-//            Entry node = worklist.removeFirst();
-//
-//            sb.append(indent + "color -> " + node.color + "\n");
-//            sb.append(indent + "key -> " + node.key + "\n");
-//
-//            Entry left = node.left;
-//
-//            if (left != null) {
-//                boolean add = true;
-//                if (!visited.add(left)) {
-//                    sb.append(indent + "left -> VISITED!! (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "left -> NewObject (OK)\n");
-//                }
-//                if (left.parent != node) {
-//                    sb.append(indent + "left.parent -> (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "left.parent -> OK\n");
-//                }
-//                if (add) {
-//                    worklist.add(left);
-//                }
-//            } else {
-//                sb.append(indent + "left -> null (OK)\n");
-//            }
-//
-//            Entry right = node.right;
-//
-//            if (right != null) {
-//                boolean add = true;
-//                if (!visited.add(right)) {
-//                    sb.append(indent + "right -> VISITED!! (WRONG!)\n");
-//                    add = false;
-//                } else
-//                    sb.append(indent + "rigth -> NewObject (OK)\n");
-//
-//                if (right.parent != node) {
-//                    sb.append(indent + "right.parent -> (WRONG!)\n");
-//                    add = false;
-//                } else {
-//                    sb.append(indent + "right.parent -> OK\n");
-//                }
-//                if (add) {
-//                    worklist.add(right);
-//                }
-//            } else {
-//                sb.append(indent + "right -> null (OK)\n");
-//            }
-//
-//            indent = indent + "  ";
-//        }
-//        return sb.toString();
-//    }
+    public static void runCompleteSpecification() {
+        TreeMap toBuild = new TreeMap();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.completeSpecification());
+    }
+
+    // public String treeToString() {
+    // if (root == null)
+    // return "root -> null";
+    //
+    // StringBuilder sb = new StringBuilder();
+    // String indent = " ";
+    // sb.append("root\n");
+    //
+    // if (root.color)
+    // sb.append("root.color: BLACK\n");
+    // else
+    // sb.append("root.color: RED\n");
+    //
+    // sb.append("root.color -> " + root.color + "\n");
+    //
+    // Set<Entry> visited = new HashSet<Entry>();
+    // LinkedList<Entry> worklist = new LinkedList<Entry>();
+    // visited.add(root);
+    // worklist.add(root);
+    // if (root.parent != null)
+    // sb.append("root.parent != null (WRONG!)\n");
+    //
+    // sb.append("root.parent -> null (OK)\n");
+    //
+    // while (!worklist.isEmpty()) {
+    // Entry node = worklist.removeFirst();
+    //
+    // sb.append(indent + "color -> " + node.color + "\n");
+    // sb.append(indent + "key -> " + node.key + "\n");
+    //
+    // Entry left = node.left;
+    //
+    // if (left != null) {
+    // boolean add = true;
+    // if (!visited.add(left)) {
+    // sb.append(indent + "left -> VISITED!! (WRONG!)\n");
+    // add = false;
+    // } else {
+    // sb.append(indent + "left -> NewObject (OK)\n");
+    // }
+    // if (left.parent != node) {
+    // sb.append(indent + "left.parent -> (WRONG!)\n");
+    // add = false;
+    // } else {
+    // sb.append(indent + "left.parent -> OK\n");
+    // }
+    // if (add) {
+    // worklist.add(left);
+    // }
+    // } else {
+    // sb.append(indent + "left -> null (OK)\n");
+    // }
+    //
+    // Entry right = node.right;
+    //
+    // if (right != null) {
+    // boolean add = true;
+    // if (!visited.add(right)) {
+    // sb.append(indent + "right -> VISITED!! (WRONG!)\n");
+    // add = false;
+    // } else
+    // sb.append(indent + "rigth -> NewObject (OK)\n");
+    //
+    // if (right.parent != node) {
+    // sb.append(indent + "right.parent -> (WRONG!)\n");
+    // add = false;
+    // } else {
+    // sb.append(indent + "right.parent -> OK\n");
+    // }
+    // if (add) {
+    // worklist.add(right);
+    // }
+    // } else {
+    // sb.append(indent + "right -> null (OK)\n");
+    // }
+    //
+    // indent = indent + " ";
+    // }
+    // return sb.toString();
+    // }
 
 }

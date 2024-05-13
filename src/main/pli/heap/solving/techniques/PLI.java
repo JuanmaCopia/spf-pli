@@ -4,23 +4,24 @@ import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGenerator;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.MJIEnv;
-import pli.bytecode.lazy.StaticRepOKCallInstruction;
+import gov.nasa.jpf.vm.ThreadInfo;
+import pli.bytecode.lazy.PLIPrePCallInstruction;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
 import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallCG;
+import pli.choicegenerators.prePCallCG;
 import pli.heap.SymHeapHelper;
 import pli.heap.SymbolicInputHeapLISSA;
 import pli.heap.SymbolicReferenceInput;
 import pli.heap.builder.HeapSolutionBuilder;
+import pli.heap.pathcondition.PathConditionUtils;
 import symsolve.vector.SymSolveSolution;
 import symsolve.vector.SymSolveVector;
-import gov.nasa.jpf.vm.ThreadInfo;
-
 
 public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
-    StaticRepOKCallInstruction repOKCallInstruction;
+    PLIPrePCallInstruction repOKCallInstruction;
     HeapSolutionBuilder builder;
     boolean executingRepOK = false;
 
@@ -30,92 +31,81 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
 
     @Override
     public Instruction handleLazyInitializationStep(ThreadInfo ti, Instruction currentInstruction,
-            Instruction nextInstruction, HeapChoiceGeneratorLISSA heapCG) {
-        assert (!isRepOKExecutionMode());
-        solverCalls++;
-        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
+            Instruction nextInstruction, HeapChoiceGeneratorLISSA currentCG) {
+        if (isRepOKExecutionMode())
+            return nextInstruction;
+
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) currentCG.getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
-        SymSolveSolution solution = heapSolver.solve(vector);
 
-        PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
-        assert (pcCG != null);
-
-        while (solution != null) {
-            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                break;
-            }
-            getNextHeapCalls++;
-            solution = heapSolver.getNextSolution(solution);
-        }
-
-        if (solution == null) {
-            ti.getVM().getSystemState().setIgnored(true); // Backtrack
-            return currentInstruction;
-        }
-
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, heapCG);
+        return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
     }
 
     @Override
     public Instruction handlePrimitiveBranch(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
-            PCChoiceGeneratorLISSA pcCG) {
+            PCChoiceGeneratorLISSA currentCG) {
         assert (!isRepOKExecutionMode());
-        solverCalls++;
-        HeapChoiceGeneratorLISSA heapCG = SymHeapHelper.getCurrentHeapChoiceGenerator(ti.getVM());
-        assert (heapCG != null);
 
-        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) heapCG.getCurrentSymInputHeap();
-        assert (symInputHeap != null);
-        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-
+        SymbolicInputHeapLISSA symInputHeap = (SymbolicInputHeapLISSA) SymHeapHelper
+                .getCurrentHeapChoiceGenerator(ti.getVM()).getCurrentSymInputHeap();
         SymSolveVector vector = canonicalizer.createVector(symInputHeap);
+
+        return launchSolvingProcedure(ti, currentInstruction, nextInstruction, currentCG, symInputHeap, vector);
+    }
+
+    SymSolveSolution handleSatisfiabilityWithPathCondition(SymbolicInputHeapLISSA symInputHeap, PathCondition pc,
+            SymSolveVector vector) {
+        SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
         SymSolveSolution solution = heapSolver.solve(vector);
+        return handleSatisfiabilityWithPathCondition(symRefInput, pc, solution);
+    }
+
+    SymSolveSolution handleSatisfiabilityWithPathCondition(SymbolicReferenceInput symRefInput, PathCondition pc,
+            SymSolveSolution solution) {
         while (solution != null) {
-            if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                break;
-            }
-            getNextHeapCalls++;
+            PathCondition accessedPC = symRefInput.getAccessedFieldsPathCondition(stateSpace, solution);
+            if (PathConditionUtils.isConjunctionSAT(accessedPC, pc))
+                return solution;
+
             solution = heapSolver.getNextSolution(solution);
         }
+        return solution;
+    }
 
+    Instruction launchSolvingProcedure(ThreadInfo ti, Instruction currentInstruction, Instruction nextInstruction,
+            PLIChoiceGenerator currentCG, SymbolicInputHeapLISSA symInputHeap, SymSolveVector vector) {
+
+        solverCalls++;
+
+        PathCondition pc = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM()).getCurrentPC();
+        SymSolveSolution solution = handleSatisfiabilityWithPathCondition(symInputHeap, pc, vector);
         if (solution == null) {
             ti.getVM().getSystemState().setIgnored(true); // Backtrack
             return currentInstruction;
         }
 
-        return createInvokeRepOKInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution, pcCG);
+        return createInvokePrePOnConcHeapInstruction(ti, currentInstruction, nextInstruction, symInputHeap, solution,
+                currentCG);
     }
 
     @Override
     public SymSolveSolution getNextSolution(ThreadInfo ti, SymSolveSolution previousSolution,
             SymbolicInputHeapLISSA symInputHeap) {
-        assert (previousSolution != null);
         PCChoiceGeneratorLISSA pcCG = SymHeapHelper.getCurrentPCChoiceGeneratorLISSA(ti.getVM());
         SymbolicReferenceInput symRefInput = symInputHeap.getImplicitInputThis();
-        assert symRefInput.isSolutionSATWithPathCondition(stateSpace, previousSolution, pcCG.getCurrentPC());
 
-        getNextHeapCalls++;
         SymSolveSolution solution = heapSolver.getNextSolution(previousSolution);
-        if (pcCG != null) {
-            while (solution != null) {
-                if (symRefInput.isSolutionSATWithPathCondition(stateSpace, solution, pcCG.getCurrentPC())) {
-                    return solution;
-                }
-                getNextHeapCalls++;
-                solution = heapSolver.getNextSolution(solution);
-            }
-        }
-        return null;
+        return handleSatisfiabilityWithPathCondition(symRefInput, pcCG.getCurrentPC(), solution);
     }
 
-    Instruction createInvokeRepOKInstruction(ThreadInfo ti, Instruction current, Instruction next,
+    Instruction createInvokePrePOnConcHeapInstruction(ThreadInfo ti, Instruction current, Instruction next,
             SymbolicInputHeapLISSA symInputHeap, SymSolveSolution solution, PLIChoiceGenerator curCG) {
         if (repOKCallInstruction == null)
-            repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap, "runRepOK()V");
+            repOKCallInstruction = SymHeapHelper.createStaticRepOKCallInstruction(symInputHeap,
+                    "runPrePConcreteHeap()V");
 
         assert (curCG != null);
-        RepOKCallCG rcg = new RepOKCallCG("repOKCG", symInputHeap, solution, curCG);
+        prePCallCG rcg = new prePCallCG("repOKCG", symInputHeap, solution, curCG);
         repOKCallInstruction.initialize(current, next, rcg);
         SymHeapHelper.pushArguments(ti, null, null);
         return repOKCallInstruction;
@@ -125,7 +115,7 @@ public class PLI extends LIBasedStrategy implements PCCheckStrategy {
         SymbolicInputHeapLISSA symInputHeap = SymHeapHelper.getSymbolicInputHeap(env.getVM());
         assert (symInputHeap != null);
 
-        RepOKCallCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(RepOKCallCG.class);
+        LaunchSymbolicExecCG repOKCG = env.getSystemState().getLastChoiceGeneratorOfType(LaunchSymbolicExecCG.class);
         SymSolveSolution solution = repOKCG.getCandidateHeapSolution();
         assert (solution != null);
         PCChoiceGeneratorLISSA pcCG = env.getSystemState().getLastChoiceGeneratorOfType(PCChoiceGeneratorLISSA.class);

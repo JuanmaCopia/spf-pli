@@ -2,7 +2,6 @@ package pli.choicegenerators;
 
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.choice.IntIntervalGenerator;
-import pli.choicegenerators.PLIChoiceGenerator;
 import pli.heap.SymbolicInputHeapLISSA;
 import symsolve.vector.SymSolveSolution;
 

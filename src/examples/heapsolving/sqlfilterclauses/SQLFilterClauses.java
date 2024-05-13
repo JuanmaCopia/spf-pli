@@ -78,35 +78,41 @@ public class SQLFilterClauses implements Serializable {
         _sqlClauseInformation.put(tableName, filterData);
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (_sqlClauseInformation == null)
             return false;
-        if (!_sqlClauseInformation.repOKSymSolve())
+        if (!_sqlClauseInformation.preH())
             return false;
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
-        if (!_sqlClauseInformation.repOKSymbolicExecution())
+    public boolean preP() {
+        if (!_sqlClauseInformation.preP())
             return false;
 
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         SQLFilterClauses toBuild = new SQLFilterClauses();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
-    public static void runRepOKComplete() {
+    public static void runPrePPartialHeap() {
         SQLFilterClauses toBuild = new SQLFilterClauses();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
+    }
+
+    public static void runCompleteSpecification() {
+        SQLFilterClauses toBuild = new SQLFilterClauses();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finSQLFilterClauses(int nodesNum) {

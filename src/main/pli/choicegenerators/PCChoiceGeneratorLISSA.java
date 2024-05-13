@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
-import pli.choicegenerators.PLIChoiceGenerator;
 import symsolve.vector.SymSolveSolution;
 
 public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoiceGenerator {
@@ -67,5 +66,4 @@ public class PCChoiceGeneratorLISSA extends PCChoiceGenerator implements PLIChoi
     public String getCurrentTestCode() {
         return testCodeCache.get(getNextChoice());
     }
-
 }

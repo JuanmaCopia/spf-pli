@@ -42,15 +42,15 @@ public class TransportStats {
     public long total_writes = 0;
 
     public TransportStats() {
-//    Timer printer = new Timer("TransportStats:Printer");
-//    printer.addPeriodicEvent(
-//        PRINT_INTERVAL,
-//        new TimerEventPerformer() {
-//          public void perform( TimerEvent ev ) {
-//            printStats();
-//          }
-//        }
-//    );
+        // Timer printer = new Timer("TransportStats:Printer");
+        // printer.addPeriodicEvent(
+        // PRINT_INTERVAL,
+        // new TimerEventPerformer() {
+        // public void perform( TimerEvent ev ) {
+        // printStats();
+        // }
+        // }
+        // );
     }
 
     public void bytesRead(int num_bytes_read) {
@@ -81,7 +81,7 @@ public class TransportStats {
         }
     }
 
-    public boolean repOKSymSolve() {
+    public boolean preH() {
         if (read_sizes == null || write_sizes == null)
             return false;
         if (read_sizes == write_sizes)
@@ -98,7 +98,7 @@ public class TransportStats {
         return true;
     }
 
-    public boolean repOKSymbolicExecution() {
+    public boolean preP() {
         if (!read_sizes.isSorted())
             return false;
         if (!write_sizes.isSorted())
@@ -106,20 +106,26 @@ public class TransportStats {
         return true;
     }
 
-    public boolean repOKComplete() {
-        return repOKSymSolve() && repOKSymbolicExecution();
+    public boolean pre() {
+        return preH() && preP();
     }
 
-    public static void runRepOK() {
+    public static void runPrePConcreteHeap() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildSolutionHeap(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKSymbolicExecution());
+        SymHeap.handleRepOKResult(toBuild, toBuild.preP());
     }
 
-    public static void runRepOKComplete() {
+    public static void runPrePPartialHeap() {
         TransportStats toBuild = new TransportStats();
         SymHeap.buildPartialHeapInput(toBuild);
-        SymHeap.handleRepOKResult(toBuild, toBuild.repOKComplete());
+        SymHeap.handlePrePWithSymbolicHeapResult(toBuild, toBuild.preP());
+    }
+
+    public static void runCompleteSpecification() {
+        TransportStats toBuild = new TransportStats();
+        SymHeap.buildPartialHeapInput(toBuild);
+        SymHeap.handleRepOKResult(toBuild, toBuild.pre());
     }
 
     public static IFinitization finTransportStats(int nodesNum) {
@@ -142,43 +148,44 @@ public class TransportStats {
         return f;
     }
 
-//  private void printStats() {
-//    System.out.println( "\n------------------------------" );
-//    System.out.println( "***** TCP SOCKET READ SIZE STATS *****" );
-//    printSizes( read_sizes, total_reads );
-//
-//    System.out.println( "\n***** TCP SOCKET WRITE SIZE STATS *****" );
-//    printSizes( write_sizes, total_writes );
-//    System.out.println( "------------------------------" );
-//  }
-//
-//
-//
-//  private void printSizes( TreeMapIntLong size_map, long num_total ) {
-//    int prev_high = 1;
-//
-//    for( Iterator it = size_map.entrySet().iterator(); it.hasNext(); ) {
-//      Map.Entry entry = (Map.Entry)it.next();
-//      int key = ((Integer)entry.getKey()).intValue();
-//      long count = ((Long)entry.getValue()).longValue();
-//
-//      long percentage = (count *100) / num_total;
-//
-//      if( key == 0 ) {
-//        if( percentage > 3 ) {
-//          System.out.println( "[0 bytes]= x" +percentage+ "%" );
-//        }
-//      }
-//      else {
-//        int high = key * GRANULARITY;
-//
-//        if( percentage > 3 ) {
-//          System.out.println( "[" +prev_high+ "-" +(high -1)+ " bytes]= x" +percentage+ "%" );
-//        }
-//
-//        prev_high = high;
-//      }
-//    }
-//  }
+    // private void printStats() {
+    // System.out.println( "\n------------------------------" );
+    // System.out.println( "***** TCP SOCKET READ SIZE STATS *****" );
+    // printSizes( read_sizes, total_reads );
+    //
+    // System.out.println( "\n***** TCP SOCKET WRITE SIZE STATS *****" );
+    // printSizes( write_sizes, total_writes );
+    // System.out.println( "------------------------------" );
+    // }
+    //
+    //
+    //
+    // private void printSizes( TreeMapIntLong size_map, long num_total ) {
+    // int prev_high = 1;
+    //
+    // for( Iterator it = size_map.entrySet().iterator(); it.hasNext(); ) {
+    // Map.Entry entry = (Map.Entry)it.next();
+    // int key = ((Integer)entry.getKey()).intValue();
+    // long count = ((Long)entry.getValue()).longValue();
+    //
+    // long percentage = (count *100) / num_total;
+    //
+    // if( key == 0 ) {
+    // if( percentage > 3 ) {
+    // System.out.println( "[0 bytes]= x" +percentage+ "%" );
+    // }
+    // }
+    // else {
+    // int high = key * GRANULARITY;
+    //
+    // if( percentage > 3 ) {
+    // System.out.println( "[" +prev_high+ "-" +(high -1)+ " bytes]= x" +percentage+
+    // "%" );
+    // }
+    //
+    // prev_high = high;
+    // }
+    // }
+    // }
 
 }

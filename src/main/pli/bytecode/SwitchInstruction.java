@@ -37,7 +37,7 @@
 
 package pli.bytecode;
 
-import gov.nasa.jpf.symbc.SymbolicInstructionFactory;
+import pli.PLIInstructionFactory;
 import gov.nasa.jpf.symbc.numeric.Comparator;
 import gov.nasa.jpf.symbc.numeric.IntegerExpression;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
@@ -71,7 +71,8 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
             ChoiceGenerator<?> cg;
 
             if (!ti.isFirstStepInsn()) { // first time around
-                cg = new PCChoiceGeneratorLISSA(SymbolicInstructionFactory.collect_constraints ? 1 : matches.length + 1);
+                cg = new PCChoiceGeneratorLISSA(
+                        PLIInstructionFactory.collect_constraints ? 1 : matches.length + 1);
                 ((PCChoiceGeneratorLISSA) cg).setOffset(this.position);
                 ((PCChoiceGeneratorLISSA) cg).setMethodName(this.getMethodInfo().getCompleteName());
                 ti.getVM().getSystemState().setNextChoiceGenerator(cg);
@@ -96,7 +97,7 @@ public abstract class SwitchInstruction extends gov.nasa.jpf.jvm.bytecode.Switch
 
             assert pc != null;
             int idx;
-            if (SymbolicInstructionFactory.collect_constraints) {
+            if (PLIInstructionFactory.collect_constraints) {
                 // Find which concrete branch corresponds the the value. If none, then idx ==
                 // matches.length, which
                 // means that the default branch is chosen.

@@ -18,11 +18,9 @@ import gov.nasa.jpf.vm.NativePeer;
 import gov.nasa.jpf.vm.SystemState;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import pli.LISSAShell;
 import pli.choicegenerators.HeapChoiceGeneratorLISSA;
+import pli.choicegenerators.LaunchSymbolicExecCG;
 import pli.choicegenerators.PCChoiceGeneratorLISSA;
-import pli.choicegenerators.RepOKCallCG;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
 import pli.config.ConfigParser;
 import pli.config.SolvingStrategyEnum;
 import pli.heap.SymHeapHelper;
@@ -39,13 +37,13 @@ public class JPF_pli_SymHeap extends NativePeer {
         return LISSAShell.configParser.checkPathValidity;
     }
 
-    private static RepOKCallChoiceGenerator removeAddedChoicesByRepOK(SystemState ss) {
+    private static LaunchSymbolicExecCG removeAddedChoicesByRepOK(SystemState ss) {
         // String cgID = "repOKCG";
         ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
         assert (lastCG != null);
         for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof RepOKCallChoiceGenerator) {
-                return (RepOKCallChoiceGenerator) cg;
+            if (cg instanceof LaunchSymbolicExecCG) {
+                return (LaunchSymbolicExecCG) cg;
             }
             cg.setDone();
         }
@@ -53,12 +51,12 @@ public class JPF_pli_SymHeap extends NativePeer {
         throw new RuntimeException("Error: RepOKCallChoiceGenerator not found");
     }
 
-    private static RepOKCallCG getRepOKCallCG(SystemState ss) {
+    private static LaunchSymbolicExecCG getRepOKCallCG(SystemState ss) {
         ChoiceGenerator<?> lastCG = ss.getChoiceGenerator();
         assert (lastCG != null);
         for (ChoiceGenerator<?> cg = lastCG; cg != null; cg = cg.getPreviousChoiceGenerator()) {
-            if (cg instanceof RepOKCallCG) {
-                return (RepOKCallCG) cg;
+            if (cg instanceof LaunchSymbolicExecCG) {
+                return (LaunchSymbolicExecCG) cg;
             }
         }
         throw new RuntimeException("Error: RepOKCallCG not found");
@@ -74,7 +72,7 @@ public class JPF_pli_SymHeap extends NativePeer {
         ChoiceGenerator<?> cg;
 
         if (!ti.isFirstStepInsn()) {
-            RepOKCallCG repOKCG = getRepOKCallCG(ss);
+            LaunchSymbolicExecCG repOKCG = getRepOKCallCG(ss);
             repOKCG.setBuildedObjectRef(objvRef);
 
             cg = new PCChoiceGeneratorLISSA(1);
@@ -145,8 +143,10 @@ public class JPF_pli_SymHeap extends NativePeer {
 
         if (repOKResult) {
             PathCondition pc = PathCondition.getPC(env.getVM());
-            RepOKCallChoiceGenerator repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+
+            LaunchSymbolicExecCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
             repOKChoiceGenerator.setRepOKPathCondition(pc);
+            repOKChoiceGenerator.pathReturningTrueFound();
 
             if (LISSAShell.configParser.generateTests) {
                 TestCaseHelper.solveTargetMethodArguments(pc);
@@ -154,18 +154,32 @@ public class JPF_pli_SymHeap extends NativePeer {
                 SymHeapHelper.acceptBFS(objvRef, visitor);
                 String testCode = visitor.getTestCaseCode();
                 repOKChoiceGenerator.setTestCode(testCode);
-
-                // if (testCode.contains("treemap_0.size = 3;") && testCode.contains("treemap_0.root.left.color = true;")
-                //         && testCode.contains("treemap_0.root.right.color = false;")) {
-                //     System.out.println("\n===========================================\n");
-                //     System.out.println("id: " + id++);
-                //     System.out.println("testCode:\n\n" + testCode);
-                //     System.out.println(SymHeapHelper.toString(objvRef));
-                // }
-
             }
-            repOKChoiceGenerator.pathReturningTrueFound();
         }
+
+        ss.setIgnored(true);
+    }
+
+    @MJI
+    public static void handlePrePWithSymbolicHeapResult(MJIEnv env, int objRef, int objvRef, boolean repOKResult) {
+        SystemState ss = env.getVM().getSystemState();
+
+        if (repOKResult) {
+            PathCondition pc = PathCondition.getPC(env.getVM());
+
+            LaunchSymbolicExecCG repOKChoiceGenerator = removeAddedChoicesByRepOK(ss);
+            repOKChoiceGenerator.setRepOKPathCondition(pc);
+            repOKChoiceGenerator.pathReturningTrueFound();
+
+            if (LISSAShell.configParser.generateTests) {
+                TestCaseHelper.solveTargetMethodArguments(pc);
+                TestGenVisitor visitor = new TestGenVisitor(env.getHeap(), pc);
+                SymHeapHelper.acceptBFS(objvRef, visitor);
+                String testCode = visitor.getTestCaseCode();
+                repOKChoiceGenerator.setTestCode(testCode);
+            }
+        }
+
         ss.setIgnored(true);
     }
 
@@ -215,7 +229,7 @@ public class JPF_pli_SymHeap extends NativePeer {
 
         String name = env.getStringObject(stringRef);
         String refChain = name + "[" + objvRef + "]"; // why is the type used here? should use the name of the field
-                                                      // instead
+        // instead
 
         SymbolicInteger newSymRef = new SymbolicInteger(refChain);
         // ElementInfo eiRef = DynamicArea.getHeap().get(objvRef);

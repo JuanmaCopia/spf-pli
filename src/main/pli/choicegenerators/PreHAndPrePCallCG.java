@@ -1,12 +1,12 @@
 
 package pli.choicegenerators;
 
-import pli.choicegenerators.PLIChoiceGenerator;
-import pli.choicegenerators.RepOKCallChoiceGenerator;
+import gov.nasa.jpf.vm.VM;
+import pli.heap.SymHeapHelper;
 
-public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
+public class PreHAndPrePCallCG extends LaunchSymbolicExecCG {
 
-    public RepOKCompleteCallCG(String id, PLIChoiceGenerator curCG) {
+    public PreHAndPrePCallCG(String id, PLIChoiceGenerator curCG) {
         super(id, curCG);
     }
 
@@ -24,9 +24,9 @@ public class RepOKCompleteCallCG extends RepOKCallChoiceGenerator {
         setDone();
 
         if (!pathReturningTrueFound) {
-//            String str = SymHeapHelper.getSymbolicInputHeap(VM.getVM()).getImplicitInputThis().toString();
-//            System.out.println(" ==============  Invalid Path!!!!!!!  =============");
-//            System.out.println(" Symbolic Heap:\n" + str);
+            String str = SymHeapHelper.getSymbolicInputHeap(VM.getVM()).getImplicitInputThis().toString();
+            System.out.println(" ==============  Invalid Path!!!!!!!  =============");
+            System.out.println(" Symbolic Heap:\n" + str);
         }
         return !pathReturningTrueFound;
     }

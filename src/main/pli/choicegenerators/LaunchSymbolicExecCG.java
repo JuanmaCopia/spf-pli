@@ -3,28 +3,28 @@ package pli.choicegenerators;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.vm.ChoiceGeneratorBase;
 import pli.LISSAShell;
-import pli.choicegenerators.HeapChoiceGeneratorLISSA;
-import pli.choicegenerators.PLIChoiceGenerator;
 import pli.heap.solving.techniques.LIBasedStrategy;
+import symsolve.vector.SymSolveSolution;
 
-public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integer> {
+public abstract class LaunchSymbolicExecCG extends ChoiceGeneratorBase<Integer> {
 
     LIBasedStrategy strategy = (LIBasedStrategy) LISSAShell.solvingStrategy;
     PLIChoiceGenerator curCG;
-    boolean isLazyStep;
+    // boolean isLazyStep;
     int repOKExecutions = 0;
     boolean pathReturningTrueFound = false;
     boolean isPathValidityCheck = false;
     PathCondition repOKPathCondition;
     String testCode = null;
+    int buildedObjectRef;
 
-    public RepOKCallChoiceGenerator(String id, PLIChoiceGenerator curCG) {
+    SymSolveSolution candidateHeapSolution;
+
+    public LaunchSymbolicExecCG(String id, PLIChoiceGenerator curCG) {
         super(id);
         this.curCG = curCG;
         if (curCG == null)
             isPathValidityCheck = true;
-        else if (curCG instanceof HeapChoiceGeneratorLISSA)
-            isLazyStep = true;
 
         strategy.startRepOKExecutionMode();
     }
@@ -103,6 +103,14 @@ public abstract class RepOKCallChoiceGenerator extends ChoiceGeneratorBase<Integ
     @Override
     public int getProcessedNumberOfChoices() {
         return 0;
+    }
+
+    public void setBuildedObjectRef(int objvRef) {
+        buildedObjectRef = objvRef;
+    }
+
+    public SymSolveSolution getCandidateHeapSolution() {
+        return candidateHeapSolution;
     }
 
 }
