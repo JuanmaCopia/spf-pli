@@ -8,7 +8,7 @@
 <listEntry value="1"/>
 </listAttribute>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="LD_LIBRARY_PATH" value="/home/juanmanuelcopia/Documents/imdea/repos/jpf/jpf-symbc/lib"/>
+<mapEntry key="LD_LIBRARY_PATH" value="/home/juan/Documents/imdea/repos/jpf/jpf-symbc/lib:/home/juanmanuelcopia/Documents/imdea/repos/jpf/jpf-symbc/lib"/>
 </mapAttribute>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
