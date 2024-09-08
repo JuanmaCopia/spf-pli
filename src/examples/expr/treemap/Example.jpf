@@ -1,0 +1,14 @@
+classpath = ${jpf-symbc}/build/examples
+sourcepath = ${jpf-symbc}/src/examples
+
+target = expr.treemap.Example
+
+symbolic.lazy = true
+symbolic.debug=false
+symbolic.dp=z3
+
+#search.multiple_errors=true
+search.depth_limit = 30
+
+#listener = gov.nasa.jpf.symbc.SymbolicListener
+
