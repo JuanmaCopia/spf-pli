@@ -1,12 +1,12 @@
 package expr.treemap;
 
-import gov.nasa.jpf.symbc.Debug;
+import expr.Peer;
 
 public class Example {
 
     public static void main(String[] args) {
         TreeMap tree = new TreeMap();
-        tree = (TreeMap) Debug.makeSymbolicRef("tree", tree);
+        tree = (TreeMap) Peer.makeSymbolicRef("tree", tree);
 
         if (tree != null) {
         	if (tree.repOKComplete()) {
