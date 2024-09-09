@@ -9,11 +9,21 @@ public class Example {
         tree = (TreeMap) Peer.makeSymbolicRef("tree", tree);
 
         if (tree != null) {
-        	if (tree.repOKComplete()) {
-        		System.out.println("true");
-        	} else {
-        		//System.out.println("false");
-        	}
+            if (tree.repOKComplete()) {
+                // Ground Truth Positive
+                if (tree.repOKSymSolve()) {
+                    Peer.countTruePositive();
+                } else {
+                    Peer.countFalseNegative();
+                }
+            } else {
+                // Ground Truth Negative
+                if (tree.repOKSymSolve()) {
+                    Peer.countFalsePositive();
+                } else {
+                    Peer.countTrueNegative();
+                }
+            }
         }
 
     }

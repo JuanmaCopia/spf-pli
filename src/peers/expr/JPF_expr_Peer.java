@@ -102,17 +102,17 @@ public class JPF_expr_Peer extends NativePeer {
         }
         return env.newString("");
     }
+
     @MJI
     public static int PC4Z3(MJIEnv env, int objRef) {
-    	PathCondition pc = getPC(env);
+        PathCondition pc = getPC(env);
         if (pc != null) {
             pc.solve();
             return env.newString(pc.prefix_notationPC4Z3());
         }
         return env.newString("");
     }
-    
-    
+
     @MJI
     public static int getSymbolicIntegerValue(MJIEnv env, int objRef, int v) {
         Object[] attrs = env.getArgAttributes();
@@ -220,6 +220,7 @@ public class JPF_expr_Peer extends NativePeer {
         else
             return env.newString(Double.toString(v));
     }
+
     @MJI
     public static int getSymbolicBooleanValue(MJIEnv env, int objRef, boolean v) {
         Object[] attrs = env.getArgAttributes();
@@ -274,21 +275,22 @@ public class JPF_expr_Peer extends NativePeer {
         env.setReturnAttribute(new SymbolicInteger(name, MinMax.getVarMinInt(name), MinMax.getVarMaxInt(name)));
         return v;
     }
-    
+
     @MJI
     public static double addSymbolicDouble(MJIEnv env, int objRef, double v, int stringRef) {
         String name = env.getStringObject(stringRef);
-        env.setReturnAttribute(new SymbolicReal(name));//, MinMax.getVarMinDouble(name), MinMax.getVarMaxDouble(name))); Corina: to check
+        env.setReturnAttribute(new SymbolicReal(name));// , MinMax.getVarMinDouble(name),
+                                                       // MinMax.getVarMaxDouble(name))); Corina: to check
         return v;
     }
-    
+
     @MJI
     public static boolean addSymbolicBoolean(MJIEnv env, int objRef, boolean v, int stringRef) {
         String name = env.getStringObject(stringRef);
         env.setReturnAttribute(new SymbolicInteger(name, 0, 1));
         return v;
     }
-    
+
     @MJI
     public static int makeSymbolicInteger(MJIEnv env, int objRef, int stringRef) {
         String name = env.getStringObject(stringRef);
@@ -346,13 +348,15 @@ public class JPF_expr_Peer extends NativePeer {
         return env.newString("WWWWW's Birthday is 12-17-77");
     }
 
-    // public static int makeSymbolicRef(MJIEnv env, int objRef, int stringRef, int objvRef) {
+    // public static int makeSymbolicRef(MJIEnv env, int objRef, int stringRef, int
+    // objvRef) {
     // String name = env.getStringObject(stringRef);
     // env.setReturnAttribute(new SymbolicInteger(name,0,1));
     // return objvRef;
     // }
 
-    // the purpose of this method is to set the PCheap to the "eq null" constraint for the input specified w/ stringRef
+    // the purpose of this method is to set the PCheap to the "eq null" constraint
+    // for the input specified w/ stringRef
     @MJI
     public static int makeSymbolicNull(MJIEnv env, int objRef, int stringRef) {
 
@@ -405,12 +409,14 @@ public class JPF_expr_Peer extends NativePeer {
     }
 
     // makes the fields of object referenced by objvRef symbolic
-    // moreover it adds this object to the symbolic heap to participate in lazy initialization
+    // moreover it adds this object to the symbolic heap to participate in lazy
+    // initialization
     // -- useful for debugging
 
     @MJI
     public static void makeFieldsSymbolic(MJIEnv env, int objRef, int stringRef, int objvRef) {
-        // makes all the fields of obj v symbolic and adds obj v to the symbolic heap to kick off lazy initialization
+        // makes all the fields of obj v symbolic and adds obj v to the symbolic heap to
+        // kick off lazy initialization
         if (objvRef == MJIEnv.NULL)
             throw new RuntimeException("## Error: null object");
         // introduce a heap choice generator for the element in the heap
@@ -478,7 +484,8 @@ public class JPF_expr_Peer extends NativePeer {
     private static String res;
 
     /**
-     * assumes the heap with root n is a tree should be generalized to graphs - DONE. not general - do not use this.
+     * assumes the heap with root n is a tree should be generalized to graphs -
+     * DONE. not general - do not use this.
      *
      */
     static void buildHeapTree(MJIEnv env, int n) {
@@ -640,8 +647,8 @@ public class JPF_expr_Peer extends NativePeer {
      */
 
     /**
-     * Assumes rooted heap. A rooted heap is a pair <r, h> of a root object r and a heap h such that all objects in h
-     * are reachable from r
+     * Assumes rooted heap. A rooted heap is a pair <r, h> of a root object r and a
+     * heap h such that all objects in h are reachable from r
      *
      * Performs a DFS over objects reachable from the root, recursively.
      *
@@ -721,8 +728,9 @@ public class JPF_expr_Peer extends NativePeer {
     }
 
     /**
-     * sequence is value of the field or combination of fields. right now, I will include all non-reference fields which
-     * are integers. for now, state is represented by the concatenation of all non-reference integer fields
+     * sequence is value of the field or combination of fields. right now, I will
+     * include all non-reference fields which are integers. for now, state is
+     * represented by the concatenation of all non-reference integer fields
      */
     private static String getFieldAbstractedState(MJIEnv env, int objvRef) {
         String sequence = "";
@@ -741,9 +749,10 @@ public class JPF_expr_Peer extends NativePeer {
     }
 
     /**
-     * Abstraction is based on user-provided observer method. Right now, hardcoded implementation wrt isZero() observer
-     * method of IncDec.java Hence it works only with IncDecDriverAbstraction.java Find out how to invoke observer
-     * method on the object here!
+     * Abstraction is based on user-provided observer method. Right now, hardcoded
+     * implementation wrt isZero() observer method of IncDec.java Hence it works
+     * only with IncDecDriverAbstraction.java Find out how to invoke observer method
+     * on the object here!
      *
      */
     private static String getObserverAbstractedState(MJIEnv env, int objvRef) {
@@ -766,7 +775,8 @@ public class JPF_expr_Peer extends NativePeer {
     }
 
     /**
-     * Simply gets the abstracted state (as a String sequence) depending on user-defined abstraction
+     * Simply gets the abstracted state (as a String sequence) depending on
+     * user-defined abstraction
      */
     private static String getAbstractedState(MJIEnv env, int objvRef) {
         // get the abstracted state as a string sequence based on the abstraction
@@ -796,7 +806,8 @@ public class JPF_expr_Peer extends NativePeer {
     public static final int OLD_STATE = 2;
 
     /**
-     * Is the state seen before? Update AND return NEW_STATE if state is new. if state is old, return OLD_STATE
+     * Is the state seen before? Update AND return NEW_STATE if state is new. if
+     * state is old, return OLD_STATE
      */
     public static int checkAndUpdateAbstractStatesSeenSoFar(String state) {
         // the contains check is redundant. retained for clarity.
@@ -826,7 +837,7 @@ public class JPF_expr_Peer extends NativePeer {
         return true; // Verify.ignoreIf will ignore this state.
     }
 
-    /* YN: user-defined cost*/
+    /* YN: user-defined cost */
     @MJI
     public static void addCost(MJIEnv env, int objRef, int objvRef) {
         ClassInfo ci = env.getClassInfo(objvRef);
@@ -835,40 +846,40 @@ public class JPF_expr_Peer extends NativePeer {
 
         Expression symbolicExpression = null;
         int concreteValue = 0;
-        
+
         if (fields.length != 1) {
             throw new RuntimeException("fields.length != 1 (Debug.addCost)");
         }
-        
+
         FieldInfo fi = fields[0];
         Object attr = ei.getFieldAttr(fi);
         int intValue = ei.getIntField(fi);
         concreteValue = intValue;
-        
+
         if (attr != null) { // we reached a symbolic primitive field
             symbolicExpression = (Expression) attr;
         }
 
         /*
-         * So far we only handle positive cost. Reason: AFL uses a u64 for the cost, so we would run into problems by
-         * using negative numbers.
+         * So far we only handle positive cost. Reason: AFL uses a u64 for the cost, so
+         * we would run into problems by using negative numbers.
          */
-    
+
         if (concreteValue > 0) {
             Observations.lastObservedCost += concreteValue;
         }
 
         if (symbolicExpression != null) {
             Observations.lastObservedSymbolicExpression = symbolicExpression;
-        } 
+        }
 
     }
-    
+
     @MJI
     public static double getLastMeasuredMetricValue(MJIEnv env, int objRef) {
         return Observations.lastMeasuredMetricValue;
     }
-    
+
     @MJI
     public static void setLastObservedInputSize(MJIEnv env, int objRef, int objvRef) {
         ClassInfo ci = env.getClassInfo(objvRef);
@@ -876,28 +887,48 @@ public class JPF_expr_Peer extends NativePeer {
         FieldInfo[] fields = ci.getDeclaredInstanceFields();
 
         int concreteValue = 0;
-        
+
         if (fields.length != 1) {
             throw new RuntimeException("fields.length != 1 (Debug.addCost)");
         }
-        
+
         FieldInfo fi = fields[0];
         int intValue = ei.getIntField(fi);
         concreteValue = intValue;
-        
+
         Observations.lastObservedInputSize = concreteValue;
     }
-    
+
     @MJI
     public static int getLastObservedInputSize(MJIEnv env, int objRef) {
         return Observations.lastObservedInputSize;
     }
-    
+
     @MJI
     public static void clearMeasurements(MJIEnv env, int objRef) {
         Observations.lastMeasuredMetricValue = 0.0;
     }
-    
-    
+
+    // Expr Evaluation
+
+    @MJI
+    public static void countFalsePositive(MJIEnv env, int objRef) {
+        ExprListener.falsePositives++;
+    }
+
+    @MJI
+    public static void countFalseNegative(MJIEnv env, int objRef) {
+        ExprListener.falseNegatives++;
+    }
+
+    @MJI
+    public static void countTruePositive(MJIEnv env, int objRef) {
+        ExprListener.truePositives++;
+    }
+
+    @MJI
+    public static void countTrueNegative(MJIEnv env, int objRef) {
+        ExprListener.trueNegatives++;
+    }
 
 }

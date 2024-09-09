@@ -40,95 +40,134 @@ package expr;
 import gov.nasa.jpf.vm.Verify;
 
 public class Peer {
-    
+
     native public static void printPC(String msg);
+
     native public static String getSolvedPC();
+
     native public static String getPC_prefix_notation();
+
     native public static String PC4Z3();
 
     native public static String getSymbolicIntegerValue(int v);
+
     native public static String getSymbolicLongValue(long v);
+
     native public static String getSymbolicShortValue(short v);
+
     native public static String getSymbolicByteValue(byte v);
+
     native public static String getSymbolicCharValue(char v);
+
     native public static String getSymbolicRealValue(double v);
+
     native public static String getSymbolicRealValue4Z3(double v);
+
     native public static String getSymbolicBooleanValue(boolean v);
+
     native public static String getSymbolicStringValue(String v);
-    
+
     native public static int addSymbolicInt(int v, String name);
-    //native public static long addSymbolic(long v, String name);
-    //native public static short addSymbolic(short v, String name);
+
+    // native public static long addSymbolic(long v, String name);
+    // native public static short addSymbolic(short v, String name);
     native public static byte addSymbolicByte(byte v, String name);
+
     native public static char addSymbolicChar(char v, String name);
+
     native public static double addSymbolicDouble(double v, String name);
+
     native public static boolean addSymbolicBoolean(boolean v, String name);
-    //native public static String addSymbolic(String v, String name);
-    
+    // native public static String addSymbolic(String v, String name);
+
     native public static boolean isSymbolicInteger(int v);
+
     native public static boolean isSymbolicLong(long v);
+
     native public static boolean isSymbolicShort(short v);
+
     native public static boolean isSymbolicByte(byte v);
+
     native public static boolean isSymbolicChar(char v);
-    
-    native public static boolean checkAccuracy(double v, double err); 
+
+    native public static boolean checkAccuracy(double v, double err);
     // check accuracy of floating point computation
     // wrt given error
-    
-    public static void assume (boolean c) {
-    	if(!c)
-    		Verify.ignoreIf(true);
+
+    public static void assume(boolean c) {
+        if (!c)
+            Verify.ignoreIf(true);
     }
 
     // puts a new symbolic value in the arg attribute
     native public static int makeSymbolicInteger(String name);
+
     native public static long makeSymbolicLong(String name);
+
     native public static short makeSymbolicShort(String name);
+
     native public static byte makeSymbolicByte(String name);
+
     native public static double makeSymbolicReal(String name);
+
     native public static boolean makeSymbolicBoolean(String name);
+
     native public static char makeSymbolicChar(String name);
+
     native public static String makeSymbolicString(String name);
-    
+
     // this method should be used instead of the native one in
     // the no-string-models branch of jpf-core
-    public static String makeSymbolicString(String name, int size){
-		char str[] = new char[size];
-    	for(int i = 0; i < size; i++) {
-    		str[i] = makeSymbolicChar(name + i);
-         }
-    	return new String(str);
+    public static String makeSymbolicString(String name, int size) {
+        char str[] = new char[size];
+        for (int i = 0; i < size; i++) {
+            str[i] = makeSymbolicChar(name + i);
+        }
+        return new String(str);
     }
-    
+
     // makes v a symbolic object
     public static Object makeSymbolicRef(String name, Object v) {
-    	assert (v!=null); // needed for type info
-    	if (Verify.randomBool()) {
+        assert (v != null); // needed for type info
+        if (Verify.randomBool()) {
 
-    		makeFieldsSymbolic(name, v);
-    	}
-    	else {
+            makeFieldsSymbolic(name, v);
+        } else {
 
-    		v = makeSymbolicNull(name);
-    	}
-    	return v;
+            v = makeSymbolicNull(name);
+        }
+        return v;
     }
 
     native public static void makeFieldsSymbolic(String name, Object v);
+
     native public static Object makeSymbolicNull(String name);
 
     native public static void printSymbolicRef(Object v, String msg);
 
     native public static void printHeapPC(String msg);
 
-
     // performs abstract state matching
     native public static boolean matchAbstractState(Object v);
-    
-    /* YN: user-defined cost*/
+
+    /* YN: user-defined cost */
     native public static void addCost(Object v);
+
     native public static void setLastObservedInputSize(Object v);
+
     native public static int getLastObservedInputSize();
+
     native public static double getLastMeasuredMetricValue();
+
     native public static void clearMeasurements();
+
+    // expr eval
+    native public static void countFalsePositive();
+
+    native public static void countFalseNegative();
+
+    native public static void countTruePositive();
+
+    native public static void countTrueNegative();
+
 }
