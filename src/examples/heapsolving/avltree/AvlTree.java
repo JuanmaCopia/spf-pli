@@ -398,7 +398,8 @@ public class AvlTree {
     }
 
     public boolean pre() {
-        return preH() && preP();
+        return Predicate.predicate(this);
+        // return preH() && preP();
     }
 
     public boolean isBinTreeWithParentReferences() {
