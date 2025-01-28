@@ -8,13 +8,13 @@ target = heapsolving.avltree.insert.AvlTreeMain
 method = express
 
 symbolic.debug = false
-symbolic.dp = z3
+symbolic.dp = z3bitvector
 
 heapsolving.strategy = IFREPOK
 heapsolving.checkPathValidity = false
 heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = heapsolving.avltree.AvlTree
-heapsolving.symsolve.finitization.args = 4
+heapsolving.symsolve.finitization.args = 2
 heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory

@@ -4,17 +4,17 @@
 
 shell=pli.LISSAShell
 
-target = heapsolving.binomialheap.METHOD.BinomialHeapMain
+target = heapsolving.binomialheap.insert.BinomialHeapMain
 method = METHOD
 
 symbolic.debug = false
 symbolic.dp = z3bitvector
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.checkPathValidity = BOOLEAN
-heapsolving.generateTests = BOOLEAN
+heapsolving.strategy = IFREPOK
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = heapsolving.binomialheap.BinomialHeap
-heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.finitization.args = 4
 heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory

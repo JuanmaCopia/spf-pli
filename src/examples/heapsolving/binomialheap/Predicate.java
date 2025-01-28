@@ -8,20 +8,19 @@ import java.util.Set;
 
 public class Predicate {
     private static BinomialHeap thisInstance;
+    private static Set<BinomialHeap.BinomialHeapNode> visitedBinomialHeapNode;
 
     public static boolean repOkStructure_M_(BinomialHeap _this, Map<Class<?>, Set<Object>> mapOfVisited) {
         if ((_this.Nodes != null) && (_this.Nodes.parent != null)) {
             return false;
         }
-        if ((_this.Nodes != null) && (!traverse_worklist_0_M_(_this.Nodes, mapOfVisited))) {
+        if ((_this.Nodes != null) && (!traverse_worklist_0_M_(_this.Nodes))) {
             return false;
         }
         return true;
     }
 
     public static boolean repOkPrimitive_M_(BinomialHeap _this, Map<Class<?>, Set<Object>> mapOfVisited) {
-        Set<Object> visitedBinomialHeapNode = mapOfVisited.computeIfAbsent(BinomialHeap.BinomialHeapNode.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if (visitedBinomialHeapNode.size() != _this.size) {
             return false;
         }
@@ -30,6 +29,7 @@ public class Predicate {
 
     public static boolean predicate(BinomialHeap _this) {
         thisInstance = _this;
+        visitedBinomialHeapNode = Collections.newSetFromMap(new IdentityHashMap<>());
         Map<Class<?>, Set<Object>> mapOfVisited = new IdentityHashMap<>();
         if (!repOkStructure_M_(_this, mapOfVisited)) {
             return false;
@@ -40,8 +40,7 @@ public class Predicate {
         return true;
     }
 
-    private static boolean traverse_worklist_0_M_(BinomialHeap.BinomialHeapNode subject,
-            Map<Class<?>, Set<Object>> mapOfVisited) {
+    private static boolean traverse_worklist_0_M_(BinomialHeap.BinomialHeapNode subject) {
         if ((subject.sibling != null) && (subject.sibling.child == null)) {
             return false;
         }
@@ -49,8 +48,6 @@ public class Predicate {
             return true;
         }
         BinomialHeap.BinomialHeapNode rootElement = subject;
-        Set<Object> visitedBinomialHeapNode = mapOfVisited.computeIfAbsent(rootElement.getClass(),
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         int initialSize_ = visitedBinomialHeapNode.size();
         if (!visitedBinomialHeapNode.add(rootElement)) {
             return false;

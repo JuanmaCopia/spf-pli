@@ -13,7 +13,7 @@ public class TreeMapHarness {
         structure = (TreeMap) SymHeap.makeSymbolicRefThis("treemap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.completeSpecification())
+            if (!CombinedPredicate.predicate(structure))
                 return null;
         }
 

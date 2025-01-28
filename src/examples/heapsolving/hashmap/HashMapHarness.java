@@ -13,7 +13,7 @@ public class HashMapHarness {
         structure = (HashMap) SymHeap.makeSymbolicRefThis("hashmap_0", structure);
 
         if (SymHeap.usingIfRepOKStrategy()) {
-            if (!structure.pre())
+            if (!CombinedPredicate.predicate(structure))
                 return null;
         }
 
