@@ -1,12 +1,15 @@
 package heapsolving.hashmap;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Predicate {
     private static HashMap thisInstance;
+    private static Set<HashMap.Entry> visitedEntry;
+    private static Set<Integer> visitedInteger;
 
     public static boolean repOkStructure_M_(HashMap _this, Map<Class<?>, Set<Object>> mapOfVisited) {
         if ((_this.e0 != null) && (!traverse_simple_0_M_(_this.e0, mapOfVisited))) {
@@ -61,8 +64,6 @@ public class Predicate {
     }
 
     public static boolean repOkPrimitive_M_(HashMap _this, Map<Class<?>, Set<Object>> mapOfVisited) {
-        Set<Object> visitedEntry = mapOfVisited.computeIfAbsent(HashMap.Entry.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if (visitedEntry.size() != _this.size) {
             return false;
         }
@@ -71,6 +72,8 @@ public class Predicate {
 
     public static boolean predicate(HashMap _this) {
         thisInstance = _this;
+        visitedEntry = Collections.newSetFromMap(new IdentityHashMap<>());
+        visitedInteger = new HashSet<>();
         Map<Class<?>, Set<Object>> mapOfVisited = new IdentityHashMap<>();
         if (!repOkStructure_M_(_this, mapOfVisited)) {
             return false;
@@ -86,14 +89,11 @@ public class Predicate {
             return true;
         }
         HashMap.Entry rootElement = subject;
-        Set<Object> visitedEntry = mapOfVisited.computeIfAbsent(rootElement.getClass(),
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if (!visitedEntry.add(rootElement)) {
             return false;
         }
         HashMap.Entry current_ = rootElement;
-        Set<Object> visitedInteger = mapOfVisited.computeIfAbsent(Integer.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
+
         while (current_ != null) {
             if ((current_ != null) && (current_.key != current_.hash)) {
                 return false;

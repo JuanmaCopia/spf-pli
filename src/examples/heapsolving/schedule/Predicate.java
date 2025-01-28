@@ -1,12 +1,16 @@
 package heapsolving.schedule;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Predicate {
     private static Schedule thisInstance;
+    private static Set<Job> visitedJob;
+    private static Set<List> visitedList;
+    private static Set<Integer> visitedInteger;
 
     public static boolean repOkStructure_M_(Schedule _this, Map<Class<?>, Set<Object>> mapOfVisited) {
         if (_this.prio_3 == null) {
@@ -24,10 +28,6 @@ public class Predicate {
         if (_this.prio_0 != null) {
             return false;
         }
-        Set<Object> visitedJob = mapOfVisited.computeIfAbsent(Job.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
-        Set<Object> visitedList = mapOfVisited.computeIfAbsent(List.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if ((_this.prio_1 != null) && (!traverse_simple_1_M_(_this.prio_1, mapOfVisited))) {
             return false;
         }
@@ -67,6 +67,9 @@ public class Predicate {
 
     public static boolean predicate(Schedule _this) {
         thisInstance = _this;
+        visitedJob = Collections.newSetFromMap(new IdentityHashMap<>());
+        visitedList = Collections.newSetFromMap(new IdentityHashMap<>());
+        visitedInteger = new HashSet<>();
         Map<Class<?>, Set<Object>> mapOfVisited = new IdentityHashMap<>();
         if (!repOkStructure_M_(_this, mapOfVisited)) {
             return false;
@@ -91,15 +94,11 @@ public class Predicate {
             return true;
         }
         Job rootElement = subject.first;
-        Set<Object> visitedJob = mapOfVisited.computeIfAbsent(rootElement.getClass(),
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         int initialSize_ = visitedJob.size();
         if (!visitedJob.add(rootElement)) {
             return false;
         }
         Job current_ = rootElement;
-        Set<Object> visitedInteger = mapOfVisited.computeIfAbsent(Integer.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         while (current_ != null) {
             if (((current_ != null) && (current_.next != null)) && (current_.next.prev != current_)) {
                 return false;

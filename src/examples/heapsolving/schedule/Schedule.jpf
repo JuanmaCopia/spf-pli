@@ -7,19 +7,19 @@ sourcepath=${jpf-symbc}/src/examples
 
 shell=pli.LISSAShell
 
-target = heapsolving.schedule.METHOD.ScheduleMain
-method = METHOD
+target = heapsolving.schedule.addprocess.ScheduleMain
+method = express
 
 search.depth_limit = 300
 
 symbolic.debug = false
-symbolic.dp = z3
+symbolic.dp = z3bitvector
 
-heapsolving.strategy = HEAP_SOLVING_STRATEGY
-heapsolving.checkPathValidity = BOOLEAN
-heapsolving.generateTests = BOOLEAN
+heapsolving.strategy = IFREPOK
+heapsolving.checkPathValidity = false
+heapsolving.generateTests = false
 heapsolving.symsolve.finitization.class = heapsolving.schedule.Schedule
-heapsolving.symsolve.finitization.args = MAX_SCOPE
+heapsolving.symsolve.finitization.args = 1
 heapsolving.symsolve.predicate = preH
 
 jvm.insn_factory.class=pli.PLIInstructionFactory

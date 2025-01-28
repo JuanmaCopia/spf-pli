@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class Predicate {
     private static LinkedList thisInstance;
+    private static Set<LinkedList.Entry> visitedEntry;
 
     public static boolean repOkStructure_M_(LinkedList _this, Map<Class<?>, Set<Object>> mapOfVisited) {
         if ((_this.header != null) && (_this.header.previous == null)) {
@@ -25,8 +26,6 @@ public class Predicate {
     }
 
     public static boolean repOkPrimitive_M_(LinkedList _this, Map<Class<?>, Set<Object>> mapOfVisited) {
-        Set<Object> visitedEntry = mapOfVisited.computeIfAbsent(LinkedList.Entry.class,
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if ((visitedEntry.size() - 1) != _this.size) {
             return false;
         }
@@ -35,6 +34,7 @@ public class Predicate {
 
     public static boolean predicate(LinkedList _this) {
         thisInstance = _this;
+        visitedEntry = Collections.newSetFromMap(new IdentityHashMap<>());
         Map<Class<?>, Set<Object>> mapOfVisited = new IdentityHashMap<>();
         if (!repOkStructure_M_(_this, mapOfVisited)) {
             return false;
@@ -50,8 +50,6 @@ public class Predicate {
             return true;
         }
         LinkedList.Entry rootElement = subject;
-        Set<Object> visitedEntry = mapOfVisited.computeIfAbsent(rootElement.getClass(),
-                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         if (!visitedEntry.add(rootElement)) {
             return false;
         }
