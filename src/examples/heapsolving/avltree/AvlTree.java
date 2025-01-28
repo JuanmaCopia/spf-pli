@@ -140,7 +140,7 @@ public class AvlTree {
             printTree(root);
     }
 
-    private static final int ALLOWED_IMBALANCE = 1;
+    static final int ALLOWED_IMBALANCE = 1;
 
     // Assume t is either balanced or within one of being balanced
     private AvlNode balance(AvlNode t) {
